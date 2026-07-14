@@ -5,6 +5,8 @@ namespace MSC.Interaction.Query
     [DisallowMultipleComponent]
     public sealed class RaycastInteractionCandidateSource : MonoBehaviour, IInteractionCandidateSource
     {
+        private readonly RaycastHit[] hitBuffer = new RaycastHit[32];
+
         [SerializeField]
         private Transform rayOrigin;
 
@@ -16,6 +18,7 @@ namespace MSC.Interaction.Query
 
         private RaycastHit lastHit;
         private bool hasLastHit;
+        private Rigidbody ignoredBody;
 
         public float MaximumDistance => maximumDistance;
 
@@ -32,17 +35,34 @@ namespace MSC.Interaction.Query
             }
 
             Ray ray = new Ray(rayOrigin.position, rayOrigin.forward);
-            hasLastHit = Physics.Raycast(
+            int hitCount = Physics.RaycastNonAlloc(
                 ray,
-                out lastHit,
+                hitBuffer,
                 maximumDistance,
                 interactionMask,
                 QueryTriggerInteraction.Ignore);
+            int nearestIndex = -1;
+            float nearestDistance = float.PositiveInfinity;
+            for (int index = 0; index < hitCount; index++)
+            {
+                RaycastHit hit = hitBuffer[index];
+                if (hit.collider == null || IsIgnored(hit.collider) || hit.distance >= nearestDistance)
+                {
+                    continue;
+                }
 
+                nearestIndex = index;
+                nearestDistance = hit.distance;
+            }
+
+            hasLastHit = nearestIndex >= 0;
             if (!hasLastHit)
             {
+                lastHit = default;
                 return default;
             }
+
+            lastHit = hitBuffer[nearestIndex];
 
             InteractionTargetHost host = lastHit.collider.GetComponentInParent<InteractionTargetHost>();
             if (host == null)
@@ -58,6 +78,26 @@ namespace MSC.Interaction.Query
             rayOrigin = origin;
             maximumDistance = Mathf.Max(0.1f, distance);
             interactionMask = mask;
+        }
+
+        /// <summary>
+        /// Excludes one explicitly owned body from the query without allowing unrelated geometry
+        /// to become transparent to interaction.
+        /// </summary>
+        public void SetIgnoredBody(Rigidbody body)
+        {
+            ignoredBody = body;
+        }
+
+        private bool IsIgnored(Collider candidate)
+        {
+            if (ignoredBody == null || candidate == null)
+            {
+                return false;
+            }
+
+            return candidate.attachedRigidbody == ignoredBody ||
+                candidate.transform.IsChildOf(ignoredBody.transform);
         }
 
         private void OnDrawGizmosSelected()

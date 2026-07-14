@@ -58,9 +58,17 @@ namespace MSC.Player
 
         public void RefreshCandidate()
         {
-            currentCandidate = IsInteractionEnabled && candidateSource != null
-                ? candidateSource.Query()
-                : default;
+            if (!IsInteractionEnabled || candidateSource == null)
+            {
+                currentCandidate = default;
+                return;
+            }
+
+            candidateSource.SetIgnoredBody(
+                carryController != null && carryController.HasHeldObject
+                    ? carryController.HeldBody
+                    : null);
+            currentCandidate = candidateSource.Query();
         }
 
         public bool TryPrimaryInteraction()

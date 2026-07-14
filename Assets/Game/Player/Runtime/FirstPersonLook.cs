@@ -32,10 +32,12 @@ namespace MSC.Player
                 return;
             }
 
-            float scale = isPointerDelta
-                ? mouseSensitivityDegreesPerPixel
-                : gamepadSpeedDegreesPerSecond * deltaTime;
-            Vector2 degrees = lookInput * scale;
+            Vector2 degrees = LookInputScaling.ToRotationDegrees(
+                lookInput,
+                isPointerDelta,
+                mouseSensitivityDegreesPerPixel,
+                gamepadSpeedDegreesPerSecond,
+                deltaTime);
 
             yawRoot.Rotate(0f, degrees.x, 0f, Space.World);
             pitchDegrees = Mathf.Clamp(pitchDegrees - degrees.y, -pitchLimitDegrees, pitchLimitDegrees);

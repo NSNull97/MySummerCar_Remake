@@ -59,6 +59,12 @@ namespace MSC.Player
             crouchRequested = requested;
         }
 
+        public void ResetInputIntent()
+        {
+            moveInput = Vector2.zero;
+            crouchRequested = false;
+        }
+
         public void Configure(CharacterController controller, Transform pivot)
         {
             characterController = controller;

@@ -25,6 +25,9 @@ namespace MSC.Player
         [SerializeField, Min(0f)]
         private float heldRotationDegreesPerPixel = 0.2f;
 
+        [SerializeField, Min(0f)]
+        private float heldRotationDegreesPerSecond = 90f;
+
         private InputActionMap playerMap;
         private InputAction moveAction;
         private InputAction lookAction;
@@ -69,6 +72,7 @@ namespace MSC.Player
         private void OnDisable()
         {
             playerMap?.Disable();
+            motor?.ResetInputIntent();
         }
 
         private void Update()
@@ -82,17 +86,23 @@ namespace MSC.Player
             motor?.SetCrouchRequested(crouchAction.IsPressed());
 
             Vector2 lookValue = lookAction.ReadValue<Vector2>();
+            bool isPointerDelta = lookAction.activeControl?.device is Pointer;
             bool rotatingHeldObject = rotateModifierAction.IsPressed() &&
                 interactionController != null &&
                 interactionController.HasHeldObject;
 
             if (rotatingHeldObject)
             {
-                interactionController.RotateHeldObject(lookValue * heldRotationDegreesPerPixel);
+                Vector2 rotationDegrees = LookInputScaling.ToRotationDegrees(
+                    lookValue,
+                    isPointerDelta,
+                    heldRotationDegreesPerPixel,
+                    heldRotationDegreesPerSecond,
+                    Time.unscaledDeltaTime);
+                interactionController.RotateHeldObject(rotationDegrees);
             }
             else if (firstPersonLook != null)
             {
-                bool isPointerDelta = lookAction.activeControl?.device is Pointer;
                 firstPersonLook.ApplyLook(lookValue, isPointerDelta, Time.unscaledDeltaTime);
             }
 

@@ -39,6 +39,8 @@ namespace MSC.Interaction.Carrying
 
         public IPickupTarget HeldTarget => HasHeldObject ? heldTarget : null;
 
+        public Rigidbody HeldBody => HasHeldObject ? heldBody : null;
+
         public string HeldStableId => HasHeldObject ? heldTarget.StableId.Value : string.Empty;
 
         public bool TryPickup(IPickupTarget target, in InteractionContext context)
@@ -175,13 +177,9 @@ namespace MSC.Interaction.Carrying
 
         private void FixedUpdate()
         {
-            if (heldTarget != null && !HasHeldObject)
+            if (!HasHeldObject && (heldTarget != null || heldBody != null))
             {
-                SetPlayerCollisionIgnored(false);
-                heldTarget = null;
-                heldBody = null;
-                heldColliders = null;
-                targetRotation = Quaternion.identity;
+                Release(PickupReleaseReason.TargetLost);
                 return;
             }
 
@@ -224,6 +222,16 @@ namespace MSC.Interaction.Carrying
             }
         }
 
+        private void OnDisable()
+        {
+            ReleaseOwnedState();
+        }
+
+        private void OnDestroy()
+        {
+            ReleaseOwnedState();
+        }
+
         private void Release(PickupReleaseReason reason)
         {
             IPickupTarget releasedTarget = heldTarget;
@@ -231,12 +239,26 @@ namespace MSC.Interaction.Carrying
 
             SetPlayerCollisionIgnored(false);
             originalState.Restore(releasedBody);
-            releasedTarget.NotifyReleased(reason);
+            if (IsAlive(releasedTarget))
+            {
+                releasedTarget.NotifyReleased(reason);
+            }
 
             heldTarget = null;
             heldBody = null;
             heldColliders = null;
+            originalState = default;
             targetRotation = Quaternion.identity;
+        }
+
+        private void ReleaseOwnedState()
+        {
+            if (heldTarget == null && heldBody == null && heldColliders == null)
+            {
+                return;
+            }
+
+            Release(PickupReleaseReason.TargetLost);
         }
 
         private Bounds CalculateHeldBounds()
