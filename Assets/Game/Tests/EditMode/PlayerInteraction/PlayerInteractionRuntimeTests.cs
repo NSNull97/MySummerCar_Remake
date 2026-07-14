@@ -4,6 +4,7 @@ using MSC.Interaction.Capabilities;
 using MSC.Interaction.Carrying;
 using MSC.Interaction.Prototype;
 using MSC.Interaction.Query;
+using MSC.Player;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -154,6 +155,35 @@ namespace MSC.Tests.EditMode.PlayerInteraction
             toolTarget.ActivateTool(context);
 
             Assert.That(toolTarget.ActivationCount, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void LookInputScalingUsesDeltaForPointerAndTimeForRateInput()
+        {
+            Vector2 pointerDegrees = LookInputScaling.ToRotationDegrees(
+                new Vector2(10f, -5f),
+                isPointerDelta: true,
+                pointerDegreesPerPixel: 0.2f,
+                rateDegreesPerSecond: 90f,
+                unscaledDeltaTime: 0.5f);
+            Vector2 stickAtThirtyFps = LookInputScaling.ToRotationDegrees(
+                Vector2.one,
+                isPointerDelta: false,
+                pointerDegreesPerPixel: 0.2f,
+                rateDegreesPerSecond: 90f,
+                unscaledDeltaTime: 1f / 30f);
+            Vector2 stickAtSixtyFps = LookInputScaling.ToRotationDegrees(
+                Vector2.one,
+                isPointerDelta: false,
+                pointerDegreesPerPixel: 0.2f,
+                rateDegreesPerSecond: 90f,
+                unscaledDeltaTime: 1f / 60f);
+
+            Assert.That(pointerDegrees, Is.EqualTo(new Vector2(2f, -1f)));
+            Assert.That(stickAtThirtyFps.x, Is.EqualTo(3f).Within(0.0001f));
+            Assert.That(stickAtThirtyFps.y, Is.EqualTo(3f).Within(0.0001f));
+            Assert.That(stickAtSixtyFps.x * 2f, Is.EqualTo(stickAtThirtyFps.x).Within(0.0001f));
+            Assert.That(stickAtSixtyFps.y * 2f, Is.EqualTo(stickAtThirtyFps.y).Within(0.0001f));
         }
 
         private static void SetStableId(StableEntityIdAuthoring authoring, string stableId)
