@@ -195,3 +195,25 @@ Exit gate:
 - no complete-map, production terrain or exact road-centerline claim is made.
 
 No 04B or Milestone 5 implementation has started.
+
+## Milestone 04A1 — Full world geometry reference transfer
+
+Status: **completed on 2026-07-14 with manual fidelity review pending**. See `Docs/Milestones/MILESTONE_04A1_REPORT.md` and `Docs/WorldTransfer/`.
+
+Delivered:
+
+- exact-hash external AssetRipper export of the serialized `GAME` world;
+- 36 045 placement records and 13 509 geometry records with deterministic project-owned IDs;
+- context-filtered 3 842-entity reference world in 49 cells plus global/persistent/bootstrap scenes;
+- collider, terrain, road, water, vegetation, interior, landmark, missing and unsupported manifests;
+- versioned coordinate conversion, partition/streaming boundary, Editor tooling and development fly camera;
+- automated validation and tests while preserving Player/Interaction.
+
+Exit gate:
+
+- full discovered serialized geometry is represented or explicitly classified non-world;
+- generated donor reference content is ignored, removable and rebuildable;
+- no donor payload enters production folders or normal builds;
+- known bounds, topology, semantic and manual-fidelity limitations are machine-readable and documented.
+
+No 04B or Milestone 5 implementation has started in this change.

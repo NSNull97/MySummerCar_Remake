@@ -140,3 +140,28 @@ flowchart LR
 `MSC.World.Runtime` owns only serializable pilot DTOs and pure coordinate/measurement helpers. `MSC.Editor` owns local configuration access, staging hash validation, asset-dependency checks and comparison-scene generation. Production assets never depend on the ignored scene or external staging. Donor PathIDs are provenance metadata; the zone, source records and samples use project-owned stable IDs.
 
 This map covers exactly one garage-road pilot zone. The route samples are not a complete route database or terrain centerline, and the blocked combined terrain mesh is not transferred. Player/Interaction ownership and code remain exactly as documented above.
+
+## Milestone 04A1 full world-transfer flow
+
+```mermaid
+flowchart LR
+    DONOR["Read-only level2 + sharedassets3"] --> RAW["External AssetRipper export"]
+    RAW --> EXTRACT[".NET streaming extractor"]
+    RULES["Versioned context rules"] --> EXTRACT
+    EXTRACT --> MANIFESTS["External complete manifests"]
+    EXTRACT --> DB["Project-owned versioned world database"]
+    DB --> CELLS["Ignored 49 cell scenes + global/persistent/bootstrap"]
+    DB --> VALIDATE["World validator + EditMode/PlayMode tests"]
+    CELLS --> VALIDATE
+    PLAYER["Existing Player / Interaction"] -. "no dependency or rewrite" .-> CELLS
+```
+
+Ownership:
+
+- `MSC.World.Runtime` — data records, coordinate conversion, partition math, landmark registry и `IWorldStreamingService` implementation;
+- `MSC.Editor` — configuration, validation, cell generation, debug window и menu commands;
+- external `.NET 8` tool — AssetRipper YAML normalization без Unity dependency;
+- `LegacyImport/ReferenceOnly/World/Generated` — local disposable reference presentation;
+- `Docs/WorldTransfer` и world database — durable audit/source of truth.
+
+Runtime assemblies не ссылаются на Editor assemblies. Generated loader disabled в reference bootstrap, поскольку ignored cell scenes не входят в normal Build Settings; Editor overview открывает выбранные cells additively.

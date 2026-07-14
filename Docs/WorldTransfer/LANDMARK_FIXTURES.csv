@@ -1,0 +1,6 @@
+FixtureId,Name,SourcePositionX,SourcePositionY,SourcePositionZ,ExpectedPositionX,ExpectedPositionY,ExpectedPositionZ,ToleranceMeters,MeasurementSource,VerificationStatus,Notes
+fb0f962be1b325cc19296c66751818c0,Primary garage roof,-169.98,-1.6110001,1040.625,0,-0.000000119,0,0.005,AssetRipper GAME transform plus audited M02 roof fixture,AutomatedPass,Primary origin fixture
+13ac272c16b174b6827ed1df54814034,Repair area sample,-1361.1013,-1.2392511,-658.5475,-1191.1213,0.3717488,-1699.1725,0.05,AssetRipper GAME transform,DataOnlyNeedsManualComparison,Historical extraction sample; final landmark registry now selects REPAIRSHOP-root records
+3d02c16c1960d8fa43a883cb15eb6ae1,Inspection-related sample,59.466415,-0.7157,-26.535955,229.44641,0.8953,-1067.161,0.05,AssetRipper GAME transform,DataOnlyNeedsManualComparison,Historical fixture; final landmark registry uses INSPECTION root
+3010846a4b78d6aaec18010e5b8f6430,Town pier sample,-1441.018,-3.396,1043.057,-1271.038,-1.785,2.4320068,0.05,AssetRipper GAME transform,DataOnlyNeedsManualComparison,Town/service spatial fixture
+16445375121da21b9f46882b9d2df474,Highway bridge sample,1445.732,6.670064,1075.5325,1615.712,8.281064,34.90747,0.05,AssetRipper GAME transform,DataOnlyNeedsManualComparison,Bridge hierarchy fixture

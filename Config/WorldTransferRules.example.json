@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 2,
+  "worldRootAllowList": [
+    "MAP", "YARD", "STORE", "PERAJARVI", "REPAIRSHOP", "DANCEHALL",
+    "COTTAGE", "CABIN", "INSPECTION", "WATERFACILITY", "LANDFILL",
+    "RYKIPOHJA", "THEATRE", "JAIL", "MISC", "RALLY", "DRAGRACE", "SOCCER"
+  ],
+  "excludedHierarchyContains": [
+    "MAP/CloudSystem/",
+    "/COMPUTER/SYSTEM/",
+    "/RagDoll/",
+    "RALLY/Spectators/",
+    "RALLY/RallyCars/",
+    "STORE/Boxes/"
+  ],
+  "rules": [
+    { "category": "SpawnMarker", "priority": 1000, "matchField": "Name", "contains": ["spawn", "teleport", "respawn"] },
+    { "category": "Terrain", "priority": 990, "matchField": "Name", "contains": ["terrain"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "GroundMesh", "priority": 980, "matchField": "Name", "contains": ["ground", "maasto"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "RoadShoulder", "priority": 970, "matchField": "Name", "contains": ["shoulder", "piennar"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "Ditch", "priority": 960, "matchField": "Name", "contains": ["ditch", "oja"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "Bridge", "priority": 950, "matchField": "Name", "contains": ["bridge", "silta"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "Culvert", "priority": 940, "matchField": "Name", "contains": ["culvert", "rumpu"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "Driveway", "priority": 930, "matchField": "Name", "contains": ["driveway"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "Road", "priority": 920, "matchField": "Name", "contains": ["dirtroad", "road", "highway", "street"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "Shoreline", "priority": 910, "matchField": "Name", "contains": ["shore", "coast", "ranta"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "Water", "priority": 900, "matchField": "Name", "contains": ["water", "lake", "pond", "sea"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "VegetationGrass", "priority": 890, "matchField": "Name", "contains": ["grass", "hein"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "VegetationBush", "priority": 880, "matchField": "Name", "contains": ["bush", "shrub", "pensas"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "VegetationTree", "priority": 870, "matchField": "Name", "contains": ["tree", "spruce", "pine", "birch", "kuusi", "manty", "mänty", "koivu"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "Rock", "priority": 860, "matchField": "Name", "contains": ["rock", "stone", "kivi"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "Roof", "priority": 850, "matchField": "Name", "contains": ["roof", "katto"], "excludedHierarchyContains": ["/COMPUTER/SYSTEM/", "/RagDoll/"] },
+    { "category": "Floor", "priority": 840, "matchField": "Name", "contains": ["floor", "lattia"], "excludedHierarchyContains": ["/COMPUTER/SYSTEM/", "/RagDoll/"] },
+    { "category": "Window", "priority": 830, "matchField": "Name", "contains": ["window", "ikkuna"], "excludedHierarchyContains": ["/COMPUTER/SYSTEM/", "/RagDoll/"] },
+    { "category": "Gate", "priority": 820, "matchField": "Name", "contains": ["gate", "portti"], "excludedHierarchyContains": ["/COMPUTER/SYSTEM/", "/RagDoll/"] },
+    { "category": "Door", "priority": 810, "matchField": "Name", "contains": ["door", "ovi"], "excludedHierarchyContains": ["/COMPUTER/SYSTEM/", "/RagDoll/"] },
+    { "category": "Fence", "priority": 800, "matchField": "Name", "contains": ["fence", "aita"], "excludedHierarchyContains": ["/COMPUTER/SYSTEM/", "/RagDoll/"] },
+    { "category": "UtilityPole", "priority": 790, "matchField": "Name", "contains": ["powerpole", "utilitypole", "lightpole", "telephone pole"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "Wire", "priority": 780, "matchField": "Name", "contains": ["wire", "cable", "johto"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "RoadSign", "priority": 770, "matchField": "Name", "contains": ["roadsign", "road sign", "sign_", "traffic sign"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "Field", "priority": 760, "matchField": "Name", "contains": ["field", "pelto"], "hierarchyStartsWith": ["MAP/"] },
+    { "category": "Yard", "priority": 750, "matchField": "Name", "contains": ["yard", "piha"], "excludedHierarchyContains": ["/COMPUTER/SYSTEM/"] }
+  ]
+}

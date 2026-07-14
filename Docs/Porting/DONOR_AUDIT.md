@@ -1,6 +1,6 @@
-# Donor Audit — Milestone 0 baseline with Milestone 4 update
+# Donor Audit — Milestone 0 baseline through Milestone 04A1
 
-Audit dates: 2026-07-13 baseline; 2026-07-14 Milestones 3–4 updates
+Audit dates: 2026-07-13 baseline; 2026-07-14 Milestones 3–04A1 updates
 
 Scope: read-only filesystem, binary-header, log, file-hash, reflection-only managed metadata inspection, and audited use of one previously staged garage measurement
 
@@ -235,3 +235,13 @@ The exact inspected `level2` identities were:
 The seven retained route samples form a `191.353 m` polyline; the nearest retained sample is `204.768 m` from the garage anchor. They are traffic-route positions, not a certified render-mesh centerline, and their Y values are approximate elevation evidence. Bounded terrain-mesh transfer is classified `Blocked`, because the available static object separation exposes combined/full-world content.
 
 External staging stores only `manifests/MILESTONE_04A_WORLD_LAYOUT_INSPECTION.json`, SHA-256 `ae7a512036f8ade31174e9cb4aee018921755eb1cc7fd1bcfd2707fa8881ac54`. Reviewed project-owned data is `Assets/Game/World/Content/LayoutPilot/M04A_WorldLayoutPilot.json`; the disposable comparison scene remains under ignored `LegacyImport/ReferenceOnly` and outside Build Settings. The donor installation was not written, patched, renamed or deleted.
+
+## Milestone 04A1 full serialized world-geometry transfer
+
+После подтверждения стабильности vertical slice полный `GAME` world был выгружен AssetRipper 1.3.14 во внешний staging. Donor оставался read-only. К уже известным hashes добавлен `sharedassets3.resource` SHA-256 `19797fa0386c74d091b530b874a03325191e002c921767240c71ba7791a5a20b`; extracted `GAME.unity` имеет SHA-256 `c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4`.
+
+Нормализовано 36 045 placements, 13 509 geometry entities, 5 001 collider components и 1 362 unique referenced mesh GUID. Context-filtered reference world содержит 3 842 entities в 49 cells плюс 31 global entity. Остальные 9 667 geometry records не удалены и остаются `ClassifiedNonWorld` в project-owned entity table.
+
+2 007 review records относятся к неоднозначным AssetRipper combined/static mesh bounds, а не к отсутствующим mesh GUID. 37 неподдерживаемых serialized class IDs сохранены metadata-only. Одна непрочитанная Texture2D не влияет на geometry transfer и не используется как production texture.
+
+Generated scenes и category materials находятся только под ignored `Assets/Game/LegacyImport/ReferenceOnly/World/Generated`; production prefabs/build content от них не зависят. Durable database, provenance, tools, tests и отчёты отслеживаются Git. Детали: `Docs/WorldTransfer/`.

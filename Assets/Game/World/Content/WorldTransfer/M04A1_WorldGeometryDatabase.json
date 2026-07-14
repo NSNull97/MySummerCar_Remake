@@ -1,0 +1,1699 @@
+{
+  "schema": "msc.world-geometry-database",
+  "schemaVersion": 1,
+  "databaseVersion": "04A1.1",
+  "generatorId": "msc-world-transfer-extractor",
+  "generatorVersion": "1.0.0",
+  "generatedUtc": "2026-07-14T08:56:38.5994653Z",
+  "source": {
+    "sourceId": "msc-donor-level2-39e5c8f3",
+    "sceneName": "GAME",
+    "donorRelativePath": "mysummercar_Data/level2",
+    "sha256": "39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31",
+    "extractedSceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4",
+    "extractor": "AssetRipper",
+    "extractorVersion": "1.3.14",
+    "extractionStatus": "ExtractedExternal"
+  },
+  "sources": [
+    {
+      "sourceId": "msc-donor-level2-39e5c8f3",
+      "sceneName": "GAME",
+      "donorRelativePath": "mysummercar_Data/level2",
+      "sha256": "39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31",
+      "extractedSceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4",
+      "extractor": "AssetRipper",
+      "extractorVersion": "1.3.14",
+      "extractionStatus": "ExtractedExternal"
+    },
+    {
+      "sourceId": "msc-donor-sharedassets3-1e956c8a",
+      "sceneName": "",
+      "donorRelativePath": "mysummercar_Data/sharedassets3.assets",
+      "sha256": "1e956c8acd9f3c075b2e4eece3d836228eeb3ad0a18ae41ad1ca6aedb3c9d684",
+      "extractedSceneSha256": "",
+      "extractor": "AssetRipper",
+      "extractorVersion": "1.3.14",
+      "extractionStatus": "ExtractedExternal"
+    },
+    {
+      "sourceId": "msc-donor-sharedassets3-resource-19797fa0",
+      "sceneName": "",
+      "donorRelativePath": "mysummercar_Data/sharedassets3.resource",
+      "sha256": "19797fa0386c74d091b530b874a03325191e002c921767240c71ba7791a5a20b",
+      "extractedSceneSha256": "",
+      "extractor": "AssetRipper",
+      "extractorVersion": "1.3.14",
+      "extractionStatus": "ExtractedExternal"
+    }
+  ],
+  "classificationRulesSha256": "75f3d36dd48ac3f5f767becf53133368ba22348b1e45a50431274fd6c4a230b7",
+  "coordinateConversion": {
+    "sourceUnitScale": 1,
+    "destinationUnitScale": 1,
+    "axisMapping": "X,Y,Z -\u003E X,Y,Z",
+    "handedness": "Unity left-handed Y-up retained",
+    "globalTranslation": [
+      169.98,
+      1.611,
+      -1040.625
+    ],
+    "globalRotation": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "globalScale": [
+      1,
+      1,
+      1
+    ],
+    "pivotPolicy": "Preserve donor hierarchy pivots; project coordinates are donor world minus the audited garage anchor",
+    "negativeScalePolicy": "Preserve and flag for validation",
+    "floatingOriginRecommendation": "Not required for reference generation; reassess for runtime streaming"
+  },
+  "partition": {
+    "cellSizeMeters": 512,
+    "origin": [
+      0,
+      0,
+      0
+    ],
+    "boundsMin": [
+      -2993.205322265625,
+      -412.8290100097656,
+      -3295.29833984375
+    ],
+    "boundsMax": [
+      3553.165283203125,
+      913.3710327148438,
+      2597.9658203125
+    ],
+    "loadingRadiusCells": 1,
+    "unloadingRadiusCells": 2,
+    "largeObjectThresholdMeters": 409.6,
+    "largeObjectPolicy": "global reference scene",
+    "crossCellParentPolicy": "entity remains in centroid cell; original parent stable ID retained as metadata",
+    "crossCellColliderPolicy": "collider remains with source entity; large collider routes to global"
+  },
+  "tables": {
+    "entities": "M04A1_WorldEntities.csv",
+    "colliders": "M04A1_WorldColliders.csv",
+    "landmarks": "M04A1_WorldLandmarks.csv"
+  },
+  "counts": {
+    "discoveredObjects": 36045,
+    "placementRecords": 36045,
+    "geometryEntities": 13509,
+    "referenceWorldEntities": 3842,
+    "classifiedNonWorldEntities": 9667,
+    "colliders": 5001,
+    "resolvedMeshReferences": 6248,
+    "missingReferences": 2007,
+    "unsupportedSerializedTypes": 37,
+    "cells": 49,
+    "globalEntities": 31,
+    "landmarks": 29
+  },
+  "sourceBounds": {
+    "min": [
+      -3163.185302734375,
+      -414.44000244140625,
+      -2254.67333984375
+    ],
+    "max": [
+      3383.185302734375,
+      911.760009765625,
+      3638.5908203125
+    ]
+  },
+  "convertedBounds": {
+    "min": [
+      -2993.205322265625,
+      -412.8290100097656,
+      -3295.29833984375
+    ],
+    "max": [
+      3553.165283203125,
+      913.3710327148438,
+      2597.9658203125
+    ]
+  },
+  "categoryCounts": {
+    "Bridge": 2,
+    "BuildingExterior": 1568,
+    "BuildingInterior": 211,
+    "ColliderOnly": 772,
+    "Door": 120,
+    "Fence": 18,
+    "Field": 2,
+    "Floor": 23,
+    "InteractivePropCandidate": 395,
+    "Landmark": 9,
+    "Road": 29,
+    "RoadSign": 163,
+    "Rock": 3,
+    "Roof": 124,
+    "SpawnMarker": 14,
+    "StaticProp": 265,
+    "Terrain": 1,
+    "UtilityPole": 14,
+    "VegetationBush": 7,
+    "VegetationGrass": 3,
+    "VegetationTree": 16,
+    "Water": 12,
+    "Window": 67,
+    "Wire": 4
+  },
+  "cells": [
+    {
+      "cellId": "cell_-1_-1",
+      "x": -1,
+      "z": -1,
+      "cellSizeMeters": 512,
+      "min": [
+        -512,
+        -412.8290100097656,
+        -512
+      ],
+      "max": [
+        0,
+        913.3710327148438,
+        0
+      ],
+      "entityCount": 8,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-1_-2",
+      "x": -1,
+      "z": -2,
+      "cellSizeMeters": 512,
+      "min": [
+        -512,
+        -412.8290100097656,
+        -1024
+      ],
+      "max": [
+        0,
+        913.3710327148438,
+        -512
+      ],
+      "entityCount": 1,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-1_-3",
+      "x": -1,
+      "z": -3,
+      "cellSizeMeters": 512,
+      "min": [
+        -512,
+        -412.8290100097656,
+        -1536
+      ],
+      "max": [
+        0,
+        913.3710327148438,
+        -1024
+      ],
+      "entityCount": 5,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-1_-4",
+      "x": -1,
+      "z": -4,
+      "cellSizeMeters": 512,
+      "min": [
+        -512,
+        -412.8290100097656,
+        -2048
+      ],
+      "max": [
+        0,
+        913.3710327148438,
+        -1536
+      ],
+      "entityCount": 9,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-1_-5",
+      "x": -1,
+      "z": -5,
+      "cellSizeMeters": 512,
+      "min": [
+        -512,
+        -412.8290100097656,
+        -2560
+      ],
+      "max": [
+        0,
+        913.3710327148438,
+        -2048
+      ],
+      "entityCount": 49,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-1_0",
+      "x": -1,
+      "z": 0,
+      "cellSizeMeters": 512,
+      "min": [
+        -512,
+        -412.8290100097656,
+        0
+      ],
+      "max": [
+        0,
+        913.3710327148438,
+        512
+      ],
+      "entityCount": 28,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-1_1",
+      "x": -1,
+      "z": 1,
+      "cellSizeMeters": 512,
+      "min": [
+        -512,
+        -412.8290100097656,
+        512
+      ],
+      "max": [
+        0,
+        913.3710327148438,
+        1024
+      ],
+      "entityCount": 20,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-2_-2",
+      "x": -2,
+      "z": -2,
+      "cellSizeMeters": 512,
+      "min": [
+        -1024,
+        -412.8290100097656,
+        -1024
+      ],
+      "max": [
+        -512,
+        913.3710327148438,
+        -512
+      ],
+      "entityCount": 120,
+      "interiorCount": 2
+    },
+    {
+      "cellId": "cell_-2_-3",
+      "x": -2,
+      "z": -3,
+      "cellSizeMeters": 512,
+      "min": [
+        -1024,
+        -412.8290100097656,
+        -1536
+      ],
+      "max": [
+        -512,
+        913.3710327148438,
+        -1024
+      ],
+      "entityCount": 14,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-2_-4",
+      "x": -2,
+      "z": -4,
+      "cellSizeMeters": 512,
+      "min": [
+        -1024,
+        -412.8290100097656,
+        -2048
+      ],
+      "max": [
+        -512,
+        913.3710327148438,
+        -1536
+      ],
+      "entityCount": 106,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-2_-5",
+      "x": -2,
+      "z": -5,
+      "cellSizeMeters": 512,
+      "min": [
+        -1024,
+        -412.8290100097656,
+        -2560
+      ],
+      "max": [
+        -512,
+        913.3710327148438,
+        -2048
+      ],
+      "entityCount": 5,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-2_0",
+      "x": -2,
+      "z": 0,
+      "cellSizeMeters": 512,
+      "min": [
+        -1024,
+        -412.8290100097656,
+        0
+      ],
+      "max": [
+        -512,
+        913.3710327148438,
+        512
+      ],
+      "entityCount": 65,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-2_1",
+      "x": -2,
+      "z": 1,
+      "cellSizeMeters": 512,
+      "min": [
+        -1024,
+        -412.8290100097656,
+        512
+      ],
+      "max": [
+        -512,
+        913.3710327148438,
+        1024
+      ],
+      "entityCount": 15,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-3_-1",
+      "x": -3,
+      "z": -1,
+      "cellSizeMeters": 512,
+      "min": [
+        -1536,
+        -412.8290100097656,
+        -512
+      ],
+      "max": [
+        -1024,
+        913.3710327148438,
+        0
+      ],
+      "entityCount": 17,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-3_-2",
+      "x": -3,
+      "z": -2,
+      "cellSizeMeters": 512,
+      "min": [
+        -1536,
+        -412.8290100097656,
+        -1024
+      ],
+      "max": [
+        -1024,
+        913.3710327148438,
+        -512
+      ],
+      "entityCount": 11,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-3_-3",
+      "x": -3,
+      "z": -3,
+      "cellSizeMeters": 512,
+      "min": [
+        -1536,
+        -412.8290100097656,
+        -1536
+      ],
+      "max": [
+        -1024,
+        913.3710327148438,
+        -1024
+      ],
+      "entityCount": 25,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-3_-4",
+      "x": -3,
+      "z": -4,
+      "cellSizeMeters": 512,
+      "min": [
+        -1536,
+        -412.8290100097656,
+        -2048
+      ],
+      "max": [
+        -1024,
+        913.3710327148438,
+        -1536
+      ],
+      "entityCount": 166,
+      "interiorCount": 1
+    },
+    {
+      "cellId": "cell_-3_0",
+      "x": -3,
+      "z": 0,
+      "cellSizeMeters": 512,
+      "min": [
+        -1536,
+        -412.8290100097656,
+        0
+      ],
+      "max": [
+        -1024,
+        913.3710327148438,
+        512
+      ],
+      "entityCount": 1456,
+      "interiorCount": 32
+    },
+    {
+      "cellId": "cell_-4_-1",
+      "x": -4,
+      "z": -1,
+      "cellSizeMeters": 512,
+      "min": [
+        -2048,
+        -412.8290100097656,
+        -512
+      ],
+      "max": [
+        -1536,
+        913.3710327148438,
+        0
+      ],
+      "entityCount": 8,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-4_-3",
+      "x": -4,
+      "z": -3,
+      "cellSizeMeters": 512,
+      "min": [
+        -2048,
+        -412.8290100097656,
+        -1536
+      ],
+      "max": [
+        -1536,
+        913.3710327148438,
+        -1024
+      ],
+      "entityCount": 11,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-4_0",
+      "x": -4,
+      "z": 0,
+      "cellSizeMeters": 512,
+      "min": [
+        -2048,
+        -412.8290100097656,
+        0
+      ],
+      "max": [
+        -1536,
+        913.3710327148438,
+        512
+      ],
+      "entityCount": 19,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_-4_1",
+      "x": -4,
+      "z": 1,
+      "cellSizeMeters": 512,
+      "min": [
+        -2048,
+        -412.8290100097656,
+        512
+      ],
+      "max": [
+        -1536,
+        913.3710327148438,
+        1024
+      ],
+      "entityCount": 11,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_0_-1",
+      "x": 0,
+      "z": -1,
+      "cellSizeMeters": 512,
+      "min": [
+        0,
+        -412.8290100097656,
+        -512
+      ],
+      "max": [
+        512,
+        913.3710327148438,
+        0
+      ],
+      "entityCount": 87,
+      "interiorCount": 3
+    },
+    {
+      "cellId": "cell_0_-2",
+      "x": 0,
+      "z": -2,
+      "cellSizeMeters": 512,
+      "min": [
+        0,
+        -412.8290100097656,
+        -1024
+      ],
+      "max": [
+        512,
+        913.3710327148438,
+        -512
+      ],
+      "entityCount": 15,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_0_-3",
+      "x": 0,
+      "z": -3,
+      "cellSizeMeters": 512,
+      "min": [
+        0,
+        -412.8290100097656,
+        -1536
+      ],
+      "max": [
+        512,
+        913.3710327148438,
+        -1024
+      ],
+      "entityCount": 671,
+      "interiorCount": 277
+    },
+    {
+      "cellId": "cell_0_-4",
+      "x": 0,
+      "z": -4,
+      "cellSizeMeters": 512,
+      "min": [
+        0,
+        -412.8290100097656,
+        -2048
+      ],
+      "max": [
+        512,
+        913.3710327148438,
+        -1536
+      ],
+      "entityCount": 29,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_0_-5",
+      "x": 0,
+      "z": -5,
+      "cellSizeMeters": 512,
+      "min": [
+        0,
+        -412.8290100097656,
+        -2560
+      ],
+      "max": [
+        512,
+        913.3710327148438,
+        -2048
+      ],
+      "entityCount": 23,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_0_0",
+      "x": 0,
+      "z": 0,
+      "cellSizeMeters": 512,
+      "min": [
+        0,
+        -412.8290100097656,
+        0
+      ],
+      "max": [
+        512,
+        913.3710327148438,
+        512
+      ],
+      "entityCount": 9,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_0_1",
+      "x": 0,
+      "z": 1,
+      "cellSizeMeters": 512,
+      "min": [
+        0,
+        -412.8290100097656,
+        512
+      ],
+      "max": [
+        512,
+        913.3710327148438,
+        1024
+      ],
+      "entityCount": 4,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_1_-3",
+      "x": 1,
+      "z": -3,
+      "cellSizeMeters": 512,
+      "min": [
+        512,
+        -412.8290100097656,
+        -1536
+      ],
+      "max": [
+        1024,
+        913.3710327148438,
+        -1024
+      ],
+      "entityCount": 2,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_1_-5",
+      "x": 1,
+      "z": -5,
+      "cellSizeMeters": 512,
+      "min": [
+        512,
+        -412.8290100097656,
+        -2560
+      ],
+      "max": [
+        1024,
+        913.3710327148438,
+        -2048
+      ],
+      "entityCount": 26,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_1_0",
+      "x": 1,
+      "z": 0,
+      "cellSizeMeters": 512,
+      "min": [
+        512,
+        -412.8290100097656,
+        0
+      ],
+      "max": [
+        1024,
+        913.3710327148438,
+        512
+      ],
+      "entityCount": 124,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_1_1",
+      "x": 1,
+      "z": 1,
+      "cellSizeMeters": 512,
+      "min": [
+        512,
+        -412.8290100097656,
+        512
+      ],
+      "max": [
+        1024,
+        913.3710327148438,
+        1024
+      ],
+      "entityCount": 17,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_1_2",
+      "x": 1,
+      "z": 2,
+      "cellSizeMeters": 512,
+      "min": [
+        512,
+        -412.8290100097656,
+        1024
+      ],
+      "max": [
+        1024,
+        913.3710327148438,
+        1536
+      ],
+      "entityCount": 11,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_2_-1",
+      "x": 2,
+      "z": -1,
+      "cellSizeMeters": 512,
+      "min": [
+        1024,
+        -412.8290100097656,
+        -512
+      ],
+      "max": [
+        1536,
+        913.3710327148438,
+        0
+      ],
+      "entityCount": 15,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_2_-2",
+      "x": 2,
+      "z": -2,
+      "cellSizeMeters": 512,
+      "min": [
+        1024,
+        -412.8290100097656,
+        -1024
+      ],
+      "max": [
+        1536,
+        913.3710327148438,
+        -512
+      ],
+      "entityCount": 3,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_2_-4",
+      "x": 2,
+      "z": -4,
+      "cellSizeMeters": 512,
+      "min": [
+        1024,
+        -412.8290100097656,
+        -2048
+      ],
+      "max": [
+        1536,
+        913.3710327148438,
+        -1536
+      ],
+      "entityCount": 26,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_2_-5",
+      "x": 2,
+      "z": -5,
+      "cellSizeMeters": 512,
+      "min": [
+        1024,
+        -412.8290100097656,
+        -2560
+      ],
+      "max": [
+        1536,
+        913.3710327148438,
+        -2048
+      ],
+      "entityCount": 12,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_3_-1",
+      "x": 3,
+      "z": -1,
+      "cellSizeMeters": 512,
+      "min": [
+        1536,
+        -412.8290100097656,
+        -512
+      ],
+      "max": [
+        2048,
+        913.3710327148438,
+        0
+      ],
+      "entityCount": 429,
+      "interiorCount": 4
+    },
+    {
+      "cellId": "cell_3_-2",
+      "x": 3,
+      "z": -2,
+      "cellSizeMeters": 512,
+      "min": [
+        1536,
+        -412.8290100097656,
+        -1024
+      ],
+      "max": [
+        2048,
+        913.3710327148438,
+        -512
+      ],
+      "entityCount": 4,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_3_-4",
+      "x": 3,
+      "z": -4,
+      "cellSizeMeters": 512,
+      "min": [
+        1536,
+        -412.8290100097656,
+        -2048
+      ],
+      "max": [
+        2048,
+        913.3710327148438,
+        -1536
+      ],
+      "entityCount": 57,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_3_-5",
+      "x": 3,
+      "z": -5,
+      "cellSizeMeters": 512,
+      "min": [
+        1536,
+        -412.8290100097656,
+        -2560
+      ],
+      "max": [
+        2048,
+        913.3710327148438,
+        -2048
+      ],
+      "entityCount": 23,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_3_0",
+      "x": 3,
+      "z": 0,
+      "cellSizeMeters": 512,
+      "min": [
+        1536,
+        -412.8290100097656,
+        0
+      ],
+      "max": [
+        2048,
+        913.3710327148438,
+        512
+      ],
+      "entityCount": 1,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_4_-2",
+      "x": 4,
+      "z": -2,
+      "cellSizeMeters": 512,
+      "min": [
+        2048,
+        -412.8290100097656,
+        -1024
+      ],
+      "max": [
+        2560,
+        913.3710327148438,
+        -512
+      ],
+      "entityCount": 3,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_4_-3",
+      "x": 4,
+      "z": -3,
+      "cellSizeMeters": 512,
+      "min": [
+        2048,
+        -412.8290100097656,
+        -1536
+      ],
+      "max": [
+        2560,
+        913.3710327148438,
+        -1024
+      ],
+      "entityCount": 44,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_4_-4",
+      "x": 4,
+      "z": -4,
+      "cellSizeMeters": 512,
+      "min": [
+        2048,
+        -412.8290100097656,
+        -2048
+      ],
+      "max": [
+        2560,
+        913.3710327148438,
+        -1536
+      ],
+      "entityCount": 1,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_4_-5",
+      "x": 4,
+      "z": -5,
+      "cellSizeMeters": 512,
+      "min": [
+        2048,
+        -412.8290100097656,
+        -2560
+      ],
+      "max": [
+        2560,
+        913.3710327148438,
+        -2048
+      ],
+      "entityCount": 4,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_4_1",
+      "x": 4,
+      "z": 1,
+      "cellSizeMeters": 512,
+      "min": [
+        2048,
+        -412.8290100097656,
+        512
+      ],
+      "max": [
+        2560,
+        913.3710327148438,
+        1024
+      ],
+      "entityCount": 1,
+      "interiorCount": 0
+    },
+    {
+      "cellId": "cell_5_-2",
+      "x": 5,
+      "z": -2,
+      "cellSizeMeters": 512,
+      "min": [
+        2560,
+        -412.8290100097656,
+        -1024
+      ],
+      "max": [
+        3072,
+        913.3710327148438,
+        -512
+      ],
+      "entityCount": 1,
+      "interiorCount": 0
+    }
+  ],
+  "landmarks": [
+    {
+      "stableId": "cb01ace10f605a79de39069b7e159fbf",
+      "originalName": "BRIDGE_highway",
+      "normalizedName": "bridge-highway",
+      "landmarkTag": "Bridge",
+      "position": [
+        2007.21533203125,
+        -2.7191553115844727,
+        -1834.1761474609375
+      ],
+      "boundsMin": [
+        2007.21533203125,
+        -2.7191553115844727,
+        -1834.1761474609375
+      ],
+      "boundsMax": [
+        2007.21533203125,
+        -2.7191553115844727,
+        -1834.1761474609375
+      ],
+      "cellId": "cell_3_-4"
+    },
+    {
+      "stableId": "16445375121da21b9f46882b9d2df474",
+      "originalName": "NoRain",
+      "normalizedName": "norain",
+      "landmarkTag": "Bridge",
+      "position": [
+        1615.7120361328125,
+        8.2810640335083,
+        34.907470703125
+      ],
+      "boundsMin": [
+        1615.7120361328125,
+        8.2810640335083,
+        34.907470703125
+      ],
+      "boundsMax": [
+        1615.7120361328125,
+        8.2810640335083,
+        34.907470703125
+      ],
+      "cellId": "cell_3_0"
+    },
+    {
+      "stableId": "947c8f07860535709b0fa97dc682e070",
+      "originalName": "NoRain",
+      "normalizedName": "norain",
+      "landmarkTag": "Bridge",
+      "position": [
+        1606.0380859375,
+        -1.1989537477493286,
+        -291.532958984375
+      ],
+      "boundsMin": [
+        1606.0380859375,
+        -1.1989537477493286,
+        -291.532958984375
+      ],
+      "boundsMax": [
+        1606.0380859375,
+        -1.1989537477493286,
+        -291.532958984375
+      ],
+      "cellId": "cell_3_-1"
+    },
+    {
+      "stableId": "5922254ed391973d33d7babd6be0b89f",
+      "originalName": "FlagPole",
+      "normalizedName": "flagpole",
+      "landmarkTag": "Church",
+      "position": [
+        -1220.8839111328125,
+        6.770999908447266,
+        121.1773681640625
+      ],
+      "boundsMin": [
+        -1220.8839111328125,
+        6.770999908447266,
+        121.1773681640625
+      ],
+      "boundsMax": [
+        -1220.8839111328125,
+        6.770999908447266,
+        121.1773681640625
+      ],
+      "cellId": "cell_-3_0"
+    },
+    {
+      "stableId": "cc1ebee642bc6f1c46285b30093c5a35",
+      "originalName": "kitchen_bench 1",
+      "normalizedName": "kitchen-bench-1",
+      "landmarkTag": "IslandCottage",
+      "position": [
+        -676.19189453125,
+        -1.0159999132156372,
+        -535.8192138671875
+      ],
+      "boundsMin": [
+        -676.19189453125,
+        -1.0159999132156372,
+        -535.8192138671875
+      ],
+      "boundsMax": [
+        -676.19189453125,
+        -1.0159999132156372,
+        -535.8192138671875
+      ],
+      "cellId": "cell_-2_-2"
+    },
+    {
+      "stableId": "161f1947ab0236ca3cc8f38f5eafd13f",
+      "originalName": "SHITHOUSE",
+      "normalizedName": "shithouse",
+      "landmarkTag": "Landfill",
+      "position": [
+        -609.6300048828125,
+        14.489999771118164,
+        -1688.72900390625
+      ],
+      "boundsMin": [
+        -609.6300048828125,
+        14.489999771118164,
+        -1688.72900390625
+      ],
+      "boundsMax": [
+        -609.6300048828125,
+        14.489999771118164,
+        -1688.72900390625
+      ],
+      "cellId": "cell_-2_-4"
+    },
+    {
+      "stableId": "e4fc3a22439b2788e280404f1d96e3d6",
+      "originalName": "lightpole 2",
+      "normalizedName": "lightpole-2",
+      "landmarkTag": "Landfill",
+      "position": [
+        -499.65777587890625,
+        14.233230590820312,
+        -1762.100830078125
+      ],
+      "boundsMin": [
+        -499.65777587890625,
+        14.233230590820312,
+        -1762.100830078125
+      ],
+      "boundsMax": [
+        -499.65777587890625,
+        14.233230590820312,
+        -1762.100830078125
+      ],
+      "cellId": "cell_-1_-4"
+    },
+    {
+      "stableId": "e7c6e9883c5a8792898746477607d10a",
+      "originalName": "LakeSmallBottom1",
+      "normalizedName": "lakesmallbottom1",
+      "landmarkTag": "MajorWater",
+      "position": [
+        2070.47998046875,
+        5.270999908447266,
+        -564.3250122070312
+      ],
+      "boundsMin": [
+        2070.47998046875,
+        5.270999908447266,
+        -564.3250122070312
+      ],
+      "boundsMax": [
+        2070.47998046875,
+        5.270999908447266,
+        -564.3250122070312
+      ],
+      "cellId": "cell_4_-2"
+    },
+    {
+      "stableId": "41a092610f29170e5bc361be6e0d1dec",
+      "originalName": "LakeWaterColor",
+      "normalizedName": "lakewatercolor",
+      "landmarkTag": "MajorWater",
+      "position": [
+        2199.05029296875,
+        -2.428999900817871,
+        -1832.093994140625
+      ],
+      "boundsMin": [
+        2199.05029296875,
+        -2.428999900817871,
+        -1832.093994140625
+      ],
+      "boundsMax": [
+        2199.05029296875,
+        -2.428999900817871,
+        -1832.093994140625
+      ],
+      "cellId": "cell_4_-4"
+    },
+    {
+      "stableId": "40bfaf26ded22db2438894014bbbd415",
+      "originalName": "LAKEBED",
+      "normalizedName": "lakebed",
+      "landmarkTag": "MajorWater",
+      "position": [
+        2007.21533203125,
+        -2.7191553115844727,
+        -1834.1761474609375
+      ],
+      "boundsMin": [
+        -1733.58251953125,
+        -17.554887771606445,
+        -2861.72412109375
+      ],
+      "boundsMax": [
+        3187.71337890625,
+        -2.718172550201416,
+        2227.0966796875
+      ],
+      "cellId": "global"
+    },
+    {
+      "stableId": "e4c7a04a7625b2fd685f37fb5cadb4ff",
+      "originalName": "LakeWaterUnder1",
+      "normalizedName": "lakewaterunder1",
+      "landmarkTag": "MajorWater",
+      "position": [
+        -25.867904663085938,
+        -8.21882438659668,
+        -735.0828857421875
+      ],
+      "boundsMin": [
+        -25.867904663085938,
+        -8.21882438659668,
+        -735.0828857421875
+      ],
+      "boundsMax": [
+        -25.867904663085938,
+        -8.21882438659668,
+        -735.0828857421875
+      ],
+      "cellId": "cell_-1_-2"
+    },
+    {
+      "stableId": "ba2985469abb963fa60bc8dd179560f3",
+      "originalName": "LakeWaterUnder2",
+      "normalizedName": "lakewaterunder2",
+      "landmarkTag": "MajorWater",
+      "position": [
+        2166.97998046875,
+        -8.428999900817871,
+        740.375
+      ],
+      "boundsMin": [
+        2166.97998046875,
+        -8.428999900817871,
+        740.375
+      ],
+      "boundsMax": [
+        2166.97998046875,
+        -8.428999900817871,
+        740.375
+      ],
+      "cellId": "cell_4_1"
+    },
+    {
+      "stableId": "fb0f962be1b325cc19296c66751818c0",
+      "originalName": "garage_shed_roof",
+      "normalizedName": "garage-shed-roof",
+      "landmarkTag": "PrimaryHomeGarage",
+      "position": [
+        0,
+        -1.1920928955078125E-07,
+        0
+      ],
+      "boundsMin": [
+        0,
+        -1.1920928955078125E-07,
+        0
+      ],
+      "boundsMax": [
+        0,
+        -1.1920928955078125E-07,
+        0
+      ],
+      "cellId": "cell_0_0"
+    },
+    {
+      "stableId": "1d50e7313ee1bdc52fbbf6ea10a3efa3",
+      "originalName": "Spawn",
+      "normalizedName": "spawn",
+      "landmarkTag": "RepairWorkshop",
+      "position": [
+        -1279.6199951171875,
+        23.769886016845703,
+        -1409.4849853515625
+      ],
+      "boundsMin": [
+        -1279.6199951171875,
+        23.769886016845703,
+        -1409.4849853515625
+      ],
+      "boundsMax": [
+        -1279.6199951171875,
+        23.769886016845703,
+        -1409.4849853515625
+      ],
+      "cellId": "cell_-3_-3"
+    },
+    {
+      "stableId": "a0188efa5449fa8ee4576ef04e3eeb85",
+      "originalName": "Spawn",
+      "normalizedName": "spawn",
+      "landmarkTag": "RepairWorkshop",
+      "position": [
+        -635.2698974609375,
+        14.770095825195312,
+        -1705.8250732421875
+      ],
+      "boundsMin": [
+        -635.2698974609375,
+        14.770095825195312,
+        -1705.8250732421875
+      ],
+      "boundsMax": [
+        -635.2698974609375,
+        14.770095825195312,
+        -1705.8250732421875
+      ],
+      "cellId": "cell_-2_-4"
+    },
+    {
+      "stableId": "4007b3fc6aee20fbd816edd334917de4",
+      "originalName": "JunkCar4",
+      "normalizedName": "junkcar4",
+      "landmarkTag": "RepairWorkshop",
+      "position": [
+        48.69606018066406,
+        1.3149999380111694,
+        -1988.3720703125
+      ],
+      "boundsMin": [
+        47.806480407714844,
+        0.42601966857910156,
+        -1990.21240234375
+      ],
+      "boundsMax": [
+        49.55958557128906,
+        2.1911935806274414,
+        -1986.4593505859375
+      ],
+      "cellId": "cell_0_-4"
+    },
+    {
+      "stableId": "8cf61deda44c8b30119257dbed2d16a8",
+      "originalName": "JunkCar3",
+      "normalizedName": "junkcar3",
+      "landmarkTag": "RepairWorkshop",
+      "position": [
+        -251.73301696777344,
+        0.7790001630783081,
+        225.10595703125
+      ],
+      "boundsMin": [
+        -254.2674102783203,
+        0.7613140940666199,
+        223.21435546875
+      ],
+      "boundsMax": [
+        -249.18873596191406,
+        1.8409734964370728,
+        226.9775390625
+      ],
+      "cellId": "cell_-1_0"
+    },
+    {
+      "stableId": "cd58d6ffd03fdfbc662a13a34c5fa88e",
+      "originalName": "Spawn",
+      "normalizedName": "spawn",
+      "landmarkTag": "RepairWorkshop",
+      "position": [
+        133.11000061035156,
+        -1.2996541261672974,
+        -2249.955078125
+      ],
+      "boundsMin": [
+        133.11000061035156,
+        -1.2996541261672974,
+        -2249.955078125
+      ],
+      "boundsMax": [
+        133.11000061035156,
+        -1.2996541261672974,
+        -2249.955078125
+      ],
+      "cellId": "cell_0_-5"
+    },
+    {
+      "stableId": "f4a1a1c8ca621a1360978da9675c45f0",
+      "originalName": "inspection_desk 1",
+      "normalizedName": "inspection-desk-1",
+      "landmarkTag": "RepairWorkshop",
+      "position": [
+        1724.5306396484375,
+        6.756999969482422,
+        -301.7740478515625
+      ],
+      "boundsMin": [
+        1724.5306396484375,
+        6.756999969482422,
+        -301.7740478515625
+      ],
+      "boundsMax": [
+        1724.5306396484375,
+        6.756999969482422,
+        -301.7740478515625
+      ],
+      "cellId": "cell_3_-1"
+    },
+    {
+      "stableId": "75fab5283acabfebface24ccb24538b7",
+      "originalName": "JunkCar1",
+      "normalizedName": "junkcar1",
+      "landmarkTag": "RepairWorkshop",
+      "position": [
+        -240.04502868652344,
+        -2.245999813079834,
+        -1686.449951171875
+      ],
+      "boundsMin": [
+        -240.84068298339844,
+        -2.812589645385742,
+        -1687.44580078125
+      ],
+      "boundsMax": [
+        -239.24937438964844,
+        -1.6794100999832153,
+        -1685.4542236328125
+      ],
+      "cellId": "cell_-1_-4"
+    },
+    {
+      "stableId": "b7e5c8040ded18ae404db3b42b7c9d39",
+      "originalName": "Spawn",
+      "normalizedName": "spawn",
+      "landmarkTag": "RepairWorkshop",
+      "position": [
+        1814.429931640625,
+        7.190893650054932,
+        -449.7449951171875
+      ],
+      "boundsMin": [
+        1814.429931640625,
+        7.190893650054932,
+        -449.7449951171875
+      ],
+      "boundsMax": [
+        1814.429931640625,
+        7.190893650054932,
+        -449.7449951171875
+      ],
+      "cellId": "cell_3_-1"
+    },
+    {
+      "stableId": "ecbb3312d7e302c9a650041db7f5c3be",
+      "originalName": "Spawn",
+      "normalizedName": "spawn",
+      "landmarkTag": "RepairWorkshop",
+      "position": [
+        1955.27001953125,
+        6.620939254760742,
+        -554.4949951171875
+      ],
+      "boundsMin": [
+        1955.27001953125,
+        6.620939254760742,
+        -554.4949951171875
+      ],
+      "boundsMax": [
+        1955.27001953125,
+        6.620939254760742,
+        -554.4949951171875
+      ],
+      "cellId": "cell_3_-2"
+    },
+    {
+      "stableId": "b560eec39e61dad1fd9a9bda4625b32a",
+      "originalName": "Spawn",
+      "normalizedName": "spawn",
+      "landmarkTag": "RepairWorkshop",
+      "position": [
+        -281.5299072265625,
+        -1.199790120124817,
+        -1904.705078125
+      ],
+      "boundsMin": [
+        -281.5299072265625,
+        -1.199790120124817,
+        -1904.705078125
+      ],
+      "boundsMax": [
+        -281.5299072265625,
+        -1.199790120124817,
+        -1904.705078125
+      ],
+      "cellId": "cell_-1_-4"
+    },
+    {
+      "stableId": "fe1bf835c1c8ddad0038b4bfd721149d",
+      "originalName": "JunkCar2",
+      "normalizedName": "junkcar2",
+      "landmarkTag": "RepairWorkshop",
+      "position": [
+        479.510009765625,
+        1.0609997510910034,
+        -2275.864990234375
+      ],
+      "boundsMin": [
+        477.13397216796875,
+        1.012297511100769,
+        -2277.077392578125
+      ],
+      "boundsMax": [
+        482.32958984375,
+        2.4092535972595215,
+        -2274.5927734375
+      ],
+      "cellId": "cell_0_-5"
+    },
+    {
+      "stableId": "faf65ad9072c996489a0e6dafbe32e78",
+      "originalName": "Spawn",
+      "normalizedName": "spawn",
+      "landmarkTag": "RepairWorkshop",
+      "position": [
+        2141.130126953125,
+        7.531000137329102,
+        -691.5450439453125
+      ],
+      "boundsMin": [
+        2141.130126953125,
+        7.531000137329102,
+        -691.5450439453125
+      ],
+      "boundsMax": [
+        2141.130126953125,
+        7.531000137329102,
+        -691.5450439453125
+      ],
+      "cellId": "cell_4_-2"
+    },
+    {
+      "stableId": "df59a187f9a81e311e3c81e2bcce2763",
+      "originalName": "Spawn",
+      "normalizedName": "spawn",
+      "landmarkTag": "RepairWorkshop",
+      "position": [
+        2120.72998046875,
+        7.530993461608887,
+        -628.844970703125
+      ],
+      "boundsMin": [
+        2120.72998046875,
+        7.530993461608887,
+        -628.844970703125
+      ],
+      "boundsMax": [
+        2120.72998046875,
+        7.530993461608887,
+        -628.844970703125
+      ],
+      "cellId": "cell_4_-2"
+    },
+    {
+      "stableId": "52287202f0ac2d9c79937d5f26a4a0e4",
+      "originalName": "VideoPoker",
+      "normalizedName": "videopoker",
+      "landmarkTag": "TownService",
+      "position": [
+        -1374.197021484375,
+        5.761582851409912,
+        141.9720458984375
+      ],
+      "boundsMin": [
+        -1374.197021484375,
+        5.761582851409912,
+        141.9720458984375
+      ],
+      "boundsMax": [
+        -1374.197021484375,
+        5.761582851409912,
+        141.9720458984375
+      ],
+      "cellId": "cell_-3_0"
+    },
+    {
+      "stableId": "62baf5836244e43fde82119cde1bb400",
+      "originalName": "Landfill",
+      "normalizedName": "landfill",
+      "landmarkTag": "UniqueStructure",
+      "position": [
+        2007.21533203125,
+        -2.7191553115844727,
+        -1834.1761474609375
+      ],
+      "boundsMin": [
+        2007.21533203125,
+        -2.7191553115844727,
+        -1834.1761474609375
+      ],
+      "boundsMax": [
+        2007.21533203125,
+        -2.7191553115844727,
+        -1834.1761474609375
+      ],
+      "cellId": "cell_3_-4"
+    },
+    {
+      "stableId": "66481b9e0a97c74cd440dc9268ca28fe",
+      "originalName": "office_lamp 11",
+      "normalizedName": "office-lamp-11",
+      "landmarkTag": "VehicleInspection",
+      "position": [
+        -1358.9202880859375,
+        7.42108154296875,
+        221.4908447265625
+      ],
+      "boundsMin": [
+        -1358.9202880859375,
+        7.42108154296875,
+        221.4908447265625
+      ],
+      "boundsMax": [
+        -1358.9202880859375,
+        7.42108154296875,
+        221.4908447265625
+      ],
+      "cellId": "cell_-3_0"
+    }
+  ],
+  "limitations": [
+    "The installed donor is mod-contaminated; provenance is bound to exact local source hashes.",
+    "AssetRipper reported one unreadable Texture2D in sharedassets3.assets; geometry and placement export completed.",
+    "Reference geometry remains external/ignored and is not production art.",
+    "Semantic classification is deterministic but requires manual review for Unknown and InteractivePropCandidate records."
+  ]
+}

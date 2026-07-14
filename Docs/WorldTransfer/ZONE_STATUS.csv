@@ -1,0 +1,51 @@
+ZoneId,EntityCount,PipelineStatus,AutomatedValidation,ManualValidation,Notes
+cell_-4_-3,11,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-4_-1,8,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-4_0,19,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-4_1,11,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-3_-4,166,NeedsReview,Pass,Pending,Repair/rally-area spatial records
+cell_-3_-3,25,NeedsReview,Pass,Pending,RepairWorkshop spawn representative
+cell_-3_-2,11,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-3_-1,17,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-3_0,1456,NeedsReview,Pass,Pending,Densest town/service/inspection cell; prioritize manual review
+cell_-2_-5,5,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-2_-4,106,NeedsReview,Pass,Pending,Landfill group present
+cell_-2_-3,14,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-2_-2,120,NeedsReview,Pass,Pending,IslandCottage group present
+cell_-2_0,65,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-2_1,15,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-1_-5,49,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-1_-4,9,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-1_-3,5,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-1_-2,1,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-1_-1,8,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-1_0,28,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_-1_1,20,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_0_-5,23,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_0_-4,29,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_0_-3,671,NeedsReview,Pass,Pending,Dense YARD cell; mini-game branch excluded
+cell_0_-2,15,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_0_-1,87,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_0_0,9,NeedsReview,Pass,GarageOriginPass,Primary garage fixture at origin; visual review pending
+cell_0_1,4,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_1_-5,26,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_1_-3,2,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_1_0,124,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_1_1,17,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_1_2,11,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_2_-5,12,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_2_-4,26,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_2_-2,3,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_2_-1,15,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_3_-5,23,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_3_-4,57,NeedsReview,Pass,Pending,UniqueStructure candidate and large map records
+cell_3_-2,4,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_3_-1,429,NeedsReview,Pass,Pending,Dense world-location cell
+cell_3_0,1,NeedsReview,Pass,Pending,Bridge representative
+cell_4_-5,4,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_4_-4,1,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_4_-3,44,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_4_-2,3,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_4_1,1,NeedsReview,Pass,Pending,Generated 512m reference cell
+cell_5_-2,1,NeedsReview,Pass,Pending,Generated 512m reference cell
+global,31,NeedsReview,Pass,Pending,Large objects and terrain; combined bounds review required

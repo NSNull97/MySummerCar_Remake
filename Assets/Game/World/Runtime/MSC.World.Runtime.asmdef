@@ -1,7 +1,7 @@
 {
   "name": "MSC.World.Runtime",
   "rootNamespace": "MSC.World",
-  "references": ["MSC.Core.Runtime"],
+  "references": ["MSC.Core.Runtime", "Unity.InputSystem"],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

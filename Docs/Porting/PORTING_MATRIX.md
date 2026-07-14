@@ -1,4 +1,4 @@
-# Porting Matrix — Milestone 4
+# Porting Matrix — through Milestone 04A1
 
 Status: controlled reference pipeline, Milestone 3 garage art prototype and the clean-room Milestone 4 player/interaction slice are complete. M4 did not inspect or transfer donor input/FSM code, constants or configuration; player and interaction are `Reimplemented`. Two donor meshes remain `ReferenceOnly`. No donor visual asset is classified as production-ready.
 
@@ -83,3 +83,17 @@ The retained samples place the nearest reviewed road-route point `204.768 m` fro
 | Carried-object save state | Project-owned stable IDs and native DTO design | `Reimplemented` | Snapshot schema v1; storage/load resolver не реализованы |
 
 Нет оснований классифицировать M4 значения как `BehavioralReference`, `ConfigurationTransferred` или `CodePorted`: donor runtime и decompiled reference в этом этапе не читались. Ledger не дополнялся искусственными donor-записями.
+
+## Milestone 04A1 full world reference state
+
+| Layer | Classification | Status | Ограничение |
+|---|---|---|---|
+| Full GAME placement inventory | `WorldLayoutReference` | 36 045 placements normalized | Serialized state текущей mod-contaminated установки |
+| Geometry entity database | `WorldLayoutReference` | 13 509 records, stable IDs unique | Semantic review продолжается |
+| Reference world subset | `ReferenceOnly` | 3 842 entities, 49 cells + global | Neutral proxies, не donor render fidelity |
+| Mesh payload | `ReferenceOnly` | 1 362 referenced GUID во внешнем staging | Не production geometry и не Git content |
+| Colliders | `CollisionReference` | 5 001 metadata records | Production colliders не генерировались |
+| Terrain/roads/water | `WorldLayoutReference` | Placement/mesh records представлены | Heightfield, road graph и shoreline topology не доказаны |
+| Generated scenes/materials | `ReferenceOnly` | Ignored, clear/rebuild validated | Unity YAML byte hashes не стабильны, stable IDs/plan стабильны |
+
+Ни один 04A1 результат не классифицирован как `ProductionReady`, `CodePorted`, `ReauthoredGeometry` или `ReauthoredTexture`. Player/Interaction остаются независимыми `Reimplemented` модулями.

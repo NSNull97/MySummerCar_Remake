@@ -85,3 +85,9 @@ The project is successful at the vertical-slice stage when:
 3. Donor reference assets can be deleted from the Unity project without breaking production prefabs.
 4. The garage/road scene looks and sounds materially more modern than the donor while remaining recognizable.
 5. The build holds the baseline performance target and has no compiler errors.
+
+## Post-vertical-slice world-reference baseline
+
+После подтверждения стабильности vertical slice Milestone 04A1 добавил полный serialized world-layout reference как отдельный transitional слой. Он не меняет production-art цели и не превращает «full map» в завершённый gameplay scope: durable output — stable placement database, partition plan, provenance и ignored debug proxies.
+
+Player/Interaction остаются завершённым независимым вертикальным срезом. Production terrain, roads, buildings, vegetation, water и colliders должны заменять donor references по stable ID без переноса старых textures/materials/runtime.

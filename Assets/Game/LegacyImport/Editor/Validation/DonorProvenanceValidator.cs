@@ -42,7 +42,9 @@ namespace MSC.LegacyImport.Editor.Validation
             {
                 string normalizedCandidate = assetPath.Replace('\\', '/');
                 string comparisonRoot = DonorImportPathPolicy.ReferenceOnlyRoot + "/Comparison";
-                if (DonorImportPathPolicy.IsUnderAssetRoot(normalizedCandidate, comparisonRoot))
+                string generatedWorldRoot = DonorImportPathPolicy.ReferenceOnlyRoot + "/World/Generated";
+                if (DonorImportPathPolicy.IsUnderAssetRoot(normalizedCandidate, comparisonRoot) ||
+                    DonorImportPathPolicy.IsUnderAssetRoot(normalizedCandidate, generatedWorldRoot))
                 {
                     continue;
                 }

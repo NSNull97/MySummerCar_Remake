@@ -26,6 +26,22 @@ namespace MSC.Tests.EditMode.LegacyImport
         }
 
         [Test]
+        public void GeneratedWorldReference_UsesItsDedicatedWorldDatabaseProvenance()
+        {
+            string[] generatedAssets =
+            {
+                "Assets/Game/LegacyImport/ReferenceOnly/World/Generated/Scenes/World_cell_0_0.unity",
+                "Assets/Game/LegacyImport/ReferenceOnly/World/Generated/Materials/Road.mat"
+            };
+
+            var issues = DonorProvenanceValidator.FindMissingProvenance(
+                generatedAssets,
+                System.Array.Empty<DonorAssetRecord>());
+
+            Assert.That(issues, Is.Empty);
+        }
+
+        [Test]
         public void ProductionPrefabDonorDependency_IsReported()
         {
             var assets = new[]
