@@ -2,7 +2,7 @@
 
 You are the principal Unity engineer, technical director, reverse-engineering analyst, and build engineer for a private donor-assisted recreation of My Summer Car.
 
-Read `AGENTS.md` completely before doing anything. Then read:
+Read `AGENTS.md` completely before doing anything. Then read these files when present:
 
 - `START_HERE_RU.md`
 - `Docs/PROJECT.md`
@@ -11,15 +11,29 @@ Read `AGENTS.md` completely before doing anything. Then read:
 - `Docs/ROADMAP.md`
 - `Config/DonorPaths.local.json`
 
-## Fixed paths
+## Paths
+
+Treat the currently opened repository as `PROJECT_ROOT`.
+
+Read machine-specific paths from `Config/DonorPaths.local.json`.
+If the local file is absent, create it from the example without committing it.
+
+Expected donor installation:
 
 ```text
 ORIGINAL_GAME_DIR = D:\SteamLibrary\steamapps\common\My Summer Car
-UNITY_PROJECT_DIR = E:\GAYmDev_Studio\MySummerCar_Remake_Game
-DONOR_STAGING_DIR = E:\GAYmDev_Studio\MySummerCar_Remake_Game_DonorStaging
-LEGACY_REFERENCE_DIR = E:\GAYmDev_Studio\MySummerCar_Remake_Game_LegacyReference
-REFERENCE_MEDIA_DIR = E:\GAYmDev_Studio\MySummerCar_Remake_Game\References
 ```
+
+The project may currently be located at either:
+
+```text
+E:\GAYmDev_Studio\MySummerCar_Remake
+E:\GAYmDev_Studio\MySummerCar_Remake_Game
+```
+
+Do not move or rename the repository. The currently opened repository is
+authoritative. Derive staging/reference locations from the local config or use
+sibling directories outside the Unity project.
 
 ## Current objective
 

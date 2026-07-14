@@ -1,0 +1,23 @@
+﻿Order,Status,Prompt,RunWhen,ExpectedReport
+00,DONE,Prompts/00_BOOTSTRAP_AND_DONOR_AUDIT.md,Historical/recovery only,Docs/Milestones/MILESTONE_00_REPORT.md
+01,DONE,Prompts/01_UNITY_FOUNDATION.md,Historical/recovery only,Docs/Milestones/MILESTONE_01_REPORT.md
+02,DONE,Prompts/02_DONOR_REFERENCE_PIPELINE.md,Historical/recovery only,Docs/Milestones/MILESTONE_02_REPORT.md
+03,DONE,Prompts/03_GARAGE_ART_PROTOTYPE.md,Historical/recovery only,Docs/Milestones/MILESTONE_03_REPORT.md
+04,DONE,Prompts/04_PLAYER_INTERACTION.md,Historical/recovery only,Docs/Milestones/MILESTONE_04_REPORT.md
+GATE,NEXT,Prompts/99_REVIEW.md,"Run now, read-only",Docs/Reviews/REVIEW_AFTER_<LATEST>.md
+04A-PILOT,PENDING,Prompts/04A_WORLD_LAYOUT_PILOT.md,"After review blockers are resolved and baseline is clean",Docs/Milestones/MILESTONE_04A_PILOT_REPORT.md
+04A-FULL,PARKED,Prompts/04A_FULL_WORLD_GEOMETRY_TRANSFER.md,"Only after project policy permits the entire original map",Docs/Milestones/MILESTONE_04A_REPORT.md
+04B,PENDING,Prompts/04B_REFERENCE_CAPTURE_AND_MEASUREMENTS.md,After 04A-Pilot,Docs/Milestones/MILESTONE_04B_REPORT.md
+05,PENDING,Prompts/05_VEHICLE_ASSEMBLY.md,After 04B,Docs/Milestones/MILESTONE_05_REPORT.md
+05A,PENDING,Prompts/05A_WORLD_REMASTER.md,After 05; first pass/pilot,Docs/Milestones/MILESTONE_05A_REPORT.md
+05A-BATCH,REPEAT,Prompts/05A_CONTINUE_NEXT_WORLD_ZONE.md,Repeat one zone/batch at a time,Docs/Milestones/MILESTONE_05A_BATCH_<NN>_<ZONE>.md
+05B,PENDING,Prompts/05B_WORLD_VALIDATION.md,After pilot or selected coverage,Docs/Milestones/MILESTONE_05B_REPORT.md
+06,PENDING,Prompts/06_VEHICLE_SIMULATION.md,After 05B gate,Docs/Milestones/MILESTONE_06_REPORT.md
+06A,PENDING,Prompts/06A_PHYSICS_VALIDATION.md,After 06,Docs/Milestones/MILESTONE_06A_REPORT.md
+07,PENDING,Prompts/07_WORLD_WEATHER_HDRP.md,After 06A,Docs/Milestones/MILESTONE_07_REPORT.md
+08,PENDING,Prompts/08_WWISE_AUDIO.md,After 07,Docs/Milestones/MILESTONE_08_REPORT.md
+08A,PENDING,Prompts/08A_UI_MENU_SETTINGS_AND_HUD.md,After 08,Docs/Milestones/MILESTONE_08A_REPORT.md
+09,PENDING,Prompts/09_SAVE_AND_LEGACY_DATA.md,After 08A,Docs/Milestones/MILESTONE_09_REPORT.md
+10,PENDING,Prompts/10_OPTIMIZATION_AND_BUILD.md,After 09,Docs/Milestones/MILESTONE_10_REPORT.md
+10A,PENDING,Prompts/10A_FINAL_POLISH.md,After 10,Docs/Milestones/MILESTONE_10A_REPORT.md
+11,PENDING,Prompts/11_PHASE_2_FULL_GAME_PLANNING.md,After stable private RC,Docs/Milestones/MILESTONE_11_REPORT.md

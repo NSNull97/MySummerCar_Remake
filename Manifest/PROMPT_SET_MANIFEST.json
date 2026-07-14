@@ -1,0 +1,206 @@
+{
+  "name": "MSC Remake Prompt Set",
+  "version": "2.0.0-after-04",
+  "created_utc": "2026-07-14",
+  "current_state": {
+    "completed_through": "04_PLAYER_INTERACTION",
+    "git_commit_after_04": true,
+    "next_action": "Establish a clean intentional Git baseline, then run Prompts/04A_WORLD_LAYOUT_PILOT.md",
+    "next_main_milestone": "Prompts/04A_WORLD_LAYOUT_PILOT.md"
+  },
+  "donor_game_expected_path": "D:\\SteamLibrary\\steamapps\\common\\My Summer Car",
+  "project_root_policy": "Current opened repository is authoritative; read Config/DonorPaths.local.json.",
+  "files": [
+    {
+      "path": "CHANGELOG_RU.md",
+      "size_bytes": 1625,
+      "sha256": "6ce6d7c545df1164544abe3cf82b169c73a923e1ca1869209b7df4f22caa9cdb"
+    },
+    {
+      "path": "INSTALL_RU.md",
+      "size_bytes": 2146,
+      "sha256": "c74decad33c381505f326c7967fbe4b6547d70c18896f834c844ecc2d6c4ce5d"
+    },
+    {
+      "path": "Manifest/PROMPT_SEQUENCE.csv",
+      "size_bytes": 2453,
+      "sha256": "5e6ca484f34f4af9b095e2ef44dc4f7f3ec1891fa1c96e8c317bfc27a6ab8e7f"
+    },
+    {
+      "path": "Manifest/README.md",
+      "size_bytes": 455,
+      "sha256": "720e2be7409ce656912d0fc1db69727492e76a5748f97f75ce89f2ecea17a24f"
+    },
+    {
+      "path": "NEXT_STEPS_AFTER_04_RU.md",
+      "size_bytes": 9683,
+      "sha256": "d96cbba37f67e4a2367fcf630b6aed9aa29eaa3a25c14c9756fedfe2b5745a9e"
+    },
+    {
+      "path": "Prompts/00_BOOTSTRAP_AND_DONOR_AUDIT.md",
+      "size_bytes": 5534,
+      "sha256": "e52115e55f841d7b46a117e766cc0b80da1882163779453b614a81756243c2cb"
+    },
+    {
+      "path": "Prompts/01_UNITY_FOUNDATION.md",
+      "size_bytes": 2206,
+      "sha256": "eac0578a81cae5aa6470bf9f1bb7d09ca79f40770dd43ecdc34b202c3a5d1730"
+    },
+    {
+      "path": "Prompts/02_DONOR_REFERENCE_PIPELINE.md",
+      "size_bytes": 1685,
+      "sha256": "df66c9e3d3e29eff75ae82fe70722e5174a7cc29f4ea8011d6eeeba942f22608"
+    },
+    {
+      "path": "Prompts/03_GARAGE_ART_PROTOTYPE.md",
+      "size_bytes": 1194,
+      "sha256": "709e7dfe4df07d3a39cc7876b823a8298c06d428034fa0ab985e1c4297242d90"
+    },
+    {
+      "path": "Prompts/04A_FULL_WORLD_GEOMETRY_TRANSFER.md",
+      "size_bytes": 44942,
+      "sha256": "ee60e54f3b434dfdbe24fc88762212f16de820d481e3c2aab9c65edc24b10379"
+    },
+    {
+      "path": "Prompts/04A_WORLD_LAYOUT_PILOT.md",
+      "size_bytes": 4948,
+      "sha256": "169ff14a31d0257b30e82feed97b1399d6c4efa4f23a04640b45a86e4019e23e"
+    },
+    {
+      "path": "Prompts/04B_REFERENCE_CAPTURE_AND_MEASUREMENTS.md",
+      "size_bytes": 10923,
+      "sha256": "9d1d25c6ebda71b6e3962e92b40e721207af0d4eca8b3567c4213a1a4659407d"
+    },
+    {
+      "path": "Prompts/04_PLAYER_INTERACTION.md",
+      "size_bytes": 794,
+      "sha256": "222ead42a73a4d6c6712945098c4ff21eaaf5bff61bd188b0894bf7c4af5af95"
+    },
+    {
+      "path": "Prompts/05A_CONTINUE_NEXT_WORLD_ZONE.md",
+      "size_bytes": 4137,
+      "sha256": "f257deb6dd199ce408b07ef33901c141fcc9754c4b6e5ae0d288f6763195efb5"
+    },
+    {
+      "path": "Prompts/05A_WORLD_REMASTER.md",
+      "size_bytes": 50222,
+      "sha256": "199d679bd03564df5cdbd48b549e6c14f1649f090b175fe769e814d97b4e82ff"
+    },
+    {
+      "path": "Prompts/05B_WORLD_VALIDATION.md",
+      "size_bytes": 8344,
+      "sha256": "3f7eb403ffe79ce4c1bd402228ac56a08f19d9392ef594c0226a6be9542f1cf7"
+    },
+    {
+      "path": "Prompts/05_VEHICLE_ASSEMBLY.md",
+      "size_bytes": 8884,
+      "sha256": "08cb7ecd16d6494c2a2fc0141490a90c5e822eb2603082943eb82d5cac090d69"
+    },
+    {
+      "path": "Prompts/06A_PHYSICS_VALIDATION.md",
+      "size_bytes": 6256,
+      "sha256": "6ce3aee5695161b0b78382736cdc68ce5b430dfb30836e7b478142f66857c311"
+    },
+    {
+      "path": "Prompts/06_VEHICLE_SIMULATION.md",
+      "size_bytes": 7900,
+      "sha256": "d91c47da1c3291550483059681bb5230374a6950460ce4b2fe993396387e28dc"
+    },
+    {
+      "path": "Prompts/07_WORLD_WEATHER_HDRP.md",
+      "size_bytes": 6713,
+      "sha256": "68df6c3ea8b767c4b1b2a1c298ad500d06e19fecc55c5572a9741ad8acae445e"
+    },
+    {
+      "path": "Prompts/08A_UI_MENU_SETTINGS_AND_HUD.md",
+      "size_bytes": 9394,
+      "sha256": "a83f573d52ef8db313642d995660e251db2777fd98be371a1d81e5c44157117a"
+    },
+    {
+      "path": "Prompts/08_WWISE_AUDIO.md",
+      "size_bytes": 6543,
+      "sha256": "e0a9658b0ddac83f83f67878cd4b6d40386073114875690e73763d9b2fcf51a5"
+    },
+    {
+      "path": "Prompts/09_SAVE_AND_LEGACY_DATA.md",
+      "size_bytes": 7350,
+      "sha256": "24dbfdc83584aa0dd8ddffab68c5c97b463f642001ddf083b42094ba9f6ab288"
+    },
+    {
+      "path": "Prompts/10A_FINAL_POLISH.md",
+      "size_bytes": 5166,
+      "sha256": "2f560a7562d70a1c8500e57ea17e5a299567151f67acf5646730c2fca4e09a34"
+    },
+    {
+      "path": "Prompts/10_OPTIMIZATION_AND_BUILD.md",
+      "size_bytes": 6227,
+      "sha256": "4c2eaa368db60e1fd3540167ece516fe2e5e4ab92f1f9378a2327d346d8fb6f9"
+    },
+    {
+      "path": "Prompts/11_PHASE_2_FULL_GAME_PLANNING.md",
+      "size_bytes": 3085,
+      "sha256": "83fcce71622cefef33b61b797f5515bd0843b05e50ce84a5427958bb3bd9bc0c"
+    },
+    {
+      "path": "Prompts/97_CONTEXT_REFRESH.md",
+      "size_bytes": 1423,
+      "sha256": "6f2361cca7c753b55b990c24cbb0b26c665f7e73882a78a41f6cd9f101e20d74"
+    },
+    {
+      "path": "Prompts/98_MILESTONE_CLOSEOUT.md",
+      "size_bytes": 2429,
+      "sha256": "f462587ca4d784ffdbb257714f1d29d296dc0796e8966a7434425f3248761cce"
+    },
+    {
+      "path": "Prompts/99A_FIX_APPROVED_REVIEW_FINDINGS.md",
+      "size_bytes": 2116,
+      "sha256": "78ea2627ef4519404c30d7334d129a695bbb2233612619a6d357724537111f78"
+    },
+    {
+      "path": "Prompts/99B_CONTINUE_CURRENT_MILESTONE.md",
+      "size_bytes": 1786,
+      "sha256": "68774dc4f46ab2320427385f4fa282790f6fff7092db306c9a8b23dd55a9d5d7"
+    },
+    {
+      "path": "Prompts/99_REVIEW.md",
+      "size_bytes": 5778,
+      "sha256": "f2b785eaeb5684f1bc5cf37258b9f1da7479b6f4d0f397bd02cca88783deb6d1"
+    },
+    {
+      "path": "Prompts/CURRENT_STATE_AFTER_04.md",
+      "size_bytes": 1170,
+      "sha256": "f035a146cdd4c97742fcb9ce003cf92c5b9b0a12edc5966643b1e2cdc57e6fcb"
+    },
+    {
+      "path": "Prompts/README.md",
+      "size_bytes": 2406,
+      "sha256": "bd5a9eb616501d1c99e6e052b07a6f6012f6c4b8f558e38f0c3ae77f65fc25d6"
+    },
+    {
+      "path": "Prompts/_TASK_TEMPLATE.md",
+      "size_bytes": 1410,
+      "sha256": "26ac5a603c3ebe1517dfb63fbdd56272973ad8859d19f94f18ab839c2020c110"
+    },
+    {
+      "path": "References/UI/README.md",
+      "size_bytes": 682,
+      "sha256": "54ca4d751630a28c378b3679c0f3a30576abebe91b271b5c1554ce8cfb98db01"
+    },
+    {
+      "path": "References/UI/UI_GameplayHUD_Concept.png",
+      "size_bytes": 1969724,
+      "sha256": "c25f8eb2f0566259eb9031baca363f3076fe90f842f33a6bf181b8a877da6089"
+    },
+    {
+      "path": "References/UI/UI_GraphicsSettings_Concept.png",
+      "size_bytes": 1817553,
+      "sha256": "47c11a9912cb9e7460b5699526e217cd8ba7d0423edf93a36fc3995f1c743f42"
+    },
+    {
+      "path": "References/UI/UI_MainMenu_Concept.png",
+      "size_bytes": 2257945,
+      "sha256": "9282c97476435a4e6f8039d9f10773a6ea12cf2c2948925a3c90c7bc789af7bc"
+    }
+  ],
+  "file_count_excluding_manifest": 38
+}

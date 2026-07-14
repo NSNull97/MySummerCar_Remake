@@ -1,8 +1,26 @@
 /plan
 
-# MILESTONE 02A — FULL WORLD GEOMETRY TRANSFER
+# MILESTONE 04A — FULL WORLD GEOMETRY TRANSFER
+
+> **STATUS: PARKED / DO NOT EXECUTE DURING THE CURRENT VERTICAL-SLICE PHASE.**
+>
+> This exhaustive prompt conflicts with the current `AGENTS.md` non-goal that
+> excludes the entire original map until the single-player vertical slice is
+> stable. It is retained as future planning material only. The executable next
+> prompt is `Prompts/04A_WORLD_LAYOUT_PILOT.md`. If this file is invoked before
+> project policy is explicitly changed, stop without modifying files.
 
 Read `AGENTS.md` completely before doing anything.
+
+## CURRENT SEQUENCE NOTE
+
+Milestones 00 through 04 are expected to be complete before this prompt is run.
+
+This milestone is intentionally inserted after player interaction and before
+vehicle assembly. Preserve the completed player/interaction architecture and
+do not rerun or rewrite prior milestones unless a measured world-integration
+defect requires a tightly scoped fix.
+
 
 Also read, if they exist:
 
@@ -1761,7 +1779,7 @@ specific blockers are transparently documented:
 22. No donor textures are treated as final production textures.
 23. No final art work is falsely declared complete.
 24. Tests were run or exact unexecuted test commands are reported.
-25. `Docs/Milestones/MILESTONE_02A_REPORT.md` exists.
+25. `Docs/Milestones/MILESTONE_04A_REPORT.md` exists.
 26. The report includes a precise recommendation for the next milestone.
 27. The project has no new unexplained compiler errors.
 28. All blocked zones and missing source data are listed explicitly.
@@ -1845,7 +1863,7 @@ At the end of the task, report:
 
 Create:
 
-`Docs/Milestones/MILESTONE_02A_REPORT.md`
+`Docs/Milestones/MILESTONE_04A_REPORT.md`
 
 Do not proceed to final art, garage remodeling, player systems, or vehicle
 systems in this task.

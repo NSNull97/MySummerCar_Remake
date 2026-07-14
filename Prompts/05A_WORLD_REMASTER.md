@@ -25,8 +25,8 @@ including these files when present:
 - `Docs/WorldTransfer/MAJOR_LANDMARKS.md`
 - `Docs/WorldTransfer/ZONE_STATUS.csv`
 - `Docs/WorldTransfer/WORLD_PORTING_LEDGER.csv`
-- `Docs/Milestones/MILESTONE_02A_REPORT.md`
 - `Docs/Milestones/MILESTONE_04A_REPORT.md`
+- `Docs/Milestones/MILESTONE_04B_REPORT.md`
 - `Docs/Milestones/MILESTONE_05_REPORT.md`
 
 If milestone numbering differs in the current repository, locate the actual
@@ -38,6 +38,29 @@ This task is a production-art and world-reconstruction milestone.
 It must not replace or invalidate the donor-reference world database.
 
 ---
+
+
+## STAGED EXECUTION REQUIREMENT
+
+This document defines the complete world-remaster track, but one Codex run must
+remain bounded.
+
+For the first execution:
+
+1. Build or validate the replacement architecture and dashboards.
+2. Complete one representative pilot production zone.
+3. Validate the pilot against donor/reference fixtures.
+4. Create the complete replacement registry, zone status, and manual-art backlog.
+5. Report exact coverage honestly.
+6. Stop.
+
+Continue remaining zones with:
+
+`Prompts/05A_CONTINUE_NEXT_WORLD_ZONE.md`
+
+Do not claim the entire map is production-ready after completing only the pilot.
+Do not attempt months of art work as one unreviewed autonomous operation.
+
 
 # PROJECT CONTEXT
 
