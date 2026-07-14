@@ -43,7 +43,7 @@ Save DTOs capture stable runtime state. Scene objects are reconstructed or updat
 
 `Assets/Game/Bootstrap/Bootstrap.unity` owns one `GameCompositionRoot`. The root survives scene loads but has no static `Instance`, global registry, scene-name lookup, or implicit fallback implementation.
 
-`GameServiceBindings` is the explicit immutable constructor boundary for the initial services. Milestone 1 deliberately does not create fake service implementations: the root remains uninitialized until later subsystem milestones construct concrete services and call `Initialize` exactly once. Plain C# consumers should receive narrow dependencies through constructors; MonoBehaviours should receive them through explicit initialization from a composition installer.
+`GameServiceBindings` is the explicit immutable constructor boundary for the initial services. Its original constructor still requires the complete seven-service set. The current `CreatePartial(IInteractionService)` overload permits the one implemented milestone service to be owned by the root without fake implementations for unfinished systems; additional partial factories must wait for a concrete use. A partial binding is diagnostic ownership, not service lookup: plain C# consumers still receive narrow dependencies through constructors and MonoBehaviours through an explicit concrete installer. `GameCompositionRoot.Initialize` remains one-shot.
 
 Initial service boundaries:
 
@@ -68,7 +68,7 @@ MSC.Player.Runtime -> Core, Interaction, Input System
 MSC.Vehicle.Simulation -> Core
 MSC.Vehicle.Assembly -> Core, Interaction
 MSC.Vehicle.Runtime -> Core, Interaction, Vehicle.Simulation, Vehicle.Assembly
-MSC.World.Runtime -> Core, RenderPipelines.Core [temporary M3 opt-in performance probe]
+MSC.World.Runtime -> Core
 MSC.World.Streaming -> Core, World.Runtime
 MSC.Weather.Runtime -> Core, World
 MSC.Audio.Runtime -> Core
@@ -78,9 +78,10 @@ MSC.Save.Migration -> Core, Save.Runtime
 MSC.LegacyImport.Runtime -> Core
 MSC.LegacyImport.Editor -> LegacyImport.Runtime, Core [Editor only]
 MSC.Bootstrap.Runtime -> initial service-boundary assemblies
-MSC.Editor -> runtime modules, LegacyImport.Editor, HDRP/Core Runtime [Editor only]
-MSC.Tests.EditMode -> Core, Bootstrap, Editor validation [Editor test]
-MSC.Tests.PlayMode -> Core, Bootstrap [PlayMode test]
+MSC.Development.Performance -> RenderPipelines.Core [opt-in capture; full implementation only in Editor/development builds]
+MSC.Editor -> runtime modules, LegacyImport.Editor, Development.Performance, HDRP/Core Runtime [Editor only]
+MSC.Tests.EditMode -> Core, Bootstrap, Interaction, Player, World, Editor validation [Editor test]
+MSC.Tests.PlayMode -> Core, Bootstrap, Interaction, Player, Input System [PlayMode test]
 ```
 
 No runtime assembly may reference an Editor assembly. `AssemblyDefinitionValidator` enforces this rule from the real `.asmdef` files and the EditMode suite covers the validator.
@@ -98,7 +99,9 @@ Milestone 4 keeps input, movement, query and object behavior separate:
 - `PhysicalCarryController` owns current held-object physics and its domain snapshot;
 - target components own contextual behavior, tool activation or mount acceptance.
 
-The interaction controller implements the existing `IInteractionService` enablement boundary but is not installed into `GameCompositionRoot` with fake implementations for unrelated services. A later concrete bootstrap installer must compose the complete service set once the owning subsystem implementations exist.
+While an object is carried, `PlayerInteractionController` explicitly supplies its `Rigidbody` as the one ignored query body. The query still treats every unrelated collider as an occluder; it does not make arbitrary geometry transparent. Carry ownership is lifecycle-safe: disable/destroy restores the captured Rigidbody state and player collision pair through an idempotent cleanup path.
+
+The interaction controller implements the existing `IInteractionService` enablement boundary. A concrete installer may now bind that implemented service through `GameServiceBindings.CreatePartial` without inventing unrelated services; the complete constructor remains the required path once all seven owning subsystems exist.
 
 The mount handoff interface is intentionally one-way. It transfers an already carried `IPickupTarget` to a receiver but does not define vehicle part compatibility, mount constraints, fasteners or assembly persistence; those remain Milestone 5 responsibilities.
 
@@ -129,7 +132,7 @@ Milestone 1 implements empty, invalid, and duplicate ID detection. Prefab-instan
 
 `Assets/Game/Presentation/Lighting/BootstrapGlobalVolume.asset` contains serialized Physical Sky, dynamic sky ambient mode, fixed baseline exposure, ACES tonemapping, and volumetric fog. Ray tracing is not enabled as a baseline. The existing `Assets/OutdoorsScene.unity` remains enabled after Bootstrap and was not rewritten by the foundation generator.
 
-Milestone 3 adds `Assets/Game/World/Content/GaragePrototype/Scenes/GarageArtPrototype.unity` as the second enabled build scene while preserving Bootstrap first and the existing Outdoors scene after it. The garage scene is a static art prototype, not a composition root or streaming owner. Its `GaragePrototypePerformanceProbe` is inert without `-msc-m3-capture`; the temporary World.Runtime dependency on Render Pipelines Core exists only for synchronous HDRP performance capture and should be removed or moved to a dedicated development assembly before production world streaming.
+The enabled scene order after Milestone 4 is Bootstrap first, `PlayerInteractionPrototype` second, `GarageArtPrototype` third and the existing Outdoors scene fourth. The garage scene is a static art prototype, not a composition root or streaming owner. Its `GaragePrototypePerformanceProbe` now belongs to `MSC.Development.Performance`; the full capture/file-output implementation compiles only in the Editor or development players and is inert without `-msc-m3-capture`. `MSC.World.Runtime` no longer depends on Render Pipelines Core for this tooling.
 
 ## Legacy import boundary
 

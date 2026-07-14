@@ -35,6 +35,8 @@ Milestone 3 adds nine EditMode tests for generated scene/content presence, roof 
 
 Milestone 4 adds six EditMode tests covering pickup/drop physics restoration, destroyed-target loss, invalid collider rejection, mount handoff, carried-object stable-ID JSON snapshot and explicit tool activation. Final full EditMode run: **45 total, 45 passed, 0 failed, 0 skipped**. Results: ignored `TestResults/Milestone04_EditMode_Final.xml` and `Logs/Milestone04_EditMode_Final.log`.
 
+The approved post-M4 review fixes add three EditMode tests for partial composition bindings and explicit pointer/rate look units. A fresh isolated-project run completed **48 total, 48 passed, 0 failed, 0 skipped**. Results were copied to ignored `TestResults/99A_EditMode_Final.xml` and `Logs/99A_EditMode_Final.log`. The isolated copy was required because the main project was already open in Unity; it used the same Unity/package versions and the exact `Assets/Game` fix overlay.
+
 ## PlayMode tests
 
 Prioritize:
@@ -50,6 +52,10 @@ Prioritize:
 - world-cell load/unload later.
 
 Milestone 4 adds the first PlayMode scene-boot test. It loads `PlayerInteractionPrototype.unity` additively, validates the configured Input System player/camera and at least two stable-ID pickup targets, then unloads the scene. Final run: **1 total, 1 passed, 0 failed, 0 skipped**. Results: ignored `TestResults/Milestone04_PlayMode_Final.xml` and `Logs/Milestone04_PlayMode_Final.log`.
+
+The approved post-M4 review fixes add four PlayMode flows: real ray/controller pickup-to-mount handoff through an occluding held body, carry cleanup on owner destruction, carry cleanup/collision restoration on component disable and motor-intent reset on input-router disable. A fresh run completed **5 total, 5 passed, 0 failed, 0 skipped**. Results: ignored `TestResults/99A_PlayMode_Final.xml` and `Logs/99A_PlayMode_Final.log`.
+
+The same validation copy passed Foundation, M3 Garage, M4 Player/Interaction and Donor Pipeline batch validators. The donor validator reported zero warnings. Validator logs use the ignored `Logs/99A_Validator_*.log` paths.
 
 ## Editor validation
 

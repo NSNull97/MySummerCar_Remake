@@ -92,7 +92,7 @@ InputActionAsset
   -> explicit capability
 ```
 
-`InteractionTargetHost` is an explicit registry of `MonoBehaviour` capability implementations. The query never dispatches by object name. A collider without a host is an invalid/occluding target; a destroyed or unloaded host invalidates the cached candidate.
+`InteractionTargetHost` is an explicit registry of `MonoBehaviour` capability implementations. The query never dispatches by object name. A collider without a host is an invalid/occluding target; a destroyed or unloaded host invalidates the cached candidate. The currently carried Rigidbody is the only explicit query exclusion, allowing a mount behind the held item to remain selectable without making walls or unrelated props transparent.
 
 Implemented capabilities have concrete uses:
 
@@ -103,9 +103,11 @@ Implemented capabilities have concrete uses:
 
 ### Physical carrying
 
-`PhysicalCarryController` does not parent the held `Rigidbody` to the camera. It disables gravity temporarily, switches to continuous collision detection, ignores only player/held colliders and drives linear/angular velocity toward a carry anchor in `FixedUpdate`. Excess separation releases the object. Original Rigidbody gravity, interpolation, damping and collision mode are restored on drop/place/throw/handoff.
+`PhysicalCarryController` does not parent the held `Rigidbody` to the camera. It disables gravity temporarily, switches to continuous collision detection, ignores only player/held colliders and drives linear/angular velocity toward a carry anchor in `FixedUpdate`. Excess separation releases the object. Original Rigidbody gravity, interpolation, damping and collision mode are restored on drop/place/throw/handoff and also through idempotent cleanup when the controller is disabled or destroyed during scene/player lifecycle changes.
 
 Placement uses a surface ray plus overlap rejection. Throwing restores normal physics before applying an impulse. Rotation changes the carry target orientation; it does not directly teleport the visual mesh.
+
+Disabling `PlayerInputRouter` clears movement and crouch intent. Mouse look/held rotation consume pointer delta in degrees per pixel; gamepad stick input is a rate in degrees per second multiplied by unscaled delta time.
 
 ### Controls
 
