@@ -15,6 +15,7 @@ Recordings/
 .idea/
 *.csproj
 *.sln
+*.slnx
 *.suo
 *.user
 *.userprefs
