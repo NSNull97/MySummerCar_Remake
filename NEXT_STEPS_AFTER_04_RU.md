@@ -9,50 +9,25 @@
 03 Garage Art Prototype           DONE
 04 Player Interaction             DONE
 Git commit after 04               DONE
+Post-04 read-only review          DONE
+Approved review fixes             DONE
+BUILD-001 clean Git baseline      DONE
 ```
 
-Следующий обязательный этап — ревью, исправление одобренных блокеров и затем
-ограниченный world-layout pilot. Полный перенос мира отложен действующим
-`AGENTS.md` до стабильного single-player vertical slice.
+Следующий обязательный этап — только ограниченный world-layout pilot. Полный
+перенос мира отложен действующим `AGENTS.md` до стабильного single-player
+vertical slice. `PERF-001` остаётся отдельным открытым finding для будущего
+интегрированного performance gate и не разрешает объявлять производительность
+вертикального среза подтверждённой.
 
 ---
 
-## 1. Проведи ревью текущего состояния
+## 1. Ревью и исправления — выполнено
 
-Открой в Codex корень Unity-проекта и отправь:
-
-```text
-Прочитай AGENTS.md и полностью прочитай Prompts/99_REVIEW.md.
-Проведи только read-only ревью текущего состояния после Milestone 04.
-Не изменяй runtime-код, сцены и assets. Создай отчёт ревью и остановись.
-```
-
-Codex должен создать отчёт в:
-
-```text
-Docs\Reviews\
-```
-
-Посмотри разделы `Critical` и `High`.
-
-Если блокирующих проблем нет, переходи только к bounded `04A-Pilot`.
-
-Если есть подтверждённые блокеры, запусти:
-
-```text
-Прочитай AGENTS.md и Prompts/99A_FIX_APPROVED_REVIEW_FINDINGS.md.
-Разрешаю исправить только finding IDs: ARCH-001, DEP-002
-(замени IDs на реальные).
-После исправлений запусти доступные проверки, обнови отчёт и остановись.
-```
-
-После исправлений:
-
-1. Открой Unity.
-2. Дождись компиляции.
-3. Запусти доступные EditMode/PlayMode тесты.
-4. Просмотри `git diff`.
-5. Сделай отдельный коммит.
+Результаты сохранены в `Docs/Reviews/REVIEW_AFTER_04.md`,
+`Docs/Reviews/FIX_REPORT_20260714_113701.md` и отдельном отчёте закрытия
+`BUILD-001`. Изменения разнесены по тематическим commits; повторять review gate
+перед `04A-Pilot` не требуется.
 
 ---
 

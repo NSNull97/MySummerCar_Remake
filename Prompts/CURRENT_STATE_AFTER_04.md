@@ -1,6 +1,7 @@
 # CURRENT PROJECT STATE — HUMAN CONFIRMED
 
-Updated for this prompt pack.
+Updated after the post-Milestone 04 review, approved fixes, and `BUILD-001`
+baseline closure.
 
 ## Completed and committed
 
@@ -12,15 +13,19 @@ Updated for this prompt pack.
 
 A Git commit after Milestone 04 has been made.
 
+The read-only review, approved finding fixes, Unity migration, prompt pack,
+reference media, and repository-hygiene changes are committed as separate
+changes. `BUILD-001` is resolved. `PERF-001` remains open for a later integrated
+performance gate.
+
 ## Next required action
 
-1. Run `99_REVIEW.md` as a read-only gate.
-2. Resolve only approved blocking findings, if any.
-3. Establish a clean, intentional Git baseline.
-4. Run only `04A_WORLD_LAYOUT_PILOT.md` for the bounded garage/adjacent-road zone.
-5. Keep `04A_FULL_WORLD_GEOMETRY_TRANSFER.md` parked until `AGENTS.md` no longer
+1. Run only `04A_WORLD_LAYOUT_PILOT.md` for the bounded garage/adjacent-road zone.
+2. Keep `04A_FULL_WORLD_GEOMETRY_TRANSFER.md` parked until `AGENTS.md` no longer
    excludes the entire original map.
-6. Do not rerun Milestones 00–04 unless a specific regression requires it.
+3. Do not rerun Milestones 00–04, `99_REVIEW.md`, or the approved-fix task unless
+   a specific regression requires it.
+4. Do not treat the current M3 performance capture as closure of `PERF-001`.
 
 ## Project paths
 

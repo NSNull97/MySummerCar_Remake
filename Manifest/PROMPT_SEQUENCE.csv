@@ -4,8 +4,8 @@
 02,DONE,Prompts/02_DONOR_REFERENCE_PIPELINE.md,Historical/recovery only,Docs/Milestones/MILESTONE_02_REPORT.md
 03,DONE,Prompts/03_GARAGE_ART_PROTOTYPE.md,Historical/recovery only,Docs/Milestones/MILESTONE_03_REPORT.md
 04,DONE,Prompts/04_PLAYER_INTERACTION.md,Historical/recovery only,Docs/Milestones/MILESTONE_04_REPORT.md
-GATE,NEXT,Prompts/99_REVIEW.md,"Run now, read-only",Docs/Reviews/REVIEW_AFTER_<LATEST>.md
-04A-PILOT,PENDING,Prompts/04A_WORLD_LAYOUT_PILOT.md,"After review blockers are resolved and baseline is clean",Docs/Milestones/MILESTONE_04A_PILOT_REPORT.md
+GATE,DONE,Prompts/99_REVIEW.md,"Completed after Milestone 04",Docs/Reviews/REVIEW_AFTER_04.md
+04A-PILOT,NEXT,Prompts/04A_WORLD_LAYOUT_PILOT.md,"Run next; clean intentional baseline established",Docs/Milestones/MILESTONE_04A_PILOT_REPORT.md
 04A-FULL,PARKED,Prompts/04A_FULL_WORLD_GEOMETRY_TRANSFER.md,"Only after project policy permits the entire original map",Docs/Milestones/MILESTONE_04A_REPORT.md
 04B,PENDING,Prompts/04B_REFERENCE_CAPTURE_AND_MEASUREMENTS.md,After 04A-Pilot,Docs/Milestones/MILESTONE_04B_REPORT.md
 05,PENDING,Prompts/05_VEHICLE_ASSEMBLY.md,After 04B,Docs/Milestones/MILESTONE_05_REPORT.md
