@@ -58,6 +58,14 @@ M4 used no donor data and made no donor filesystem changes. The existing donor a
 - The original working tree remains intentionally dirty with pre-existing Unity/settings/prompt-pack changes; no automatic discard, stash or mixed commit was performed.
 - A representative integrated player + world GPU/memory/physics performance capture does not yet exist; creating that slice belongs to the bounded integration milestone rather than this fix task.
 
+## Milestone 04A world-layout pilot state
+
+`MSC.World.Runtime` now contains serializable, project-owned layout records and pure coordinate helpers for exactly one bounded garage-road pilot. Durable data is stored at `Assets/Game/World/Content/LayoutPilot/M04A_WorldLayoutPilot.json`; it records the garage anchor, seven `DirtRoad` route samples, numeric bounds, source hashes/PathIDs, stable IDs, conversion, dependencies and limitations.
+
+The external staging manifest contains metadata only and is bound by SHA-256. The comparison scene is generated under ignored `Assets/Game/LegacyImport/ReferenceOnly/Comparison/`, is absent from Build Settings and can be removed without breaking production content. The M3 garage and road prefabs are used only as an unchanged visual overlay; the project road is not claimed to match the measured `204.768 m` garage-to-nearest-sample relationship.
+
+No Player or Interaction source, prefab, scene, input asset or assembly definition changed during 04A. No purpose-specific production scene, terrain, building, vegetation, water, vehicle, weather, audio or save implementation was added.
+
 ## Next boundary
 
-The next permitted milestone after an approved fix report and a clean Git baseline is exactly Milestone 04A-Pilot: a bounded world-layout/reference transfer for the garage and immediately adjacent road. The exhaustive `04A_FULL_WORLD_GEOMETRY_TRANSFER.md` prompt is parked while `AGENTS.md` excludes the entire original map. The pilot must not implement vehicle assembly, production world remastering or a second world zone.
+The next recommended milestone is exactly `Prompts/04B_REFERENCE_CAPTURE_AND_MEASUREMENTS.md`. It may use the completed 04A pilot as evidence, but must not reinterpret it as a complete-world database or silently promote the blocked combined terrain mesh. No 04B or Milestone 5 work has started.

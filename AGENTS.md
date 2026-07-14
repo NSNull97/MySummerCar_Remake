@@ -57,9 +57,6 @@ Until the single-player vertical slice is stable, do not implement:
 - mod SDK;
 - console support;
 - VR;
-- full NPC population;
-- the entire original map;
-- every original vehicle;
 - ray tracing as a baseline requirement;
 - DOTS/ECS without a demonstrated profiling need;
 - an elaborate custom engine framework unrelated to the current milestone.

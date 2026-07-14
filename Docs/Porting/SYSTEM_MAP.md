@@ -123,3 +123,20 @@ flowchart LR
 ```
 
 Legacy `cInput`, mouse-look components, PlayMaker actions, object-name dispatch and donor physics glue remain observational audit evidence only. They are not dependencies, ports or calibration sources for the M4 implementation.
+
+## Milestone 04A bounded world-layout flow
+
+```mermaid
+flowchart LR
+    DONOR["Read-only level2/sharedassets3 inspection"] --> STAGING["External metadata-only staging manifest"]
+    STAGING --> REVIEW["Reviewed bounds, transforms and seven route samples"]
+    REVIEW --> DATA["Project-owned durable JSON in MSC.World.Runtime"]
+    REVIEW --> COMP["Ignored ReferenceOnly comparison scene"]
+    DATA --> VALIDATE["Editor validation and EditMode tests"]
+    COMP -. "excluded from builds" .-> VALIDATE
+    M3["Unchanged M3 garage/road prefabs"] --> COMP
+```
+
+`MSC.World.Runtime` owns only serializable pilot DTOs and pure coordinate/measurement helpers. `MSC.Editor` owns local configuration access, staging hash validation, asset-dependency checks and comparison-scene generation. Production assets never depend on the ignored scene or external staging. Donor PathIDs are provenance metadata; the zone, source records and samples use project-owned stable IDs.
+
+This map covers exactly one garage-road pilot zone. The route samples are not a complete route database or terrain centerline, and the blocked combined terrain mesh is not transferred. Player/Interaction ownership and code remain exactly as documented above.

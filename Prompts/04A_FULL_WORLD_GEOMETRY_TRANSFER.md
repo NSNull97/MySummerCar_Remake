@@ -2,8 +2,6 @@
 
 # MILESTONE 04A — FULL WORLD GEOMETRY TRANSFER
 
-> **STATUS: PARKED / DO NOT EXECUTE DURING THE CURRENT VERTICAL-SLICE PHASE.**
->
 > This exhaustive prompt conflicts with the current `AGENTS.md` non-goal that
 > excludes the entire original map until the single-player vertical slice is
 > stable. It is retained as future planning material only. The executable next

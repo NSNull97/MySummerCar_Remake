@@ -174,3 +174,24 @@ Deliver:
 - Windows x64 build;
 - known-issues report;
 - vertical-slice playthrough checklist.
+
+## Milestone 04A-Pilot completion update
+
+Status: **completed on 2026-07-14**. See `Docs/Milestones/MILESTONE_04A_REPORT.md`.
+
+Delivered:
+
+- one numerically bounded garage-road acceptance zone and four-entry landmark allow-list;
+- read-only inspection bound to exact donor container hashes and object PathIDs;
+- external metadata-only staging manifest;
+- project-owned serializable layout data with stable IDs and tested coordinate conversion;
+- ignored ReferenceOnly comparison scene and dependency-leak validation;
+- explicit `Blocked` classification for the combined terrain mesh instead of a full-world export.
+
+Exit gate:
+
+- the seven retained road samples and garage anchor have complete portable provenance;
+- ReferenceOnly content can be deleted without breaking production assets or build scenes;
+- no complete-map, production terrain or exact road-centerline claim is made.
+
+No 04B or Milestone 5 implementation has started.

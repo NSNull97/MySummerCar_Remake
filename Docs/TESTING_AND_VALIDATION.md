@@ -114,3 +114,17 @@ For donor-derived behavior, store:
 ## Reports
 
 Each milestone ends with `Templates/MILESTONE_REPORT.md` populated under `Docs/Milestones/`.
+
+## Milestone 04A validation update
+
+Milestone 04A adds six EditMode tests for durable JSON round trip, coordinate conversion/round trip, canonical unique stable IDs, external staging-manifest SHA-256 and envelope round trip, explicit blocked terrain transfer, and the complete 04A validator. The fresh main-project run completed **54 total, 54 passed, 0 failed, 0 skipped**. Results: ignored `TestResults/Milestone04A_EditMode.xml` and `Logs/Milestone04A_EditMode.log`.
+
+Milestone 04A did not add a production/build scene. The existing full PlayMode regression suite was nevertheless rerun to protect Player/Interaction integration: **5 total, 5 passed, 0 failed, 0 skipped**. Results: ignored `TestResults/Milestone04A_PlayMode.xml` and `Logs/Milestone04A_PlayMode.log`.
+
+Implemented commands:
+
+- `Tools > My Summer Car > Milestone 04A > Build ReferenceOnly Comparison Scene`;
+- `Tools > My Summer Car > Milestone 04A > Validate World Layout Pilot`;
+- batch entry points `MSC.Editor.WorldLayoutPilot.WorldLayoutPilotComparisonSceneBuilder.RunBatch` and `MSC.Editor.WorldLayoutPilot.WorldLayoutPilotValidator.RunBatch`.
+
+The 04A validator checks the bounded allow-list, exact sample sequence, provenance, coordinate/measurement tolerance, external manifest hash, configured-root separation, unique stable IDs, comparison-scene exclusion and production/build-scene reference leaks.

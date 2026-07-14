@@ -219,3 +219,19 @@ No donor file was written, patched, moved or deleted. No new raw extraction was 
 Milestone 4 did not read the donor installation, managed assemblies, decompiled reference, staged extraction or donor save data. No donor movement constants, interaction distance, input bindings, carry forces, tool rules or PlayMaker/FSM transitions were transferred. The first-person and interaction slice is a project-authored `Reimplemented` prototype based only on the milestone requirements and repository architecture.
 
 No donor payload, provenance record or ledger row was added for M4. The donor installation remained read-only and outside the new runtime dependency graph.
+
+## Milestone 04A bounded world-layout pilot
+
+Milestone 04A inspected only one numeric zone around the player garage and adjacent retained road-route samples. Donor-world bounds are `(-269.98, -16.611, 1020.625)` to `(-49.98, 13.389, 1300.625)` metres. The garage anchor is the `CABIN > Shed` hierarchy at `(-169.98, -1.611, 1040.625)` and maps to project-local origin by `projectLocal = donorWorld - garageAnchor`; scene/world coordinates are y-up and use one metre per Unity unit. The older roof-only mesh-local mapping `(X,Y,Z) -> (X,Z,Y)` is not applied to these scene transforms.
+
+The exact inspected `level2` identities were:
+
+- garage: `CABIN` GO `18336` / T `54392`, `Shed` GO `19567` / T `55631`, roof GO `1064` / T `37122`, walls GO `2821` / T `38875`;
+- route: `DirtRoad` GO `21869` / T `57925`, retaining only waypoint indices `1655, 1660, 1665, 1670, 1675, 1680, 1685`;
+- blocked terrain evidence: `TERRAIN_OBJ` GO `34670` / T `70724`, render `DirtRoad` GO `1616` / T `37675`, candidate combined mesh PathID `3273`.
+
+`level2` was rehashed as `39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31`; `sharedassets3.assets` was rehashed as `1e956c8acd9f3c075b2e4eece3d836228eeb3ad0a18ae41ad1ca6aedb3c9d684`. AssetRipper `1.3.14` was used as a local read-only object inspector. No project export, scene dump, complete route inventory, mesh payload, texture, material, audio, script or terrain extraction was produced.
+
+The seven retained route samples form a `191.353 m` polyline; the nearest retained sample is `204.768 m` from the garage anchor. They are traffic-route positions, not a certified render-mesh centerline, and their Y values are approximate elevation evidence. Bounded terrain-mesh transfer is classified `Blocked`, because the available static object separation exposes combined/full-world content.
+
+External staging stores only `manifests/MILESTONE_04A_WORLD_LAYOUT_INSPECTION.json`, SHA-256 `ae7a512036f8ade31174e9cb4aee018921755eb1cc7fd1bcfd2707fa8881ac54`. Reviewed project-owned data is `Assets/Game/World/Content/LayoutPilot/M04A_WorldLayoutPilot.json`; the disposable comparison scene remains under ignored `LegacyImport/ReferenceOnly` and outside Build Settings. The donor installation was not written, patched, renamed or deleted.

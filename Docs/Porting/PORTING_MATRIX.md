@@ -59,6 +59,18 @@ Each candidate requires an `ilspycmd` body review, dependency map, origin hash, 
 
 Значения wall openings, interior arrangement, road curve, terrain heights и vegetation placement не являются `ConfigurationTransferred`. Ни один M3 production prefab или build scene не зависит от donor payload.
 
+## Milestone 04A bounded world-layout transfer state
+
+| Element | Exact evidence | Classification | Status and boundary |
+|---|---|---|---|
+| Garage scene anchor | `level2` hash `39e5…06c31`; `CABIN` GO 18336/T 54392 > `Shed` GO 19567/T 55631 | `WorldLayoutReference` | Reviewed project-local origin; not a complete building-layout claim |
+| Adjacent dirt-road route | `DirtRoad` GO 21869/T 57925; seven retained waypoints 1655–1685 | `WorldLayoutReference` | `191.353 m` sampled polyline; traffic-route approximation with possible lane offset |
+| Terrain/render subset | `TERRAIN_OBJ` GO 34670/T 70724; render road GO 1616/T 37675; candidate mesh PathID 3273 | `Blocked` | No payload exported because available separation is combined/full-world |
+| Durable pilot record | `Assets/Game/World/Content/LayoutPilot/M04A_WorldLayoutPilot.json` | `WorldLayoutReference` | Project-owned stable IDs, portable provenance, bounds, conversion and limitations |
+| Comparison scene | `Assets/Game/LegacyImport/ReferenceOnly/Comparison/M04A_WorldLayoutPilotComparison.unity` | `ReferenceOnly` | Ignored, outside Build Settings and removable without breaking production |
+
+The retained samples place the nearest reviewed road-route point `204.768 m` from the garage anchor. The M3 road prefab is explicitly still a project-authored visual prototype and does not match that relationship; 04A records the gap but does not rewrite production terrain/road content. No full scene, full route, complete terrain or second world zone was transferred.
+
 ## Milestone 4 player/interaction transfer state
 
 | Система | Evidence used | Classification | Текущее состояние |

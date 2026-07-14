@@ -186,3 +186,14 @@ Editor tools should handle:
 Fail loudly during development when required data is missing. Do not silently substitute unrelated defaults.
 
 User-facing builds may recover gracefully, but development tools must produce actionable errors with object paths, stable IDs, and suggested fixes.
+
+## Bounded world-layout pilot ownership
+
+Milestone 04A adds a deliberately narrow data path without introducing a world manager or changing Player/Interaction:
+
+- `MSC.World.Runtime` owns `WorldLayoutPilotData`, source/sample DTOs and pure y-up metre-based coordinate helpers;
+- `Assets/Game/World/Content/LayoutPilot/M04A_WorldLayoutPilot.json` is the durable project-owned reviewed record;
+- `MSC.Editor` owns local path resolution, staging-manifest hashing, provenance/bounds/stable-ID/reference-leak validation and the disposable comparison-scene builder;
+- the external staging manifest stays outside Git, and the generated comparison scene stays below ignored `LegacyImport/ReferenceOnly` and outside Build Settings.
+
+The project-local origin is the reviewed donor garage anchor. Runtime source contains no machine-specific path, file I/O, `AssetDatabase` or donor dependency. Donor PathIDs are provenance only and never persistent entity IDs. The M3 road/terrain remain project-authored prototypes; their known disagreement with the measured `204.768 m` garage-to-nearest-route-sample relationship is documented rather than silently corrected in 04A.
