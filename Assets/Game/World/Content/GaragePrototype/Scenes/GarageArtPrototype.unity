@@ -796,7 +796,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6340816189dca64f829c68ef09c2c81, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: MSC.World.Runtime::MSC.World.GaragePrototype.GaragePrototypePerformanceProbe
+  m_EditorClassIdentifier: MSC.Development.Performance::MSC.World.GaragePrototype.GaragePrototypePerformanceProbe
 --- !u!114 &1268726565
 MonoBehaviour:
   m_ObjectHideFlags: 0

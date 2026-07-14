@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +9,8 @@ namespace MSC.World.GaragePrototype
 {
     /// <summary>
     /// Opt-in development capture used by the Milestone 3 standalone performance build.
-    /// It remains disabled unless a destination follows the -msc-m3-capture argument.
+    /// The implementation is compiled only for the Editor or development players and remains
+    /// disabled unless a destination follows the -msc-m3-capture argument.
     /// </summary>
     public sealed class GaragePrototypePerformanceProbe : MonoBehaviour
     {
@@ -292,3 +294,21 @@ namespace MSC.World.GaragePrototype
         }
     }
 }
+#else
+using UnityEngine;
+
+namespace MSC.World.GaragePrototype
+{
+    /// <summary>
+    /// Release-player placeholder that preserves the serialized scene reference without shipping
+    /// profiling, file-output or synchronous render-capture behavior.
+    /// </summary>
+    public sealed class GaragePrototypePerformanceProbe : MonoBehaviour
+    {
+        private void Awake()
+        {
+            enabled = false;
+        }
+    }
+}
+#endif
