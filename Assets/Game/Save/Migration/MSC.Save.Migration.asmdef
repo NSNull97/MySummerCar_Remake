@@ -1,0 +1,14 @@
+{
+  "name": "MSC.Save.Migration",
+  "rootNamespace": "MSC.Save.Migration",
+  "references": ["MSC.Core.Runtime", "MSC.Save.Runtime"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

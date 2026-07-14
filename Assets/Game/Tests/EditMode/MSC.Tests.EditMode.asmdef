@@ -1,0 +1,26 @@
+{
+  "name": "MSC.Tests.EditMode",
+  "rootNamespace": "MSC.Tests.EditMode",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Bootstrap.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Player.Runtime",
+    "MSC.Editor",
+    "MSC.World.Runtime",
+    "MSC.LegacyImport.Runtime",
+    "MSC.LegacyImport.Editor",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": ["TestAssemblies"]
+}

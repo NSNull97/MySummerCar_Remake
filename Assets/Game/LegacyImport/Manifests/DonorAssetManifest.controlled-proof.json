@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "manifestId": "milestone-02-controlled-proof",
+  "generatedUtc": "2026-07-13T18:35:00Z",
+  "pipelineVersion": "2.0.0",
+  "records": [
+    {
+      "recordId": "m2-environment-garage-shed-roof",
+      "sourceRelativePath": "mysummercar_Data/sharedassets3.assets",
+      "sourceObjectName": "garage_shed_roof (Mesh PathID 2186; level2 GameObject PathID 1064)",
+      "sourceSha256": "1e956c8acd9f3c075b2e4eece3d836228eeb3ad0a18ae41ad1ca6aedb3c9d684",
+      "stagedFileSha256": "ea1c43d48a1b65ccee1bb616626e82cb89b2a79e12ba9ce1e2dbe7f96f1814ed",
+      "kind": 1,
+      "classification": 0,
+      "stagedRelativePath": "normalized/controlled-proof/environment/garage_shed_roof_reference.obj",
+      "referenceAssetPath": "Assets/Game/LegacyImport/ReferenceOnly/ControlledProof/Environment/garage_shed_roof_reference.obj",
+      "productionReplacementPath": "Assets/Game/World/Content/Proof/ReauthoredGarageShedRoof.prefab",
+      "status": 1,
+      "importerId": "AssetRipper+msc-glb-to-obj",
+      "importerVersion": "1.3.14+1.0.0",
+      "dependencies": [
+        "raw/controlled-proof/environment/sharedassets3_2186_garage_shed_roof.glb sha256 ca523ca0c30af281a783fa66b82aff76f4de8d374dafc6b40bad9407697f05a1",
+        "raw/controlled-proof/environment/level2_37122_garage_shed_roof.transform.json sha256 7d99fab8f6c58f7b418d063a48cac4553a5b643aeca80aadaca3c7f51352299b",
+        "normalized/controlled-proof/environment/garage_shed_roof_reference.metadata.json"
+      ],
+      "notes": "Reference-only roof mesh. Donor local transform is identity. Bounds and pivot are recorded in the normalized metadata sidecar; original material and textures are not transferred."
+    },
+    {
+      "recordId": "m2-vehicle-drum-brake-rear",
+      "sourceRelativePath": "mysummercar_Data/sharedassets1.assets",
+      "sourceObjectName": "drum_brake_rear (Mesh PathID 125; level3 GameObject PathID 123)",
+      "sourceSha256": "8f0a0984f4e55229ecaebb57ef931b052f56998b9569a32e013780aa9dc78e02",
+      "stagedFileSha256": "9b558df4ea4f2f78c5c3613e1b508d37aec56d10daf2916c33fa16241b873108",
+      "kind": 1,
+      "classification": 0,
+      "stagedRelativePath": "normalized/controlled-proof/vehicle/drum_brake_rear_reference.obj",
+      "referenceAssetPath": "Assets/Game/LegacyImport/ReferenceOnly/ControlledProof/Vehicle/drum_brake_rear_reference.obj",
+      "productionReplacementPath": "Assets/Game/Vehicle/Content/Proof/ReauthoredRearBrakeDrum.prefab",
+      "status": 1,
+      "importerId": "AssetRipper+msc-glb-to-obj",
+      "importerVersion": "1.3.14+1.0.0",
+      "dependencies": [
+        "raw/controlled-proof/vehicle/sharedassets1_125_drum_brake_rear.glb sha256 b0259df7673e185fd80313c615f55c0094e06445c5068749743d04a640c318d5",
+        "raw/controlled-proof/vehicle/level3_496_drum_brake_rear.transform.json sha256 b37113785e02d59962c1bd252acfc703ccd0f88c18cc5dd124deac2e39905ce0",
+        "normalized/controlled-proof/vehicle/drum_brake_rear_reference.metadata.json"
+      ],
+      "notes": "Reference-only brake drum mesh. Donor local pivot is retained at the mesh origin; the selected scene transform is a 180-degree Z rotation. Mount proof uses the project-owned HubAxis at donor local origin. Original material and textures are not transferred."
+    }
+  ]
+}

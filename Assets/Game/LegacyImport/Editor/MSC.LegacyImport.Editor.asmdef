@@ -1,0 +1,14 @@
+{
+  "name": "MSC.LegacyImport.Editor",
+  "rootNamespace": "MSC.LegacyImport.Editor",
+  "references": ["MSC.Core.Runtime", "MSC.LegacyImport.Runtime"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

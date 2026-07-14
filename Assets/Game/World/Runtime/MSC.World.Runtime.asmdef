@@ -1,0 +1,17 @@
+{
+  "name": "MSC.World.Runtime",
+  "rootNamespace": "MSC.World",
+  "references": [
+    "MSC.Core.Runtime",
+    "Unity.RenderPipelines.Core.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

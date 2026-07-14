@@ -1,0 +1,21 @@
+{
+  "name": "MSC.Tests.PlayMode",
+  "rootNamespace": "MSC.Tests.PlayMode",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Bootstrap.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Player.Runtime",
+    "Unity.InputSystem"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": ["TestAssemblies"]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "MSC.Save.Runtime",
+  "rootNamespace": "MSC.Save",
+  "references": ["MSC.Core.Runtime"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

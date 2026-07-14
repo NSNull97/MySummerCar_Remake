@@ -1,0 +1,21 @@
+{
+  "name": "MSC.Bootstrap.Runtime",
+  "rootNamespace": "MSC.Bootstrap",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.World.Runtime",
+    "MSC.Weather.Runtime",
+    "MSC.Audio.Runtime",
+    "MSC.Save.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -1,0 +1,14 @@
+{
+  "name": "MSC.LegacyImport.Runtime",
+  "rootNamespace": "MSC.LegacyImport",
+  "references": ["MSC.Core.Runtime"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

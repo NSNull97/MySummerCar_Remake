@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 237ab3666fc02c547b09230a2f685125, type: 3}
+  m_Name: M2_EnvironmentProof
+  m_EditorClassIdentifier: MSC.LegacyImport.Editor::MSC.LegacyImport.Editor.Proof.ReauthoredAssetProvenance
+  registry: {fileID: 11400000, guid: 4337578501208dd49a4222d8d4b99270, type: 2}
+  donorRecordId: m2-environment-garage-shed-roof
+  role: 0
+  productionPrefab: {fileID: 3738304952648766287, guid: bf4efca1debc4e04eb842bb9f6112129, type: 3}
+  referencePivotMeters: {x: 0, y: 0, z: 0}
+  productionPivotMeters: {x: 0, y: 0, z: 0}
+  dimensionalToleranceMeters: 0.005
+  mountPoints: []
+  authoredTextures:
+  - {fileID: 2800000, guid: a4ff71cfba052b946a12730414ffd9fd, type: 3}
+  - {fileID: 2800000, guid: 2aebed9fc2cb4d54f95ebd706f40a0b6, type: 3}
+  - {fileID: 2800000, guid: d2858c1d99ab5fd4684993e5845006f8, type: 3}
+  authoringNotes: Independent procedural controlled-proof replacement. Geometry,
+    textures, material, collision and LODs are project-authored; donor mesh is reference-only
+    and removable.

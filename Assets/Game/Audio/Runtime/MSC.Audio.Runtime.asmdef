@@ -1,0 +1,14 @@
+{
+  "name": "MSC.Audio.Runtime",
+  "rootNamespace": "MSC.Audio",
+  "references": ["MSC.Core.Runtime"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

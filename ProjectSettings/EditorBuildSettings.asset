@@ -6,6 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Game/Bootstrap/Bootstrap.unity
+    guid: 5dabb1a2f44843d46b71664577561661
+  - enabled: 1
+    path: Assets/Game/Player/Content/Scenes/PlayerInteractionPrototype.unity
+    guid: 4dadd02479955a94ab3589f5da6186c3
+  - enabled: 1
+    path: Assets/Game/World/Content/GaragePrototype/Scenes/GarageArtPrototype.unity
+    guid: 15c50cd1d13c4d443a898ef6f1aa42b2
+  - enabled: 1
     path: Assets/OutdoorsScene.unity
     guid: 8124e5870f4fd4c779e7a5f994e84ad1
   m_configObjects:

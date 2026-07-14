@@ -1,0 +1,389 @@
+{
+  "kitName": "MySummerCar_Remake_Complete_StarterKit",
+  "version": "1.0.1",
+  "originalGameDirectory": "D:\\SteamLibrary\\steamapps\\common\\My Summer Car",
+  "unityProjectDirectory": "E:\\GAYmDev_Studio\\MySummerCar_Remake_Game",
+  "fileCount": 77,
+  "files": [
+    {
+      "path": ".editorconfig",
+      "sizeBytes": 965,
+      "sha256": "79cdcec8a8501775f67c006b08bcb1561da7a737def68806b4f73a10c1b00c10"
+    },
+    {
+      "path": ".gitattributes",
+      "sizeBytes": 615,
+      "sha256": "1ddf2d02d0d43e87eda133abc7463f0c934fa6583aca4ce8b8f1ace0766bfccf"
+    },
+    {
+      "path": ".gitignore",
+      "sizeBytes": 1026,
+      "sha256": "bd5c134c9e8036f798cd7468094640a5bbec3e0cb4c9e638c877210b3b834238"
+    },
+    {
+      "path": "AGENTS.md",
+      "sizeBytes": 20841,
+      "sha256": "3b4b47df33b3419e2cd65e7961cb56f44518c2d9aeebe1971a482811dd4b9da9"
+    },
+    {
+      "path": "Assets/Game/Audio/Runtime/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Bootstrap/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Core/Configuration/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Core/Runtime/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Editor/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Imported/DonorGenerated/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Interaction/Runtime/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/LegacyImport/Editor/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/LegacyImport/ReferenceOnly/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Player/Runtime/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Presentation/Materials/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Presentation/Shaders/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Presentation/VFX/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/README.md",
+      "sizeBytes": 355,
+      "sha256": "0eec80c274a2e997be18b6a6fc6deb6f1b5fdd51251ea6cfe3f3e27a1d85b9e3"
+    },
+    {
+      "path": "Assets/Game/Save/Runtime/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Tests/EditMode/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Tests/PlayMode/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Vehicle/Assembly/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Vehicle/Runtime/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Vehicle/Simulation/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/Weather/Runtime/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Assets/Game/World/Runtime/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Config/DonorPaths.example.json",
+      "sizeBytes": 516,
+      "sha256": "676ef82ed3f0fa5d44718ea38081ed64284007c405a10cde8f1f3c5a9bb6ea70"
+    },
+    {
+      "path": "Config/DonorPaths.local.json",
+      "sizeBytes": 516,
+      "sha256": "676ef82ed3f0fa5d44718ea38081ed64284007c405a10cde8f1f3c5a9bb6ea70"
+    },
+    {
+      "path": "Docs/ARCHITECTURE.md",
+      "sizeBytes": 3984,
+      "sha256": "00c9ad845cc3ee6cf9db47faf411b90c6f0ff10bf93e99194bfe17141cacdc37"
+    },
+    {
+      "path": "Docs/ART_GUIDE.md",
+      "sizeBytes": 3142,
+      "sha256": "8b2a973f43750c385d4d15b17f241f66be284ad7654db40e3b8ded6030721fd3"
+    },
+    {
+      "path": "Docs/AUDIO_GUIDE.md",
+      "sizeBytes": 2245,
+      "sha256": "73b235a3f2b7cae76d188111ff4cc06d15ad3a19a81f484369657eef3c1cdfd0"
+    },
+    {
+      "path": "Docs/Architecture/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Docs/CODE_STYLE.md",
+      "sizeBytes": 962,
+      "sha256": "ef34502f711c5c92f193ed3b55524327943239e08c46d6941e0bd3b30ade9d87"
+    },
+    {
+      "path": "Docs/DECISIONS/ADR-0001-Donor-Assisted-Recreation.md",
+      "sizeBytes": 1271,
+      "sha256": "a3df474957bb722baa516d40b782c6f3232d1be756b1e57518a9402e43dd87cb"
+    },
+    {
+      "path": "Docs/FILE_MAP_RU.md",
+      "sizeBytes": 2577,
+      "sha256": "74c4f16ae2aa271d52cb0566c52a1e79a43bde9a18eaa4bd0b1ad69af0e1baa8"
+    },
+    {
+      "path": "Docs/GIT_WORKFLOW.md",
+      "sizeBytes": 868,
+      "sha256": "f0ccb5858c2eb255c0fce803e3b31707810b6bd14be39de2cb7c9187ed98eb87"
+    },
+    {
+      "path": "Docs/Milestones/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Docs/PERFORMANCE_BUDGET.md",
+      "sizeBytes": 1311,
+      "sha256": "10457699d069d0bc94c12c129b033659b69687e747a80838e1e992235b983322"
+    },
+    {
+      "path": "Docs/PLAYER_INTERACTION.md",
+      "sizeBytes": 1513,
+      "sha256": "30cbd78bb603a7e81adc04621a220a0ed71750c34a98d4936b5fa3ec59c7c699"
+    },
+    {
+      "path": "Docs/PORTING_GUIDE.md",
+      "sizeBytes": 3809,
+      "sha256": "468c189c4665ba5bab2dab04674a57abe3ead61626d8727ac7c4fa1e377734ea"
+    },
+    {
+      "path": "Docs/PROJECT.md",
+      "sizeBytes": 3547,
+      "sha256": "03f0b1689b09c2747935a8431893535bde26e886607e177b4140352a26d8f8e4"
+    },
+    {
+      "path": "Docs/Porting/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Docs/REFERENCE_CAPTURE_CHECKLIST.md",
+      "sizeBytes": 1139,
+      "sha256": "3cb47b49ff68bbd3366821aafc42edf7d91c2e2302aba731be0bb28a7b1fccdd"
+    },
+    {
+      "path": "Docs/REVERSE_ENGINEERING.md",
+      "sizeBytes": 3051,
+      "sha256": "4866de25bef4c37f8b60200a0562966274bc1e653a6a7b0fe81b66da9a00293f"
+    },
+    {
+      "path": "Docs/ROADMAP.md",
+      "sizeBytes": 3650,
+      "sha256": "78e720860326849bac63bcafad013ae42b41ba3c46f44ab7b8b05e4cbd946eea"
+    },
+    {
+      "path": "Docs/SAVE_SYSTEM.md",
+      "sizeBytes": 1727,
+      "sha256": "c18be15420c798d662af07584da01e0be529d9e44262358ce6ba0544ce39329b"
+    },
+    {
+      "path": "Docs/TESTING_AND_VALIDATION.md",
+      "sizeBytes": 1379,
+      "sha256": "5037df9397104920152d8a01d3381f6b54eba2e1ca2c86872f056c656f7ee22d"
+    },
+    {
+      "path": "Docs/VEHICLE_SYSTEM.md",
+      "sizeBytes": 2629,
+      "sha256": "beb4c1b1524e95cb9a6f2267ae438912a70e07f450912e242149d4c30f2f157f"
+    },
+    {
+      "path": "Docs/WORLD_WEATHER.md",
+      "sizeBytes": 2015,
+      "sha256": "fb0487b7d7155c20fbf3f250c309826c1b96d149af7687d0d6d97a103b4e182f"
+    },
+    {
+      "path": "LICENSE_NOTICE.md",
+      "sizeBytes": 578,
+      "sha256": "035704cf2719d53c24ad8e711d8e789f9b0219bf39bb2dc932f8f3da79676bb8"
+    },
+    {
+      "path": "Prompts/00_BOOTSTRAP_AND_DONOR_AUDIT.md",
+      "sizeBytes": 5234,
+      "sha256": "7faaaf32b22c887ba5ec5ec8df21d05f82b994e7972dd8e01f6006c906c8e021"
+    },
+    {
+      "path": "Prompts/01_UNITY_FOUNDATION.md",
+      "sizeBytes": 2206,
+      "sha256": "eac0578a81cae5aa6470bf9f1bb7d09ca79f40770dd43ecdc34b202c3a5d1730"
+    },
+    {
+      "path": "Prompts/02_DONOR_REFERENCE_PIPELINE.md",
+      "sizeBytes": 1685,
+      "sha256": "df66c9e3d3e29eff75ae82fe70722e5174a7cc29f4ea8011d6eeeba942f22608"
+    },
+    {
+      "path": "Prompts/03_GARAGE_ART_PROTOTYPE.md",
+      "sizeBytes": 1194,
+      "sha256": "709e7dfe4df07d3a39cc7876b823a8298c06d428034fa0ab985e1c4297242d90"
+    },
+    {
+      "path": "Prompts/04_PLAYER_INTERACTION.md",
+      "sizeBytes": 794,
+      "sha256": "222ead42a73a4d6c6712945098c4ff21eaaf5bff61bd188b0894bf7c4af5af95"
+    },
+    {
+      "path": "Prompts/05_VEHICLE_ASSEMBLY.md",
+      "sizeBytes": 901,
+      "sha256": "b4fe57f6aa7609f31fff47217f7221ad1cc26d20d48b14fc1ae629a583b5aba6"
+    },
+    {
+      "path": "Prompts/06_VEHICLE_SIMULATION.md",
+      "sizeBytes": 939,
+      "sha256": "5e3acb5be1065be6d2e0532b20dbe1ea831bc2d61ff9ed4e84858b3fa41ede61"
+    },
+    {
+      "path": "Prompts/07_WORLD_WEATHER_HDRP.md",
+      "sizeBytes": 719,
+      "sha256": "d1f5c479fa93c99629c9d63fc9ec6fead6ca1a0927cb281d02587c58b59dda66"
+    },
+    {
+      "path": "Prompts/08_WWISE_AUDIO.md",
+      "sizeBytes": 928,
+      "sha256": "b1c2249ba4c5eebd712b20e283c53fa9092d6235dd218322f022dddcc591ca90"
+    },
+    {
+      "path": "Prompts/09_SAVE_AND_LEGACY_DATA.md",
+      "sizeBytes": 789,
+      "sha256": "71a75e6a730006014f7de04698e71f21902b555c28401e827982aa5bea72494a"
+    },
+    {
+      "path": "Prompts/10_OPTIMIZATION_AND_BUILD.md",
+      "sizeBytes": 900,
+      "sha256": "09fec3b92d88d5ddabbb3ad8249d6441adae71768751d39343bf71754dd2bee8"
+    },
+    {
+      "path": "Prompts/README.md",
+      "sizeBytes": 773,
+      "sha256": "5e79b0ebeac0a1c190d74de6f3e684d484d71234c4bbae4ad5453321a10edd93"
+    },
+    {
+      "path": "Prompts/_TASK_TEMPLATE.md",
+      "sizeBytes": 649,
+      "sha256": "a438486bc1b840c3a2899fddb7dc64ba67b12500a90a116a7b557c640acadcf7"
+    },
+    {
+      "path": "README.md",
+      "sizeBytes": 1411,
+      "sha256": "e701fd61fd5d1ec0c3149ce38cae081874243316f24402f853c7b48b27cd5210"
+    },
+    {
+      "path": "References/.gitkeep",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "START_HERE_RU.md",
+      "sizeBytes": 4219,
+      "sha256": "85ba085fcb777b4b622e7402e7fb275ec9aa74efe0b0b8063655b1869d91ac9c"
+    },
+    {
+      "path": "Templates/BEHAVIOR_CAPTURE.md",
+      "sizeBytes": 398,
+      "sha256": "08339ff34188809b086f7bd605c581580c3f56ea053956b51a5ba6d70fcc92fc"
+    },
+    {
+      "path": "Templates/DECISION_RECORD.md",
+      "sizeBytes": 184,
+      "sha256": "e82e293cc0ddf7fa9304ea25b092ba1efe78e02cc36e5f807329be52429539b7"
+    },
+    {
+      "path": "Templates/DONOR_INVENTORY.csv",
+      "sizeBytes": 57,
+      "sha256": "3151ccfd03539f3e2ecb0fd73404cec190e6c22ca43f2985c993f38077a7da53"
+    },
+    {
+      "path": "Templates/MILESTONE_REPORT.md",
+      "sizeBytes": 416,
+      "sha256": "59f3e01ce4690daf9a3c7e446293e81d3a6efc499b855fd004f10561ddc88ed6"
+    },
+    {
+      "path": "Templates/PORTING_LEDGER.csv",
+      "sizeBytes": 403,
+      "sha256": "329c9d5e63012ddc3e5f9f8ed87db087f69c3b0b6e5152a382606eeedaaab79e"
+    },
+    {
+      "path": "Tools/Create-Donor-Staging.ps1",
+      "sizeBytes": 1411,
+      "sha256": "8be549dedb970bbe02adef39a3e7455bcd7de14c452528af5788440a8302bea0"
+    },
+    {
+      "path": "Tools/Install-StarterKit.ps1",
+      "sizeBytes": 1197,
+      "sha256": "3adb88200bd0f2e49b13650c79acc74231658f6483e989e2c558d1c68d938844"
+    },
+    {
+      "path": "Tools/README.md",
+      "sizeBytes": 405,
+      "sha256": "8abf64e04699ceeede82ed90aa0819994f38134cb1e8e1a059073859bb5c6497"
+    },
+    {
+      "path": "Tools/Show-Next-Step.ps1",
+      "sizeBytes": 274,
+      "sha256": "fd3cf9fe5df28ea8bf2c7c2e2e68e73fe3d95752f4850e898f18ac297f35aea5"
+    },
+    {
+      "path": "Tools/Validate-Environment.ps1",
+      "sizeBytes": 3225,
+      "sha256": "3803a7ca77cadbb2ee15e6073a3b1bb30a215b101ff26dd6d79635dcc7197231"
+    }
+  ]
+}

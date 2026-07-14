@@ -1,0 +1,14 @@
+{
+  "name": "MSC.Vehicle.Assembly",
+  "rootNamespace": "MSC.Vehicle.Assembly",
+  "references": ["MSC.Core.Runtime", "MSC.Interaction.Runtime"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -1,0 +1,14 @@
+{
+  "name": "MSC.Audio.UnityFallback",
+  "rootNamespace": "MSC.Audio.UnityFallback",
+  "references": ["MSC.Core.Runtime", "MSC.Audio.Runtime"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

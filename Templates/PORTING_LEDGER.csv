@@ -1,0 +1,4 @@
+SourceRelativePath,SourceObjectOrSymbol,SourceHash,Type,Classification,DestinationPath,Status,Dependencies,ToolVersion,KnownDifferences,Notes
+,garage_wall_mesh,,Mesh,DimensionalReference,,Planned,,,,
+,dashboard_diffuse,,Texture,ReferenceOnly,,Planned,,,Final texture must be reauthored,
+,engine_torque_method,,ManagedCode,BehavioralReference,,Planned,,,Create comparison fixtures before implementation,

@@ -1,0 +1,14 @@
+{
+  "name": "MSC.Player.Runtime",
+  "rootNamespace": "MSC.Player",
+  "references": ["MSC.Core.Runtime", "MSC.Interaction.Runtime", "Unity.InputSystem"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
