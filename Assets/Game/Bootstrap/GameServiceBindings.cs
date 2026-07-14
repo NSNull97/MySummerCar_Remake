@@ -22,14 +22,62 @@ namespace MSC.Bootstrap
             IInteractionService interaction,
             IEntityIdProvider entityIds,
             IWorldStreamingService worldStreaming)
+            : this(
+                gameTime,
+                weather,
+                save,
+                audio,
+                interaction,
+                entityIds,
+                worldStreaming,
+                requireCompleteSet: true)
         {
-            GameTime = gameTime ?? throw new ArgumentNullException(nameof(gameTime));
-            Weather = weather ?? throw new ArgumentNullException(nameof(weather));
-            Save = save ?? throw new ArgumentNullException(nameof(save));
-            Audio = audio ?? throw new ArgumentNullException(nameof(audio));
-            Interaction = interaction ?? throw new ArgumentNullException(nameof(interaction));
-            EntityIds = entityIds ?? throw new ArgumentNullException(nameof(entityIds));
-            WorldStreaming = worldStreaming ?? throw new ArgumentNullException(nameof(worldStreaming));
+        }
+
+        private GameServiceBindings(
+            IGameTimeService gameTime,
+            IWeatherService weather,
+            ISaveService save,
+            IAudioBackend audio,
+            IInteractionService interaction,
+            IEntityIdProvider entityIds,
+            IWorldStreamingService worldStreaming,
+            bool requireCompleteSet)
+        {
+            GameTime = gameTime;
+            Weather = weather;
+            Save = save;
+            Audio = audio;
+            Interaction = interaction;
+            EntityIds = entityIds;
+            WorldStreaming = worldStreaming;
+
+            if (requireCompleteSet)
+            {
+                ValidateCompleteSet();
+            }
+            else if (ServiceCount == 0)
+            {
+                throw new ArgumentException(
+                    "A partial service binding must contain at least one concrete service.");
+            }
+        }
+
+        /// <summary>
+        /// Creates an explicit milestone-scoped binding without fake implementations for unfinished services.
+        /// Consumers must still receive their narrow dependency directly from the concrete installer.
+        /// </summary>
+        public static GameServiceBindings CreatePartial(IInteractionService interaction)
+        {
+            return new GameServiceBindings(
+                gameTime: null,
+                weather: null,
+                save: null,
+                audio: null,
+                interaction: interaction ?? throw new ArgumentNullException(nameof(interaction)),
+                entityIds: null,
+                worldStreaming: null,
+                requireCompleteSet: false);
         }
 
         public IGameTimeService GameTime { get; }
@@ -45,5 +93,27 @@ namespace MSC.Bootstrap
         public IEntityIdProvider EntityIds { get; }
 
         public IWorldStreamingService WorldStreaming { get; }
+
+        public int ServiceCount =>
+            (GameTime != null ? 1 : 0) +
+            (Weather != null ? 1 : 0) +
+            (Save != null ? 1 : 0) +
+            (Audio != null ? 1 : 0) +
+            (Interaction != null ? 1 : 0) +
+            (EntityIds != null ? 1 : 0) +
+            (WorldStreaming != null ? 1 : 0);
+
+        public bool IsComplete => ServiceCount == 7;
+
+        private void ValidateCompleteSet()
+        {
+            _ = GameTime ?? throw new ArgumentNullException(nameof(GameTime));
+            _ = Weather ?? throw new ArgumentNullException(nameof(Weather));
+            _ = Save ?? throw new ArgumentNullException(nameof(Save));
+            _ = Audio ?? throw new ArgumentNullException(nameof(Audio));
+            _ = Interaction ?? throw new ArgumentNullException(nameof(Interaction));
+            _ = EntityIds ?? throw new ArgumentNullException(nameof(EntityIds));
+            _ = WorldStreaming ?? throw new ArgumentNullException(nameof(WorldStreaming));
+        }
     }
 }

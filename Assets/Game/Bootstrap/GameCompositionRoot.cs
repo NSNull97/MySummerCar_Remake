@@ -13,6 +13,10 @@ namespace MSC.Bootstrap
 
         public bool IsInitialized => serviceBindings != null;
 
+        public int BoundServiceCount => serviceBindings?.ServiceCount ?? 0;
+
+        public bool HasCompleteBindings => serviceBindings != null && serviceBindings.IsComplete;
+
         public void Initialize(GameServiceBindings bindings)
         {
             if (bindings == null)
