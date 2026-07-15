@@ -2,6 +2,7 @@
   "name": "MSC.World.Remaster.Editor",
   "rootNamespace": "MSC.World.Remaster.Editor",
   "references": [
+    "MSC.Editor",
     "MSC.Core.Runtime",
     "MSC.Interaction.Runtime",
     "MSC.Player.Runtime",

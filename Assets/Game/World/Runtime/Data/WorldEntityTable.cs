@@ -14,7 +14,10 @@ namespace MSC.World.Data
             string hierarchyPath,
             string originalName,
             string category,
+            Vector3 sourcePosition,
             Vector3 position,
+            Quaternion rotation,
+            Vector3 scale,
             Bounds bounds,
             string meshGuid,
             bool active,
@@ -30,7 +33,10 @@ namespace MSC.World.Data
             HierarchyPath = hierarchyPath;
             OriginalName = originalName;
             Category = category;
+            SourcePosition = sourcePosition;
             Position = position;
+            Rotation = rotation;
+            Scale = scale;
             Bounds = bounds;
             MeshGuid = meshGuid;
             Active = active;
@@ -47,7 +53,10 @@ namespace MSC.World.Data
         public string HierarchyPath { get; }
         public string OriginalName { get; }
         public string Category { get; }
+        public Vector3 SourcePosition { get; }
         public Vector3 Position { get; }
+        public Quaternion Rotation { get; }
+        public Vector3 Scale { get; }
         public Bounds Bounds { get; }
         public string MeshGuid { get; }
         public bool Active { get; }
@@ -89,6 +98,9 @@ namespace MSC.World.Data
 
             RequireColumns(indices,
                 "StableId", "SourceObjectId", "HierarchyPath", "OriginalName", "SemanticCategory",
+                "SourcePositionX", "SourcePositionY", "SourcePositionZ",
+                "SourceRotationX", "SourceRotationY", "SourceRotationZ", "SourceRotationW",
+                "SourceScaleX", "SourceScaleY", "SourceScaleZ",
                 "ConvertedPositionX", "ConvertedPositionY", "ConvertedPositionZ",
                 "ConvertedBoundsMinX", "ConvertedBoundsMinY", "ConvertedBoundsMinZ",
                 "ConvertedBoundsMaxX", "ConvertedBoundsMaxY", "ConvertedBoundsMaxZ",
@@ -114,7 +126,11 @@ namespace MSC.World.Data
 
                 string Get(string name) => values[indices[name]];
                 float Number(string name) => float.Parse(Get(name), NumberStyles.Float, Invariant);
+                Vector3 sourcePosition = new Vector3(Number("SourcePositionX"), Number("SourcePositionY"), Number("SourcePositionZ"));
                 Vector3 position = new Vector3(Number("ConvertedPositionX"), Number("ConvertedPositionY"), Number("ConvertedPositionZ"));
+                Quaternion rotation = NormalizeRotation(new Quaternion(
+                    Number("SourceRotationX"), Number("SourceRotationY"), Number("SourceRotationZ"), Number("SourceRotationW")), lineNumber);
+                Vector3 scale = new Vector3(Number("SourceScaleX"), Number("SourceScaleY"), Number("SourceScaleZ"));
                 Vector3 min = new Vector3(Number("ConvertedBoundsMinX"), Number("ConvertedBoundsMinY"), Number("ConvertedBoundsMinZ"));
                 Vector3 max = new Vector3(Number("ConvertedBoundsMaxX"), Number("ConvertedBoundsMaxY"), Number("ConvertedBoundsMaxZ"));
                 records.Add(new WorldEntityPlacement(
@@ -123,7 +139,10 @@ namespace MSC.World.Data
                     Get("HierarchyPath"),
                     Get("OriginalName"),
                     Get("SemanticCategory"),
+                    sourcePosition,
                     position,
+                    rotation,
+                    scale,
                     new Bounds((min + max) * 0.5f, max - min),
                     Get("MeshGuid"),
                     Get("Active") == "1",
@@ -136,6 +155,18 @@ namespace MSC.World.Data
             }
 
             return records;
+        }
+
+        private static Quaternion NormalizeRotation(Quaternion value, int lineNumber)
+        {
+            float magnitude = Mathf.Sqrt(value.x * value.x + value.y * value.y + value.z * value.z + value.w * value.w);
+            if (float.IsNaN(magnitude) || float.IsInfinity(magnitude) || magnitude < 0.000001f)
+            {
+                throw new FormatException($"World entity CSV line {lineNumber} has an invalid source rotation.");
+            }
+
+            float inverse = 1f / magnitude;
+            return new Quaternion(value.x * inverse, value.y * inverse, value.z * inverse, value.w * inverse);
         }
 
         public static List<string> ParseRow(string line)

@@ -12,7 +12,12 @@ namespace MSC.World.Remaster.Editor
 {
     public static class WorldRemasterRegistryBuilder
     {
-        private const string ValidationTimestamp = "2026-07-14T00:00:00+05:00";
+        private const string BaselineValidationTimestamp = "2026-07-14T00:00:00+05:00";
+        private const string Batch01ValidationTimestamp = "2026-07-15T00:00:00+05:00";
+        private const string PilotManualValidation =
+            "DoorGatePass;LightingReadabilityLow;FullTraversalPending;PerformancePending";
+        private const string Batch01ManualValidation =
+            "TraversalPass;WaterPass;HedgePass;VisualReferencePending;PerformancePending";
         private const string ProductionMaterials =
             "Assets/Game/World/Production/Materials/WR_* (project-authored; M3 procedural texture basis)";
 
@@ -45,7 +50,23 @@ namespace MSC.World.Remaster.Editor
                 ["fc7439d36774290084d16e553de0f117"] = new Mapping(WorldRemasterPaths.PropsPrefab, "ChargerWireMinus", WorldReplacementStatus.FirstPass)
             };
 
+        private static readonly IReadOnlyDictionary<string, Mapping> NextZoneMappings =
+            new Dictionary<string, Mapping>(StringComparer.Ordinal)
+            {
+                ["345dc7662dae9f1f01d77b15f74e5f8f"] = new Mapping(WorldRemasterPaths.PierPrefab, "PierDeckAndSupports", WorldReplacementStatus.ProductionCandidate),
+                ["56a7aa7c66146248d6c820c31a6b99fd"] = new Mapping(WorldRemasterPaths.PierPrefab, "PierPontoons", WorldReplacementStatus.ProductionCandidate),
+                ["de5d5682cbef7d27a48a473d5e85877d"] = new Mapping(WorldRemasterPaths.PierPrefab, "WalkableCollisionNorth", WorldReplacementStatus.ProductionCandidate),
+                ["e0fa39e1ceeed93727dd86e749c6d115"] = new Mapping(WorldRemasterPaths.PierPrefab, "WalkableCollisionSouth", WorldReplacementStatus.ProductionCandidate),
+                ["b412961b75cb019e74a83b24faac32a4"] = new Mapping(WorldRemasterPaths.ShorelinePrefab, "BoundedLakeSurface", WorldReplacementStatus.ProductionCandidate),
+                ["f700b12cf5c75a3906dd079acea3f274"] = new Mapping(WorldRemasterPaths.ShorelinePrefab, "BoundedLakeBottom", WorldReplacementStatus.ProductionCandidate),
+                ["b8de7336e204fae3ba333227b3e94d19"] = new Mapping(WorldRemasterPaths.HedgePrefab, "HedgeSegmentA", WorldReplacementStatus.ProductionCandidate),
+                ["449b18de0c10f87887e3f3304a90366e"] = new Mapping(WorldRemasterPaths.HedgePrefab, "HedgeSegmentB", WorldReplacementStatus.ProductionCandidate),
+                ["847f56ce8c1be238f4bcae514bb55fdf"] = new Mapping(WorldRemasterPaths.HedgePrefab, "HedgeSegmentC", WorldReplacementStatus.ProductionCandidate)
+            };
+
         public static int PilotMappedRecordCount => PilotMappings.Count;
+        public static int NextZoneMappedRecordCount => NextZoneMappings.Count;
+        public static int TotalMappedRecordCount => PilotMappings.Count + NextZoneMappings.Count;
 
         public static WorldProductionAssetRegistry BuildRegistryAndMachineReadableFiles()
         {
@@ -100,12 +121,15 @@ namespace MSC.World.Remaster.Editor
             WorldEntityPlacement entity,
             IReadOnlyDictionary<string, string> artTaskByKey)
         {
-            bool mapped = PilotMappings.TryGetValue(entity.StableId, out Mapping mapping);
+            bool mapped = TryGetMapping(entity.StableId, out Mapping mapping);
+            bool nextZone = mapped && NextZoneMappings.ContainsKey(entity.StableId);
             string taskKey = BuildTaskKey(entity.CellId, entity.Category);
             string manualTask = mapped ? string.Empty : artTaskByKey[taskKey];
             string validation = mapped ? "AutomatedStructurePass;ManualVisualPending" : "NotRun";
             string notes = mapped
-                ? $"05A pilot composite binding: {mapping.ProductionElement}. Donor geometry is not copied; detailed fit remains manual-reviewable."
+                ? nextZone
+                    ? $"05A Batch 01 HomeShorelinePier binding: {mapping.ProductionElement}. Project-authored geometry; donor binary is not copied and direct visual parity remains manual-reviewable."
+                    : $"05A pilot composite binding: {mapping.ProductionElement}. Donor geometry is not copied; detailed fit remains manual-reviewable."
                 : "Reference record registered; no production replacement assigned in the bounded first 05A pass.";
             var record = new WorldProductionAssetRecord();
             record.Configure(
@@ -114,8 +138,8 @@ namespace MSC.World.Remaster.Editor
                 entity.Category,
                 mapped ? mapping.Prefab : string.Empty,
                 mapped ? ProductionMaterials : string.Empty,
-                mapped ? mapping.Prefab + "::authored colliders" : string.Empty,
-                mapped ? mapping.Prefab + "::LOD policy" : string.Empty,
+                mapped ? nextZone ? BatchCollisionDescription(mapping.Prefab) : mapping.Prefab + "::authored colliders" : string.Empty,
+                mapped ? nextZone ? BatchLodDescription(mapping.Prefab) : mapping.Prefab + "::LOD policy" : string.Empty,
                 mapped ? "Preserve donor world anchor; project-authored local pivot" : "Unassigned",
                 "1 Unity unit = 1 metre; no negative production scale",
                 entity.Bounds,
@@ -126,14 +150,14 @@ namespace MSC.World.Remaster.Editor
                 mapped ? "GeneratedProductionCandidate" : "Backlog",
                 validation,
                 entity.CellId,
-                mapped ? "PilotNear" : "Unclassified",
+                mapped ? nextZone ? "Batch01Near" : "PilotNear" : "Unclassified",
                 mapped ? "GlobalWetnessParameterReady" : "Unknown",
                 mapped ? "Neutral/Evening/OvercastCompatible" : "Unknown",
                 notes,
                 mapped ? "TrackedProjectAsset" : "NoProductionAsset",
                 manualTask,
-                ValidationTimestamp,
-                mapped ? WorldRemasterPaths.BuilderVersion : "0");
+                nextZone ? Batch01ValidationTimestamp : BaselineValidationTimestamp,
+                nextZone ? WorldRemasterPaths.BuilderVersion : mapped ? "05A.1" : "0");
             return record;
         }
 
@@ -152,20 +176,23 @@ namespace MSC.World.Remaster.Editor
                 {
                     int mapped = mappedByZone.TryGetValue(group.Key, out int count) ? count : 0;
                     bool pilot = string.Equals(group.Key, WorldRemasterPaths.PilotZoneId, StringComparison.Ordinal);
+                    bool nextZone = string.Equals(group.Key, WorldRemasterPaths.NextZoneId, StringComparison.Ordinal);
                     bool excluded = string.Equals(group.Key, "excluded", StringComparison.Ordinal);
                     var zone = new WorldProductionZoneRecord();
                     zone.Configure(
                         group.Key,
                         group.Count(),
                         mapped,
-                        pilot
+                        pilot || nextZone
                             ? WorldReplacementStatus.ProductionCandidate
                             : excluded ? WorldReplacementStatus.ReferenceOnly : WorldReplacementStatus.Unassigned,
-                        pilot ? "Generated;ValidationRequired" : excluded ? "ReferenceClassificationPass" : "RegistryPass",
-                        pilot ? "Pending" : "NotStarted",
-                        pilot ? WorldRemasterPaths.PilotCellScene : string.Empty,
+                        pilot || nextZone ? "Generated;ValidationRequired" : excluded ? "ReferenceClassificationPass" : "RegistryPass",
+                        pilot ? PilotManualValidation : nextZone ? Batch01ManualValidation : "NotStarted",
+                        pilot ? WorldRemasterPaths.PilotCellScene : nextZone ? WorldRemasterPaths.NextZoneCellScene : string.Empty,
                         pilot
                             ? "Bounded home/garage pilot; raw-record coverage is intentionally not full-zone completion."
+                            : nextZone
+                                ? "Batch 01 bounded HomeShorelinePier sub-zone; traversal/water/hedge manual review passed; visual reference/performance and six unrelated gameplay records remain pending."
                             : excluded ? "Not a streaming cell; retained for registry completeness." : "Awaiting a later zone batch.");
                     return zone;
                 })
@@ -176,7 +203,7 @@ namespace MSC.World.Remaster.Editor
             IReadOnlyList<WorldEntityPlacement> entities,
             IReadOnlyDictionary<string, string> taskIds)
         {
-            HashSet<string> mappedIds = new HashSet<string>(PilotMappings.Keys, StringComparer.Ordinal);
+            HashSet<string> mappedIds = BuildMappedIdSet();
             return entities
                 .Where(entity => !mappedIds.Contains(entity.StableId))
                 .GroupBy(entity => new { entity.CellId, entity.Category })
@@ -252,7 +279,7 @@ namespace MSC.World.Remaster.Editor
             IReadOnlyList<WorldArtTaskRecord> tasks)
         {
             Dictionary<string, int> counts = entities
-                .Where(entity => !PilotMappings.ContainsKey(entity.StableId))
+                .Where(entity => !TryGetMapping(entity.StableId, out _))
                 .GroupBy(entity => BuildTaskKey(entity.CellId, entity.Category), StringComparer.Ordinal)
                 .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
             var output = new StringBuilder(tasks.Count * 220);
@@ -327,7 +354,42 @@ namespace MSC.World.Remaster.Editor
         private static string ZoneSortKey(string zone) =>
             string.Equals(zone, WorldRemasterPaths.PilotZoneId, StringComparison.Ordinal)
                 ? "0_" + zone
-                : "1_" + zone;
+                : string.Equals(zone, WorldRemasterPaths.NextZoneId, StringComparison.Ordinal)
+                    ? "1_" + zone
+                    : "2_" + zone;
+
+        private static bool TryGetMapping(string stableId, out Mapping mapping)
+        {
+            if (PilotMappings.TryGetValue(stableId, out mapping))
+            {
+                return true;
+            }
+
+            return NextZoneMappings.TryGetValue(stableId, out mapping);
+        }
+
+        private static HashSet<string> BuildMappedIdSet()
+        {
+            var ids = new HashSet<string>(PilotMappings.Keys, StringComparer.Ordinal);
+            ids.UnionWith(NextZoneMappings.Keys);
+            return ids;
+        }
+
+        private static string BatchCollisionDescription(string prefab) => prefab switch
+        {
+            WorldRemasterPaths.HedgePrefab => prefab + "::simplified BoxCollider",
+            WorldRemasterPaths.PierPrefab => prefab + "::walkable primitive colliders",
+            WorldRemasterPaths.ShorelinePrefab => prefab + "::non-blocking water; primitive shore/path colliders",
+            _ => prefab + "::authored collision policy"
+        };
+
+        private static string BatchLodDescription(string prefab) => prefab switch
+        {
+            WorldRemasterPaths.HedgePrefab => prefab + "::two-stage LODGroup",
+            WorldRemasterPaths.PierPrefab => "Close-range asset; LOD deferred pending profiling",
+            WorldRemasterPaths.ShorelinePrefab => "Bounded cell surface; HLOD deferred pending profiling",
+            _ => "Category-specific LOD pending profiling"
+        };
 
         private static string PriorityFor(string category)
         {

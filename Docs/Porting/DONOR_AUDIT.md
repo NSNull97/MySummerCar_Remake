@@ -299,4 +299,36 @@ The generated M05 scene and all 15 prototype visuals have no dependency on `Lega
 
 All production meshes, materials, prefabs and scenes are project-authored. Dependency validation reports no path from production content to `LegacyImport/ReferenceOnly` or `Imported/DonorGenerated`; donor textures and runtime assemblies are not used. The comparison scene contains only removable metadata proxies and is excluded from normal production ownership.
 
-Registry coverage is 24/13,509 direct bindings. Statuses remain four `ProductionCandidate`, twenty `FirstPass` and 13,485 `Unassigned`; no item is mislabeled `ProductionReady`, `Approved`, `Verified` or `CodePorted`. The 263 grouped backlog tasks explicitly carry unfinished manual art.
+After bounded Batch 01, registry coverage is 33/13,509 direct bindings. Statuses are thirteen `ProductionCandidate`, twenty `FirstPass` and 13,476 `Unassigned`; no item is mislabeled `ProductionReady`, `Approved`, `Verified` or `CodePorted`. The 261 grouped backlog tasks explicitly carry unfinished manual art.
+
+Batch 01 consumes only nine frozen `cell_0_-2` placement records for home pier, lake/bottom anchors and yard hedges. Production geometry/materials are newly authored; comparison uses removable position proxies. The six garbage/milk gameplay records in the same cell remain unassigned rather than being guessed or pulled across the milestone boundary.
+
+## Milestone 05C1 donor-use audit
+
+05C1 did not read from or modify the current donor installation. It used only
+the frozen, hash-bound 04A1/05C reference database and stable IDs for
+`TREEWALL_HI`, `TERRAINOUT`, the store foundation and lakebed. Those records are
+classified as `WorldLayoutReference`/`DimensionalReference`.
+
+The two generated ground meshes, colliders, stable IDs, runtime marker and
+scenes are project-authored `BlockoutSource`/`ReauthoredGeometry`. They contain
+no donor mesh, texture, runtime assembly or executable dependency. The surface
+is explicitly not `ProductionReady`: it is a bounded safety-topology baseline
+whose scoped manual review passed on 2026-07-15.
+
+## Milestone 05B production-independence audit
+
+05B did not transfer new donor content. It validated the frozen 04A1/05C durable
+metadata and project-authored 05A/05C1 outputs. The complete static production and
+enabled-build dependency graph contains 49 seed assets, 230 visited assets and 482
+edges, with zero references to `ReferenceOnly`, `DonorGenerated` or project Editor
+content.
+
+The 13,509-row donor replacement ledger was normalized to contain donor records
+only. Two 05C1 project-authored safety pieces remain in their dedicated provenance
+table and porting ledger, so they cannot inflate donor replacement coverage.
+
+The current donor install was read only to recheck hashes. Its reinstalled
+`sharedassets3.assets` and `.resource` still differ from frozen 04A1 provenance;
+historical records were not rewritten. No donor file was modified, deleted or used
+as a runtime dependency.

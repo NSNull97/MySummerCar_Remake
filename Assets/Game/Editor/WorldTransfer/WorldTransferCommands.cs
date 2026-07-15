@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using MSC.World.Data;
+using MSC.World.Debugging;
 using UnityEditor;
 using UnityEngine;
 
@@ -31,6 +33,13 @@ namespace MSC.Editor.WorldTransfer
         [MenuItem(Root + "Import All World Geometry")]
         public static void ImportAll() => ConfirmAndGenerateAll();
 
+        [MenuItem(Root + "05C/Synchronize Reference Mesh Library")]
+        public static void SynchronizeReferenceMeshes()
+        {
+            var records = WorldEntityTable.Parse(File.ReadAllText(WorldTransferPaths.ToAbsoluteProjectPath(WorldTransferPaths.EntityTableAssetPath)));
+            WorldReferenceMeshLibrarySync.Synchronize(records);
+        }
+
         [MenuItem(Root + "Generate Selected World Cells")]
         public static void GenerateSelected() => ImportSelectedZone();
 
@@ -42,6 +51,9 @@ namespace MSC.Editor.WorldTransfer
 
         [MenuItem(Root + "Validate Generated Scenes")]
         public static void ValidateScenes() => Show(WorldTransferValidator.Validate(requireGeneratedScenes: true));
+
+        [MenuItem(Root + "05C/Validate Full Map Geometry Evaluation")]
+        public static void ValidateFullMapGeometryEvaluation() => Show05C(WorldMapGeometryEvaluationValidator.Validate(requireGeneratedScenes: true));
 
         [MenuItem(Root + "Compare Landmark Fixtures")]
         public static void CompareLandmarks() => RevealReport("WORLD_FIDELITY_REPORT.md");
@@ -57,6 +69,29 @@ namespace MSC.Editor.WorldTransfer
 
         [MenuItem(Root + "Open Reference Overview")]
         public static void OpenOverview() => WorldPartitionBuilder.OpenReferenceOverview();
+
+        [MenuItem(Root + "05C/View/Show Actual Meshes And Fallbacks")]
+        public static void ShowAllGeometryEvaluationLayers() => SetEvaluationVisibility(showActual: true, showFallback: true);
+
+        [MenuItem(Root + "05C/View/Show Actual Meshes Only")]
+        public static void ShowActualMeshesOnly() => SetEvaluationVisibility(showActual: true, showFallback: false);
+
+        [MenuItem(Root + "05C/View/Show Bounds Fallbacks Only")]
+        public static void ShowBoundsFallbacksOnly() => SetEvaluationVisibility(showActual: false, showFallback: true);
+
+        [MenuItem(Root + "05C/View/Show Structural Review Without Vegetation")]
+        public static void ShowStructuralReviewWithoutVegetation()
+        {
+            foreach (WorldReferenceEntity entity in Resources.FindObjectsOfTypeAll<WorldReferenceEntity>())
+            {
+                if (!entity.gameObject.scene.IsValid()) continue;
+                bool show = entity.VisualizationKind == WorldReferenceVisualizationKind.ActualMesh &&
+                            !entity.SemanticCategory.StartsWith("Vegetation", StringComparison.Ordinal);
+                if (show) SceneVisibilityManager.instance.Show(entity.gameObject, false);
+                else SceneVisibilityManager.instance.Hide(entity.gameObject, false);
+            }
+            SceneView.RepaintAll();
+        }
 
         [MenuItem(Root + "Clear Generated World Content")]
         public static void ClearGenerated()
@@ -102,6 +137,27 @@ namespace MSC.Editor.WorldTransfer
                 : "Errors:\n" + string.Join("\n", result.Errors);
             UnityEngine.Debug.Log((result.IsValid ? "WORLD_TRANSFER_VALID " : "WORLD_TRANSFER_INVALID ") + message);
             if (!Application.isBatchMode) EditorUtility.DisplayDialog("World Transfer Validation", message, "OK");
+        }
+
+        private static void Show05C(WorldMapGeometryEvaluationValidationResult result)
+        {
+            string message = result.IsValid
+                ? $"Valid. Entities: {result.EligibleEntityCount}; cells: {result.CellCount}; unique meshes: {result.UniqueMeshCount}; actual meshes: {result.ActualMeshEntityCount}; fallbacks: {result.BoundsFallbackCount}."
+                : "Errors:\n" + string.Join("\n", result.Errors);
+            UnityEngine.Debug.Log((result.IsValid ? "WORLD_MAP_05C_VALID " : "WORLD_MAP_05C_INVALID ") + message);
+            if (!Application.isBatchMode) EditorUtility.DisplayDialog("05C Full Map Geometry Evaluation", message, "OK");
+        }
+
+        private static void SetEvaluationVisibility(bool showActual, bool showFallback)
+        {
+            foreach (WorldReferenceEntity entity in Resources.FindObjectsOfTypeAll<WorldReferenceEntity>())
+            {
+                if (!entity.gameObject.scene.IsValid()) continue;
+                bool show = entity.VisualizationKind == WorldReferenceVisualizationKind.ActualMesh ? showActual : showFallback;
+                if (show) SceneVisibilityManager.instance.Show(entity.gameObject, false);
+                else SceneVisibilityManager.instance.Hide(entity.gameObject, false);
+            }
+            SceneView.RepaintAll();
         }
     }
 }

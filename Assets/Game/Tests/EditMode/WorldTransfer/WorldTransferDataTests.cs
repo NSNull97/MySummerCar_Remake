@@ -6,6 +6,7 @@ using MSC.Editor.WorldTransfer;
 using MSC.World.Data;
 using MSC.World.Partition;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools.Utils;
 
@@ -80,12 +81,15 @@ namespace MSC.Tests.EditMode.WorldTransfer
         [Test]
         public void EntityCsv_ParsesQuotedHierarchyAndRequiredFields()
         {
-            string header = "StableId,SourceObjectId,HierarchyPath,OriginalName,SemanticCategory,ConvertedPositionX,ConvertedPositionY,ConvertedPositionZ,ConvertedBoundsMinX,ConvertedBoundsMinY,ConvertedBoundsMinZ,ConvertedBoundsMaxX,ConvertedBoundsMaxY,ConvertedBoundsMaxZ,MeshGuid,Active,CellId,InteriorExterior,LandmarkTag,ReplacementStatus,TransferStatus,ReferenceWorldEligible";
-            string row = "fb0f962be1b325cc19296c66751818c0,1064,\"CABIN/Shed, Main/roof\",roof,Roof,0,0,0,-1,-1,-1,1,1,1,abc,1,cell_0_0,Exterior,PrimaryHomeGarage,DonorReference,Extracted,1";
+            string header = "StableId,SourceObjectId,HierarchyPath,OriginalName,SemanticCategory,SourcePositionX,SourcePositionY,SourcePositionZ,SourceRotationX,SourceRotationY,SourceRotationZ,SourceRotationW,SourceScaleX,SourceScaleY,SourceScaleZ,ConvertedPositionX,ConvertedPositionY,ConvertedPositionZ,ConvertedBoundsMinX,ConvertedBoundsMinY,ConvertedBoundsMinZ,ConvertedBoundsMaxX,ConvertedBoundsMaxY,ConvertedBoundsMaxZ,MeshGuid,Active,CellId,InteriorExterior,LandmarkTag,ReplacementStatus,TransferStatus,ReferenceWorldEligible";
+            string row = "fb0f962be1b325cc19296c66751818c0,1064,\"CABIN/Shed, Main/roof\",roof,Roof,10,20,30,0,0.7071068,0,0.7071068,-1,2,3,0,0,0,-1,-1,-1,1,1,1,abc,1,cell_0_0,Exterior,PrimaryHomeGarage,DonorReference,Extracted,1";
             IReadOnlyList<WorldEntityPlacement> records = WorldEntityTable.Parse(header + "\n" + row);
             Assert.That(records.Count, Is.EqualTo(1));
             Assert.That(records[0].HierarchyPath, Is.EqualTo("CABIN/Shed, Main/roof"));
+            Assert.That(records[0].SourcePosition, Is.EqualTo(new Vector3(10f, 20f, 30f)).Using(Vector3ComparerWithEqualsOperator.Instance));
             Assert.That(records[0].Bounds.size, Is.EqualTo(Vector3.one * 2f).Using(Vector3ComparerWithEqualsOperator.Instance));
+            Assert.That(Quaternion.Angle(records[0].Rotation, Quaternion.Euler(0f, 90f, 0f)), Is.LessThan(0.001f));
+            Assert.That(records[0].Scale, Is.EqualTo(new Vector3(-1f, 2f, 3f)).Using(Vector3ComparerWithEqualsOperator.Instance));
         }
 
         [Test]
@@ -111,6 +115,8 @@ namespace MSC.Tests.EditMode.WorldTransfer
             Assert.That(records.Where(record => record.ReferenceWorldEligible).All(record => !record.HierarchyPath.Contains("/COMPUTER/SYSTEM/", StringComparison.OrdinalIgnoreCase)), Is.True);
             Assert.That(records.Where(record => record.ReferenceWorldEligible && record.Category == "RoadShoulder").All(record => record.HierarchyPath.StartsWith("MAP/", StringComparison.OrdinalIgnoreCase)), Is.True);
             Assert.That(records.Where(record => record.ReferenceWorldEligible && record.Category == "Water").All(record => record.HierarchyPath.StartsWith("MAP/", StringComparison.OrdinalIgnoreCase)), Is.True);
+            Assert.That(records.Where(record => record.ReferenceWorldEligible && IsUsableMeshGuid(record.MeshGuid)).All(record =>
+                Mathf.Abs(record.Scale.x) > 0.000001f && Mathf.Abs(record.Scale.y) > 0.000001f && Mathf.Abs(record.Scale.z) > 0.000001f), Is.True);
         }
 
         [Test]
@@ -135,5 +141,50 @@ namespace MSC.Tests.EditMode.WorldTransfer
             Assert.That(validation.EligibleEntityCount, Is.EqualTo(3842));
             Assert.That(validation.CellCount, Is.EqualTo(49));
         }
+
+        [Test]
+        public void GeometryEvaluation05C_HasCompleteGeneratedCoverageAndIsolation()
+        {
+            WorldMapGeometryEvaluationValidationResult validation = WorldMapGeometryEvaluationValidator.Validate(requireGeneratedScenes: true);
+            Assert.That(validation.Errors, Is.Empty);
+            Assert.That(validation.EligibleEntityCount, Is.EqualTo(3842));
+            Assert.That(validation.CellCount, Is.EqualTo(49));
+            Assert.That(validation.UniqueMeshCount, Is.EqualTo(503));
+            Assert.That(validation.ActualMeshEntityCount, Is.EqualTo(2784));
+            Assert.That(validation.BoundsFallbackCount, Is.EqualTo(1058));
+        }
+
+        [Test]
+        public void GeometryEvaluation05C_StaticBatchGarageSubsetPreservesWorldGeometry()
+        {
+            IReadOnlyList<WorldEntityPlacement> records = WorldEntityTable.Parse(File.ReadAllText(
+                WorldTransferPaths.ToAbsoluteProjectPath(WorldTransferPaths.EntityTableAssetPath)));
+            WorldEntityPlacement record = records.Single(value => value.StableId == "fb0f962be1b325cc19296c66751818c0");
+            IReadOnlyDictionary<long, int[]> subsets = WorldStaticBatchSubsetTable.ParseCommittedTable();
+            Assert.That(subsets[record.SourceObjectId], Is.EqualTo(new[] { 80 }));
+
+            Mesh source = AssetDatabase.LoadAssetAtPath<Mesh>(AssetDatabase.GUIDToAssetPath(record.MeshGuid));
+            Mesh derived = AssetDatabase.LoadAssetAtPath<Mesh>(WorldTransferPaths.GeneratedMeshRoot + "/" + record.StableId + ".asset");
+            Assert.That(source, Is.Not.Null);
+            Assert.That(derived, Is.Not.Null);
+            Assert.That(derived.vertexCount, Is.LessThan(source.vertexCount));
+
+            Vector3 offset = record.Position - record.SourcePosition;
+            Vector3[] sourceVertices = source.vertices;
+            int[] selectedIndices = source.GetIndices(80, true);
+            Bounds expected = new Bounds(sourceVertices[selectedIndices[0]] + offset, Vector3.zero);
+            foreach (int index in selectedIndices) expected.Encapsulate(sourceVertices[index] + offset);
+
+            Matrix4x4 convertedTransform = Matrix4x4.TRS(record.Position, record.Rotation, record.Scale);
+            Vector3[] derivedVertices = derived.vertices;
+            Bounds actual = new Bounds(convertedTransform.MultiplyPoint3x4(derivedVertices[0]), Vector3.zero);
+            foreach (Vector3 vertex in derivedVertices) actual.Encapsulate(convertedTransform.MultiplyPoint3x4(vertex));
+            Assert.That(Vector3.Distance(actual.center, expected.center), Is.LessThan(0.01f));
+            Assert.That(Vector3.Distance(actual.size, expected.size), Is.LessThan(0.01f));
+            Assert.That(actual.size.magnitude, Is.LessThan(100f));
+        }
+
+        private static bool IsUsableMeshGuid(string value) =>
+            value.Length == 32 && !string.Equals(value, "0000000000000000e000000000000000", StringComparison.Ordinal);
     }
 }

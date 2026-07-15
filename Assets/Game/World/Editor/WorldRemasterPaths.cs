@@ -4,8 +4,9 @@ namespace MSC.World.Remaster.Editor
 {
     public static class WorldRemasterPaths
     {
-        public const string BuilderVersion = "05A.1";
+        public const string BuilderVersion = "05A.2";
         public const string PilotZoneId = "cell_0_-3";
+        public const string NextZoneId = "cell_0_-2";
         public const string SourceDatabaseVersion = "04A1.1";
 
         public const string EntityTable =
@@ -31,8 +32,12 @@ namespace MSC.World.Remaster.Editor
         public const string ProductionCellRoot = GeneratedRoot + "/ProductionCells";
         public const string ProductionProxyRoot = GeneratedRoot + "/ProductionProxies";
         public const string PilotCellScene = ProductionCellRoot + "/Production_cell_0_-3.unity";
+        public const string NextZoneCellScene = ProductionCellRoot + "/Production_cell_0_-2.unity";
         public const string PilotPlaytestScene = SceneRoot + "/WorldRemasterPilotPlaytest.unity";
+        public const string NextZonePlaytestScene = SceneRoot + "/WorldRemasterHomeShorelinePlaytest.unity";
         public const string ComparisonScene = "Assets/Game/World/Debug/Comparison/WR_HomeYardComparison.unity";
+        public const string NextZoneComparisonScene =
+            "Assets/Game/World/Debug/Comparison/WR_HomeShorelineComparison.unity";
         public const string VehicleAssemblyScene =
             "Assets/Game/Vehicle/Content/Assembly/Scenes/VehicleAssemblyPrototype.unity";
 
@@ -49,6 +54,10 @@ namespace MSC.World.Remaster.Editor
         public const string TreePrefab = PrefabRoot + "/WR_SpruceTree.prefab";
         public const string PropsPrefab = PrefabRoot + "/WR_HomePropsInfrastructure.prefab";
         public const string PilotZonePrefab = PrefabRoot + "/WR_HomeYardPilot.prefab";
+        public const string HedgePrefab = PrefabRoot + "/WR_HedgeSegment.prefab";
+        public const string PierPrefab = PrefabRoot + "/WR_HomePier.prefab";
+        public const string ShorelinePrefab = PrefabRoot + "/WR_HomeShorelineWater.prefab";
+        public const string NextZonePrefab = PrefabRoot + "/WR_HomeShorelinePier.prefab";
 
         public const string DocumentationRoot = "Docs/WorldRemaster";
         public const string ReplacementLedger = DocumentationRoot + "/WORLD_REPLACEMENT_LEDGER.csv";
@@ -57,6 +66,7 @@ namespace MSC.World.Remaster.Editor
         public const string PerformanceReport = DocumentationRoot + "/WORLD_REMASTER_PERFORMANCE_REPORT.md";
         public const string ValidationReport = DocumentationRoot + "/WORLD_REMASTER_VALIDATION_REPORT.md";
         public const string VisualCaptureRoot = "PerformanceCaptures/Milestone05A";
+        public const string NextZoneVisualCaptureRoot = VisualCaptureRoot + "/Batch01_cell_0_-2";
 
         public const string M3MaterialRoot = "Assets/Game/Presentation/Materials/GaragePrototype";
         public const string NeutralLightingPrefab =
@@ -69,8 +79,21 @@ namespace MSC.World.Remaster.Editor
 
         public static readonly Vector3 HomeGarageAnchor = new Vector3(153.495f, 0.95f, -1033.23f);
         public static readonly Quaternion HomeGarageRotation = Quaternion.Euler(0f, 180f, 0f);
+        public static readonly Vector3 HomePierAnchor = new Vector3(177.67f, -1.7789999f, -894.185f);
+        public static readonly Quaternion HomePierRotation = Quaternion.identity;
+        public static readonly Vector3 LakeTileAnchor = new Vector3(279.97998f, -2.929f, -606.625f);
+        public static readonly Vector3 LakeBottomAnchor = new Vector3(362.28f, -35.029f, -828.725f);
+        public static readonly Vector3[] HomeHedgeAnchors =
+        {
+            new Vector3(161.94f, 1.4309994f, -1018.265f),
+            new Vector3(166.39f, 1.4309996f, -1020.635f),
+            new Vector3(170.83f, 1.4309998f, -1023.005f)
+        };
         public static readonly Bounds PilotLocalBounds = new Bounds(
             new Vector3(0f, 2.5f, 5f),
             new Vector3(160f, 12f, 130f));
+        public static readonly Bounds NextZoneLocalBounds = new Bounds(
+            new Vector3(78f, -13f, 62f),
+            new Vector3(360f, 48f, 420f));
     }
 }

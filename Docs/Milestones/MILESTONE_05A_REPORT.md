@@ -227,6 +227,21 @@ Manual Unity actions:
 
 Manual Blender/Substance-equivalent actions: authored garage/house/interior/road/vegetation meshes, UVs, normal/AO/curvature/mask bakes, unique materials/decals, production LODs и collision proxies. Все группы отражены в 263 backlog tasks.
 
+## Продолжение 05A — Batch 01 `cell_0_-2 / HomeShorelinePier` (2026-07-15)
+
+Bounded baseline расширен одной зависимой подзоной без перехода к 05B/06. Builder/registry обновлены до `05A.2`; добавлены project-authored пирс, shoreline/water и три LOD-изгороди, отдельные production-cell, playtest и comparison scenes.
+
+- coverage партии: `9 / 15` (`60,000%`), шесть unrelated gameplay records остаются backlog;
+- общий registry: `33 / 13 509` direct bindings, `13 476` unassigned records, `261` art tasks;
+- `cell_0_-2`: `ProductionCandidate`, automated validator PASS; ручные traversal/water/hedge gates прошли, visual-reference и performance review остаются pending;
+- deterministic cell SHA-256 после двух rebuild: `973757687E6A24EF098D32BECB5595B24A2E9A336B77180F821CA64BA7BFD89F`;
+- `SEAM-001` после ручного finding исправлен: footpath перекрывает край принятого terrain на `3,75 м`, непрерывность закреплена статическим validator и PlayMode raycast-проверкой;
+- focused EditMode `16/16`, focused PlayMode `8/8`, full PlayMode `25/25`;
+- full EditMode `117/120`: только три ранее известные baseline failure (два M3 lighting и 04A1 donor-hash drift), новых regression нет;
+- девять comparison captures 1920 × 1080 (включая отдельный `Seam` view) и manifest созданы локально под `PerformanceCaptures/Milestone05A/Batch01_cell_0_-2/` и не входят в Git.
+
+Полный scope, stable IDs, acceptance criteria, команды, результаты и ручные gates находятся в `Docs/Milestones/MILESTONE_05A_BATCH_01_CELL_0_-2.md`. Исходный `cell_0_-3` baseline не переоценён и не объявлен final art.
+
 ## 14. Recommended next milestone
 
 Ровно один следующий milestone: продолжение 05A для следующей зоны после ручной приёмки пилота.

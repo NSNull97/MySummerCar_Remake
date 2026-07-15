@@ -280,3 +280,63 @@ Delivered:
 - dependency, fit, cell, material, collision and LOD validation plus focused EditMode/PlayMode coverage.
 
 Exit boundary: only 24 records are directly bound (`0.178%` global; `3.577%` in the pilot cell), and no record is marked `Approved`/`Verified`. The remaining map is not called remastered. Continue exactly with `Prompts/05A_CONTINUE_NEXT_WORLD_ZONE.md` after the pilot's manual Unity review.
+
+## Milestone 05C — full-map geometry evaluation update
+
+Status: **completed and manually accepted on 2026-07-15**. See
+`Docs/Milestones/MILESTONE_05C_REPORT.md`.
+
+Delivered:
+
+- removable reference-only overview for all 3,842 eligible geometry records;
+- 2,784 actual meshes and 1,058 explicit bounds fallbacks across 49 cells;
+- reconstruction of 1,683 legacy static-batch subsets without production
+  dependency on donor content;
+- automated geometry validation/captures and user manual sign-off;
+- explicit classification of tree-wall-bounded donor voids as source topology,
+  not a failed geometry transfer.
+
+## Milestone 05C1 — continuous ground and collision baseline
+
+Status: **bounded Teimo implementation completed and manually accepted on
+2026-07-15**. See
+`Docs/Milestones/MILESTONE_05C1_REPORT.md`.
+
+Delivered:
+
+- one approved `IntentionalDonorVoid` region split between `cell_-4_0` and
+  `cell_-3_0`;
+- two deterministic project-owned low-detail meshes and additive scenes;
+- exact seam at `x=-1536`, static non-convex collision and stable IDs;
+- strict validation of 104 vertices, 100 triangles, 26 seam pairs and 100/100
+  collision probes;
+- focused EditMode `3/3` and PlayMode `1/1` test passes;
+- no expansion into other voids, final terrain art or gameplay systems.
+
+Exit gate: automated checks and the bounded manual checklist are complete. The
+next and only next milestone is `Prompts/05B_WORLD_VALIDATION.md`; Milestone 06
+remains behind that validation gate.
+
+## Milestone 05B — strict world validation
+
+Status: **completed on 2026-07-15; no formal gate achieved**. See
+`Docs/Milestones/MILESTONE_05B_REPORT.md` and `Docs/WorldValidation/`.
+
+Validated facts:
+
+- all three gates were evaluated; `PilotGate`, `VerticalSliceGate` and
+  `FullWorldGate` currently fail;
+- exact eligible production coverage is 33/3,842 (0.858928%) across 2/49 cells;
+- measured bounded spatial fixtures pass, while full terrain/road/water/building
+  parity remains explicitly unavailable;
+- the static production/build dependency graph is clean (49 seeds, 230 assets,
+  482 edges, zero prohibited dependencies);
+- production-cell load/unload/reload lifecycle passes, but no production
+  focus-driven streaming service is wired;
+- bounded collision/clearance fixtures pass, but complete real-player traversal
+  and current-world runtime performance evidence are absent.
+
+Readiness decision: **NO-GO for `06_VEHICLE_SIMULATION.md`**. The next and only
+next milestone is a bounded **05B.1 PilotGate remediation**: wire production
+streaming through Bootstrap, add a real M4 CharacterController traversal fixture,
+capture current-world performance, and rerun 05B.

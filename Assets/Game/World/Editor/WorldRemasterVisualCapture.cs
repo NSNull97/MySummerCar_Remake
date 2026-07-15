@@ -61,7 +61,61 @@ namespace MSC.World.Remaster.Editor
             Debug.Log("WORLD_REMASTER_05A_CAPTURE_OK output=" + outputDirectory);
         }
 
-        public static void RunBatch() => CapturePilotComparisonViews();
+        [MenuItem("Tools/MSC Remake/World Remaster/Capture Batch 01 Comparison Views")]
+        public static void CaptureNextZoneComparisonViews()
+        {
+            string outputDirectory = Path.GetFullPath(WorldRemasterPaths.NextZoneVisualCaptureRoot);
+            Directory.CreateDirectory(outputDirectory);
+            var scene = EditorSceneManager.OpenScene(WorldRemasterPaths.NextZoneComparisonScene, OpenSceneMode.Single);
+            WorldRemasterModeController controller = scene.GetRootGameObjects()
+                .SelectMany(root => root.GetComponentsInChildren<WorldRemasterModeController>(true))
+                .FirstOrDefault();
+            Camera[] cameras = scene.GetRootGameObjects()
+                .SelectMany(root => root.GetComponentsInChildren<Camera>(true))
+                .OrderBy(camera => camera.name, StringComparer.Ordinal)
+                .ToArray();
+            if (controller == null || cameras.Length != 3)
+            {
+                throw new InvalidOperationException("Batch 01 comparison scene requires a mode controller and exactly three review cameras.");
+            }
+
+            var manifest = new StringBuilder();
+            manifest.AppendLine("view,mode,file,width,height,camera_position,camera_rotation,fov,unity_version,builder_version");
+            foreach (Camera camera in cameras)
+            {
+                string view = camera.name.StartsWith("Hedge", StringComparison.Ordinal)
+                    ? "Hedge"
+                    : camera.name.StartsWith("Seam", StringComparison.Ordinal)
+                        ? "Seam"
+                        : "Pier";
+                foreach (WorldComparisonMode mode in new[]
+                         {
+                             WorldComparisonMode.ReferenceOnly,
+                             WorldComparisonMode.ProductionOnly,
+                             WorldComparisonMode.OverlayComparison
+                         })
+                {
+                    controller.ApplyMode(mode);
+                    string fileName = view + "_" + mode + ".png";
+                    Capture(camera, Path.Combine(outputDirectory, fileName));
+                    manifest.Append(view).Append(',')
+                        .Append(mode).Append(',')
+                        .Append(fileName).Append(',')
+                        .Append(Width).Append(',')
+                        .Append(Height).Append(',')
+                        .Append(Quote(Vector(camera.transform.position))).Append(',')
+                        .Append(Quote(Vector(camera.transform.eulerAngles))).Append(',')
+                        .Append(camera.fieldOfView.ToString("0.###", CultureInfo.InvariantCulture)).Append(',')
+                        .Append(Application.unityVersion).Append(',')
+                        .AppendLine(WorldRemasterPaths.BuilderVersion);
+                }
+            }
+
+            File.WriteAllText(Path.Combine(outputDirectory, "capture_manifest.csv"), manifest.ToString(), new UTF8Encoding(false));
+            Debug.Log("WORLD_REMASTER_05A_BATCH01_CAPTURE_OK output=" + outputDirectory);
+        }
+
+        public static void RunBatch() => CaptureNextZoneComparisonViews();
 
         private static void Capture(Camera camera, string path)
         {

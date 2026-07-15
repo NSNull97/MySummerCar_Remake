@@ -25,3 +25,7 @@ Compare anchor, bounds, footprint, pivots, door arcs, terrain contact, road appr
 ## 05A baseline captured
 
 `ReferenceOnly.png`, `ProductionOnly.png`, `OverlayComparison.png` and `capture_manifest.csv` were generated at 1920 × 1080 under `PerformanceCaptures/Milestone05A/`. Review confirms that all three modes are distinct and the overlay proxies render over the production yard. The available reference image is sparse metadata geometry, not donor visual fidelity. The neutral production capture is very dark and the tree assets are obvious first-pass capsules; both observations remain acceptance blockers for art approval rather than being hidden.
+
+## Batch 01 baseline captured
+
+Для `cell_0_-2 / HomeShorelinePier` созданы три фиксированные камеры (`Pier`, `Hedge`, `Seam`) и по три режима, всего девять PNG 1920 × 1080 под ignored-путём `PerformanceCaptures/Milestone05A/Batch01_cell_0_-2/`. Первый capture выявил воду поверх hedge boundary; после исправления повторный capture подтвердил отсутствие overlap. Пользовательский Scene View review 2026-07-15 дополнительно выявил тёмный геометрический разрыв `SEAM-001` между home terrain и подходом к пирсу; для него добавлена отдельная камера, а повторный ручной проход после исправления завершён с PASS. Proxy layer показывает точные stable-position anchors, но не donor silhouette/материалы, поэтому кадры подтверждают структуру и не дают visual approval без отдельного shoreline capture оригинальной игры.

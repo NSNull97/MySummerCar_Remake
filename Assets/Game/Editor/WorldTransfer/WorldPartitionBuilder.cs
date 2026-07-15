@@ -8,58 +8,80 @@ using MSC.World.Streaming;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 namespace MSC.Editor.WorldTransfer
 {
     public static class WorldPartitionBuilder
     {
-        public const string GeneratorVersion = "1.0.0";
+        public const string GeneratorVersion = "2.1.0-05C";
         public const string DatabaseVersion = "04A1.1";
 
         public static void GenerateAll()
         {
             IReadOnlyList<WorldEntityPlacement> records = LoadRecords();
             WorldEntityPlacement[] eligible = records.Where(record => record.ReferenceWorldEligible).ToArray();
+            WorldReferenceMeshLibrarySync.Synchronize(eligible);
+            IReadOnlyDictionary<long, int[]> staticBatchSubsets = WorldStaticBatchSubsetTable.Synchronize(eligible);
             EnsureFolders();
+            ResetGeneratedMeshRoot();
             Dictionary<string, Material> materials = CreateCategoryMaterials(eligible.Select(record => record.Category).Distinct());
             IGrouping<string, WorldEntityPlacement>[] cellGroups = eligible.Where(record => record.CellId != "global")
                 .GroupBy(record => record.CellId).OrderBy(group => group.Key, StringComparer.Ordinal).ToArray();
 
             try
             {
+                // 05C creates 1,683 derived meshes. Keep the AssetDatabase in
+                // editing mode for the whole deterministic batch; importing
+                // each generated asset inline causes a refresh storm and can
+                // prevent batchmode Unity from completing.
+                AssetDatabase.StartAssetEditing();
                 for (int index = 0; index < cellGroups.Length; index++)
                 {
                     IGrouping<string, WorldEntityPlacement> group = cellGroups[index];
                     if (!Application.isBatchMode && EditorUtility.DisplayCancelableProgressBar(
                             "World Transfer", "Generating " + group.Key, index / (float)Mathf.Max(1, cellGroups.Length)))
                         throw new OperationCanceledException("World reference generation was cancelled. Run validation or rebuild before using partial output.");
-                    BuildProxyScene(WorldTransferPaths.CellScene(group.Key), group.Key, group.ToArray(), materials);
+                    BuildReferenceScene(WorldTransferPaths.CellScene(group.Key), group.Key, group.ToArray(), materials, staticBatchSubsets);
                 }
 
-                BuildProxyScene(WorldTransferPaths.GlobalScene, "global", eligible.Where(record => record.CellId == "global").ToArray(), materials);
+                BuildReferenceScene(WorldTransferPaths.GlobalScene, "global", eligible.Where(record => record.CellId == "global").ToArray(), materials, staticBatchSubsets);
                 BuildPersistentScene(eligible);
                 BuildBootstrapScene(eligible);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-                Debug.Log($"WORLD_TRANSFER_GENERATION_OK eligible={eligible.Length} cells={cellGroups.Length}");
             }
             finally
             {
+                AssetDatabase.StopAssetEditing();
                 if (!Application.isBatchMode) EditorUtility.ClearProgressBar();
             }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ForceUpdate);
+            Debug.Log($"WORLD_TRANSFER_GENERATION_OK eligible={eligible.Length} cells={cellGroups.Length}");
         }
 
         public static void GenerateSelected(string cellId)
         {
             if (string.IsNullOrWhiteSpace(cellId) || string.Equals(cellId, "global", StringComparison.Ordinal) || string.Equals(cellId, "excluded", StringComparison.Ordinal))
                 throw new ArgumentException("Selected cell must be a concrete cell_X_Z ID.", nameof(cellId));
-            WorldEntityPlacement[] records = LoadRecords().Where(record => record.ReferenceWorldEligible && record.CellId == cellId).ToArray();
+            IReadOnlyList<WorldEntityPlacement> allRecords = LoadRecords();
+            WorldEntityPlacement[] records = allRecords.Where(record => record.ReferenceWorldEligible && record.CellId == cellId).ToArray();
             if (records.Length == 0) throw new InvalidOperationException("Selected cell has no records: " + cellId);
+            WorldReferenceMeshLibrarySync.Synchronize(records);
+            IReadOnlyDictionary<long, int[]> staticBatchSubsets = WorldStaticBatchSubsetTable.Synchronize(allRecords);
             EnsureFolders();
-            BuildProxyScene(WorldTransferPaths.CellScene(cellId), cellId, records, CreateCategoryMaterials(records.Select(record => record.Category).Distinct()));
+            AssetDatabase.StartAssetEditing();
+            try
+            {
+                BuildReferenceScene(WorldTransferPaths.CellScene(cellId), cellId, records, CreateCategoryMaterials(records.Select(record => record.Category).Distinct()), staticBatchSubsets);
+            }
+            finally
+            {
+                AssetDatabase.StopAssetEditing();
+            }
             AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ForceUpdate);
         }
 
         public static void OpenReferenceOverview()
@@ -69,12 +91,15 @@ namespace MSC.Editor.WorldTransfer
             EditorSceneManager.OpenScene(WorldTransferPaths.BootstrapScene, OpenSceneMode.Single);
             EditorSceneManager.OpenScene(WorldTransferPaths.PersistentScene, OpenSceneMode.Additive);
             EditorSceneManager.OpenScene(WorldTransferPaths.GlobalScene, OpenSceneMode.Additive);
-            foreach (string cell in new[] { "cell_-1_-1", "cell_-1_0", "cell_0_-1", "cell_0_0" })
+            string sceneRoot = WorldTransferPaths.ToAbsoluteProjectPath(WorldTransferPaths.GeneratedSceneRoot);
+            foreach (string path in Directory.EnumerateFiles(sceneRoot, "World_cell_*.unity")
+                         .Select(path => Path.GetRelativePath(WorldTransferPaths.ProjectRoot, path).Replace('\\', '/'))
+                         .OrderBy(path => path, StringComparer.Ordinal))
             {
-                string path = WorldTransferPaths.CellScene(cell);
-                if (File.Exists(WorldTransferPaths.ToAbsoluteProjectPath(path)))
-                    EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
+                EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
             }
+
+            FrameFullMapInSceneView(LoadRecords().Where(record => record.ReferenceWorldEligible));
         }
 
         public static void ClearGenerated()
@@ -91,15 +116,31 @@ namespace MSC.Editor.WorldTransfer
             return WorldEntityTable.Parse(File.ReadAllText(path));
         }
 
-        private static void BuildProxyScene(string path, string cellId, IReadOnlyList<WorldEntityPlacement> records, IReadOnlyDictionary<string, Material> materials)
+        private static void BuildReferenceScene(
+            string path,
+            string cellId,
+            IReadOnlyList<WorldEntityPlacement> records,
+            IReadOnlyDictionary<string, Material> materials,
+            IReadOnlyDictionary<long, int[]> staticBatchSubsets)
         {
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             scene.name = Path.GetFileNameWithoutExtension(path);
             var root = new GameObject($"REFERENCE_ONLY_{cellId}_{DatabaseVersion}");
             root.tag = "EditorOnly";
-            root.AddComponent<WorldGeneratedSceneStamp>().Configure(DatabaseVersion, GeneratorVersion, cellId, records.Count);
+            var geometryRoot = new GameObject("DONOR_REFERENCE_GEOMETRY");
+            geometryRoot.tag = "EditorOnly";
+            geometryRoot.transform.SetParent(root.transform, false);
+            var fallbackRoot = new GameObject("BOUNDS_AND_MISSING_PROXIES");
+            fallbackRoot.tag = "EditorOnly";
+            fallbackRoot.transform.SetParent(root.transform, false);
+            int actualMeshCount = 0;
             foreach (WorldEntityPlacement record in records.OrderBy(record => record.StableId, StringComparer.Ordinal))
-                CreateProxy(root.transform, record, materials[record.Category]);
+            {
+                if (CreateReferenceEntity(geometryRoot.transform, fallbackRoot.transform, record, materials[record.Category], staticBatchSubsets))
+                    actualMeshCount++;
+            }
+            root.AddComponent<WorldGeneratedSceneStamp>().Configure(
+                DatabaseVersion, GeneratorVersion, cellId, records.Count, actualMeshCount, records.Count - actualMeshCount);
             EditorSceneManager.SaveScene(scene, path);
         }
 
@@ -128,6 +169,8 @@ namespace MSC.Editor.WorldTransfer
             root.AddComponent<WorldGeneratedSceneStamp>().Configure(DatabaseVersion, GeneratorVersion, "bootstrap", 0);
 
             var cameraObject = new GameObject("WorldTransfer_FreeFlyCamera");
+            cameraObject.tag = "EditorOnly";
+            cameraObject.transform.SetParent(root.transform, false);
             cameraObject.transform.position = new Vector3(0f, 180f, -240f);
             cameraObject.transform.LookAt(Vector3.zero);
             Camera camera = cameraObject.AddComponent<Camera>();
@@ -137,6 +180,8 @@ namespace MSC.Editor.WorldTransfer
             cameraObject.AddComponent<WorldTransferDebugFlyCamera>();
 
             var loaderObject = new GameObject("WorldReferenceCellLoader_DISABLED_REFERENCE_ONLY");
+            loaderObject.tag = "EditorOnly";
+            loaderObject.transform.SetParent(root.transform, false);
             WorldReferenceCellLoader loader = loaderObject.AddComponent<WorldReferenceCellLoader>();
             WorldReferenceCellScene[] cells = records.Where(record => record.CellId != "global")
                 .Select(record => record.CellId).Distinct(StringComparer.Ordinal).OrderBy(value => value, StringComparer.Ordinal)
@@ -145,6 +190,8 @@ namespace MSC.Editor.WorldTransfer
             loader.enabled = false;
 
             var lightObject = new GameObject("Reference_Sun");
+            lightObject.tag = "EditorOnly";
+            lightObject.transform.SetParent(root.transform, false);
             lightObject.transform.rotation = Quaternion.Euler(50f, -35f, 0f);
             Light light = lightObject.AddComponent<Light>();
             light.type = LightType.Directional;
@@ -159,7 +206,99 @@ namespace MSC.Editor.WorldTransfer
             return new WorldReferenceCellScene(int.Parse(parts[1]), int.Parse(parts[2]), "World_" + cellId);
         }
 
-        private static void CreateProxy(Transform parent, WorldEntityPlacement record, Material material)
+        private static bool CreateReferenceEntity(
+            Transform geometryParent,
+            Transform fallbackParent,
+            WorldEntityPlacement record,
+            Material material,
+            IReadOnlyDictionary<long, int[]> staticBatchSubsets)
+        {
+            Mesh mesh = ResolveReferenceMesh(record.MeshGuid);
+            if (mesh == null)
+            {
+                CreateBoundsProxy(fallbackParent, record, material);
+                return false;
+            }
+
+            if (staticBatchSubsets.TryGetValue(record.SourceObjectId, out int[] subMeshIndices))
+            {
+                mesh = CreateStaticBatchSubsetMesh(mesh, subMeshIndices, record);
+                if (mesh == null)
+                {
+                    CreateBoundsProxy(fallbackParent, record, material);
+                    return false;
+                }
+            }
+
+            var reference = new GameObject(Sanitize(record.Category + "_" + record.OriginalName + "_" + record.StableId[..8]));
+            reference.tag = "EditorOnly";
+            reference.transform.SetParent(geometryParent, false);
+            reference.transform.SetPositionAndRotation(record.Position, record.Rotation);
+            reference.transform.localScale = record.Scale;
+            reference.AddComponent<MeshFilter>().sharedMesh = mesh;
+            MeshRenderer renderer = reference.AddComponent<MeshRenderer>();
+            renderer.sharedMaterials = Enumerable.Repeat(material, Mathf.Max(1, mesh.subMeshCount)).ToArray();
+            reference.AddComponent<WorldReferenceEntity>().Configure(record.StableId, record.SourceObjectId, record.HierarchyPath,
+                record.Category, record.ReplacementStatus, record.TransferStatus, WorldReferenceVisualizationKind.ActualMesh, record.MeshGuid);
+            return true;
+        }
+
+        private static Mesh CreateStaticBatchSubsetMesh(Mesh source, IReadOnlyList<int> subMeshIndices, WorldEntityPlacement record)
+        {
+            if (subMeshIndices.Count == 0 || subMeshIndices.Any(index => index < 0 || index >= source.subMeshCount))
+            {
+                Debug.LogError($"WORLD_STATIC_BATCH_INVALID stableId={record.StableId} mesh={record.MeshGuid} sourceSubMeshes={source.subMeshCount} requested={string.Join(";", subMeshIndices)}");
+                return null;
+            }
+
+            Vector3[] sourceVertices = source.vertices;
+            Vector2[] sourceUv = source.uv;
+            Matrix4x4 inverseSourceTransform = Matrix4x4.TRS(record.SourcePosition, record.Rotation, record.Scale).inverse;
+            var vertexMap = new Dictionary<int, int>();
+            var vertices = new List<Vector3>();
+            var uv = new List<Vector2>();
+            var remappedSubMeshes = new List<int[]>(subMeshIndices.Count);
+            foreach (int subMeshIndex in subMeshIndices)
+            {
+                int[] sourceIndices = source.GetIndices(subMeshIndex, true);
+                var remapped = new int[sourceIndices.Length];
+                for (int index = 0; index < sourceIndices.Length; index++)
+                {
+                    int sourceVertex = sourceIndices[index];
+                    if (sourceVertex < 0 || sourceVertex >= sourceVertices.Length)
+                        throw new InvalidDataException($"Static-batch mesh index {sourceVertex} is outside vertex buffer {sourceVertices.Length} for {record.StableId}.");
+                    if (!vertexMap.TryGetValue(sourceVertex, out int destinationVertex))
+                    {
+                        destinationVertex = vertices.Count;
+                        vertexMap.Add(sourceVertex, destinationVertex);
+                        vertices.Add(inverseSourceTransform.MultiplyPoint3x4(sourceVertices[sourceVertex]));
+                        if (sourceUv.Length == sourceVertices.Length) uv.Add(sourceUv[sourceVertex]);
+                    }
+                    remapped[index] = destinationVertex;
+                }
+                remappedSubMeshes.Add(remapped);
+            }
+
+            if (vertices.Count == 0) return null;
+            var mesh = new Mesh
+            {
+                name = "WT05C_" + record.StableId,
+                indexFormat = vertices.Count > ushort.MaxValue ? IndexFormat.UInt32 : IndexFormat.UInt16
+            };
+            mesh.SetVertices(vertices);
+            if (uv.Count == vertices.Count) mesh.SetUVs(0, uv);
+            mesh.subMeshCount = remappedSubMeshes.Count;
+            for (int index = 0; index < remappedSubMeshes.Count; index++)
+                mesh.SetIndices(remappedSubMeshes[index], source.GetTopology(subMeshIndices[index]), index, false);
+            mesh.RecalculateBounds();
+
+            string path = WorldTransferPaths.GeneratedMeshRoot + "/" + record.StableId + ".asset";
+            if (AssetDatabase.LoadAssetAtPath<Mesh>(path) != null) AssetDatabase.DeleteAsset(path);
+            AssetDatabase.CreateAsset(mesh, path);
+            return mesh;
+        }
+
+        private static void CreateBoundsProxy(Transform parent, WorldEntityPlacement record, Material material)
         {
             GameObject proxy = GameObject.CreatePrimitive(PrimitiveType.Cube);
             proxy.name = Sanitize(record.Category + "_" + record.OriginalName + "_" + record.StableId[..8]);
@@ -173,7 +312,25 @@ namespace MSC.Editor.WorldTransfer
             proxy.GetComponent<Renderer>().sharedMaterial = material;
             UnityEngine.Object.DestroyImmediate(proxy.GetComponent<Collider>());
             proxy.AddComponent<WorldReferenceEntity>().Configure(record.StableId, record.SourceObjectId, record.HierarchyPath,
-                record.Category, record.ReplacementStatus, record.TransferStatus);
+                record.Category, record.ReplacementStatus, record.TransferStatus, WorldReferenceVisualizationKind.BoundsFallback);
+        }
+
+        private static Mesh ResolveReferenceMesh(string guid)
+        {
+            if (!WorldReferenceMeshLibrarySync.IsUsableMeshGuid(guid)) return null;
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            return WorldReferenceMeshLibrarySync.IsBelowReferenceMeshRoot(path) ? AssetDatabase.LoadAssetAtPath<Mesh>(path) : null;
+        }
+
+        private static void FrameFullMapInSceneView(IEnumerable<WorldEntityPlacement> records)
+        {
+            WorldEntityPlacement[] values = records.ToArray();
+            if (values.Length == 0 || SceneView.lastActiveSceneView == null) return;
+            Bounds bounds = values[0].Bounds;
+            for (int index = 1; index < values.Length; index++) bounds.Encapsulate(values[index].Bounds);
+            float size = Mathf.Max(100f, Mathf.Max(bounds.size.x, bounds.size.z) * 0.6f);
+            SceneView.lastActiveSceneView.LookAt(bounds.center, Quaternion.Euler(90f, 0f, 0f), size, false, true);
+            SceneView.lastActiveSceneView.Repaint();
         }
 
         private static Dictionary<string, Material> CreateCategoryMaterials(IEnumerable<string> categories)
@@ -222,6 +379,13 @@ namespace MSC.Editor.WorldTransfer
         {
             EnsureFolder(WorldTransferPaths.GeneratedSceneRoot);
             EnsureFolder(WorldTransferPaths.GeneratedMaterialRoot);
+            EnsureFolder(WorldTransferPaths.GeneratedMeshRoot);
+        }
+
+        private static void ResetGeneratedMeshRoot()
+        {
+            if (AssetDatabase.IsValidFolder(WorldTransferPaths.GeneratedMeshRoot)) AssetDatabase.DeleteAsset(WorldTransferPaths.GeneratedMeshRoot);
+            EnsureFolder(WorldTransferPaths.GeneratedMeshRoot);
         }
 
         private static void EnsureFolder(string path)

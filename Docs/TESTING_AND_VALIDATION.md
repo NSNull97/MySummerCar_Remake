@@ -260,3 +260,38 @@ Determinism and data checks:
 - `git diff --check` passed (apart from the existing informational CRLF/LF warning for `PORTING_LEDGER.csv`).
 
 Visual capture generated three 1920 × 1080 modes plus a manifest under ignored `PerformanceCaptures/Milestone05A/`. They were inspected for mode separation; final art, lighting and gameplay traversal approval remains manual.
+
+## Milestone 05B strict world-validation update
+
+Unity `6000.3.11f1` results from 2026-07-15:
+
+- 05A production-cell validator: PASS, zero warnings;
+- 05C geometry validator: PASS, 3,842 eligible records, 49 cells, 2,784 actual
+  meshes and 1,058 bounds fallbacks;
+- 05C1 continuous-ground validator: PASS, two pieces, 26 seam pairs and 100/100
+  collision probes;
+- 05B world validator/export: completed with code 0 and marker
+  `WORLD_VALIDATION_05B_COMPLETED achieved=None bindings=33/3842 openIssues=18`;
+  four validator runs are `Pass`, world-transfer is `KnownProvenanceDrift`, and
+  production-streaming-wiring is `MissingRequiredImplementation`;
+- focused WorldRemaster EditMode: **31/31 passed**;
+- focused WorldRemaster PlayMode: **9/9 passed**;
+- full PlayMode regression: **26/26 passed**;
+- full EditMode regression: **137 total, 134 passed, 3 failed**.
+
+The three EditMode failures are pre-existing and explicitly preserved:
+
+1. Two M3 lighting tests observe the user-owned `M3_NeutralVolume.asset` sky type
+   `1` instead of the frozen M3 Physical Sky type `4`.
+2. The 04A1 donor dry-run observes the documented post-reinstall SHA-256 drift for
+   `sharedassets3.assets` and `sharedassets3.resource`.
+
+The corrected production-cell lifecycle fixture starts from `Bootstrap`, performs
+two load/unload cycles, rejects duplicate stable IDs and verifies exact runtime
+snapshots on every cycle: 7 IDs / marker count 24 for `cell_0_-3`, and 8 IDs /
+marker count 9 for `cell_0_-2`. Direct scene lifecycle passes; absence of a wired
+production streamer remains a formal `PilotGate` blocker rather than being hidden
+by the test.
+
+Ignored evidence: `Logs/M05B_*.log` and `TestResults/M05B_*.xml`. Durable machine
+results are under `Docs/WorldValidation/`.

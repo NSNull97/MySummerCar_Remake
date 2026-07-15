@@ -18,6 +18,8 @@ namespace MSC.Tests.EditMode.WorldRemaster
             string json = JsonUtility.ToJson(registry);
             Assert.That(json, Does.Contain("\"pilotZoneId\":\"cell_0_-3\""));
             Assert.That(registry.Records.Count, Is.EqualTo(13509));
+            Assert.That(registry.RegistryVersion, Is.EqualTo("05A.2"));
+            Assert.That(registry.SourceDatabaseVersion, Is.EqualTo("04A1.1"));
             Assert.That(WorldProductionRegistryValidation.Validate(registry), Is.Empty);
         }
 
@@ -97,12 +99,24 @@ namespace MSC.Tests.EditMode.WorldRemaster
         }
 
         [Test]
+        public void HomePierAnchor_AssignsToCellZeroMinusTwo()
+        {
+            Assert.That(
+                WorldCellMembershipUtility.FromPosition(WorldRemasterPaths.HomePierAnchor, 512f).Id,
+                Is.EqualTo(WorldRemasterPaths.NextZoneId));
+        }
+
+        [Test]
         public void GeneratedCell_DependencyHashIsStableWithinUnchangedInputs()
         {
             Hash128 first = AssetDatabase.GetAssetDependencyHash(WorldRemasterPaths.PilotCellScene);
             Hash128 second = AssetDatabase.GetAssetDependencyHash(WorldRemasterPaths.PilotCellScene);
             Assert.That(first.isValid, Is.True);
             Assert.That(second, Is.EqualTo(first));
+            Hash128 nextFirst = AssetDatabase.GetAssetDependencyHash(WorldRemasterPaths.NextZoneCellScene);
+            Hash128 nextSecond = AssetDatabase.GetAssetDependencyHash(WorldRemasterPaths.NextZoneCellScene);
+            Assert.That(nextFirst.isValid, Is.True);
+            Assert.That(nextSecond, Is.EqualTo(nextFirst));
         }
 
         [Test]
@@ -120,9 +134,9 @@ namespace MSC.Tests.EditMode.WorldRemaster
         {
             WorldProductionAssetRegistry registry = LoadRegistry();
             WorldProductionAssetRecord[] missing = registry.Records.Where(record => !record.HasProductionReplacement).ToArray();
-            Assert.That(missing.Length, Is.EqualTo(13485));
+            Assert.That(missing.Length, Is.EqualTo(13476));
             Assert.That(missing.All(record => !string.IsNullOrWhiteSpace(record.ManualArtDependency)), Is.True);
-            Assert.That(registry.ArtTasks.Count, Is.EqualTo(263));
+            Assert.That(registry.ArtTasks.Count, Is.EqualTo(261));
         }
 
         [Test]
@@ -133,7 +147,55 @@ namespace MSC.Tests.EditMode.WorldRemaster
             Assert.That(pilot.ReferenceRecordCount, Is.EqualTo(671));
             Assert.That(pilot.MappedRecordCount, Is.EqualTo(24));
             Assert.That(pilot.CoveragePercent, Is.EqualTo(3.57675f).Within(0.0001f));
-            Assert.That(pilot.ManualValidation, Is.EqualTo("Pending"));
+            Assert.That(
+                pilot.ManualValidation,
+                Is.EqualTo("DoorGatePass;LightingReadabilityLow;FullTraversalPending;PerformancePending"));
+        }
+
+        [Test]
+        public void Batch01Zone_MapsExactlyNineOfFifteenReferenceRecords()
+        {
+            WorldProductionAssetRegistry registry = LoadRegistry();
+            WorldProductionZoneRecord zone = registry.Zones.Single(record => record.ZoneId == WorldRemasterPaths.NextZoneId);
+            Assert.That(zone.Status, Is.EqualTo(WorldReplacementStatus.ProductionCandidate));
+            Assert.That(zone.ReferenceRecordCount, Is.EqualTo(15));
+            Assert.That(zone.MappedRecordCount, Is.EqualTo(9));
+            Assert.That(zone.CoveragePercent, Is.EqualTo(60f).Within(0.0001f));
+            Assert.That(
+                zone.ManualValidation,
+                Is.EqualTo("TraversalPass;WaterPass;HedgePass;VisualReferencePending;PerformancePending"));
+
+            string[] expectedIds =
+            {
+                "345dc7662dae9f1f01d77b15f74e5f8f",
+                "56a7aa7c66146248d6c820c31a6b99fd",
+                "de5d5682cbef7d27a48a473d5e85877d",
+                "e0fa39e1ceeed93727dd86e749c6d115",
+                "b412961b75cb019e74a83b24faac32a4",
+                "f700b12cf5c75a3906dd079acea3f274",
+                "b8de7336e204fae3ba333227b3e94d19",
+                "449b18de0c10f87887e3f3304a90366e",
+                "847f56ce8c1be238f4bcae514bb55fdf"
+            };
+            string[] actualIds = registry.Records
+                .Where(record => record.ProductionZone == WorldRemasterPaths.NextZoneId && record.HasProductionReplacement)
+                .Select(record => record.StableWorldId)
+                .OrderBy(id => id, StringComparer.Ordinal)
+                .ToArray();
+            Assert.That(actualIds, Is.EqualTo(expectedIds.OrderBy(id => id, StringComparer.Ordinal).ToArray()));
+        }
+
+        [Test]
+        public void Batch01Prefab_HasWalkablePierNonBlockingWaterAndHedgeLods()
+        {
+            GameObject zone = AssetDatabase.LoadAssetAtPath<GameObject>(WorldRemasterPaths.NextZonePrefab);
+            Assert.That(zone, Is.Not.Null);
+            Assert.That(zone.GetComponentsInChildren<LODGroup>(true).Length, Is.EqualTo(3));
+            Assert.That(zone.GetComponentsInChildren<BoxCollider>(true)
+                .Count(collider => collider.name.StartsWith("DeckPlank_", StringComparison.Ordinal)), Is.EqualTo(14));
+            Transform water = zone.GetComponentsInChildren<Transform>(true)
+                .Single(transform => transform.name == "BoundedLakeSurface");
+            Assert.That(water.GetComponent<Collider>(), Is.Null);
         }
 
         [Test]

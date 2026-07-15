@@ -220,7 +220,7 @@ flowchart LR
     DB["Frozen 04A1 world database"] --> REG["Production replacement registry"]
     REG --> BACKLOG["Art backlog + zone status"]
     REG --> BUILD["Deterministic production builder"]
-    BUILD --> CELL["Production cell_0_-3"]
+    BUILD --> CELL["Production cells cell_0_-3 + cell_0_-2"]
     CELL --> PLAYER["M4 player consumer"]
     CELL --> ASSEMBLY["M05 assembly consumer"]
     REF["Removable reference metadata"] --> COMPARE["Reference / production / overlay scene"]
@@ -231,3 +231,47 @@ flowchart LR
 ```
 
 `MSC.World.Remaster.Runtime` owns serializable registry data and runtime comparison/hinge presentation. `MSC.World.Remaster.Editor` owns content generation, report generation, dashboard, capture and validation. The source database remains authoritative for identities/cells; generated scene state is never copied back into it.
+
+Batch 01 adds `cell_0_-2 / HomeShorelinePier` as an independent streaming cell. The accepted `cell_0_-3` prefab is present only as context in Batch 01 playtest/comparison scenes; the new production-cell has no cross-cell hierarchy dependency.
+
+## Milestone 05C1 bounded safety-topology flow
+
+```mermaid
+flowchart LR
+    REF["04A1/05C boundary evidence"] --> CSV["Fingerprint-bound Teimo station profile"]
+    CSV --> BUILD["05C1 deterministic Editor builder"]
+    BUILD --> WEST["VoidFill cell_-4_0"]
+    BUILD --> EAST["VoidFill cell_-3_0"]
+    WEST --> VALIDATE["Seam + dependency + collider validator"]
+    EAST --> VALIDATE
+    VALIDATE --> GATE["Manual Scene View/collision gate"]
+    DONOR["Donor installation"] -. "read-only; no runtime dependency" .-> CSV
+```
+
+`WorldVoidFillMarker` belongs to `MSC.World.Remaster.Runtime` and carries only
+project-owned region/piece/cell identity and audit metadata. Mesh generation,
+reference overlay and validation stay in `MSC.Editor`; generated scenes contain
+no Editor component and remain outside normal Build Settings after 05B; runtime
+integration remains explicitly open as `WORLD-STREAM-005`.
+
+## Milestone 05B validation flow
+
+```mermaid
+flowchart LR
+    DB["13,509 durable world records"] --> RUN["WorldValidationRunner"]
+    REG["Production replacement registry"] --> RUN
+    PROD["Production cells and prefabs"] --> RUN
+    VOID["05C1 supplemental topology"] --> RUN
+    RUN --> GRAPH["Full dependency graph audit"]
+    RUN --> GATES["Pilot / VerticalSlice / FullWorld calculator"]
+    RUN --> EXPORT["Deterministic JSON and CSV evidence"]
+    TESTS["EditMode + PlayMode fixtures"] --> GATES
+    DASH["WorldValidationDashboard"] --> RUN
+    GATES --> VERDICT["Achieved gate: None"]
+    DONOR["Donor installation"] -. "no runtime dependency" .-> PROD
+```
+
+`MSC.World.Remaster.Editor` owns aggregation, dashboard and export. Runtime world,
+Player and Interaction architecture remain unchanged. Direct additive lifecycle
+tests exercise scene integrity, while the missing production streaming-service
+boundary is kept as a blocker rather than represented by the reference loader.

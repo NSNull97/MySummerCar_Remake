@@ -10,6 +10,7 @@
     "MSC.Vehicle.Simulation",
     "MSC.Vehicle.Assembly",
     "MSC.World.Runtime",
+    "MSC.World.Remaster.Runtime",
     "MSC.World.Streaming",
     "MSC.Weather.Runtime",
     "MSC.Audio.Runtime",

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WR_WorldProductionAssetRegistry
   m_EditorClassIdentifier: MSC.World.Remaster.Runtime::MSC.World.Remaster.WorldProductionAssetRegistry
   schemaVersion: 1
-  registryVersion: 05A.1
+  registryVersion: 05A.2
   sourceDatabaseVersion: 04A1.1
   pilotZoneId: cell_0_-3
   records:
@@ -118639,11 +118639,14 @@ MonoBehaviour:
   - stableWorldId: b8de7336e204fae3ba333227b3e94d19
     donorSourceReference: YARD/Building/LOD/HedgeFence/hedge
     semanticCategory: BuildingExterior
-    productionPrefab:
-    productionMaterials:
-    collisionReference:
-    lodGroup:
-    pivotMode: Unassigned
+    productionPrefab: Assets/Game/World/Production/Prefabs/WR_HedgeSegment.prefab
+    productionMaterials: Assets/Game/World/Production/Materials/WR_* (project-authored;
+      M3 procedural texture basis)
+    collisionReference: Assets/Game/World/Production/Prefabs/WR_HedgeSegment.prefab::simplified
+      BoxCollider
+    lodGroup: Assets/Game/World/Production/Prefabs/WR_HedgeSegment.prefab::two-stage
+      LODGroup
+    pivotMode: Preserve donor world anchor; project-authored local pivot
     scaleMode: 1 Unity unit = 1 metre; no negative production scale
     expectedBounds:
       m_Center: {x: 161.94, y: 1.4309994, z: -1018.265}
@@ -118651,21 +118654,21 @@ MonoBehaviour:
     measuredBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0, y: 0, z: 0}
-    allowedDeviationMeters: 0
+    allowedDeviationMeters: 0.35
     transformOffset: {x: 0, y: 0, z: 0}
-    replacementStatus: 0
-    authoringStatus: Backlog
-    validationStatus: NotRun
+    replacementStatus: 4
+    authoringStatus: GeneratedProductionCandidate
+    validationStatus: AutomatedStructurePass;ManualVisualPending
     productionZone: cell_0_-2
-    performanceTier: Unclassified
-    wetnessCompatibility: Unknown
-    weatherCompatibility: Unknown
-    notes: Reference record registered; no production replacement assigned in the
-      bounded first 05A pass.
-    sourceControlStatus: NoProductionAsset
-    manualArtDependency: 2ed9ef01ad145c6bfb8b012e90d0c3f9
-    lastValidationTimestamp: 2026-07-14T00:00:00+05:00
-    assetVersion: 0
+    performanceTier: Batch01Near
+    wetnessCompatibility: GlobalWetnessParameterReady
+    weatherCompatibility: Neutral/Evening/OvercastCompatible
+    notes: '05A Batch 01 HomeShorelinePier binding: HedgeSegmentA. Project-authored
+      geometry; donor binary is not copied and direct visual parity remains manual-reviewable.'
+    sourceControlStatus: TrackedProjectAsset
+    manualArtDependency:
+    lastValidationTimestamp: 2026-07-15T00:00:00+05:00
+    assetVersion: 05A.2
   - stableWorldId: 780d87cc7e43f0c4dc65076e27b345bd
     donorSourceReference: CARPARTS/PartsCar/stock steering wheel(Clone)/Bolts/BoltPM/bolt0
     semanticCategory: InteractivePropCandidate
@@ -132542,11 +132545,13 @@ MonoBehaviour:
   - stableWorldId: de5d5682cbef7d27a48a473d5e85877d
     donorSourceReference: MAP/PierHome/coll
     semanticCategory: ColliderOnly
-    productionPrefab:
-    productionMaterials:
-    collisionReference:
-    lodGroup:
-    pivotMode: Unassigned
+    productionPrefab: Assets/Game/World/Production/Prefabs/WR_HomePier.prefab
+    productionMaterials: Assets/Game/World/Production/Materials/WR_* (project-authored;
+      M3 procedural texture basis)
+    collisionReference: Assets/Game/World/Production/Prefabs/WR_HomePier.prefab::walkable
+      primitive colliders
+    lodGroup: Close-range asset; LOD deferred pending profiling
+    pivotMode: Preserve donor world anchor; project-authored local pivot
     scaleMode: 1 Unity unit = 1 metre; no negative production scale
     expectedBounds:
       m_Center: {x: 178.45375, y: -3.2439995, z: -892.44543}
@@ -132554,21 +132559,21 @@ MonoBehaviour:
     measuredBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0, y: 0, z: 0}
-    allowedDeviationMeters: 0
+    allowedDeviationMeters: 0.35
     transformOffset: {x: 0, y: 0, z: 0}
-    replacementStatus: 0
-    authoringStatus: Backlog
-    validationStatus: NotRun
+    replacementStatus: 4
+    authoringStatus: GeneratedProductionCandidate
+    validationStatus: AutomatedStructurePass;ManualVisualPending
     productionZone: cell_0_-2
-    performanceTier: Unclassified
-    wetnessCompatibility: Unknown
-    weatherCompatibility: Unknown
-    notes: Reference record registered; no production replacement assigned in the
-      bounded first 05A pass.
-    sourceControlStatus: NoProductionAsset
-    manualArtDependency: ab0d78358b4c94a12aef9ba658fda085
-    lastValidationTimestamp: 2026-07-14T00:00:00+05:00
-    assetVersion: 0
+    performanceTier: Batch01Near
+    wetnessCompatibility: GlobalWetnessParameterReady
+    weatherCompatibility: Neutral/Evening/OvercastCompatible
+    notes: '05A Batch 01 HomeShorelinePier binding: WalkableCollisionNorth. Project-authored
+      geometry; donor binary is not copied and direct visual parity remains manual-reviewable.'
+    sourceControlStatus: TrackedProjectAsset
+    manualArtDependency:
+    lastValidationTimestamp: 2026-07-15T00:00:00+05:00
+    assetVersion: 05A.2
   - stableWorldId: aa85f49cda14bfe89eb4844e0368e66d
     donorSourceReference: STORE/LOD/PRODUCTS/Spray07/2/cap
     semanticCategory: BuildingExterior
@@ -154919,11 +154924,14 @@ MonoBehaviour:
   - stableWorldId: 449b18de0c10f87887e3f3304a90366e
     donorSourceReference: YARD/Building/LOD/HedgeFence/hedge
     semanticCategory: BuildingExterior
-    productionPrefab:
-    productionMaterials:
-    collisionReference:
-    lodGroup:
-    pivotMode: Unassigned
+    productionPrefab: Assets/Game/World/Production/Prefabs/WR_HedgeSegment.prefab
+    productionMaterials: Assets/Game/World/Production/Materials/WR_* (project-authored;
+      M3 procedural texture basis)
+    collisionReference: Assets/Game/World/Production/Prefabs/WR_HedgeSegment.prefab::simplified
+      BoxCollider
+    lodGroup: Assets/Game/World/Production/Prefabs/WR_HedgeSegment.prefab::two-stage
+      LODGroup
+    pivotMode: Preserve donor world anchor; project-authored local pivot
     scaleMode: 1 Unity unit = 1 metre; no negative production scale
     expectedBounds:
       m_Center: {x: 166.39, y: 1.4309996, z: -1020.635}
@@ -154931,21 +154939,21 @@ MonoBehaviour:
     measuredBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0, y: 0, z: 0}
-    allowedDeviationMeters: 0
+    allowedDeviationMeters: 0.35
     transformOffset: {x: 0, y: 0, z: 0}
-    replacementStatus: 0
-    authoringStatus: Backlog
-    validationStatus: NotRun
+    replacementStatus: 4
+    authoringStatus: GeneratedProductionCandidate
+    validationStatus: AutomatedStructurePass;ManualVisualPending
     productionZone: cell_0_-2
-    performanceTier: Unclassified
-    wetnessCompatibility: Unknown
-    weatherCompatibility: Unknown
-    notes: Reference record registered; no production replacement assigned in the
-      bounded first 05A pass.
-    sourceControlStatus: NoProductionAsset
-    manualArtDependency: 2ed9ef01ad145c6bfb8b012e90d0c3f9
-    lastValidationTimestamp: 2026-07-14T00:00:00+05:00
-    assetVersion: 0
+    performanceTier: Batch01Near
+    wetnessCompatibility: GlobalWetnessParameterReady
+    weatherCompatibility: Neutral/Evening/OvercastCompatible
+    notes: '05A Batch 01 HomeShorelinePier binding: HedgeSegmentB. Project-authored
+      geometry; donor binary is not copied and direct visual parity remains manual-reviewable.'
+    sourceControlStatus: TrackedProjectAsset
+    manualArtDependency:
+    lastValidationTimestamp: 2026-07-15T00:00:00+05:00
+    assetVersion: 05A.2
   - stableWorldId: e15dbfa9b8bb891bd7b3be18bbfab176
     donorSourceReference: RALLY/Spectators/Helpers/SpectatorHelper/Pivot/RagDoll/thigh(right)/leg(right)
     semanticCategory: ColliderOnly
@@ -201198,11 +201206,13 @@ MonoBehaviour:
   - stableWorldId: b412961b75cb019e74a83b24faac32a4
     donorSourceReference: MAP/LakeNice/Lake/Tile
     semanticCategory: StaticProp
-    productionPrefab:
-    productionMaterials:
-    collisionReference:
-    lodGroup:
-    pivotMode: Unassigned
+    productionPrefab: Assets/Game/World/Production/Prefabs/WR_HomeShorelineWater.prefab
+    productionMaterials: Assets/Game/World/Production/Materials/WR_* (project-authored;
+      M3 procedural texture basis)
+    collisionReference: Assets/Game/World/Production/Prefabs/WR_HomeShorelineWater.prefab::non-blocking
+      water; primitive shore/path colliders
+    lodGroup: Bounded cell surface; HLOD deferred pending profiling
+    pivotMode: Preserve donor world anchor; project-authored local pivot
     scaleMode: 1 Unity unit = 1 metre; no negative production scale
     expectedBounds:
       m_Center: {x: 279.97998, y: -2.929, z: -606.625}
@@ -201210,21 +201220,21 @@ MonoBehaviour:
     measuredBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0, y: 0, z: 0}
-    allowedDeviationMeters: 0
+    allowedDeviationMeters: 0.35
     transformOffset: {x: 0, y: 0, z: 0}
-    replacementStatus: 0
-    authoringStatus: Backlog
-    validationStatus: NotRun
+    replacementStatus: 4
+    authoringStatus: GeneratedProductionCandidate
+    validationStatus: AutomatedStructurePass;ManualVisualPending
     productionZone: cell_0_-2
-    performanceTier: Unclassified
-    wetnessCompatibility: Unknown
-    weatherCompatibility: Unknown
-    notes: Reference record registered; no production replacement assigned in the
-      bounded first 05A pass.
-    sourceControlStatus: NoProductionAsset
-    manualArtDependency: f1c176dfec37348e0e982ef476973d47
-    lastValidationTimestamp: 2026-07-14T00:00:00+05:00
-    assetVersion: 0
+    performanceTier: Batch01Near
+    wetnessCompatibility: GlobalWetnessParameterReady
+    weatherCompatibility: Neutral/Evening/OvercastCompatible
+    notes: '05A Batch 01 HomeShorelinePier binding: BoundedLakeSurface. Project-authored
+      geometry; donor binary is not copied and direct visual parity remains manual-reviewable.'
+    sourceControlStatus: TrackedProjectAsset
+    manualArtDependency:
+    lastValidationTimestamp: 2026-07-15T00:00:00+05:00
+    assetVersion: 05A.2
   - stableWorldId: 41d522a459d677e58c6540eb5c0cf6a9
     donorSourceReference: Systems/Teletext/VKTekstiTV/PAGES/101/Texts/Line
     semanticCategory: InteractivePropCandidate
@@ -222422,11 +222432,13 @@ MonoBehaviour:
   - stableWorldId: e0fa39e1ceeed93727dd86e749c6d115
     donorSourceReference: MAP/PierHome/coll
     semanticCategory: ColliderOnly
-    productionPrefab:
-    productionMaterials:
-    collisionReference:
-    lodGroup:
-    pivotMode: Unassigned
+    productionPrefab: Assets/Game/World/Production/Prefabs/WR_HomePier.prefab
+    productionMaterials: Assets/Game/World/Production/Materials/WR_* (project-authored;
+      M3 procedural texture basis)
+    collisionReference: Assets/Game/World/Production/Prefabs/WR_HomePier.prefab::walkable
+      primitive colliders
+    lodGroup: Close-range asset; LOD deferred pending profiling
+    pivotMode: Preserve donor world anchor; project-authored local pivot
     scaleMode: 1 Unity unit = 1 metre; no negative production scale
     expectedBounds:
       m_Center: {x: 177.08711, y: -3.2440004, z: -895.47876}
@@ -222434,21 +222446,21 @@ MonoBehaviour:
     measuredBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0, y: 0, z: 0}
-    allowedDeviationMeters: 0
+    allowedDeviationMeters: 0.35
     transformOffset: {x: 0, y: 0, z: 0}
-    replacementStatus: 0
-    authoringStatus: Backlog
-    validationStatus: NotRun
+    replacementStatus: 4
+    authoringStatus: GeneratedProductionCandidate
+    validationStatus: AutomatedStructurePass;ManualVisualPending
     productionZone: cell_0_-2
-    performanceTier: Unclassified
-    wetnessCompatibility: Unknown
-    weatherCompatibility: Unknown
-    notes: Reference record registered; no production replacement assigned in the
-      bounded first 05A pass.
-    sourceControlStatus: NoProductionAsset
-    manualArtDependency: ab0d78358b4c94a12aef9ba658fda085
-    lastValidationTimestamp: 2026-07-14T00:00:00+05:00
-    assetVersion: 0
+    performanceTier: Batch01Near
+    wetnessCompatibility: GlobalWetnessParameterReady
+    weatherCompatibility: Neutral/Evening/OvercastCompatible
+    notes: '05A Batch 01 HomeShorelinePier binding: WalkableCollisionSouth. Project-authored
+      geometry; donor binary is not copied and direct visual parity remains manual-reviewable.'
+    sourceControlStatus: TrackedProjectAsset
+    manualArtDependency:
+    lastValidationTimestamp: 2026-07-15T00:00:00+05:00
+    assetVersion: 05A.2
   - stableWorldId: e63e83de5c00cf3142cc5e1a19fddaf5
     donorSourceReference: Systems/Teletext/VKTekstiTV/PAGES/401/Texts/Bottomline
     semanticCategory: InteractivePropCandidate
@@ -232789,11 +232801,13 @@ MonoBehaviour:
   - stableWorldId: f700b12cf5c75a3906dd079acea3f274
     donorSourceReference: MAP/Bottom
     semanticCategory: StaticProp
-    productionPrefab:
-    productionMaterials:
-    collisionReference:
-    lodGroup:
-    pivotMode: Unassigned
+    productionPrefab: Assets/Game/World/Production/Prefabs/WR_HomeShorelineWater.prefab
+    productionMaterials: Assets/Game/World/Production/Materials/WR_* (project-authored;
+      M3 procedural texture basis)
+    collisionReference: Assets/Game/World/Production/Prefabs/WR_HomeShorelineWater.prefab::non-blocking
+      water; primitive shore/path colliders
+    lodGroup: Bounded cell surface; HLOD deferred pending profiling
+    pivotMode: Preserve donor world anchor; project-authored local pivot
     scaleMode: 1 Unity unit = 1 metre; no negative production scale
     expectedBounds:
       m_Center: {x: 362.28, y: -35.029, z: -828.725}
@@ -232801,21 +232815,21 @@ MonoBehaviour:
     measuredBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0, y: 0, z: 0}
-    allowedDeviationMeters: 0
+    allowedDeviationMeters: 0.35
     transformOffset: {x: 0, y: 0, z: 0}
-    replacementStatus: 0
-    authoringStatus: Backlog
-    validationStatus: NotRun
+    replacementStatus: 4
+    authoringStatus: GeneratedProductionCandidate
+    validationStatus: AutomatedStructurePass;ManualVisualPending
     productionZone: cell_0_-2
-    performanceTier: Unclassified
-    wetnessCompatibility: Unknown
-    weatherCompatibility: Unknown
-    notes: Reference record registered; no production replacement assigned in the
-      bounded first 05A pass.
-    sourceControlStatus: NoProductionAsset
-    manualArtDependency: f1c176dfec37348e0e982ef476973d47
-    lastValidationTimestamp: 2026-07-14T00:00:00+05:00
-    assetVersion: 0
+    performanceTier: Batch01Near
+    wetnessCompatibility: GlobalWetnessParameterReady
+    weatherCompatibility: Neutral/Evening/OvercastCompatible
+    notes: '05A Batch 01 HomeShorelinePier binding: BoundedLakeBottom. Project-authored
+      geometry; donor binary is not copied and direct visual parity remains manual-reviewable.'
+    sourceControlStatus: TrackedProjectAsset
+    manualArtDependency:
+    lastValidationTimestamp: 2026-07-15T00:00:00+05:00
+    assetVersion: 05A.2
   - stableWorldId: ccde60f217041c95bee78f676be4eaa6
     donorSourceReference: MAP/StreetLights/2/LOD/lightpole
     semanticCategory: UtilityPole
@@ -235822,11 +235836,13 @@ MonoBehaviour:
   - stableWorldId: 56a7aa7c66146248d6c820c31a6b99fd
     donorSourceReference: MAP/PierHome/pier_pontons
     semanticCategory: StaticProp
-    productionPrefab:
-    productionMaterials:
-    collisionReference:
-    lodGroup:
-    pivotMode: Unassigned
+    productionPrefab: Assets/Game/World/Production/Prefabs/WR_HomePier.prefab
+    productionMaterials: Assets/Game/World/Production/Materials/WR_* (project-authored;
+      M3 procedural texture basis)
+    collisionReference: Assets/Game/World/Production/Prefabs/WR_HomePier.prefab::walkable
+      primitive colliders
+    lodGroup: Close-range asset; LOD deferred pending profiling
+    pivotMode: Preserve donor world anchor; project-authored local pivot
     scaleMode: 1 Unity unit = 1 metre; no negative production scale
     expectedBounds:
       m_Center: {x: 177.67, y: -1.7789999, z: -894.185}
@@ -235834,21 +235850,21 @@ MonoBehaviour:
     measuredBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0, y: 0, z: 0}
-    allowedDeviationMeters: 0
+    allowedDeviationMeters: 0.35
     transformOffset: {x: 0, y: 0, z: 0}
-    replacementStatus: 0
-    authoringStatus: Backlog
-    validationStatus: NotRun
+    replacementStatus: 4
+    authoringStatus: GeneratedProductionCandidate
+    validationStatus: AutomatedStructurePass;ManualVisualPending
     productionZone: cell_0_-2
-    performanceTier: Unclassified
-    wetnessCompatibility: Unknown
-    weatherCompatibility: Unknown
-    notes: Reference record registered; no production replacement assigned in the
-      bounded first 05A pass.
-    sourceControlStatus: NoProductionAsset
-    manualArtDependency: f1c176dfec37348e0e982ef476973d47
-    lastValidationTimestamp: 2026-07-14T00:00:00+05:00
-    assetVersion: 0
+    performanceTier: Batch01Near
+    wetnessCompatibility: GlobalWetnessParameterReady
+    weatherCompatibility: Neutral/Evening/OvercastCompatible
+    notes: '05A Batch 01 HomeShorelinePier binding: PierPontoons. Project-authored
+      geometry; donor binary is not copied and direct visual parity remains manual-reviewable.'
+    sourceControlStatus: TrackedProjectAsset
+    manualArtDependency:
+    lastValidationTimestamp: 2026-07-15T00:00:00+05:00
+    assetVersion: 05A.2
   - stableWorldId: b3a3e7ad85f76c64a0f062c0291dca54
     donorSourceReference: YARD/Building/BEDROOM1/COMPUTER/SYSTEM/RAMI-WorldsMan/WorldsMan-News-Happening/WorldsMan-News-Happening09-text
     semanticCategory: BuildingInterior
@@ -328366,11 +328382,14 @@ MonoBehaviour:
   - stableWorldId: 847f56ce8c1be238f4bcae514bb55fdf
     donorSourceReference: YARD/Building/LOD/HedgeFence/hedge
     semanticCategory: BuildingExterior
-    productionPrefab:
-    productionMaterials:
-    collisionReference:
-    lodGroup:
-    pivotMode: Unassigned
+    productionPrefab: Assets/Game/World/Production/Prefabs/WR_HedgeSegment.prefab
+    productionMaterials: Assets/Game/World/Production/Materials/WR_* (project-authored;
+      M3 procedural texture basis)
+    collisionReference: Assets/Game/World/Production/Prefabs/WR_HedgeSegment.prefab::simplified
+      BoxCollider
+    lodGroup: Assets/Game/World/Production/Prefabs/WR_HedgeSegment.prefab::two-stage
+      LODGroup
+    pivotMode: Preserve donor world anchor; project-authored local pivot
     scaleMode: 1 Unity unit = 1 metre; no negative production scale
     expectedBounds:
       m_Center: {x: 170.83, y: 1.4309998, z: -1023.005}
@@ -328378,21 +328397,21 @@ MonoBehaviour:
     measuredBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0, y: 0, z: 0}
-    allowedDeviationMeters: 0
+    allowedDeviationMeters: 0.35
     transformOffset: {x: 0, y: 0, z: 0}
-    replacementStatus: 0
-    authoringStatus: Backlog
-    validationStatus: NotRun
+    replacementStatus: 4
+    authoringStatus: GeneratedProductionCandidate
+    validationStatus: AutomatedStructurePass;ManualVisualPending
     productionZone: cell_0_-2
-    performanceTier: Unclassified
-    wetnessCompatibility: Unknown
-    weatherCompatibility: Unknown
-    notes: Reference record registered; no production replacement assigned in the
-      bounded first 05A pass.
-    sourceControlStatus: NoProductionAsset
-    manualArtDependency: 2ed9ef01ad145c6bfb8b012e90d0c3f9
-    lastValidationTimestamp: 2026-07-14T00:00:00+05:00
-    assetVersion: 0
+    performanceTier: Batch01Near
+    wetnessCompatibility: GlobalWetnessParameterReady
+    weatherCompatibility: Neutral/Evening/OvercastCompatible
+    notes: '05A Batch 01 HomeShorelinePier binding: HedgeSegmentC. Project-authored
+      geometry; donor binary is not copied and direct visual parity remains manual-reviewable.'
+    sourceControlStatus: TrackedProjectAsset
+    manualArtDependency:
+    lastValidationTimestamp: 2026-07-15T00:00:00+05:00
+    assetVersion: 05A.2
   - stableWorldId: 45efb5ce3eba66641d7c20721043abea
     donorSourceReference: RALLY/RallyTV/Program/RallyTVGUI/Results/overlay
     semanticCategory: InteractivePropCandidate
@@ -364252,11 +364271,13 @@ MonoBehaviour:
   - stableWorldId: 345dc7662dae9f1f01d77b15f74e5f8f
     donorSourceReference: MAP/PierHome/pier
     semanticCategory: StaticProp
-    productionPrefab:
-    productionMaterials:
-    collisionReference:
-    lodGroup:
-    pivotMode: Unassigned
+    productionPrefab: Assets/Game/World/Production/Prefabs/WR_HomePier.prefab
+    productionMaterials: Assets/Game/World/Production/Materials/WR_* (project-authored;
+      M3 procedural texture basis)
+    collisionReference: Assets/Game/World/Production/Prefabs/WR_HomePier.prefab::walkable
+      primitive colliders
+    lodGroup: Close-range asset; LOD deferred pending profiling
+    pivotMode: Preserve donor world anchor; project-authored local pivot
     scaleMode: 1 Unity unit = 1 metre; no negative production scale
     expectedBounds:
       m_Center: {x: 177.67, y: -1.7789999, z: -894.185}
@@ -364264,21 +364285,21 @@ MonoBehaviour:
     measuredBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0, y: 0, z: 0}
-    allowedDeviationMeters: 0
+    allowedDeviationMeters: 0.35
     transformOffset: {x: 0, y: 0, z: 0}
-    replacementStatus: 0
-    authoringStatus: Backlog
-    validationStatus: NotRun
+    replacementStatus: 4
+    authoringStatus: GeneratedProductionCandidate
+    validationStatus: AutomatedStructurePass;ManualVisualPending
     productionZone: cell_0_-2
-    performanceTier: Unclassified
-    wetnessCompatibility: Unknown
-    weatherCompatibility: Unknown
-    notes: Reference record registered; no production replacement assigned in the
-      bounded first 05A pass.
-    sourceControlStatus: NoProductionAsset
-    manualArtDependency: f1c176dfec37348e0e982ef476973d47
-    lastValidationTimestamp: 2026-07-14T00:00:00+05:00
-    assetVersion: 0
+    performanceTier: Batch01Near
+    wetnessCompatibility: GlobalWetnessParameterReady
+    weatherCompatibility: Neutral/Evening/OvercastCompatible
+    notes: '05A Batch 01 HomeShorelinePier binding: PierDeckAndSupports. Project-authored
+      geometry; donor binary is not copied and direct visual parity remains manual-reviewable.'
+    sourceControlStatus: TrackedProjectAsset
+    manualArtDependency:
+    lastValidationTimestamp: 2026-07-15T00:00:00+05:00
+    assetVersion: 05A.2
   - stableWorldId: 358bafe4bb956a8901c58ca4a2e9e71b
     donorSourceReference: JOBS/Mummola/ChurchGrandma/GrannyHiker/RagDoll2/thigh(leftx)/leg(leftx)
     semanticCategory: ColliderOnly
@@ -405729,10 +405750,20 @@ MonoBehaviour:
     mappedRecordCount: 24
     status: 4
     automatedValidation: Generated;ValidationRequired
-    manualValidation: Pending
+    manualValidation: DoorGatePass;LightingReadabilityLow;FullTraversalPending;PerformancePending
     productionCellPath: Assets/Game/World/Generated/ProductionCells/Production_cell_0_-3.unity
     notes: Bounded home/garage pilot; raw-record coverage is intentionally not full-zone
       completion.
+  - zoneId: cell_0_-2
+    referenceRecordCount: 15
+    mappedRecordCount: 9
+    status: 4
+    automatedValidation: Generated;ValidationRequired
+    manualValidation: TraversalPass;WaterPass;HedgePass;VisualReferencePending;PerformancePending
+    productionCellPath: Assets/Game/World/Generated/ProductionCells/Production_cell_0_-2.unity
+    notes: Batch 01 bounded HomeShorelinePier sub-zone; traversal/water/hedge manual
+      review passed; visual reference/performance and six unrelated gameplay records
+      remain pending.
   - zoneId: cell_-1_-1
     referenceRecordCount: 8
     mappedRecordCount: 0
@@ -405911,14 +405942,6 @@ MonoBehaviour:
     notes: Awaiting a later zone batch.
   - zoneId: cell_0_-1
     referenceRecordCount: 87
-    mappedRecordCount: 0
-    status: 0
-    automatedValidation: RegistryPass
-    manualValidation: NotStarted
-    productionCellPath:
-    notes: Awaiting a later zone batch.
-  - zoneId: cell_0_-2
-    referenceRecordCount: 15
     mappedRecordCount: 0
     status: 0
     automatedValidation: RegistryPass
@@ -406197,6 +406220,22 @@ MonoBehaviour:
     status: Open
     requiredTool: Blender or equivalent DCC (not found in PATH during 05A pre-flight)
     acceptance: Author, validate and bind 9 reference records without donor runtime
+      dependencies.
+  - taskId: ab0d78358b4c94a12aef9ba658fda085
+    zoneId: cell_0_-2
+    category: ColliderOnly
+    priority: P3
+    status: Open
+    requiredTool: Blender/Substance-equivalent manual art pass
+    acceptance: Author, validate and bind 4 reference records without donor runtime
+      dependencies.
+  - taskId: 649b20b3dc8e1427a2db840332c2ffef
+    zoneId: cell_0_-2
+    category: InteractivePropCandidate
+    priority: P3
+    status: Open
+    requiredTool: Blender/Substance-equivalent manual art pass
+    acceptance: Author, validate and bind 2 reference records without donor runtime
       dependencies.
   - taskId: dc487b7830b69acec071eac0928ad060
     zoneId: cell_-1_-1
@@ -407197,38 +407236,6 @@ MonoBehaviour:
     status: Open
     requiredTool: Blender or equivalent DCC (not found in PATH during 05A pre-flight)
     acceptance: Author, validate and bind 2 reference records without donor runtime
-      dependencies.
-  - taskId: 2ed9ef01ad145c6bfb8b012e90d0c3f9
-    zoneId: cell_0_-2
-    category: BuildingExterior
-    priority: P0
-    status: Open
-    requiredTool: Blender or equivalent DCC (not found in PATH during 05A pre-flight)
-    acceptance: Author, validate and bind 3 reference records without donor runtime
-      dependencies.
-  - taskId: ab0d78358b4c94a12aef9ba658fda085
-    zoneId: cell_0_-2
-    category: ColliderOnly
-    priority: P3
-    status: Open
-    requiredTool: Blender/Substance-equivalent manual art pass
-    acceptance: Author, validate and bind 6 reference records without donor runtime
-      dependencies.
-  - taskId: 649b20b3dc8e1427a2db840332c2ffef
-    zoneId: cell_0_-2
-    category: InteractivePropCandidate
-    priority: P3
-    status: Open
-    requiredTool: Blender/Substance-equivalent manual art pass
-    acceptance: Author, validate and bind 2 reference records without donor runtime
-      dependencies.
-  - taskId: f1c176dfec37348e0e982ef476973d47
-    zoneId: cell_0_-2
-    category: StaticProp
-    priority: P2
-    status: Open
-    requiredTool: Blender/Substance-equivalent manual art pass
-    acceptance: Author, validate and bind 4 reference records without donor runtime
       dependencies.
   - taskId: da72e4c9c005f20b06b4a4c72b94d827
     zoneId: cell_0_-4

@@ -11,3 +11,7 @@ Static validation confirms HDRP shaders and finds no production dependency on th
 Check direct sun, overcast, rain preview, dusk/night, interior practical light and headlights for readability, glass response, light leaks, wetness response and exposure transitions. These captures must not be interpreted as final lighting or weather validation until reviewed in Unity.
 
 The automated neutral comparison capture was visually inspected on 2026-07-14. Geometry is visible, but the yard/building values are too dark for final readability approval. This is recorded as a manual lighting/art gate; no exposure or grading was changed merely to improve the report screenshot.
+
+## Batch 01
+
+Pier/hedge captures 2026-07-15 повторно используют тот же neutral baseline. Пирс, shoreline и изгороди читаются, но тёмная экспозиция остаётся общим manual gate. Партия не меняет `M3_NeutralVolume.asset`: существующий пользовательский lighting experiment сохранён, а weather/time-of-day работа не была присвоена 05A.

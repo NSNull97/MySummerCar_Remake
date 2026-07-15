@@ -62,14 +62,21 @@ namespace MSC.World.Remaster.Editor
                     terrainRoad,
                     vegetation,
                     props);
+                GameObject hedge = BuildHedgePrefab(materials);
+                GameObject pier = BuildPierPrefab(materials);
+                GameObject shoreline = BuildShorelinePrefab(materials);
+                GameObject nextZone = BuildNextZonePrefab(hedge, pier, shoreline);
 
                 Progress("Replacement registry и backlog", 5, 10);
                 WorldRemasterRegistryBuilder.BuildRegistryAndMachineReadableFiles();
                 Progress("Production cell", 6, 10);
                 BuildProductionCellScene(pilot);
+                BuildNextZoneCellScene(nextZone);
                 Progress("Playtest и comparison", 7, 10);
                 BuildPilotPlaytestScene(pilot);
                 BuildComparisonScene(pilot, materials["Reference"]);
+                BuildNextZonePlaytestScene(pilot, nextZone);
+                BuildNextZoneComparisonScene(pilot, nextZone, materials["Reference"]);
                 Progress("Интеграция M05 assembly", 8, 10);
                 IntegrateVehicleAssemblyScene(pilot);
                 Progress("Build Settings и сохранение", 9, 10);
@@ -78,7 +85,8 @@ namespace MSC.World.Remaster.Editor
                 AssetDatabase.Refresh();
                 Debug.Log(
                     $"WORLD_REMASTER_05A_BUILD_OK version={WorldRemasterPaths.BuilderVersion} " +
-                    $"pilot={WorldRemasterPaths.PilotZoneId} mapped={WorldRemasterRegistryBuilder.PilotMappedRecordCount}");
+                    $"pilot={WorldRemasterPaths.PilotZoneId} next={WorldRemasterPaths.NextZoneId} " +
+                    $"mapped={WorldRemasterRegistryBuilder.TotalMappedRecordCount}");
             }
             finally
             {
@@ -449,6 +457,193 @@ namespace MSC.World.Remaster.Editor
             }
         }
 
+        private static GameObject BuildHedgePrefab(IReadOnlyDictionary<string, Material> materials)
+        {
+            var root = new GameObject("WR_HedgeSegment");
+            try
+            {
+                GameObject lod0 = new GameObject("LOD0");
+                lod0.transform.SetParent(root.transform, false);
+                GameObject foliageA = AddBox(
+                    lod0.transform,
+                    "FoliageLower",
+                    materials["Foliage"],
+                    Vector3.zero,
+                    new Vector3(4.9f, 1.35f, 0.82f),
+                    addCollider: false);
+                GameObject foliageB = AddBox(
+                    lod0.transform,
+                    "FoliageUpper",
+                    materials["Foliage"],
+                    new Vector3(0.1f, 0.58f, 0.02f),
+                    new Vector3(4.65f, 0.55f, 0.72f),
+                    addCollider: false);
+
+                GameObject lod1 = new GameObject("LOD1");
+                lod1.transform.SetParent(root.transform, false);
+                GameObject proxy = AddBox(
+                    lod1.transform,
+                    "FoliageProxy",
+                    materials["Foliage"],
+                    new Vector3(0f, 0.24f, 0f),
+                    new Vector3(4.9f, 1.75f, 0.78f),
+                    addCollider: false);
+
+                LODGroup group = root.AddComponent<LODGroup>();
+                group.SetLODs(new[]
+                {
+                    new LOD(0.28f, new[] { foliageA.GetComponent<Renderer>(), foliageB.GetComponent<Renderer>() }),
+                    new LOD(0.045f, new[] { proxy.GetComponent<Renderer>() })
+                });
+                group.RecalculateBounds();
+                BoxCollider collider = root.AddComponent<BoxCollider>();
+                collider.center = new Vector3(0f, 0.24f, 0f);
+                collider.size = new Vector3(4.9f, 1.75f, 0.78f);
+                return SavePrefab(root, WorldRemasterPaths.HedgePrefab);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
+        private static GameObject BuildPierPrefab(IReadOnlyDictionary<string, Material> materials)
+        {
+            var root = new GameObject("WR_HomePier");
+            try
+            {
+                GameObject deck = new GameObject("PierDeck");
+                deck.transform.SetParent(root.transform, false);
+                for (int plank = 0; plank < 14; plank++)
+                {
+                    AddBox(
+                        deck.transform,
+                        "DeckPlank_" + plank.ToString("00"),
+                        materials["Workbench"],
+                        new Vector3(0f, 0.22f, -6.5f + plank),
+                        new Vector3(2.65f, 0.22f, 0.92f));
+                }
+
+                for (int side = -1; side <= 1; side += 2)
+                {
+                    for (int support = 0; support < 4; support++)
+                    {
+                        AddPrimitive(
+                            root.transform,
+                            $"Support_{side}_{support}",
+                            PrimitiveType.Cylinder,
+                            materials["Wood"],
+                            new Vector3(side * 1.08f, -1.0f, -5.4f + support * 3.6f),
+                            new Vector3(0.16f, 1.45f, 0.16f));
+                    }
+                }
+
+                AddBox(root.transform, "PontoonLeft", materials["Metal"], new Vector3(-0.92f, -0.6f, 0f), new Vector3(0.5f, 0.58f, 12.8f));
+                AddBox(root.transform, "PontoonRight", materials["Metal"], new Vector3(0.92f, -0.6f, 0f), new Vector3(0.5f, 0.58f, 12.8f));
+                AddBox(root.transform, "ShoreThreshold", materials["Workbench"], new Vector3(0f, 0.16f, -7.25f), new Vector3(3.0f, 0.26f, 1.0f));
+                return SavePrefab(root, WorldRemasterPaths.PierPrefab);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
+        private static GameObject BuildShorelinePrefab(IReadOnlyDictionary<string, Material> materials)
+        {
+            var root = new GameObject("WR_HomeShorelineWater");
+            try
+            {
+                Vector3 anchor = WorldRemasterPaths.HomePierAnchor;
+                AddBox(
+                    root.transform,
+                    "BoundedLakeBottom",
+                    materials["Terrain"],
+                    new Vector3(256f, -35.029f, -768f) - anchor,
+                    new Vector3(512f, 2f, 512f),
+                    addCollider: false);
+                AddBox(
+                    root.transform,
+                    "BoundedLakeSurface",
+                    materials["Water"],
+                    new Vector3(336f, -2.929f, -711f) - anchor,
+                    new Vector3(352f, 0.045f, 398f),
+                    addCollider: false);
+                AddBox(
+                    root.transform,
+                    "ShoreApproach",
+                    materials["Terrain"],
+                    new Vector3(177f, -0.65f, -939f) - anchor,
+                    new Vector3(72f, 0.55f, 80f),
+                    new Vector3(1.8f, 0f, 0f));
+                AddBox(
+                    root.transform,
+                    "FootpathToPier",
+                    materials["Driveway"],
+                    new Vector3(177.5f, -0.42f, -939f) - anchor,
+                    new Vector3(3.2f, 0.12f, 76f),
+                    new Vector3(1.8f, 0f, 0f));
+
+                GameObject lakeAnchor = new GameObject("LakeTileReferenceAnchor");
+                lakeAnchor.transform.SetParent(root.transform, false);
+                lakeAnchor.transform.localPosition = WorldRemasterPaths.LakeTileAnchor - anchor;
+                AddStableId(lakeAnchor, "wr05a.batch01.cell_0_-2.lake-tile-anchor");
+                GameObject bottomAnchor = new GameObject("LakeBottomReferenceAnchor");
+                bottomAnchor.transform.SetParent(root.transform, false);
+                bottomAnchor.transform.localPosition = WorldRemasterPaths.LakeBottomAnchor - anchor;
+                AddStableId(bottomAnchor, "wr05a.batch01.cell_0_-2.lake-bottom-anchor");
+                return SavePrefab(root, WorldRemasterPaths.ShorelinePrefab);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
+        private static GameObject BuildNextZonePrefab(GameObject hedgePrefab, GameObject pierPrefab, GameObject shorelinePrefab)
+        {
+            var root = new GameObject("WR_HomeShorelinePier");
+            try
+            {
+                WorldRemasterPilotMarker marker = root.AddComponent<WorldRemasterPilotMarker>();
+                marker.Configure(
+                    WorldRemasterPaths.NextZoneId,
+                    WorldRemasterPaths.NextZoneLocalBounds,
+                    WorldRemasterPaths.HomePierAnchor,
+                    3,
+                    WorldRemasterRegistryBuilder.NextZoneMappedRecordCount,
+                    15,
+                    manualPending: true);
+
+                GameObject shoreline = InstantiatePrefab(shorelinePrefab, root.transform, "ShorelineAndWater");
+                shoreline.transform.localPosition = Vector3.zero;
+                AddStableId(shoreline, "wr05a.batch01.cell_0_-2.shoreline");
+                GameObject pier = InstantiatePrefab(pierPrefab, root.transform, "HomePier");
+                pier.transform.localPosition = Vector3.zero;
+                AddStableId(pier, "wr05a.batch01.cell_0_-2.pier");
+
+                string[] hedgeIds =
+                {
+                    "b8de7336e204fae3ba333227b3e94d19",
+                    "449b18de0c10f87887e3f3304a90366e",
+                    "847f56ce8c1be238f4bcae514bb55fdf"
+                };
+                for (int index = 0; index < WorldRemasterPaths.HomeHedgeAnchors.Length; index++)
+                {
+                    GameObject hedge = InstantiatePrefab(hedgePrefab, root.transform, "Hedge_" + hedgeIds[index]);
+                    hedge.transform.localPosition = WorldRemasterPaths.HomeHedgeAnchors[index] - WorldRemasterPaths.HomePierAnchor;
+                    hedge.transform.localRotation = Quaternion.Euler(0f, 28.05f, 0f);
+                    AddStableId(hedge, "wr05a.batch01.cell_0_-2.hedge." + index);
+                }
+
+                return SavePrefab(root, WorldRemasterPaths.NextZonePrefab);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
         private static GameObject BuildPilotZonePrefab(params GameObject[] prefabs)
         {
             var root = new GameObject("WR_HomeYardPilot");
@@ -511,6 +706,35 @@ namespace MSC.World.Remaster.Editor
             SaveScene(scene, WorldRemasterPaths.PilotCellScene);
         }
 
+        private static void BuildNextZoneCellScene(GameObject zonePrefab)
+        {
+            SceneAsset existingAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(WorldRemasterPaths.NextZoneCellScene);
+            Scene scene = existingAsset != null
+                ? EditorSceneManager.OpenScene(WorldRemasterPaths.NextZoneCellScene, OpenSceneMode.Single)
+                : EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            WorldRemasterPilotMarker existingMarker = scene.GetRootGameObjects()
+                .SelectMany(root => root.GetComponentsInChildren<WorldRemasterPilotMarker>(true))
+                .FirstOrDefault(marker => marker.ZoneId == WorldRemasterPaths.NextZoneId);
+            GameObject production = existingMarker != null && existingMarker.transform.parent == null
+                ? existingMarker.gameObject
+                : null;
+            if (production == null)
+            {
+                foreach (GameObject root in scene.GetRootGameObjects())
+                {
+                    UnityEngine.Object.DestroyImmediate(root);
+                }
+
+                production = InstantiatePrefab(zonePrefab, null, "WR_Production_cell_0_-2");
+            }
+
+            production.name = "WR_Production_cell_0_-2";
+            production.transform.SetPositionAndRotation(WorldRemasterPaths.HomePierAnchor, WorldRemasterPaths.HomePierRotation);
+            AddStableId(production, "wr05a.production.cell_0_-2.root");
+            EditorSceneManager.MarkSceneDirty(scene);
+            SaveScene(scene, WorldRemasterPaths.NextZoneCellScene);
+        }
+
         private static void BuildPilotPlaytestScene(GameObject pilotPrefab)
         {
             GameObject playerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(WorldRemasterPaths.PlayerPrefab);
@@ -539,6 +763,37 @@ namespace MSC.World.Remaster.Editor
             root.transform.SetPositionAndRotation(WorldRemasterPaths.HomeGarageAnchor, WorldRemasterPaths.HomeGarageRotation);
             EditorSceneManager.MarkSceneDirty(scene);
             SaveScene(scene, WorldRemasterPaths.PilotPlaytestScene);
+        }
+
+        private static void BuildNextZonePlaytestScene(GameObject pilotPrefab, GameObject zonePrefab)
+        {
+            GameObject playerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(WorldRemasterPaths.PlayerPrefab);
+            GameObject lightingPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(WorldRemasterPaths.NeutralLightingPrefab);
+            if (playerPrefab == null || lightingPrefab == null)
+            {
+                throw new InvalidOperationException("M4 player and M3 neutral lighting are required for the 05A Batch 01 playtest scene.");
+            }
+
+            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            GameObject root = new GameObject("WR_05A_Batch01_HomeShorelinePlaytest");
+            GameObject pilotContext = InstantiatePrefab(pilotPrefab, root.transform, "AcceptedHomeYardContext");
+            pilotContext.transform.SetPositionAndRotation(WorldRemasterPaths.HomeGarageAnchor, WorldRemasterPaths.HomeGarageRotation);
+            GameObject production = InstantiatePrefab(zonePrefab, root.transform, "ProductionWorld_cell_0_-2");
+            production.transform.SetPositionAndRotation(WorldRemasterPaths.HomePierAnchor, WorldRemasterPaths.HomePierRotation);
+            GameObject player = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, scene);
+            player.name = "Player_M4Architecture";
+            player.transform.SetParent(root.transform, false);
+            player.transform.localPosition = new Vector3(177.5f, 1.2f, -925f);
+            player.transform.localRotation = Quaternion.identity;
+            if (player.GetComponent<CrossdotPresenter>() == null)
+            {
+                throw new InvalidOperationException("05A Batch 01 requires the existing M4 player prefab with CrossdotPresenter.");
+            }
+
+            GameObject lighting = InstantiatePrefab(lightingPrefab, root.transform, "NeutralLighting");
+            RenderSettings.sun = lighting.GetComponentInChildren<Light>(true);
+            EditorSceneManager.MarkSceneDirty(scene);
+            SaveScene(scene, WorldRemasterPaths.NextZonePlaytestScene);
         }
 
         private static void BuildComparisonScene(GameObject pilotPrefab, Material referenceMaterial)
@@ -577,6 +832,70 @@ namespace MSC.World.Remaster.Editor
             SaveScene(scene, WorldRemasterPaths.ComparisonScene);
         }
 
+        private static void BuildNextZoneComparisonScene(GameObject pilotPrefab, GameObject zonePrefab, Material referenceMaterial)
+        {
+            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            GameObject root = new GameObject("WR_05A_Batch01_Comparison");
+            GameObject production = new GameObject("ProductionReplacement");
+            production.transform.SetParent(root.transform, false);
+            GameObject pilotContext = InstantiatePrefab(pilotPrefab, production.transform, "AcceptedHomeYardContext");
+            pilotContext.transform.SetPositionAndRotation(WorldRemasterPaths.HomeGarageAnchor, WorldRemasterPaths.HomeGarageRotation);
+            GameObject zone = InstantiatePrefab(zonePrefab, production.transform, "Batch01_HomeShorelinePier");
+            zone.transform.SetPositionAndRotation(WorldRemasterPaths.HomePierAnchor, WorldRemasterPaths.HomePierRotation);
+            GameObject reference = new GameObject("DonorReference_MetadataPositionProxies");
+            reference.transform.SetParent(root.transform, false);
+
+            HashSet<string> includedIds = new HashSet<string>(StringComparer.Ordinal)
+            {
+                "345dc7662dae9f1f01d77b15f74e5f8f",
+                "56a7aa7c66146248d6c820c31a6b99fd",
+                "de5d5682cbef7d27a48a473d5e85877d",
+                "e0fa39e1ceeed93727dd86e749c6d115",
+                "b412961b75cb019e74a83b24faac32a4",
+                "f700b12cf5c75a3906dd079acea3f274",
+                "b8de7336e204fae3ba333227b3e94d19",
+                "449b18de0c10f87887e3f3304a90366e",
+                "847f56ce8c1be238f4bcae514bb55fdf"
+            };
+            foreach (WorldEntityPlacement entity in WorldRemasterRegistryBuilder.LoadEntities()
+                         .Where(item => includedIds.Contains(item.StableId)))
+            {
+                GameObject proxy = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                proxy.name = "REF_" + entity.StableId + "_" + Sanitize(entity.OriginalName);
+                proxy.transform.SetParent(reference.transform, false);
+                proxy.transform.position = entity.Position;
+                proxy.transform.localScale = Vector3.one * 0.7f;
+                proxy.GetComponent<Renderer>().sharedMaterial = referenceMaterial;
+                UnityEngine.Object.DestroyImmediate(proxy.GetComponent<Collider>());
+            }
+
+            WorldRemasterModeController modes = root.AddComponent<WorldRemasterModeController>();
+            modes.Configure(production, reference, WorldComparisonMode.OverlayComparison);
+            GameObject lightingPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(WorldRemasterPaths.NeutralLightingPrefab);
+            GameObject lighting = InstantiatePrefab(lightingPrefab, root.transform, "NeutralLighting");
+            RenderSettings.sun = lighting.GetComponentInChildren<Light>(true);
+            CreateZoneComparisonCamera(
+                root.transform,
+                "Pier Comparison Camera",
+                WorldRemasterPaths.HomePierAnchor + new Vector3(20f, 12f, -22f),
+                WorldRemasterPaths.HomePierAnchor + new Vector3(0f, 0f, 0f),
+                addAudioListener: true);
+            CreateZoneComparisonCamera(
+                root.transform,
+                "Hedge Comparison Camera",
+                new Vector3(181f, 10f, -1038f),
+                WorldRemasterPaths.HomeHedgeAnchors[1],
+                addAudioListener: false);
+            CreateZoneComparisonCamera(
+                root.transform,
+                "Seam Comparison Camera",
+                new Vector3(196f, 12f, -992f),
+                new Vector3(177.5f, 0f, -972f),
+                addAudioListener: false);
+            EditorSceneManager.MarkSceneDirty(scene);
+            SaveScene(scene, WorldRemasterPaths.NextZoneComparisonScene);
+        }
+
         private static void IntegrateVehicleAssemblyScene(GameObject pilotPrefab)
         {
             if (AssetDatabase.LoadAssetAtPath<SceneAsset>(WorldRemasterPaths.VehicleAssemblyScene) == null)
@@ -606,7 +925,13 @@ namespace MSC.World.Remaster.Editor
 
         private static void EnsureScenesInBuildSettings()
         {
-            var paths = new[] { WorldRemasterPaths.PilotPlaytestScene, WorldRemasterPaths.PilotCellScene };
+            var paths = new[]
+            {
+                WorldRemasterPaths.PilotPlaytestScene,
+                WorldRemasterPaths.PilotCellScene,
+                WorldRemasterPaths.NextZonePlaytestScene,
+                WorldRemasterPaths.NextZoneCellScene
+            };
             var updated = new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
             foreach (string path in paths)
             {
@@ -783,6 +1108,29 @@ namespace MSC.World.Remaster.Editor
             camera.farClipPlane = 900f;
             cameraObject.AddComponent<HDAdditionalCameraData>();
             cameraObject.AddComponent<AudioListener>();
+        }
+
+        private static void CreateZoneComparisonCamera(
+            Transform parent,
+            string name,
+            Vector3 position,
+            Vector3 target,
+            bool addAudioListener)
+        {
+            GameObject cameraObject = new GameObject(name);
+            cameraObject.transform.SetParent(parent, false);
+            cameraObject.transform.position = position;
+            cameraObject.transform.rotation = Quaternion.LookRotation(target - position, Vector3.up);
+            Camera camera = cameraObject.AddComponent<Camera>();
+            camera.fieldOfView = 52f;
+            camera.nearClipPlane = 0.1f;
+            camera.farClipPlane = 1200f;
+            cameraObject.AddComponent<HDAdditionalCameraData>();
+            if (addAudioListener)
+            {
+                cameraObject.tag = "MainCamera";
+                cameraObject.AddComponent<AudioListener>();
+            }
         }
 
         private static void AddStableId(GameObject target, string seed)

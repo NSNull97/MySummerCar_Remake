@@ -16,6 +16,8 @@
 | 5A | `05A_WORLD_REMASTER.md` | Production pipeline и pilot zone |
 | Repeat | `05A_CONTINUE_NEXT_WORLD_ZONE.md` | Следующая зона ремастера |
 | 5B | `05B_WORLD_VALIDATION.md` | Parity/coverage validation gate |
+| 5C | `05C_FULL_MAP_GEOMETRY_EVALUATION.md` | Полная reference-only карта для проверки геометрии и расположения |
+| 5C1 | `05C1_CONTINUOUS_GROUND_AND_COLLISION_BASELINE.md` | Bounded safety topology для подтверждённых внутренних donor-пустот |
 | 6 | `06_VEHICLE_SIMULATION.md` | Двигатель и ходовая симуляция |
 | 6A | `06A_PHYSICS_VALIDATION.md` | Калибровка и физическая проверка |
 | 7 | `07_WORLD_WEATHER_HDRP.md` | Время, погода, мокрые поверхности |

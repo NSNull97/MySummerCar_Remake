@@ -14,3 +14,7 @@ The terrain uses an HDRP material assembled only from project-authored M3 proced
 - Slope/height blending, vegetation masks, puddle accumulation and production TerrainLayer authoring are deferred to subsequent zone work.
 
 Acceptance for promotion requires measured height fixtures, road/building contact checks, seam validation across neighbouring cells and manual landscape authoring.
+
+## Batch 01 — HomeShorelinePier
+
+Добавлен bounded shore approach и пешеходная дорожка от принятого home-yard контекста к пирсу. Первая ручная проверка обнаружила незакрытый seam `SEAM-001`: прежние покрытия заканчивались на `3,23 / 4,23 м` раньше северного края terrain `cell_0_-3`. Approach и path продлены до перекрытия, их уклон и высота выровнены с домашним terrain и порогом пирса; непрерывность теперь проверяется автоматически. Повторный ручной проход пользователя 2026-07-15 — PASS. Они не считаются переносом полной donor terrain height field; в production-cell нет cross-cell hierarchy. Финальная береговая топология, terrain blending и vegetation masks отложены.

@@ -1,5 +1,6 @@
 ZoneId,ReferenceRecordCount,MappedRecordCount,CoveragePercent,ReplacementStatus,AutomatedValidation,ManualValidation,ProductionCellPath,Notes
-"cell_0_-3","671","24","3.577","ProductionCandidate","Generated;ValidationRequired","Pending","Assets/Game/World/Generated/ProductionCells/Production_cell_0_-3.unity","Bounded home/garage pilot; raw-record coverage is intentionally not full-zone completion."
+"cell_0_-3","671","24","3.577","ProductionCandidate","Generated;ValidationRequired","DoorGatePass;LightingReadabilityLow;FullTraversalPending;PerformancePending","Assets/Game/World/Generated/ProductionCells/Production_cell_0_-3.unity","Bounded home/garage pilot; raw-record coverage is intentionally not full-zone completion."
+"cell_0_-2","15","9","60.000","ProductionCandidate","Generated;ValidationRequired","TraversalPass;WaterPass;HedgePass;VisualReferencePending;PerformancePending","Assets/Game/World/Generated/ProductionCells/Production_cell_0_-2.unity","Batch 01 bounded HomeShorelinePier sub-zone; traversal/water/hedge manual review passed; visual reference/performance and six unrelated gameplay records remain pending."
 "cell_-1_-1","8","0","0.000","Unassigned","RegistryPass","NotStarted","","Awaiting a later zone batch."
 "cell_-1_-2","1","0","0.000","Unassigned","RegistryPass","NotStarted","","Awaiting a later zone batch."
 "cell_-1_-3","5","0","0.000","Unassigned","RegistryPass","NotStarted","","Awaiting a later zone batch."
@@ -23,7 +24,6 @@ ZoneId,ReferenceRecordCount,MappedRecordCount,CoveragePercent,ReplacementStatus,
 "cell_-4_0","19","0","0.000","Unassigned","RegistryPass","NotStarted","","Awaiting a later zone batch."
 "cell_-4_1","11","0","0.000","Unassigned","RegistryPass","NotStarted","","Awaiting a later zone batch."
 "cell_0_-1","87","0","0.000","Unassigned","RegistryPass","NotStarted","","Awaiting a later zone batch."
-"cell_0_-2","15","0","0.000","Unassigned","RegistryPass","NotStarted","","Awaiting a later zone batch."
 "cell_0_-4","29","0","0.000","Unassigned","RegistryPass","NotStarted","","Awaiting a later zone batch."
 "cell_0_-5","23","0","0.000","Unassigned","RegistryPass","NotStarted","","Awaiting a later zone batch."
 "cell_0_0","9","0","0.000","Unassigned","RegistryPass","NotStarted","","Awaiting a later zone batch."

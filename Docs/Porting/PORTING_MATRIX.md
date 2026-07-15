@@ -127,9 +127,36 @@ The retained samples place the nearest reviewed road-route point `204.768 m` fro
 
 | Area | Reference input | Classification | Bounded result |
 |---|---|---|---|
-| Production registry | 13,509 frozen 04A1 geometry records and cell IDs | `WorldLayoutReference` | Every record has a replacement status; 24 direct bindings and 13,485 explicit backlog links |
+| Production registry | 13,509 frozen 04A1 geometry records and cell IDs | `WorldLayoutReference` | Every record has a replacement status; 33 direct bindings and 13,476 explicit backlog links |
 | Home/garage pilot | `YARD/Building/Garage` anchor and selected building/opening/cable records | `ReauthoredGeometry`, `ReauthoredMaterial` | Deterministic `cell_0_-3` production cell; first-pass rather than final art |
+| Home shoreline/pier Batch 01 | Nine `cell_0_-2` pier/water/hedge anchors | `WorldLayoutReference`, `ReauthoredGeometry`, `ReauthoredMaterial` | Deterministic `cell_0_-2`; `9/15` mapped, six unrelated gameplay records remain backlog; manual visual/performance gates pending |
 | Terrain/road/water context | Cell assignment and gameplay-space needs | `Reimplemented` | Project-authored pilot geometry; direct donor terrain/road/water parity remains unverified |
 | Moving architecture | Source pivots/relationships where mapped plus project fit rules | `Reimplemented` | Six separate hinges using the existing interaction capability; manual arc/parity review pending |
 | Vegetation/props | Reference categories/masses | `ReauthoredGeometry` | Reusable pilot prototypes; raw-record direct coverage remains zero and is backlogged |
 | Comparison layer | 04A1 bounds/placements | `ReferenceOnly` | Metadata proxies only; removable and not a production dependency |
+
+## Milestone 05C1 safety-topology state
+
+| Area | Reference input | Classification | Bounded result |
+|---|---|---|---|
+| Teimo void boundary | 04A1/05C placements for `TREEWALL_HI`, `TERRAINOUT`, store foundation and lakebed | `WorldLayoutReference`, `DimensionalReference` | Six explicit station profiles in a fingerprinted project-owned CSV; no donor payload |
+| Continuous ground pieces | Project-authored interpolation of the approved profile | `BlockoutSource`, `ReauthoredGeometry` | Two cell-owned meshes with exact seam and static collision; bounded manual gate passed 2026-07-15 |
+| Reference overview/captures | Removable 05C geometry | `ReferenceOnly` | Editor evidence only; excluded from production dependencies and Build Settings |
+
+No 05C1 asset is classified `ProductionReady`. The marker explicitly records
+that the surface is safety topology and does not open a gameplay area.
+
+## Milestone 05B validation state
+
+| Area | Classification | Validated result | Remaining boundary |
+|---|---|---|---|
+| Canonical replacement inventory | `WorldLayoutReference` | 13,509 donor records, 33 direct production bindings | 13,476 records remain without direct production binding |
+| Eligible world coverage | `WorldLayoutReference` | 33/3,842 (0.858928%), 2/49 bound cells | `Approved/Verified=0`; FullWorld coverage is not claimed |
+| Bounded spatial fixtures | `DimensionalReference` | max 0.232306 m, mean 0.051240 m, p95 0.232306 m; all measured tolerances pass | Full terrain/road/water/building parity unavailable |
+| Production dependency graph | `Reimplemented` validation | 49 seeds, 230 assets, 482 edges, zero prohibited references | Current-world player assembly audit pending |
+| Production-cell lifecycle | `Reimplemented` validation | Two clean load/unload/reload cycles per cell, stable ID set preserved | No production focus-driven streamer |
+| 05C1 supplemental topology | `ReauthoredGeometry` | 2/2 pieces validated separately | Not donor replacement coverage; runtime integration pending |
+
+05B adds validation tooling and factual status only. It does not promote any
+first-pass replacement to `ProductionReady`, does not port donor code and does not
+claim `PilotGate`, `VerticalSliceGate` or `FullWorldGate`.

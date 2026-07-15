@@ -13,3 +13,7 @@ Two consecutive rebuilds produced identical production-cell SHA-256:
 ## Limits
 
 Only `cell_0_-3` has a generated production scene. Cross-cell roads, water, utility wires, large-object ownership, unload timing and HLOD proxies remain subsequent-zone work. Manual overrides must become explicit project-owned profile data rather than hidden scene edits.
+
+## Batch 01
+
+Вторая production-сцена `Production_cell_0_-2.unity` сгенерирована из `WR_HomeShorelinePier.prefab`, anchored at `(177.67, -1.779, -894.185)` и подтверждена `WorldCellMembershipUtility` как `cell_0_-2`. Два rebuild дали одинаковый SHA-256 `973757687E6A24EF098D32BECB5595B24A2E9A336B77180F821CA64BA7BFD89F`. Cell и её playtest включены в Build Settings; comparison scene исключена. Соседний pilot используется только как review-context, не как runtime dependency production-cell. После ручного finding `SEAM-001` добавлен валидатор минимального геометрического overlap между footpath этой ячейки и terrain соседнего pilot; cross-cell hierarchy при этом не появилась.

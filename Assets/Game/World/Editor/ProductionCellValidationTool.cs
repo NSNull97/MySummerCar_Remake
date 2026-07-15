@@ -28,6 +28,27 @@ namespace MSC.World.Remaster.Editor
         public void AddWarning(string message) => warnings.Add(message);
     }
 
+    public sealed class WorldRemasterStaticMetrics
+    {
+        public int RendererCount { get; internal set; }
+        public int ColliderCount { get; internal set; }
+        public int LodGroupCount { get; internal set; }
+        public int TriangleCount { get; internal set; }
+        public long UniqueMeshBytesEstimate { get; internal set; }
+        public int PilotRendererCount { get; internal set; }
+        public int PilotColliderCount { get; internal set; }
+        public int PilotLodGroupCount { get; internal set; }
+        public int PilotTriangleCount { get; internal set; }
+        public int NextZoneRendererCount { get; internal set; }
+        public int NextZoneColliderCount { get; internal set; }
+        public int NextZoneLodGroupCount { get; internal set; }
+        public int NextZoneTriangleCount { get; internal set; }
+        public int DefaultLayerColliderCount { get; internal set; }
+        public int NullPhysicsMaterialColliderCount { get; internal set; }
+        public float HomePierSeamOverlapMeters { get; internal set; } = float.NaN;
+        public float PierMaximumColliderGapMeters { get; internal set; } = float.NaN;
+    }
+
     public static class ProductionCellValidationTool
     {
         private static readonly string[] ProductionAssets =
@@ -41,21 +62,35 @@ namespace MSC.World.Remaster.Editor
             WorldRemasterPaths.PropsPrefab,
             WorldRemasterPaths.PilotZonePrefab,
             WorldRemasterPaths.PilotCellScene,
-            WorldRemasterPaths.PilotPlaytestScene
+            WorldRemasterPaths.PilotPlaytestScene,
+            WorldRemasterPaths.HedgePrefab,
+            WorldRemasterPaths.PierPrefab,
+            WorldRemasterPaths.ShorelinePrefab,
+            WorldRemasterPaths.NextZonePrefab,
+            WorldRemasterPaths.NextZoneCellScene,
+            WorldRemasterPaths.NextZonePlaytestScene
         };
 
         [MenuItem("Tools/MSC Remake/World Remaster/Validate Selected Zone")]
-        public static WorldRemasterValidationResult Validate()
+        public static WorldRemasterValidationResult Validate() => Validate(writeReports: true);
+
+        public static WorldRemasterValidationResult Validate(bool writeReports)
         {
             var result = new WorldRemasterValidationResult();
             ValidateRequiredAssets(result);
             ValidateRegistry(result);
             ValidateDependencies(result);
             ValidatePilotPrefab(result);
+            ValidateNextZonePrefab(result);
             ValidateProductionCell(result);
+            ValidateNextZoneCell(result);
             ValidateAssemblyIntegration(result);
             ValidateBuildSettings(result);
-            WriteReports(result);
+            ValidateBatchCaptures(result);
+            if (writeReports)
+            {
+                WriteReports(result);
+            }
             if (result.Passed)
             {
                 Debug.Log($"WORLD_REMASTER_05A_VALIDATION_OK warnings={result.Warnings.Count}");
@@ -67,6 +102,98 @@ namespace MSC.World.Remaster.Editor
 
             return result;
         }
+
+        public static WorldRemasterStaticMetrics MeasureStaticContent()
+        {
+            GameObject pilot = AssetDatabase.LoadAssetAtPath<GameObject>(WorldRemasterPaths.PilotZonePrefab);
+            GameObject nextZone = AssetDatabase.LoadAssetAtPath<GameObject>(WorldRemasterPaths.NextZonePrefab);
+            GameObject[] scopedPrefabs = new[] { pilot, nextZone }.Where(prefab => prefab != null).ToArray();
+            Renderer[] renderers = scopedPrefabs
+                .SelectMany(prefab => prefab.GetComponentsInChildren<Renderer>(true))
+                .ToArray();
+            Collider[] colliders = scopedPrefabs
+                .SelectMany(prefab => prefab.GetComponentsInChildren<Collider>(true))
+                .ToArray();
+            LODGroup[] lodGroups = scopedPrefabs
+                .SelectMany(prefab => prefab.GetComponentsInChildren<LODGroup>(true))
+                .ToArray();
+            MeshFilter[] meshFilters = scopedPrefabs
+                .SelectMany(prefab => prefab.GetComponentsInChildren<MeshFilter>(true))
+                .Where(filter => filter.sharedMesh != null)
+                .ToArray();
+            MeshFilter[] pilotMeshFilters = pilot != null
+                ? pilot.GetComponentsInChildren<MeshFilter>(true).Where(filter => filter.sharedMesh != null).ToArray()
+                : Array.Empty<MeshFilter>();
+            MeshFilter[] nextMeshFilters = nextZone != null
+                ? nextZone.GetComponentsInChildren<MeshFilter>(true).Where(filter => filter.sharedMesh != null).ToArray()
+                : Array.Empty<MeshFilter>();
+
+            var metrics = new WorldRemasterStaticMetrics
+            {
+                RendererCount = renderers.Length,
+                ColliderCount = colliders.Length,
+                LodGroupCount = lodGroups.Length,
+                TriangleCount = CountTriangles(meshFilters),
+                UniqueMeshBytesEstimate = meshFilters.Select(filter => filter.sharedMesh)
+                    .Distinct()
+                    .Sum(mesh => (long)mesh.vertexCount * 48L + (long)mesh.triangles.Length * sizeof(int)),
+                PilotRendererCount = pilot != null ? pilot.GetComponentsInChildren<Renderer>(true).Length : 0,
+                PilotColliderCount = pilot != null ? pilot.GetComponentsInChildren<Collider>(true).Length : 0,
+                PilotLodGroupCount = pilot != null ? pilot.GetComponentsInChildren<LODGroup>(true).Length : 0,
+                PilotTriangleCount = CountTriangles(pilotMeshFilters),
+                NextZoneRendererCount = nextZone != null ? nextZone.GetComponentsInChildren<Renderer>(true).Length : 0,
+                NextZoneColliderCount = nextZone != null ? nextZone.GetComponentsInChildren<Collider>(true).Length : 0,
+                NextZoneLodGroupCount = nextZone != null ? nextZone.GetComponentsInChildren<LODGroup>(true).Length : 0,
+                NextZoneTriangleCount = CountTriangles(nextMeshFilters),
+                DefaultLayerColliderCount = colliders.Count(collider => collider.gameObject.layer == 0),
+                NullPhysicsMaterialColliderCount = colliders.Count(collider => collider.sharedMaterial == null)
+            };
+
+            if (pilot != null && nextZone != null)
+            {
+                Mesh pilotTerrain = AssetDatabase.LoadAssetAtPath<Mesh>(WorldRemasterPaths.TerrainMesh);
+                BoxCollider footpath = nextZone.GetComponentsInChildren<BoxCollider>(true)
+                    .FirstOrDefault(collider => collider.name == "FootpathToPier");
+                if (pilotTerrain != null && footpath != null)
+                {
+                    float pilotEdgeA = (WorldRemasterPaths.HomeGarageAnchor +
+                                        WorldRemasterPaths.HomeGarageRotation *
+                                        new Vector3(0f, 0f, pilotTerrain.bounds.min.z)).z;
+                    float pilotEdgeB = (WorldRemasterPaths.HomeGarageAnchor +
+                                        WorldRemasterPaths.HomeGarageRotation *
+                                        new Vector3(0f, 0f, pilotTerrain.bounds.max.z)).z;
+                    metrics.HomePierSeamOverlapMeters =
+                        Mathf.Max(pilotEdgeA, pilotEdgeB) - GetIntendedWorldZBounds(nextZone.transform, footpath).min;
+                }
+
+                BoxCollider[] deckColliders = nextZone.GetComponentsInChildren<BoxCollider>(true)
+                    .Where(collider => collider.name.StartsWith("DeckPlank_", StringComparison.Ordinal))
+                    .OrderBy(collider => collider.transform.position.z)
+                    .ToArray();
+                if (deckColliders.Length > 1)
+                {
+                    float maximumGap = 0f;
+                    for (int index = 1; index < deckColliders.Length; index++)
+                    {
+                        BoxCollider previous = deckColliders[index - 1];
+                        BoxCollider current = deckColliders[index];
+                        float previousHalfLength = previous.size.z * Mathf.Abs(previous.transform.localScale.z) * 0.5f;
+                        float currentHalfLength = current.size.z * Mathf.Abs(current.transform.localScale.z) * 0.5f;
+                        float previousMaximum = previous.transform.localPosition.z + previous.center.z + previousHalfLength;
+                        float currentMinimum = current.transform.localPosition.z + current.center.z - currentHalfLength;
+                        maximumGap = Mathf.Max(maximumGap, currentMinimum - previousMaximum);
+                    }
+
+                    metrics.PierMaximumColliderGapMeters = maximumGap;
+                }
+            }
+
+            return metrics;
+        }
+
+        private static int CountTriangles(IEnumerable<MeshFilter> filters) => filters.Sum(filter =>
+            Enumerable.Range(0, filter.sharedMesh.subMeshCount)
+                .Sum(subMesh => (int)filter.sharedMesh.GetIndexCount(subMesh) / 3));
 
         [MenuItem("Tools/MSC Remake/World Remaster/Validate Selected Replacement")]
         public static void ValidateSelectedReplacement() => ShowResult(Validate());
@@ -176,9 +303,9 @@ namespace MSC.World.Remaster.Editor
                 }
             }
 
-            if (mapped != WorldRemasterRegistryBuilder.PilotMappedRecordCount)
+            if (mapped != WorldRemasterRegistryBuilder.TotalMappedRecordCount)
             {
-                result.AddError($"Expected {WorldRemasterRegistryBuilder.PilotMappedRecordCount} pilot bindings, found {mapped}.");
+                result.AddError($"Expected {WorldRemasterRegistryBuilder.TotalMappedRecordCount} bounded 05A bindings, found {mapped}.");
             }
 
             int sourceZoneCount = entities.Select(entity => entity.CellId).Distinct(StringComparer.Ordinal).Count();
@@ -188,9 +315,18 @@ namespace MSC.World.Remaster.Editor
             }
 
             WorldProductionZoneRecord pilot = registry.Zones.FirstOrDefault(zone => zone.ZoneId == WorldRemasterPaths.PilotZoneId);
-            if (pilot == null || pilot.ReferenceRecordCount != 671 || pilot.MappedRecordCount != mapped)
+            if (pilot == null || pilot.ReferenceRecordCount != 671 ||
+                pilot.MappedRecordCount != WorldRemasterRegistryBuilder.PilotMappedRecordCount)
             {
                 result.AddError("Pilot zone registry counts are inconsistent.");
+            }
+
+            WorldProductionZoneRecord nextZone = registry.Zones.FirstOrDefault(zone => zone.ZoneId == WorldRemasterPaths.NextZoneId);
+            if (nextZone == null || nextZone.ReferenceRecordCount != 15 ||
+                nextZone.MappedRecordCount != WorldRemasterRegistryBuilder.NextZoneMappedRecordCount ||
+                nextZone.Status != WorldReplacementStatus.ProductionCandidate)
+            {
+                result.AddError("Batch 01 zone registry counts/status are inconsistent.");
             }
 
             if (registry.Records.Any(record => record.ReplacementStatus is WorldReplacementStatus.Approved or WorldReplacementStatus.Verified))
@@ -278,6 +414,121 @@ namespace MSC.World.Remaster.Editor
             }
         }
 
+        private static void ValidateNextZonePrefab(WorldRemasterValidationResult result)
+        {
+            GameObject zone = AssetDatabase.LoadAssetAtPath<GameObject>(WorldRemasterPaths.NextZonePrefab);
+            if (zone == null)
+            {
+                return;
+            }
+
+            WorldRemasterPilotMarker marker = zone.GetComponent<WorldRemasterPilotMarker>();
+            if (marker == null || marker.ZoneId != WorldRemasterPaths.NextZoneId || !marker.DonorBinaryIndependent ||
+                marker.MappedReferenceRecordCount != WorldRemasterRegistryBuilder.NextZoneMappedRecordCount ||
+                marker.TotalReferenceRecordCount != 15)
+            {
+                result.AddError("Batch 01 HomeShorelinePier marker is missing or inconsistent.");
+            }
+
+            LODGroup[] lodGroups = zone.GetComponentsInChildren<LODGroup>(true);
+            if (lodGroups.Length != 3 || lodGroups.Any(group => group.GetLODs().Length < 2))
+            {
+                result.AddError("Batch 01 requires three hedge LOD groups with at least two levels each.");
+            }
+
+            Transform water = zone.GetComponentsInChildren<Transform>(true)
+                .FirstOrDefault(candidate => candidate.name == "BoundedLakeSurface");
+            if (water == null || water.GetComponent<Collider>() != null)
+            {
+                result.AddError("Bounded lake surface must exist without a blocking collider.");
+            }
+
+            Mesh pilotTerrain = AssetDatabase.LoadAssetAtPath<Mesh>(WorldRemasterPaths.TerrainMesh);
+            BoxCollider footpath = zone.GetComponentsInChildren<BoxCollider>(true)
+                .FirstOrDefault(collider => collider.name == "FootpathToPier");
+            if (pilotTerrain == null || footpath == null)
+            {
+                result.AddError("Home-to-pier seam validation requires the pilot terrain mesh and FootpathToPier collider.");
+            }
+            else
+            {
+                float pilotEdgeA = (WorldRemasterPaths.HomeGarageAnchor +
+                                    WorldRemasterPaths.HomeGarageRotation *
+                                    new Vector3(0f, 0f, pilotTerrain.bounds.min.z)).z;
+                float pilotEdgeB = (WorldRemasterPaths.HomeGarageAnchor +
+                                    WorldRemasterPaths.HomeGarageRotation *
+                                    new Vector3(0f, 0f, pilotTerrain.bounds.max.z)).z;
+                float pilotNorthEdge = Mathf.Max(pilotEdgeA, pilotEdgeB);
+                float footpathSouthEdge = GetIntendedWorldZBounds(zone.transform, footpath).min;
+                float seamOverlap = pilotNorthEdge - footpathSouthEdge;
+                if (seamOverlap < 1f)
+                {
+                    result.AddError(
+                        $"Home-to-pier walkable seam overlap {seamOverlap:0.###}m is below the required 1m.");
+                }
+            }
+
+            BoxCollider[] deckColliders = zone.GetComponentsInChildren<BoxCollider>(true)
+                .Where(collider => collider.name.StartsWith("DeckPlank_", StringComparison.Ordinal))
+                .OrderBy(collider => collider.transform.position.z)
+                .ToArray();
+            if (deckColliders.Length != 14)
+            {
+                result.AddError($"Pier deck requires 14 explicit walkable plank colliders; found {deckColliders.Length}.");
+            }
+            else
+            {
+                float maximumGap = 0f;
+                for (int index = 1; index < deckColliders.Length; index++)
+                {
+                    BoxCollider previous = deckColliders[index - 1];
+                    BoxCollider current = deckColliders[index];
+                    float previousHalfLength = previous.size.z * Mathf.Abs(previous.transform.localScale.z) * 0.5f;
+                    float currentHalfLength = current.size.z * Mathf.Abs(current.transform.localScale.z) * 0.5f;
+                    float previousMaximum = previous.transform.localPosition.z + previous.center.z + previousHalfLength;
+                    float currentMinimum = current.transform.localPosition.z + current.center.z - currentHalfLength;
+                    maximumGap = Mathf.Max(maximumGap, currentMinimum - previousMaximum);
+                }
+
+                if (maximumGap > 0.1f)
+                {
+                    result.AddError($"Pier walkable collision gap {maximumGap:0.###}m exceeds 0.1m.");
+                }
+            }
+
+            if (zone.GetComponentsInChildren<Renderer>(true).Any(renderer => renderer.sharedMaterial == null))
+            {
+                result.AddError("Batch 01 contains a renderer without an assigned production material.");
+            }
+        }
+
+        private static (float min, float max) GetIntendedWorldZBounds(Transform zoneRoot, BoxCollider collider)
+        {
+            Vector3 halfSize = collider.size * 0.5f;
+            float minimum = float.PositiveInfinity;
+            float maximum = float.NegativeInfinity;
+            for (int x = -1; x <= 1; x += 2)
+            {
+                for (int y = -1; y <= 1; y += 2)
+                {
+                    for (int z = -1; z <= 1; z += 2)
+                    {
+                        Vector3 colliderLocalCorner = collider.center + Vector3.Scale(
+                            halfSize,
+                            new Vector3(x, y, z));
+                        Vector3 prefabPoint = collider.transform.TransformPoint(colliderLocalCorner);
+                        Vector3 zoneLocalPoint = zoneRoot.InverseTransformPoint(prefabPoint);
+                        float intendedWorldZ = (WorldRemasterPaths.HomePierAnchor +
+                                                WorldRemasterPaths.HomePierRotation * zoneLocalPoint).z;
+                        minimum = Mathf.Min(minimum, intendedWorldZ);
+                        maximum = Mathf.Max(maximum, intendedWorldZ);
+                    }
+                }
+            }
+
+            return (minimum, maximum);
+        }
+
         private static void ValidateProductionCell(WorldRemasterValidationResult result)
         {
             Scene scene = EditorSceneManager.OpenScene(WorldRemasterPaths.PilotCellScene, OpenSceneMode.Single);
@@ -304,6 +555,62 @@ namespace MSC.World.Remaster.Editor
             }
 
             ValidateGarageDoorParity(scene, result);
+        }
+
+        private static void ValidateNextZoneCell(WorldRemasterValidationResult result)
+        {
+            Scene scene = EditorSceneManager.OpenScene(WorldRemasterPaths.NextZoneCellScene, OpenSceneMode.Single);
+            WorldRemasterPilotMarker marker = scene.GetRootGameObjects()
+                .SelectMany(root => root.GetComponentsInChildren<WorldRemasterPilotMarker>(true))
+                .FirstOrDefault(candidate => candidate.ZoneId == WorldRemasterPaths.NextZoneId);
+            if (marker == null)
+            {
+                result.AddError("Batch 01 production cell does not contain its zone marker.");
+                return;
+            }
+
+            Transform cellRoot = marker.transform;
+            if (Vector3.Distance(cellRoot.position, WorldRemasterPaths.HomePierAnchor) > 0.05f ||
+                Quaternion.Angle(cellRoot.rotation, WorldRemasterPaths.HomePierRotation) > 0.1f)
+            {
+                result.AddError("Batch 01 cell root drifted from the frozen home-pier anchor.");
+            }
+
+            WorldCellIndex assigned = WorldCellMembershipUtility.FromPosition(cellRoot.position, 512f);
+            if (assigned.Id != WorldRemasterPaths.NextZoneId)
+            {
+                result.AddError($"Batch 01 anchor is assigned to {assigned.Id}, expected {WorldRemasterPaths.NextZoneId}.");
+            }
+
+            string[] hedgeIds =
+            {
+                "b8de7336e204fae3ba333227b3e94d19",
+                "449b18de0c10f87887e3f3304a90366e",
+                "847f56ce8c1be238f4bcae514bb55fdf"
+            };
+            for (int index = 0; index < hedgeIds.Length; index++)
+            {
+                Transform hedge = cellRoot.GetComponentsInChildren<Transform>(true)
+                    .FirstOrDefault(candidate => candidate.name == "Hedge_" + hedgeIds[index]);
+                if (hedge == null)
+                {
+                    result.AddError("Batch 01 hedge instance is missing: " + hedgeIds[index]);
+                    continue;
+                }
+
+                float deviation = Vector3.Distance(hedge.position, WorldRemasterPaths.HomeHedgeAnchors[index]);
+                if (deviation > 0.05f)
+                {
+                    result.AddError($"Batch 01 hedge {hedgeIds[index]} anchor deviation {deviation:0.###}m exceeds 0.05m.");
+                }
+            }
+
+            Transform pier = cellRoot.GetComponentsInChildren<Transform>(true)
+                .FirstOrDefault(candidate => candidate.name == "HomePier");
+            if (pier == null || Vector3.Distance(pier.position, WorldRemasterPaths.HomePierAnchor) > 0.05f)
+            {
+                result.AddError("Batch 01 production pier is missing or its anchor exceeds 0.05m tolerance.");
+            }
         }
 
         private static void ValidateGarageDoorParity(Scene scene, WorldRemasterValidationResult result)
@@ -382,7 +689,13 @@ namespace MSC.World.Remaster.Editor
                 result.AddError("Bootstrap must remain the first enabled build scene.");
             }
 
-            foreach (string path in new[] { WorldRemasterPaths.PilotPlaytestScene, WorldRemasterPaths.PilotCellScene })
+            foreach (string path in new[]
+                     {
+                         WorldRemasterPaths.PilotPlaytestScene,
+                         WorldRemasterPaths.PilotCellScene,
+                         WorldRemasterPaths.NextZonePlaytestScene,
+                         WorldRemasterPaths.NextZoneCellScene
+                     })
             {
                 if (!scenes.Any(scene => scene.enabled && scene.path == path))
                 {
@@ -394,28 +707,43 @@ namespace MSC.World.Remaster.Editor
             {
                 result.AddError("World Remaster comparison scene must remain excluded from builds.");
             }
+
+            if (scenes.Any(scene => scene.enabled && scene.path == WorldRemasterPaths.NextZoneComparisonScene))
+            {
+                result.AddError("Batch 01 comparison scene must remain excluded from builds.");
+            }
+        }
+
+        private static void ValidateBatchCaptures(WorldRemasterValidationResult result)
+        {
+            string root = Path.GetFullPath(WorldRemasterPaths.NextZoneVisualCaptureRoot);
+            string[] required =
+            {
+                "Pier_ReferenceOnly.png",
+                "Pier_ProductionOnly.png",
+                "Pier_OverlayComparison.png",
+                "Hedge_ReferenceOnly.png",
+                "Hedge_ProductionOnly.png",
+                "Hedge_OverlayComparison.png",
+                "Seam_ReferenceOnly.png",
+                "Seam_ProductionOnly.png",
+                "Seam_OverlayComparison.png",
+                "capture_manifest.csv"
+            };
+            foreach (string file in required)
+            {
+                string path = Path.Combine(root, file);
+                if (!File.Exists(path) || new FileInfo(path).Length == 0)
+                {
+                    result.AddError("Batch 01 comparison capture is missing or empty: " + path);
+                }
+            }
         }
 
         private static void WriteReports(WorldRemasterValidationResult result)
         {
             Directory.CreateDirectory(WorldRemasterPaths.DocumentationRoot);
-            GameObject pilot = AssetDatabase.LoadAssetAtPath<GameObject>(WorldRemasterPaths.PilotZonePrefab);
-            Renderer[] renderers = pilot != null ? pilot.GetComponentsInChildren<Renderer>(true) : Array.Empty<Renderer>();
-            Collider[] colliders = pilot != null ? pilot.GetComponentsInChildren<Collider>(true) : Array.Empty<Collider>();
-            LODGroup[] lodGroups = pilot != null ? pilot.GetComponentsInChildren<LODGroup>(true) : Array.Empty<LODGroup>();
-            int triangles = pilot == null
-                ? 0
-                : pilot.GetComponentsInChildren<MeshFilter>(true)
-                    .Where(filter => filter.sharedMesh != null)
-                    .Sum(filter => Enumerable.Range(0, filter.sharedMesh.subMeshCount)
-                        .Sum(subMesh => (int)filter.sharedMesh.GetIndexCount(subMesh) / 3));
-            long meshBytesEstimate = pilot == null
-                ? 0
-                : pilot.GetComponentsInChildren<MeshFilter>(true)
-                    .Where(filter => filter.sharedMesh != null)
-                    .Select(filter => filter.sharedMesh)
-                    .Distinct()
-                    .Sum(mesh => (long)mesh.vertexCount * 48L + (long)mesh.triangles.Length * sizeof(int));
+            WorldRemasterStaticMetrics metrics = MeasureStaticContent();
 
             var validation = new StringBuilder();
             validation.AppendLine("# World Remaster 05A Validation Report");
@@ -441,15 +769,23 @@ namespace MSC.World.Remaster.Editor
             var performance = new StringBuilder();
             performance.AppendLine("# World Remaster Performance Report");
             performance.AppendLine();
-            performance.AppendLine("Scope: static Editor audit of `WR_HomeYardPilot.prefab`; not a GPU or standalone-player capture.");
+            performance.AppendLine("Scope: static Editor audit of the bounded 05A pilot plus Batch 01 `WR_HomeShorelinePier.prefab`; not a GPU or standalone-player capture.");
             performance.AppendLine();
             performance.AppendLine("| Metric | Value |");
             performance.AppendLine("|---|---:|");
-            performance.AppendLine($"| Renderers | {renderers.Length} |");
-            performance.AppendLine($"| Colliders | {colliders.Length} |");
-            performance.AppendLine($"| LOD groups | {lodGroups.Length} |");
-            performance.AppendLine($"| Mesh triangles (instance-counted) | {triangles} |");
-            performance.AppendLine($"| Unique mesh memory estimate | {meshBytesEstimate / (1024f * 1024f):0.00} MiB |");
+            performance.AppendLine($"| Renderers | {metrics.RendererCount} |");
+            performance.AppendLine($"| Colliders | {metrics.ColliderCount} |");
+            performance.AppendLine($"| LOD groups | {metrics.LodGroupCount} |");
+            performance.AppendLine($"| Mesh triangles (instance-counted) | {metrics.TriangleCount} |");
+            performance.AppendLine($"| Unique mesh memory estimate | {metrics.UniqueMeshBytesEstimate / (1024f * 1024f):0.00} MiB |");
+            performance.AppendLine();
+            performance.AppendLine("Batch 01 contribution:");
+            performance.AppendLine();
+            performance.AppendLine("| Batch 01 metric | Value |");
+            performance.AppendLine("|---|---:|");
+            performance.AppendLine($"| Renderers | {metrics.NextZoneRendererCount} |");
+            performance.AppendLine($"| Colliders | {metrics.NextZoneColliderCount} |");
+            performance.AppendLine($"| LOD groups | {metrics.NextZoneLodGroupCount} |");
             performance.AppendLine();
             performance.AppendLine("Target remains 60 FPS at 1920×1080 on a mid-range Windows PC. Actual CPU/GPU time, draw calls, VRAM and frame pacing are **not measured yet**; capture is a manual gate after visual acceptance.");
             AtomicWrite(WorldRemasterPaths.PerformanceReport, performance.ToString());

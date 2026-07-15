@@ -29,8 +29,8 @@ namespace MSC.Editor.WorldTransfer
         private void OnGUI()
         {
             scroll = EditorGUILayout.BeginScrollView(scroll);
-            EditorGUILayout.LabelField("Milestone 04A1 — Full World Geometry Transfer", EditorStyles.boldLabel);
-            EditorGUILayout.HelpBox("Reference-only donor geometry and project-owned metadata. This tool does not create production art or gameplay systems.", MessageType.Info);
+            EditorGUILayout.LabelField("Milestone 04A1 / 05C — Full Map Geometry Evaluation", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox("Reference-only donor meshes, static-batch subsets and explicit bounds fallbacks. This tool does not create production art or gameplay systems.", MessageType.Info);
             DrawConfiguration();
             EditorGUILayout.Space();
             DrawStatus();
@@ -40,8 +40,11 @@ namespace MSC.Editor.WorldTransfer
             if (GUILayout.Button("Validate paths and database")) Refresh();
             if (GUILayout.Button("Dry run extraction plan")) WorldTransferCommands.DryRun();
             if (GUILayout.Button("Generate selected cell")) WorldPartitionBuilder.GenerateSelected(selectedCell);
+            if (GUILayout.Button("Synchronize 05C reference mesh library")) WorldTransferCommands.SynchronizeReferenceMeshes();
             if (GUILayout.Button("Generate all cells (confirmation)")) WorldTransferCommands.GenerateAll();
             if (GUILayout.Button("Validate generated scenes")) validation = WorldTransferValidator.Validate(requireGeneratedScenes: true);
+            if (GUILayout.Button("Validate 05C full-map geometry")) WorldTransferCommands.ValidateFullMapGeometryEvaluation();
+            if (GUILayout.Button("Capture 05C review views")) WorldMapGeometryEvaluationCapture.CaptureViews();
             if (GUILayout.Button("Show missing references")) WorldTransferCommands.ShowMissing();
             if (GUILayout.Button("Show unsupported objects")) WorldTransferCommands.ShowUnsupported();
             if (GUILayout.Button("Open reference overview")) WorldPartitionBuilder.OpenReferenceOverview();
