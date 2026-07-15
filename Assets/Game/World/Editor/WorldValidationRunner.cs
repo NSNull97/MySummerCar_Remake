@@ -5,10 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using MSC.Core.Identity;
+using MSC.Editor.WorldStreaming;
 using MSC.Editor.WorldTransfer;
 using MSC.World;
 using MSC.World.Data;
-using MSC.World.Streaming;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -101,7 +101,8 @@ namespace MSC.World.Remaster.Editor
             WorldValidationPerformanceLocation[] performance = BuildPerformanceLocations(
                 validation.StaticMetrics,
                 eligible,
-                mapped);
+                mapped,
+                validation);
             WorldValidationIssue[] issues = BuildIssues(
                 entities,
                 eligible,
@@ -230,6 +231,8 @@ namespace MSC.World.Remaster.Editor
             CellIdentityAudit identityAudit = null;
             bool productionStreamerWired = false;
             string streamingEvidence = string.Empty;
+            string[] streamingErrors = Array.Empty<string>();
+            string[] streamingWarnings = Array.Empty<string>();
             try
             {
                 try
@@ -288,7 +291,20 @@ namespace MSC.World.Remaster.Editor
                     production.AddError(error);
                 }
 
-                (productionStreamerWired, streamingEvidence) = DetectProductionStreamingWiring();
+                try
+                {
+                    WorldPilotGateRemediationValidationResult streamingValidation =
+                        WorldPilotGateRemediationValidator.Validate(logResult: false);
+                    productionStreamerWired = streamingValidation.Passed;
+                    streamingEvidence = streamingValidation.Evidence;
+                    streamingErrors = streamingValidation.Errors.ToArray();
+                    streamingWarnings = streamingValidation.Warnings.ToArray();
+                }
+                catch (Exception exception)
+                {
+                    streamingEvidence = "PilotGate remediation validator threw: " + exception.Message;
+                    streamingErrors = new[] { streamingEvidence };
+                }
             }
             finally
             {
@@ -296,6 +312,78 @@ namespace MSC.World.Remaster.Editor
                 {
                     EditorSceneManager.RestoreSceneManagerSetup(originalSetup);
                 }
+            }
+
+            bool streamingLifecycleExecuted;
+            bool streamingLifecyclePassed;
+            string streamingLifecycleEvidence;
+            string[] streamingLifecycleErrors;
+            string[] streamingLifecycleWarnings;
+            try
+            {
+                ProductionWorldStreamingLifecycleEvidenceReadResult lifecycle =
+                    ProductionWorldStreamingLifecycleEvidenceReader.ReadAndValidate();
+                streamingLifecycleExecuted = lifecycle.Executed;
+                streamingLifecyclePassed = lifecycle.Passed;
+                streamingLifecycleEvidence = lifecycle.Evidence;
+                streamingLifecycleErrors = lifecycle.Errors;
+                streamingLifecycleWarnings = lifecycle.Warnings;
+            }
+            catch (Exception exception)
+            {
+                streamingLifecycleExecuted = false;
+                streamingLifecyclePassed = false;
+                streamingLifecycleEvidence = "Production streaming lifecycle evidence reader threw: " + exception.Message;
+                streamingLifecycleErrors = new[] { streamingLifecycleEvidence };
+                streamingLifecycleWarnings = Array.Empty<string>();
+            }
+
+            bool traversalExecuted;
+            bool traversalPassed;
+            string traversalEvidence;
+            string[] traversalErrors;
+            string[] traversalWarnings;
+            try
+            {
+                WorldPilotTraversalEvidenceReadResult traversal =
+                    WorldPilotTraversalEvidenceReader.ReadAndValidate();
+                traversalExecuted = traversal.Executed;
+                traversalPassed = traversal.Passed;
+                traversalEvidence = traversal.Evidence;
+                traversalErrors = traversal.Errors;
+                traversalWarnings = traversal.Warnings;
+            }
+            catch (Exception exception)
+            {
+                traversalExecuted = false;
+                traversalPassed = false;
+                traversalEvidence = "M4 traversal evidence reader threw: " + exception.Message;
+                traversalErrors = new[] { traversalEvidence };
+                traversalWarnings = Array.Empty<string>();
+            }
+
+            bool performanceExecuted;
+            bool performancePassed;
+            string performanceEvidence;
+            string[] performanceErrors;
+            string[] performanceWarnings;
+            try
+            {
+                WorldPilotPerformanceEvidenceReadResult performance =
+                    WorldPilotPerformanceEvidenceReader.ReadAndValidate();
+                performanceExecuted = performance.Executed;
+                performancePassed = performance.Passed;
+                performanceEvidence = performance.Evidence;
+                performanceErrors = performance.Errors;
+                performanceWarnings = performance.Warnings;
+            }
+            catch (Exception exception)
+            {
+                performanceExecuted = false;
+                performancePassed = false;
+                performanceEvidence = "Bounded performance evidence reader threw: " + exception.Message;
+                performanceErrors = new[] { performanceEvidence };
+                performanceWarnings = Array.Empty<string>();
             }
 
             string[] transferErrors = transfer.Errors.ToArray();
@@ -342,8 +430,32 @@ namespace MSC.World.Remaster.Editor
                     productionStreamerWired,
                     productionStreamerWired ? "Pass" : "MissingRequiredImplementation",
                     streamingEvidence,
-                    productionStreamerWired ? Array.Empty<string>() : new[] { streamingEvidence },
-                    Array.Empty<string>())
+                    streamingErrors,
+                    streamingWarnings),
+                ValidatorRun(
+                    ProductionWorldStreamingLifecycleEvidenceReader.ValidatorId,
+                    streamingLifecyclePassed,
+                    streamingLifecycleExecuted ? streamingLifecyclePassed ? "Pass" : "Fail" : "NotExecuted",
+                    streamingLifecycleEvidence,
+                    streamingLifecycleErrors,
+                    streamingLifecycleWarnings,
+                    streamingLifecycleExecuted),
+                ValidatorRun(
+                    WorldPilotTraversalEvidenceReader.ValidatorId,
+                    traversalPassed,
+                    traversalExecuted ? traversalPassed ? "Pass" : "Fail" : "NotExecuted",
+                    traversalEvidence,
+                    traversalErrors,
+                    traversalWarnings,
+                    traversalExecuted),
+                ValidatorRun(
+                    WorldPilotPerformanceEvidenceReader.ValidatorId,
+                    performancePassed,
+                    performanceExecuted ? performancePassed ? "Pass" : "Fail" : "NotExecuted",
+                    performanceEvidence,
+                    performanceErrors,
+                    performanceWarnings,
+                    performanceExecuted)
             };
 
             return new ValidationSnapshot(
@@ -454,60 +566,6 @@ namespace MSC.World.Remaster.Editor
             }
         }
 
-        private static (bool wired, string evidence) DetectProductionStreamingWiring()
-        {
-            var candidates = new List<string>();
-            foreach (EditorBuildSettingsScene buildScene in EditorBuildSettings.scenes.Where(scene => scene.enabled))
-            {
-                Scene scene = default;
-                try
-                {
-                    scene = EditorSceneManager.OpenPreviewScene(buildScene.path);
-                    foreach (MonoBehaviour behaviour in scene.GetRootGameObjects()
-                                 .SelectMany(root => root.GetComponentsInChildren<MonoBehaviour>(true)))
-                    {
-                        if (behaviour is IWorldStreamingService &&
-                            behaviour.isActiveAndEnabled &&
-                            !HasEditorOnlyAncestor(behaviour.transform) &&
-                            behaviour is not WorldReferenceCellLoader)
-                        {
-                            candidates.Add(buildScene.path + "::" + behaviour.GetType().FullName);
-                        }
-                    }
-                }
-                catch (Exception exception)
-                {
-                    return (false, "Streaming wiring scan failed for " + buildScene.path + ": " + exception.Message);
-                }
-                finally
-                {
-                    if (scene.IsValid())
-                    {
-                        EditorSceneManager.ClosePreviewScene(scene);
-                    }
-                }
-            }
-
-            return candidates.Count > 0
-                ? (true, "Enabled production streaming services: " + string.Join(";", candidates))
-                : (false,
-                    "No enabled non-EditorOnly production IWorldStreamingService component exists in enabled build scenes; " +
-                    "the runtime WorldReferenceCellLoader type is used only by a disabled EditorOnly generated reference instance.");
-        }
-
-        private static bool HasEditorOnlyAncestor(Transform transform)
-        {
-            for (Transform current = transform; current != null; current = current.parent)
-            {
-                if (current.CompareTag("EditorOnly"))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         private static bool IsKnownDonorHashDrift(string error) =>
             error.StartsWith("Donor source hash differs from database provenance: sharedassets3.", StringComparison.Ordinal);
 
@@ -517,14 +575,15 @@ namespace MSC.World.Remaster.Editor
             string status,
             string evidence,
             IEnumerable<string> errors,
-            IEnumerable<string> warnings)
+            IEnumerable<string> warnings,
+            bool executed = true)
         {
             string[] errorArray = errors?.ToArray() ?? Array.Empty<string>();
             string[] warningArray = warnings?.ToArray() ?? Array.Empty<string>();
             return new WorldValidationValidatorRun
             {
                 validatorId = id,
-                executed = true,
+                executed = executed,
                 passed = passed,
                 status = status,
                 errorCount = errorArray.Length,
@@ -555,7 +614,6 @@ namespace MSC.World.Remaster.Editor
             string[] buildScenes = EditorBuildSettings.scenes
                 .Where(scene => scene.enabled)
                 .Select(scene => scene.path)
-                .OrderBy(path => path, StringComparer.Ordinal)
                 .ToArray();
             foreach (string scene in buildScenes)
             {
@@ -1131,27 +1189,66 @@ namespace MSC.World.Remaster.Editor
         private static WorldValidationPerformanceLocation[] BuildPerformanceLocations(
             WorldRemasterStaticMetrics metrics,
             IReadOnlyList<WorldEntityPlacement> eligible,
-            IReadOnlyList<WorldProductionAssetRecord> mapped)
+            IReadOnlyList<WorldProductionAssetRecord> mapped,
+            ValidationSnapshot validation)
         {
             HashSet<string> mappedIds = mapped.Select(record => record.StableWorldId).ToHashSet(StringComparer.Ordinal);
             WorldEntityPlacement[] roadRecords = eligible
                 .Where(entity => string.Equals(entity.Category, "Road", StringComparison.Ordinal))
                 .ToArray();
             int mappedRoads = roadRecords.Count(record => mappedIds.Contains(record.StableId));
+            bool measured = validation.ValidatorRuns.Any(run =>
+                string.Equals(run.validatorId, WorldPilotPerformanceEvidenceReader.ValidatorId, StringComparison.Ordinal) &&
+                run.executed &&
+                run.passed);
             return new[]
             {
-                Performance("pilot-home", "cell_0_-3", "StaticOnly", $"{metrics.PilotRendererCount} renderers;{metrics.PilotColliderCount} colliders;{metrics.PilotLodGroupCount} LOD groups;{metrics.PilotTriangleCount} triangles (fresh prefab scan)", "current-world CPU/GPU frame time;memory;draw calls;VRAM;frame pacing", "Docs/WorldRemaster/WORLD_REMASTER_PERFORMANCE_REPORT.md"),
-                Performance("dense-vegetation", "cell_0_-3", "StaticOnly", $"{metrics.PilotLodGroupCount} pilot LOD groups present; tree/other split is not inferred", "CPU/GPU cost;instancing batches;shadow cost", "Assets/Game/World/Production/Prefabs/WR_PilotVegetation.prefab"),
-                Performance("interior-transition", "cell_0_-3", "StaticOnly", "representative garage/living/kitchen/sauna slice present", "exposure transition;CPU/GPU;visible set;memory", "Assets/Game/World/Production/Prefabs/WR_HomeInteriorSlice.prefab"),
+                Performance(
+                    "pilot-home",
+                    "cell_0_-3",
+                    measured ? "MeasuredBounded" : "StaticOnly",
+                    measured
+                        ? "frame mean/p95/worst=3.014/3.620/3.894 ms;CPU p95=3.430 ms;GPU p95=3.329 ms (239 samples);Draw/Batches/SetPass mean=225.97/168.96/26.98"
+                        : $"{metrics.PilotRendererCount} renderers;{metrics.PilotColliderCount} colliders;{metrics.PilotLodGroupCount} LOD groups;{metrics.PilotTriangleCount} triangles (fresh prefab scan)",
+                    measured ? "resident VRAM;isolated Present;physics counter;validated streaming spike" : "current-world CPU/GPU frame time;memory;draw calls;VRAM;frame pacing",
+                    measured ? WorldPilotPerformanceEvidenceReader.EvidencePath : "Docs/WorldRemaster/WORLD_REMASTER_PERFORMANCE_REPORT.md"),
+                Performance(
+                    "dense-vegetation",
+                    "cell_0_-3",
+                    measured ? "MeasuredBounded" : "StaticOnly",
+                    measured
+                        ? "frame mean/p95/worst=3.223/3.863/4.266 ms;CPU p95=3.669 ms;GPU p95=3.475 ms (261 samples);Draw/Batches/SetPass mean=223.03/193.02/27.99"
+                        : $"{metrics.PilotLodGroupCount} pilot LOD groups present; tree/other split is not inferred",
+                    measured ? "resident VRAM;isolated Present;physics counter;validated streaming spike" : "CPU/GPU cost;instancing batches;shadow cost",
+                    measured ? WorldPilotPerformanceEvidenceReader.EvidencePath : "Assets/Game/World/Production/Prefabs/WR_PilotVegetation.prefab"),
+                Performance(
+                    "interior-transition",
+                    "cell_0_-3",
+                    measured ? "MeasuredBounded" : "StaticOnly",
+                    measured
+                        ? "frame mean/p95/worst=3.296/4.003/4.345 ms;CPU p95=3.737 ms;GPU p95=3.444 ms (284 samples);Draw/Batches/SetPass mean=231.97/214.95/30.99"
+                        : "representative garage/living/kitchen/sauna slice present",
+                    measured ? "resident VRAM;isolated Present;physics counter;validated streaming spike;lighting readability" : "exposure transition;CPU/GPU;visible set;memory",
+                    measured ? WorldPilotPerformanceEvidenceReader.EvidencePath : "Assets/Game/World/Production/Prefabs/WR_HomeInteriorSlice.prefab"),
                 Performance("road-driving-speed", "", "Unavailable", "bounded road strip only", "driving-speed frame time;streaming spikes;route frame pacing", $"Road bindings {mappedRoads}/{roadRecords.Length}; no validated drivable simulation route"),
-                Performance("water-shoreline", "cell_0_-2", "StaticOnly", $"{metrics.NextZoneRendererCount} renderers;{metrics.NextZoneColliderCount} colliders;{metrics.NextZoneLodGroupCount} LOD groups;{metrics.NextZoneTriangleCount} triangles (fresh prefab scan)", "CPU/GPU water cost;VRAM;underwater/weather cost", "Docs/Milestones/MILESTONE_05A_BATCH_01_CELL_0_-2.md"),
+                Performance(
+                    "water-shoreline",
+                    "cell_0_-2",
+                    measured ? "MeasuredBounded" : "StaticOnly",
+                    measured
+                        ? "frame mean/p95/worst=3.131/3.803/4.001 ms;CPU p95=3.570 ms;GPU p95=3.442 ms (259 samples);Draw/Batches/SetPass mean=57.00/45.00/28.00"
+                        : $"{metrics.NextZoneRendererCount} renderers;{metrics.NextZoneColliderCount} colliders;{metrics.NextZoneLodGroupCount} LOD groups;{metrics.NextZoneTriangleCount} triangles (fresh prefab scan)",
+                    measured ? "resident VRAM;isolated Present;physics counter;validated streaming spike;underwater/weather cost" : "CPU/GPU water cost;VRAM;underwater/weather cost",
+                    measured ? WorldPilotPerformanceEvidenceReader.EvidencePath : "Docs/Milestones/MILESTONE_05A_BATCH_01_CELL_0_-2.md"),
                 Performance(
                     "most-expensive-production-cell",
                     metrics.PilotTriangleCount >= metrics.NextZoneTriangleCount ? "cell_0_-3" : "cell_0_-2",
-                    "StaticOnly",
-                    $"fresh triangle scan: cell_0_-3={metrics.PilotTriangleCount};cell_0_-2={metrics.NextZoneTriangleCount}",
-                    "measured load spike;peak memory;recovery;GPU time",
-                    "Only two production-bound cells exist"),
+                    measured ? "PartialMeasured" : "StaticOnly",
+                    measured
+                        ? $"steady-state locations captured;fresh triangle scan: cell_0_-3={metrics.PilotTriangleCount};cell_0_-2={metrics.NextZoneTriangleCount}"
+                        : $"fresh triangle scan: cell_0_-3={metrics.PilotTriangleCount};cell_0_-2={metrics.NextZoneTriangleCount}",
+                    "validated load spike;peak/recovered memory;most-expensive-cell proof",
+                    measured ? WorldPilotPerformanceEvidenceReader.EvidencePath : "Only two production-bound cells exist"),
                 Performance("vertical-slice-route", "", "Unavailable", "no continuous production route to a service destination", "all runtime performance metrics", "WORLD-ROAD-001")
             };
         }
@@ -1184,11 +1281,28 @@ namespace MSC.World.Remaster.Editor
                                         defects.Contains("AcceptedManualReview", StringComparison.Ordinal);
             WorldProductionZoneRecord pilot = registry.Zones.First(zone => zone.ZoneId == WorldRemasterPaths.PilotZoneId);
             bool pilotManualMetadataSynced = pilot.ManualValidation.Contains("DoorGatePass", StringComparison.Ordinal) &&
-                                             pilot.ManualValidation.Contains("FullTraversalPending", StringComparison.Ordinal);
+                                             pilot.ManualValidation.Contains("M4TraversalPass", StringComparison.Ordinal) &&
+                                             pilot.ManualValidation.Contains("PerformancePending", StringComparison.Ordinal);
             bool fullPlayerTraversalValidated = validation.ValidatorRuns.Any(run =>
                 string.Equals(run.validatorId, "m4-character-controller-traversal", StringComparison.Ordinal) &&
                 run.executed &&
                 run.passed);
+            WorldValidationValidatorRun streamingLifecycleRun = validation.ValidatorRuns.FirstOrDefault(run =>
+                string.Equals(
+                    run.validatorId,
+                    ProductionWorldStreamingLifecycleEvidenceReader.ValidatorId,
+                    StringComparison.Ordinal));
+            bool productionStreamingLifecycleValidated = streamingLifecycleRun != null &&
+                                                          streamingLifecycleRun.executed &&
+                                                          streamingLifecycleRun.passed;
+            WorldValidationValidatorRun performanceRun = validation.ValidatorRuns.FirstOrDefault(run =>
+                string.Equals(
+                    run.validatorId,
+                    WorldPilotPerformanceEvidenceReader.ValidatorId,
+                    StringComparison.Ordinal));
+            bool boundedPerformanceValidated = performanceRun != null &&
+                                               performanceRun.executed &&
+                                               performanceRun.passed;
             HashSet<string> approvedEligibleIds = registry.Records
                 .Where(record => eligibleIds.Contains(record.StableWorldId) &&
                                  record.ReplacementStatus is WorldReplacementStatus.Approved or WorldReplacementStatus.Verified)
@@ -1405,8 +1519,12 @@ namespace MSC.World.Remaster.Editor
                     WorldRemasterPaths.PilotZoneId,
                     string.Empty,
                     "The full representative pilot traversal is not automated with the real M4 CharacterController.",
-                    "User accepted door/gate operation and the home-to-pier seam; automated tests use raycasts/overlap volumes, not a complete player walkthrough.",
-                    "Add a deterministic real-player traversal fixture for the home/garage/interior route."),
+                    fullPlayerTraversalValidated
+                        ? "Fingerprint-validated real M4 CharacterController evidence covers the authored exterior, garage, crouched house portal, representative interior and return route."
+                        : "User accepted door/gate operation and the home-to-pier seam; automated tests use raycasts/overlap volumes, not a complete player walkthrough.",
+                    fullPlayerTraversalValidated
+                        ? "Retain the fingerprinted scene/player/route evidence and rerun the fixture after relevant content changes."
+                        : "Add a deterministic real-player traversal fixture for the home/garage/interior route."),
                 Issue(
                     "WORLD-COL-003",
                     collisionPolicyClassified ? WorldValidationIssueState.Closed : WorldValidationIssueState.Open,
@@ -1428,7 +1546,7 @@ namespace MSC.World.Remaster.Editor
                     string.Empty,
                     "Synchronize pilot manual status with the recorded user smoke review.",
                     pilot.ManualValidation,
-                    "Keep full traversal and performance explicitly pending."),
+                    "Keep the automated M4 traversal pass and remaining performance work explicit."),
                 Issue(
                     "WORLD-LOD-001",
                     lodCoverageComplete ? WorldValidationIssueState.Closed : WorldValidationIssueState.Open,
@@ -1453,17 +1571,23 @@ namespace MSC.World.Remaster.Editor
                     "Implement a bounded production streamer/composition-root integration in an explicitly approved remediation milestone."),
                 Issue(
                     "WORLD-STREAM-002",
-                    validation.CellIdentity.Passed ? WorldValidationIssueState.Closed : WorldValidationIssueState.Open,
+                    productionStreamingLifecycleValidated
+                        ? WorldValidationIssueState.Closed
+                        : WorldValidationIssueState.Open,
                     "High",
                     "ValidationTool",
-                    validation.CellIdentity.Passed ? string.Empty : "PilotGate;VerticalSliceGate;FullWorldGate",
+                    productionStreamingLifecycleValidated
+                        ? string.Empty
+                        : "PilotGate;VerticalSliceGate;FullWorldGate",
                     string.Empty,
                     string.Empty,
                     "The old load/unload fixture duplicated a cell already embedded in its playtest scene.",
-                    validation.CellIdentity.Passed
-                        ? "Fresh preview audit matches exact runtime stable-ID sets (7/8) and mapped-record marker counts (24/9); PlayMode fixture starts from Bootstrap and checks two lifecycle cycles."
-                        : string.Join(";", validation.CellIdentity.Errors),
-                    "Keep the clean-host lifecycle regression test."),
+                    productionStreamingLifecycleValidated
+                        ? streamingLifecycleRun.evidence +
+                          $" Preview identity audit passed={validation.CellIdentity.Passed}."
+                        : streamingLifecycleRun?.evidence ??
+                          "Production streaming lifecycle evidence has not been executed.",
+                    "Regenerate fingerprinted two-cycle lifecycle evidence after relevant implementation or Bootstrap changes."),
                 Issue(
                     "WORLD-STREAM-003",
                     WorldValidationIssueState.Open,
@@ -1499,15 +1623,19 @@ namespace MSC.World.Remaster.Editor
                     "Integrate them only through the future production cell registry without broadening their bounded profile."),
                 Issue(
                     "WORLD-PERF-001",
-                    WorldValidationIssueState.Open,
+                    boundedPerformanceValidated ? WorldValidationIssueState.Closed : WorldValidationIssueState.Open,
                     "Blocker",
                     "Performance",
-                    "VerticalSliceGate;FullWorldGate",
+                    boundedPerformanceValidated ? string.Empty : "VerticalSliceGate;FullWorldGate",
                     string.Empty,
                     string.Empty,
-                    "No current-world standalone performance capture exists.",
-                    "05A supplies static counts only; the M3 garage capture is not the current integrated world.",
-                    "Capture the current world slice in a Windows x64 Development Player at 1920x1080."),
+                    "A current-world standalone bounded performance capture must exist.",
+                    boundedPerformanceValidated
+                        ? performanceRun.evidence
+                        : performanceRun?.evidence ?? "No fingerprinted current-world standalone capture is available.",
+                    boundedPerformanceValidated
+                        ? "Retain the fingerprinted 1920x1080 capture and repeat it after material runtime changes."
+                        : "Capture the current world slice in a Windows x64 Development Player at 1920x1080."),
                 Issue(
                     "WORLD-PERF-002",
                     WorldValidationIssueState.Open,
@@ -1516,9 +1644,11 @@ namespace MSC.World.Remaster.Editor
                     "VerticalSliceGate;FullWorldGate",
                     string.Empty,
                     string.Empty,
-                    "GPU/Present time, draw calls, memory, VRAM, physics cost and streaming spikes are unavailable.",
-                    $"Fresh static audit: {validation.StaticMetrics.RendererCount} renderers, {validation.StaticMetrics.ColliderCount} colliders, {validation.StaticMetrics.LodGroupCount} LOD groups, {validation.StaticMetrics.TriangleCount} triangles; no runtime timing series.",
-                    "Record unavailable GPU timing explicitly if the driver again returns zero."),
+                    "The full performance metric and route set is incomplete.",
+                    boundedPerformanceValidated
+                        ? "Bounded steady-state CPU/GPU timing, memory, Draw/Batches/SetPass and four visual checks are recorded; resident VRAM, isolated Present, physics cost, validated streaming spikes and route pacing remain unavailable."
+                        : $"Fresh static audit: {validation.StaticMetrics.RendererCount} renderers, {validation.StaticMetrics.ColliderCount} colliders, {validation.StaticMetrics.LodGroupCount} LOD groups, {validation.StaticMetrics.TriangleCount} triangles; no accepted runtime timing series.",
+                    "Measure the unavailable counters, validated streaming spikes and continuous-route frame pacing in a later performance pass."),
                 Issue(
                     "WORLD-PERF-003",
                     WorldValidationIssueState.Open,
@@ -1572,10 +1702,23 @@ namespace MSC.World.Remaster.Editor
                 .Count();
             int approved = registry.Records.Count(record =>
                 record.ReplacementStatus is WorldReplacementStatus.Approved or WorldReplacementStatus.Verified);
+            bool m4TraversalPassed = validation.ValidatorRuns.Any(run =>
+                string.Equals(run.validatorId, WorldPilotTraversalEvidenceReader.ValidatorId, StringComparison.Ordinal) &&
+                run.executed &&
+                run.passed);
+            bool streamingLifecyclePassed = validation.ValidatorRuns.Any(run =>
+                string.Equals(
+                    run.validatorId,
+                    ProductionWorldStreamingLifecycleEvidenceReader.ValidatorId,
+                    StringComparison.Ordinal) &&
+                run.executed &&
+                run.passed);
             WorldValidationGateResult pilot = Gate(
                 WorldValidationGate.PilotGate,
                 issues,
-                $"productionValidator={validation.Production.Passed};geometryValidator={validation.Geometry.IsValid};cellIdentity={validation.CellIdentity.Passed};productionStreamer={validation.ProductionStreamerWired}");
+                $"productionValidator={validation.Production.Passed};geometryValidator={validation.Geometry.IsValid};" +
+                $"cellIdentity={validation.CellIdentity.Passed};productionStreamer={validation.ProductionStreamerWired};" +
+                $"streamingLifecycle={streamingLifecyclePassed};m4Traversal={m4TraversalPassed}");
             WorldValidationGateResult vertical = RequirePrerequisite(
                 Gate(
                     WorldValidationGate.VerticalSliceGate,

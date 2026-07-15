@@ -50,7 +50,7 @@ namespace MSC.Tests.EditMode.WorldRemaster
         }
 
         [Test]
-        public void CurrentWorld_ReportsExactCoverageAndNoAchievedGate()
+        public void CurrentWorld_ReportsExactCoverageAndAchievesOnlyPilotGate()
         {
             WorldValidationResult result = WorldValidationRunner.ValidateAllCached();
 
@@ -61,12 +61,30 @@ namespace MSC.Tests.EditMode.WorldRemaster
             Assert.That(result.productionBoundCellCount, Is.EqualTo(2));
             Assert.That(result.supplementalSafetyPieceCount, Is.EqualTo(2));
             Assert.That(result.approvedReplacementCount, Is.Zero);
-            Assert.That(result.achievedGate, Is.EqualTo(WorldValidationGate.None.ToString()));
+            Assert.That(result.achievedGate, Is.EqualTo(WorldValidationGate.PilotGate.ToString()));
 
             WorldValidationGateResult pilot = result.gates.Single(gate => gate.gate == WorldValidationGate.PilotGate.ToString());
-            Assert.That(pilot.achieved, Is.False);
-            Assert.That(pilot.blockingIssueIds, Does.Contain("WORLD-STREAM-001"));
-            Assert.That(pilot.blockingIssueIds, Does.Contain("WORLD-COL-002"));
+            Assert.That(pilot.achieved, Is.True);
+            Assert.That(pilot.blockingIssueIds, Is.Empty);
+            Assert.That(result.issues.Single(issue => issue.issueId == "WORLD-STREAM-001").IsOpen, Is.False);
+            Assert.That(result.issues.Single(issue => issue.issueId == "WORLD-STREAM-002").IsOpen, Is.False);
+            Assert.That(result.issues.Single(issue => issue.issueId == "WORLD-COL-002").IsOpen, Is.False);
+            Assert.That(result.issues.Single(issue => issue.issueId == "WORLD-PERF-001").IsOpen, Is.False);
+            Assert.That(result.validatorRuns.Single(run => run.validatorId == "production-streaming-wiring").passed, Is.True);
+            Assert.That(result.validatorRuns.Single(run =>
+                run.validatorId == "production-streaming-lifecycle").passed, Is.True);
+            Assert.That(result.validatorRuns.Single(run => run.validatorId == "m4-character-controller-traversal").passed, Is.True);
+            Assert.That(result.validatorRuns.Single(run =>
+                run.validatorId == WorldPilotPerformanceEvidenceReader.ValidatorId).passed, Is.True);
+            Assert.That(
+                result.performanceLocations.Where(location =>
+                    location.locationId is "pilot-home" or "dense-vegetation" or
+                        "interior-transition" or "water-shoreline").Select(location => location.status),
+                Is.All.EqualTo("MeasuredBounded"));
+
+            WorldValidationGateResult vertical = result.gates.Single(gate =>
+                gate.gate == WorldValidationGate.VerticalSliceGate.ToString());
+            Assert.That(vertical.achieved, Is.False);
         }
 
         [Test]
@@ -89,6 +107,12 @@ namespace MSC.Tests.EditMode.WorldRemaster
             Assert.That(audit.dependencyEdges, Is.GreaterThan(0));
             Assert.That(audit.enabledBuildScenes, Does.Contain(WorldRemasterPaths.PilotCellScene));
             Assert.That(audit.enabledBuildScenes, Does.Contain(WorldRemasterPaths.NextZoneCellScene));
+            Assert.That(
+                audit.enabledBuildScenes,
+                Is.EqualTo(UnityEditor.EditorBuildSettings.scenes
+                    .Where(scene => scene.enabled)
+                    .Select(scene => scene.path)
+                    .ToArray()));
             Assert.That(audit.violations, Is.Empty);
         }
 

@@ -405750,7 +405750,7 @@ MonoBehaviour:
     mappedRecordCount: 24
     status: 4
     automatedValidation: Generated;ValidationRequired
-    manualValidation: DoorGatePass;LightingReadabilityLow;FullTraversalPending;PerformancePending
+    manualValidation: DoorGatePass;LightingReadabilityLow;M4TraversalPass;PerformancePending
     productionCellPath: Assets/Game/World/Generated/ProductionCells/Production_cell_0_-3.unity
     notes: Bounded home/garage pilot; raw-record coverage is intentionally not full-zone
       completion.

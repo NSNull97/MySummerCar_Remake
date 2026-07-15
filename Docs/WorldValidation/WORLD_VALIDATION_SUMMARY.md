@@ -1,147 +1,142 @@
-# Milestone 05B — сводка валидации мира
+# Milestone 05B.1 — сводка PilotGate remediation
 
 Дата проверки: 2026-07-15
-Версия валидатора: `05B.1`
-Проверенный baseline: принятые 05A, 05A Batch 01, 05C и 05C1.
+Unity: `6000.3.11f1`
+Валидатор: `05B.1`
 
 ## Решение gate
 
-Проверены все три уровня: `PilotGate`, `VerticalSliceGate` и `FullWorldGate`.
-Честно достигнутый уровень — **`None` (ни один gate не закрыт)**.
+Достигнутый уровень — **`PilotGate`**.
 
-| Gate | Результат | Блокирующие причины |
+| Gate | Результат | Блокирующие finding IDs |
 |---|---|---|
-| `PilotGate` | FAIL | `WORLD-COL-002`, `WORLD-STREAM-001` |
-| `VerticalSliceGate` | FAIL | Нет production-маршрута и service-zone, полной геометрической/LOD/streaming-покрытости и текущих runtime performance-измерений |
-| `FullWorldGate` | FAIL | 33/3842 eligible bindings, 2/49 production-bound cells, 0 Approved/Verified replacements и незакрытые full-map домены |
+| `PilotGate` | **PASS** | нет |
+| `VerticalSliceGate` | FAIL | `WORLD-BLD-001`, `WORLD-COL-001`, `WORLD-GEO-001`, `WORLD-GEO-002`, `WORLD-LOD-001`, `WORLD-PERF-002`, `WORLD-PERF-003`, `WORLD-ROAD-001`, `WORLD-STREAM-003`, `WORLD-STREAM-004`, `WORLD-STREAM-005` |
+| `FullWorldGate` | FAIL | blockers Vertical Slice плюс `WORLD-DONOR-002`, `WORLD-GEO-004`, `WORLD-ID-002` |
 
-Это не означает, что принятый bounded baseline сломан. Пилотные production-ячейки,
-статическая spatial parity, collision fixtures и production dependency graph проходят
-свои проверки. Формальный `PilotGate` дополнительно требует подключённый production
-streaming и полный автоматизированный проход настоящим M4 player controller.
+Машиночитаемый источник: `Docs/WorldValidation/WORLD_VALIDATION_RESULT.json`.
+Текущий результат не повышает bounded pilot до Vertical Slice или полного мира.
 
-Машиночитаемый источник результата: `WORLD_VALIDATION_RESULT.json`.
+## Что закрыло PilotGate
 
-## Покрытие
+- production streaming service подключён в `Bootstrap` через явный composition root;
+- manifest содержит ровно `cell_0_-3` и `cell_0_-2`, cell size `512 m`, load radius `0`, unload radius `1`;
+- production cells адресуются только по build index `6` и `8` с проверкой точного scene path;
+- service выгружает только сцены, которые загрузил сам;
+- fingerprinted PlayMode evidence подтверждает два цикла `pilot -> both -> next -> none`, owned counts `1,2,1,0`, уничтожение roots и уникальность stable IDs;
+- настоящий M4 `FirstPersonMotor` + `CharacterController` прошёл 16 checkpoints через garage, house portal, representative interior и обратно;
+- route evidence привязано к recursive asset + `.meta` dependency closure, production cell, player prefab и relevant scripts;
+- принят bounded Windows x64 Development Player performance capture в четырёх доступных точках.
 
-- canonical donor inventory: **33/13 509 = 0.244282%** direct bindings;
-- reference-world eligible: **33/3 842 = 0.858928%**;
+## Покрытие и spatial parity
+
+Показатели покрытия не изменились, поскольку 05B.1 не добавлял broad world art:
+
+- direct bindings: **33/13 509 = 0.244282%** canonical inventory;
+- eligible reference-world bindings: **33/3 842 = 0.858928%**;
 - production-bound cells: **2/49 = 4.081633%**;
 - `cell_0_-3`: **24/671 = 3.576751%**;
 - `cell_0_-2`: **9/15 = 60.000000%**;
-- остальные 47 concrete cells: **0 direct bindings**;
 - Approved/Verified replacements: **0/3 842**;
-- 05C reference representation: 2 784 actual meshes и 1 058 явных bounds fallback;
-- 05C1 safety topology: 2/2 project-owned pieces, отдельно от donor replacement denominator.
+- 05C representation: 2 784 actual meshes и 1 058 explicit bounds fallbacks;
+- 05C1 safety topology: 2/2 project-owned pieces.
 
-| Eligible category | Covered / total | % |
-|---|---:|---:|
-| BuildingExterior | 18 / 1 568 | 1.147959 |
-| BuildingInterior | 3 / 211 | 1.421801 |
-| ColliderOnly | 2 / 772 | 0.259067 |
-| Door | 1 / 120 | 0.833333 |
-| Roof | 2 / 124 | 1.612903 |
-| StaticProp | 4 / 265 | 1.509434 |
-| Window | 1 / 67 | 1.492537 |
-| Wire | 2 / 4 | 50.000000 |
-| Bridge, Fence, Field, Floor, Landmark, Road, Terrain, Water | 0 | 0.000000 |
-| InteractivePropCandidate, RoadSign, Rock, SpawnMarker, UtilityPole, Vegetation | 0 | 0.000000 |
+Доступный spatial fixture set также не менялся:
 
-Полная разбивка по 24 категориям и всем 49 cells находится в
-`WORLD_COVERAGE.csv`. Наличие project-authored terrain/road/water контекста в
-пилоте не повышает direct donor-record coverage без проверенного stable-ID binding.
-
-## Spatial parity
-
-Для доступных project-owned fixtures:
-
-- maximum deviation: **0.232306 m**;
-- mean deviation: **0.051240 m**;
+- maximum: **0.232306 m**;
+- mean: **0.051240 m**;
 - nearest-rank p95: **0.232306 m**;
-- garage doors: 0.232306 m и 0.200094 m при tolerance 0.35 m;
-- home и pier roots: 0 m;
-- три hedge anchors: 0 m;
-- home/pier overlap: 3.75 m при минимуме 1.0 m;
-- pier collider gap: 0.08 m при максимуме 0.10 m;
-- 05C1 cross-cell seam: 26 пар, 0 m при tolerance 0.0001 m;
-- 05C1 collision probes: 100/100.
+- home/pier overlap: `3.75 m`;
+- pier collider gap: `0.08 m` при limit `0.10 m`;
+- 05C1 seam: 26 пар с `0 m` deviation;
+- 05C1 collision probes: `100/100`.
 
-Недоступны и не подменены нулевыми результатами: full terrain elevations, road
-centerline/width/elevation, junction graph, full shoreline/water level, building
-footprints и interior floor levels. Подробности: `SPATIAL_DEVIATION.csv`.
+Full terrain, road graph, junctions, shoreline elevation, building footprints и
+полный interior floor-level parity остаются недоступны и не подменены нулями.
 
 ## Production independence
 
-Полный статический dependency graph включает 49 seed assets, 230 посещённых assets
-и 482 dependency edges. Запрещённых ссылок на `ReferenceOnly`, `DonorGenerated`
-или project Editor content: **0**. Ни одна reference-only scene не включена в
-Build Settings. Runtime source не требует внешнего staging path.
+Свежий dependency graph: **50 seed assets / 235 visited / 489 edges / 0 forbidden dependencies**.
+Запрещённых production ссылок на `ReferenceOnly`, `DonorGenerated` и project Editor content нет.
+Enabled Build Settings order теперь экспортируется без алфавитной перестановки;
+pilot/next production cells действительно имеют indices `6/8`.
 
-Не выполнен отдельный standalone current-world build audit его
-`ScriptingAssemblies.json`; это `WORLD-DONOR-002` и блокер только FullWorldGate.
+Development Player текущего мира был собран для performance capture, но его
+`ScriptingAssemblies.json` отдельно не аудирован. Поэтому `WORLD-DONOR-002`
+остаётся открытым только для `FullWorldGate`.
 
-## Streaming, traversal и performance
+## Traversal
 
-Два production cells проходят чистый additive load/unload/reload fixture из
-`Bootstrap`: два цикла, точные runtime stable-ID sets 7/8, mapped marker counts
-24/9, без duplicate IDs и orphan roots. Однако runtime production streamer не
-создан и не подключён. `WorldReferenceCellLoader` является runtime-типом; только
-его сгенерированный reference-only экземпляр отключён и помечен `EditorOnly`.
-В enabled build scenes нет активного non-EditorOnly production
-`IWorldStreamingService`, поэтому `WORLD-STREAM-001` блокирует даже PilotGate.
+Fingerprint evidence:
 
-Автоматически подтверждены door/gate clearance, 76-метровый home-to-pier raycast
-маршрут, seam/collision 05C1 и отсутствие провала у пирса. Пользователь ранее
-подтвердил работу створок, воду, изгородь и bounded ground baseline. Полный маршрут
-реальным M4 `CharacterController` и driveable production route не выполнены.
+- route fingerprint: `f8c915039e48f3c5f8f8fe1a2a8f75b84bca614c01f8505720a69cd402e2e1da`;
+- dependency fingerprint: `719fdc2621c83c3d4c261adee62f95ed5db4ee28e7b827fc39041a83f5da66bf`;
+- 16/16 checkpoints;
+- cumulative horizontal distance: `62.780293 m`;
+- max per-frame horizontal displacement: `0.100586 m`;
+- max waypoint vertical deviation: `0.26 m` при contract ceiling `0.35 m`;
+- route extent: `17.0 x 10.4 m`;
+- no teleport, stall guard, grounded vertical reach, crouch passage и return-to-start: PASS.
 
-Для текущего мира доступны только статические числа: 370 renderers, 164 colliders,
-67 LODGroups и 159 548 instance-counted triangles. Current-world CPU/GPU frame
-time, memory, draw calls, VRAM, frame pacing и streaming spikes не измерены. Старый
-M3 capture не используется как доказательство 05B.
+Низкий `FrontDoorHeader` требует crouch; standing clearance не заявляется.
+Fixture напрямую открывает три authored doors и отключает `PlayerInputRouter`,
+поэтому это проверка реального motor/controller и collision route, а не полный
+пользовательский input/interaction walkthrough. Streaming lifecycle и traversal
+остаются двумя дополняющими fixtures, а не единым streamed end-to-end route.
 
-## Открытые issue IDs
+## Performance
 
-Всего зафиксировано **27** stable finding’ов: **9 закрыто**, **18 открыто**.
+Windows x64 Development Player, `1920x1080`, HDRP `High Fidelity`, D3D12,
+Ryzen 9 5950X, RTX 4070 SUPER:
 
-Открытые IDs:
+| Location | Frame mean / p95 / worst, ms | CPU p95, ms | GPU p95, ms | Draw / Batches / SetPass mean |
+|---|---:|---:|---:|---:|
+| `pilot-home` | `3.014 / 3.620 / 3.894` | `3.430` | `3.329` | `225.97 / 168.96 / 26.98` |
+| `dense-vegetation` | `3.223 / 3.863 / 4.266` | `3.669` | `3.475` | `223.03 / 193.02 / 27.99` |
+| `interior-transition` | `3.296 / 4.003 / 4.345` | `3.737` | `3.444` | `231.97 / 214.95 / 30.99` |
+| `water-shoreline` | `3.131 / 3.803 / 4.001` | `3.570` | `3.442` | `57.00 / 45.00 / 28.00` |
 
-`WORLD-BLD-001`, `WORLD-COL-001`, `WORLD-COL-002`, `WORLD-COL-003`,
-`WORLD-DONOR-002`, `WORLD-GEO-001`, `WORLD-GEO-002`, `WORLD-GEO-004`,
-`WORLD-ID-002`, `WORLD-LOD-001`, `WORLD-PERF-001`, `WORLD-PERF-002`,
-`WORLD-PERF-003`, `WORLD-ROAD-001`, `WORLD-STREAM-001`, `WORLD-STREAM-003`,
-`WORLD-STREAM-004`, `WORLD-STREAM-005`.
+Четыре verification PNG имеют уникальные SHA-256 и sampled signatures.
+Production exposure defect исправлен: `BootstrapGlobalVolume` и generator теперь
+используют fixed EV100 `14` при солнце `100000 lux`.
 
-Только `WORLD-COL-002` и `WORLD-STREAM-001` непосредственно блокируют PilotGate.
-Все состояния, evidence и required actions записаны в
-`WORLD_VALIDATION_ISSUES.csv`.
+`WORLD-PERF-001` закрыт. `WORLD-PERF-002/003` открыты: отсутствуют resident VRAM,
+isolated Present, physics counter, чистый streaming-hitch capture, road-at-speed и
+полный vertical-slice route. Эти bounded цифры не являются гарантией финальных 60 FPS.
 
-## Разрешённые 05B-исправления
+## Findings
 
-- Исправлен stale manual status у pilot и Batch 01 без повышения art-статуса.
-- Закрыты принятые manual review записи `M05C-GEO-004/005`.
-- 05C1 project-owned pieces отделены от 13 509-row donor replacement ledger.
-- Исправлен load/unload test fixture, ранее загружавший production cell поверх
-  playtest scene с уже встроенной копией той же зоны.
-- Добавлены полный dependency graph audit, gate calculator, deterministic exports,
-  spatial statistics и `WorldValidationDashboard`.
-- `Run all` выполняет шесть underlying validators; canonical export принимает
-  только полный Project-result, а zone action явно остаётся issue-filtered
-  диагностикой, не самостоятельным formal gate.
-- Lifecycle тесты закрепляют точные runtime ID sets 7/8 и marker counts 24/9;
-  coverage/gates используют точные множества и иерархические prerequisites.
-- Stable-ID jump открывает нужную generated reference scene additively либо
-  выделяет source table для excluded record.
+Всего: **27**, закрыто **12**, открыто **15**.
 
-Геометрия gameplay layout, broad art, Player/Interaction и Vehicle architecture
-в 05B не менялись.
+Открыты:
 
-## Go/no-go и следующий шаг
+`WORLD-BLD-001`, `WORLD-COL-001`, `WORLD-COL-003`, `WORLD-DONOR-002`,
+`WORLD-GEO-001`, `WORLD-GEO-002`, `WORLD-GEO-004`, `WORLD-ID-002`,
+`WORLD-LOD-001`, `WORLD-PERF-002`, `WORLD-PERF-003`, `WORLD-ROAD-001`,
+`WORLD-STREAM-003`, `WORLD-STREAM-004`, `WORLD-STREAM-005`.
 
-`06_VEHICLE_SIMULATION.md`: **NO-GO**.
+Закрыты в текущем baseline:
 
-Ровно один следующий bounded этап: **05B.1 PilotGate remediation** — подключить
-production streaming service через Bootstrap, добавить детерминированный полный
-M4 CharacterController traversal fixture для pilot route, затем повторить 05B и
-снять current-world performance capture. К 06 переходить только после достижения
-`PilotGate`.
+`WORLD-COL-002`, `WORLD-COL-004`, `WORLD-DONOR-001`, `WORLD-GEO-003`,
+`WORLD-GEO-005`, `WORLD-GEO-006`, `WORLD-GEO-007`, `WORLD-ID-001`,
+`WORLD-ID-003`, `WORLD-PERF-001`, `WORLD-STREAM-001`, `WORLD-STREAM-002`.
+
+## Проверки
+
+- strict streaming validator: PASS, `errors=0`, `warnings=0`;
+- streaming lifecycle PlayMode evidence: `1/1 PASS`, два цикла;
+- traversal PlayMode evidence: `1/1 PASS`;
+- focused WorldValidation EditMode: `12/12 PASS`;
+- full PlayMode: `27/27 PASS`;
+- full EditMode: `139/142 PASS`.
+
+Три известные EditMode failures не созданы 05B.1:
+
+- два M3 lighting assertions видят user-owned `M3_NeutralVolume.asset` со `skyType=1` вместо frozen contract `4`;
+- WorldTransfer dry run фиксирует известный donor provenance drift для `sharedassets3.assets` и `sharedassets3.resource`.
+
+## Go/no-go
+
+`06_VEHICLE_SIMULATION.md`: **GO**, потому что `PilotGate` достигнут.
+
+Ровно следующий milestone: **`06_VEHICLE_SIMULATION.md`**. 05B.1 не реализует и не начинает его.

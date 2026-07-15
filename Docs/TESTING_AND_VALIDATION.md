@@ -295,3 +295,29 @@ by the test.
 
 Ignored evidence: `Logs/M05B_*.log` and `TestResults/M05B_*.xml`. Durable machine
 results are under `Docs/WorldValidation/`.
+
+## Milestone 05B.1 PilotGate remediation
+
+Unity `6000.3.11f1` results from 2026-07-15:
+
+- strict production-streaming validator: PASS, 0 errors / 0 warnings;
+- fingerprinted streaming lifecycle: **1/1 passed**, two complete cycles;
+- fingerprinted real M4 traversal: **1/1 passed**, 16 checkpoints and 62.780293 m;
+- Foundation exposure tests: **3/3 passed**;
+- focused WorldValidation EditMode: **12/12 passed**;
+- full PlayMode regression: **27/27 passed**;
+- full EditMode regression: **142 total, 139 passed, 3 failed**;
+- Windows x64 current-world capture: player exit 0, four accepted 1920x1080 locations;
+- canonical export: `achieved=PilotGate`, 12 issues closed and 15 open.
+
+The three full-EditMode failures remain the same external baseline: two assertions
+against the user-owned M3 sky-type edit and one donor dry-run containing the two
+known `sharedassets3` hash mismatches. 05B.1 did not modify M3 or rewrite donor
+provenance.
+
+Durable evidence:
+
+- `Docs/WorldValidation/M05B1_PRODUCTION_STREAMING_LIFECYCLE.json`;
+- `Docs/WorldValidation/M05B1_M4_CHARACTER_CONTROLLER_TRAVERSAL.json`;
+- `Docs/WorldValidation/M05B1_WORLD_PERFORMANCE_EVIDENCE.json`;
+- `Docs/WorldValidation/WORLD_VALIDATION_RESULT.json`.

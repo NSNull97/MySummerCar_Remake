@@ -1,6 +1,7 @@
 using System;
 using MSC.Bootstrap;
 using MSC.Interaction;
+using MSC.World;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -39,9 +40,32 @@ namespace MSC.Tests.EditMode.Foundation
             Assert.Throws<ArgumentNullException>(() => GameServiceBindings.CreatePartial(null));
         }
 
+        [Test]
+        public void WorldStreamingPartialBindingContainsOnlyConcreteStreamingService()
+        {
+            var worldStreaming = new WorldStreamingServiceStub();
+
+            GameServiceBindings bindings = GameServiceBindings.CreateWorldStreamingPartial(worldStreaming);
+
+            Assert.That(bindings.WorldStreaming, Is.SameAs(worldStreaming));
+            Assert.That(bindings.ServiceCount, Is.EqualTo(1));
+            Assert.That(bindings.IsComplete, Is.False);
+        }
+
+        [Test]
+        public void NullWorldStreamingPartialBindingIsRejected()
+        {
+            Assert.Throws<ArgumentNullException>(() => GameServiceBindings.CreateWorldStreamingPartial(null));
+        }
+
         private sealed class InteractionServiceStub : IInteractionService
         {
             public bool IsInteractionEnabled => true;
+        }
+
+        private sealed class WorldStreamingServiceStub : IWorldStreamingService
+        {
+            public bool IsStreaming => false;
         }
     }
 }

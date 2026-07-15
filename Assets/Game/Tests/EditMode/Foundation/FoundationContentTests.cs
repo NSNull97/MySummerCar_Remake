@@ -60,6 +60,7 @@ namespace MSC.Tests.EditMode.Foundation
             Assert.That(profile.TryGet(out PhysicallyBasedSky _), Is.True);
             Assert.That(profile.TryGet(out Exposure exposure), Is.True);
             Assert.That(exposure.mode.value, Is.EqualTo(ExposureMode.Fixed));
+            Assert.That(exposure.fixedExposure.value, Is.EqualTo(14f));
             Assert.That(profile.TryGet(out Tonemapping tonemapping), Is.True);
             Assert.That(tonemapping.mode.value, Is.EqualTo(TonemappingMode.ACES));
             Assert.That(profile.TryGet(out Fog fog), Is.True);

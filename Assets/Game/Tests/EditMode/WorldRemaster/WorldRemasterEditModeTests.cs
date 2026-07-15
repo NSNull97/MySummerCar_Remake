@@ -149,7 +149,7 @@ namespace MSC.Tests.EditMode.WorldRemaster
             Assert.That(pilot.CoveragePercent, Is.EqualTo(3.57675f).Within(0.0001f));
             Assert.That(
                 pilot.ManualValidation,
-                Is.EqualTo("DoorGatePass;LightingReadabilityLow;FullTraversalPending;PerformancePending"));
+                Is.EqualTo("DoorGatePass;LightingReadabilityLow;M4TraversalPass;PerformancePending"));
         }
 
         [Test]

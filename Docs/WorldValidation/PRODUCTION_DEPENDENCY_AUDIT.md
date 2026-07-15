@@ -1,65 +1,63 @@
-# Production dependency audit — Milestone 05B
+# Production dependency audit — Milestone 05B.1
 
 Дата: 2026-07-15
 Результат статического графа: **PASS**.
 
 ## Проверенный graph
 
-В seed set включены:
-
-- весь `Assets/Game/World/Production`;
-- две generated production-cell scenes;
-- две 05C1 void-fill scenes и их project-owned meshes;
-- все девять enabled Build Settings scenes.
-
-Результаты полного `AssetDatabase.GetDependencies` traversal:
+Seed set включает весь `Assets/Game/World/Production`, две production-cell scenes,
+две 05C1 safety scenes/meshes и все enabled Build Settings scenes.
 
 | Метрика | Значение |
 |---|---:|
-| Seed assets | 49 |
-| Visited assets | 230 |
-| Dependency edges | 482 |
+| Seed assets | 50 |
+| Visited assets | 235 |
+| Dependency edges | 489 |
 | Forbidden dependencies | 0 |
 
-Запрещёнными считаются runtime/build dependencies на:
+Запрещены production/runtime dependencies на:
 
 - `Assets/Game/LegacyImport/ReferenceOnly/`;
 - `Assets/Game/Imported/DonorGenerated/`;
 - project-owned `Assets/Game/**/Editor/` content.
 
-Package importer metadata с сегментом `Editor` не считается runtime dependency:
-это часть Unity package import graph, а не проектная Editor assembly в player.
+Package importer metadata с сегментом `Editor` не считается project runtime dependency.
 
-## Enabled build scenes
+## Фактический enabled Build Settings order
 
-1. `Assets/Game/Bootstrap/Bootstrap.unity`
-2. `Assets/Game/Player/Content/Scenes/PlayerInteractionPrototype.unity`
-3. `Assets/Game/Vehicle/Content/Assembly/Scenes/VehicleAssemblyPrototype.unity`
-4. `Assets/Game/World/Content/GaragePrototype/Scenes/GarageArtPrototype.unity`
-5. `Assets/Game/World/Generated/ProductionCells/Production_cell_0_-2.unity`
-6. `Assets/Game/World/Generated/ProductionCells/Production_cell_0_-3.unity`
-7. `Assets/Game/World/Production/Scenes/WorldRemasterHomeShorelinePlaytest.unity`
-8. `Assets/Game/World/Production/Scenes/WorldRemasterPilotPlaytest.unity`
-9. `Assets/OutdoorsScene.unity`
+| Build index | Scene |
+|---:|---|
+| 0 | `Assets/Game/Bootstrap/Bootstrap.unity` |
+| 1 | `Assets/Game/Player/Content/Scenes/PlayerInteractionPrototype.unity` |
+| 2 | `Assets/Game/Vehicle/Content/Assembly/Scenes/VehicleAssemblyPrototype.unity` |
+| 3 | `Assets/Game/World/Content/GaragePrototype/Scenes/GarageArtPrototype.unity` |
+| 4 | `Assets/OutdoorsScene.unity` |
+| 5 | `Assets/Game/World/Production/Scenes/WorldRemasterPilotPlaytest.unity` |
+| 6 | `Assets/Game/World/Generated/ProductionCells/Production_cell_0_-3.unity` |
+| 7 | `Assets/Game/World/Production/Scenes/WorldRemasterHomeShorelinePlaytest.unity` |
+| 8 | `Assets/Game/World/Generated/ProductionCells/Production_cell_0_-2.unity` |
 
-Reference-only comparison/overview scenes и 05C1 void-fill scenes не включены в
-обычный build list. Последние остаются отдельным validated safety baseline, но
-ещё не подключены к production streaming (`WORLD-STREAM-005`).
+Validator больше не сортирует этот список алфавитно при export. Порядок совпадает
+с `EditorBuildSettings`; production streaming manifest проверенно адресует cells
+по indices `6` и `8`.
 
-## Что подтверждено
+Reference-only overview/comparison scenes и 05C1 safety scenes не включены в
+обычный build list. Последние остаются validated bounded baseline, но ещё не
+подключены к production streaming (`WORLD-STREAM-005`).
 
-- Production prefabs/scenes не ссылаются на donor meshes или donor textures.
-- Reference-only content не нужен для загрузки production assets.
-- В runtime C# нет hard-coded donor/staging absolute path.
-- Полный граф шире старого hard-coded списка `ProductionCellValidationTool`.
-- `WORLD-DONOR-001` закрыт результатом `49/230/482/0`.
+## Подтверждено
 
-## Что не подтверждено
+- production prefabs/scenes не зависят от donor render meshes или donor textures;
+- `ReferenceOnly` и external donor staging не требуются для production loading;
+- runtime C# не содержит hard-coded donor/staging absolute paths;
+- full graph шире старого hard-coded seed list;
+- `WORLD-DONOR-001` закрыт результатом `50/235/489/0`.
 
-Current-world standalone Windows x64 development build в 05B не создавался.
-Поэтому фактический player `ScriptingAssemblies.json` не проверен на Editor DLL;
-это открытый `WORLD-DONOR-002`, блокирующий только `FullWorldGate`. Старый M3 build
-не считается доказательством текущего world baseline.
+## Не подтверждено
 
-Donor installation не удалялась и не менялась ради проверки. Независимость
-проверялась безопасным анализом графа, а не физическим удалением reference data.
+Current-world Development Player собран и запущен для performance capture, но его
+`ScriptingAssemblies.json` отдельно не проверялся на Editor DLL. Это
+`WORLD-DONOR-002`, открытый только для `FullWorldGate`.
+
+Donor installation не изменялась. Независимость проверялась анализом dependency
+graph, а не удалением donor/reference content.

@@ -1,69 +1,73 @@
-# Streaming validation — Milestone 05B
+# Streaming validation — Milestone 05B.1
 
 Дата: 2026-07-15
-Итог: **cell lifecycle PASS; production streaming wiring FAIL**.
+Итог: **production wiring PASS; runtime lifecycle PASS**.
 
-## Production cells
+## Production contract
 
-На текущем baseline существуют две production-bound cells:
+`ProductionWorldStreamingManifest` содержит ровно две принятые production cells:
 
-- `cell_0_-3` — home/garage pilot;
-- `cell_0_-2` — home shoreline/pier Batch 01.
+| Cell | Coordinates | Build index | Scene |
+|---|---:|---:|---|
+| `cell_0_-3` | `(0,-3)` | `6` | `Production_cell_0_-3.unity` |
+| `cell_0_-2` | `(0,-2)` | `8` | `Production_cell_0_-2.unity` |
 
-Детерминированная генерация и структурный validator проходят. В focused PlayMode
-suite каждая cell тестируется из `Bootstrap`, а не поверх playtest scene:
+Параметры: cell size `512 m`, load radius `0`, unload radius `1`.
+Bootstrap содержит явный `ProductionWorldStreamingInstaller`, M4 player prefab и
+focus transform. Runtime не выполняет поиск player/object по имени.
 
-1. additive load;
-2. проверка единственного cell root, marker count и точного runtime stable-ID set;
-3. unload и отсутствие orphan root;
-4. повторный load;
-5. повторная проверка того же точного stable-ID set;
-6. повторный unload.
+Service:
 
-Оба lifecycle-теста прошли. Весь focused PlayMode набор: **9/9 PASS**.
+- выбирает cell по focus position;
+- загружает только по build index;
+- до принятия load проверяет точный scene path;
+- применяет hysteresis между load/unload radii;
+- ведёт собственный set загруженных сцен;
+- выгружает только owned scenes и не забирает ownership у заранее загруженной сцены.
 
-Точные snapshots:
+Strict `WorldPilotGateRemediationValidator`: **PASS**, `0 errors / 0 warnings`.
+Проверка учитывает `EditorOnly` не только на composition object, но и по всей
+parent transform chain.
 
-- `cell_0_-3`: 7 runtime stable IDs, `MappedReferenceRecordCount=24`;
-- `cell_0_-2`: 8 runtime stable IDs, `MappedReferenceRecordCount=9`.
+## Fingerprinted lifecycle evidence
 
-## Исправленный дефект fixture
+Файл: `Docs/WorldValidation/M05B1_PRODUCTION_STREAMING_LIFECYCLE.json`.
 
-Старые тесты открывали playtest scene, уже содержащую проверяемую зону, а затем
-additive загружали ту же production cell. Это создавало вторую копию renderers,
-colliders и stable IDs, но тест проверял лишь наличие объектов. В 05B fixture
-переведён на чистый `Bootstrap`, точные ID sets и два load/unload цикла.
-`WORLD-STREAM-002` закрыт.
+PlayMode fixture начинается с чистого `Bootstrap` и выполняет два цикла:
 
-## Формальный blocker
+1. `pilot` — owned count `1`;
+2. `pilot+next` — `2`;
+3. `next` — `1`;
+4. `none` — `0`;
+5. та же последовательность повторно.
 
-В runtime отсутствует подключённый production streaming service:
+На обоих циклах подтверждены:
 
-- `IWorldStreamingService` не установлен composition root’ом;
-- focus-driven cell selection/load policy отсутствует;
-- `WorldReferenceCellLoader` является runtime-типом; его единственный
-  сгенерированный reference-only экземпляр disabled и помечен `EditorOnly`;
-- production scenes/prefabs не содержат активного loader.
+- exact stable-ID snapshots: `7` для pilot и `8` для next zone;
+- отсутствие duplicate stable IDs;
+- уничтожение pilot/next roots после unload;
+- отсутствие orphan ownership;
+- manifest, Bootstrap и implementation SHA-256 fingerprints;
+- Unity `6000.3.11f1`.
 
-Поэтому прямой вызов `SceneManager.LoadSceneAsync` в тесте доказывает корректный
-lifecycle scene, но не production streaming. `WORLD-STREAM-001` остаётся blocker
-для всех трёх gate.
+Stale JSON удаляется перед тестом и не создаётся при failure. Canonical runner
+закрывает `WORLD-STREAM-002` только при `executed=true && passed=true` у отдельного
+validator run `production-streaming-lifecycle`.
 
-## Непроверенные streaming contracts
+## Закрытые findings
 
-- cross-cell production roads и water;
-- large-object ownership;
-- interiors и persistent landmarks;
-- runtime state persistence между unload/reload;
-- memory recovery и допустимый load/unload stall;
-- full route focus transitions;
-- включение двух 05C1 safety cells в production policy.
+- `WORLD-STREAM-001` — production streamer подключён и strict wiring validator проходит;
+- `WORLD-STREAM-002` — двухцикловый runtime lifecycle доказан fingerprinted evidence.
 
-Соответствующие открытые finding’и: `WORLD-STREAM-003`, `WORLD-STREAM-004` и
-`WORLD-STREAM-005`.
+## Открытые streaming contracts
 
-## Следующая проверка
+- `WORLD-STREAM-003`: peak/recovered memory, persistence и чистый load/unload hitch limit;
+- `WORLD-STREAM-004`: непрерывный multi-cell road, water, large-object, interior и persistent-landmark contracts;
+- `WORLD-STREAM-005`: две принятые 05C1 safety cells намеренно не включены в runtime manifest.
 
-После bounded production-streamer wiring повторить те же lifecycle assertions
-через публичную service boundary, добавить focus crossing между `cell_0_-3` и
-`cell_0_-2`, измерить peak/recovered memory и worst-frame load/unload spike.
+Performance probe записал transition wall-clock и diagnostic frame delta, но
+verification PNG предыдущей точки мог попасть в следующий delta. Поэтому этот
+показатель не закрывает `WORLD-STREAM-003`.
+
+Streaming lifecycle и M4 traversal проверяются отдельными дополняющими fixtures;
+единый streamed end-to-end walkthrough пока не заявляется.

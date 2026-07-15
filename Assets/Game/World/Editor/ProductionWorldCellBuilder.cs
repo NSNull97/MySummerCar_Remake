@@ -761,7 +761,10 @@ namespace MSC.World.Remaster.Editor
             GameObject lighting = InstantiatePrefab(lightingPrefab, root.transform, "NeutralLighting");
             RenderSettings.sun = lighting.GetComponentInChildren<Light>(true);
             root.transform.SetPositionAndRotation(WorldRemasterPaths.HomeGarageAnchor, WorldRemasterPaths.HomeGarageRotation);
+            WorldPilotTraversalRoute traversalRoute = WorldPilotTraversalAuthoring.Attach(root, production, player);
             EditorSceneManager.MarkSceneDirty(scene);
+            SaveScene(scene, WorldRemasterPaths.PilotPlaytestScene);
+            WorldPilotTraversalAuthoring.RefreshDependencyFingerprint(traversalRoute);
             SaveScene(scene, WorldRemasterPaths.PilotPlaytestScene);
         }
 

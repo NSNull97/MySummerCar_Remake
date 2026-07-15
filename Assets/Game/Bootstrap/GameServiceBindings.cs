@@ -80,6 +80,22 @@ namespace MSC.Bootstrap
                 requireCompleteSet: false);
         }
 
+        /// <summary>
+        /// Creates the bounded Milestone 05B.1 binding for the production world-streaming service.
+        /// </summary>
+        public static GameServiceBindings CreateWorldStreamingPartial(IWorldStreamingService worldStreaming)
+        {
+            return new GameServiceBindings(
+                gameTime: null,
+                weather: null,
+                save: null,
+                audio: null,
+                interaction: null,
+                entityIds: null,
+                worldStreaming: worldStreaming ?? throw new ArgumentNullException(nameof(worldStreaming)),
+                requireCompleteSet: false);
+        }
+
         public IGameTimeService GameTime { get; }
 
         public IWeatherService Weather { get; }

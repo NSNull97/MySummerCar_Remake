@@ -1,0 +1,275 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:msc-remake:m05b1:bounded-world-pilot-capture:v1",
+  "title": "Milestone 05B.1 bounded world pilot performance capture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "captureId",
+    "milestone",
+    "completed",
+    "failure",
+    "buildUtc",
+    "capturedUtc",
+    "sourceRevision",
+    "sourceWorkingTreeState",
+    "sourceDirtyPaths",
+    "sourceDirtyEntries",
+    "unityVersion",
+    "operatingSystem",
+    "processor",
+    "processorCount",
+    "systemMemoryMegabytes",
+    "graphicsDevice",
+    "graphicsMemoryMegabytes",
+    "graphicsApi",
+    "qualityLevel",
+    "requestedWidth",
+    "requestedHeight",
+    "vSyncCount",
+    "targetFrameRate",
+    "frameTimingStatsExpected",
+    "renderMethod",
+    "verificationScreenshotMethod",
+    "pilotSceneBuildIndex",
+    "nextSceneBuildIndex",
+    "enabledBuildScenePaths",
+    "locations",
+    "unavailableScope"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "captureId": { "const": "m05b1-bounded-world-pilot-1080p" },
+    "milestone": { "const": "05B.1" },
+    "completed": { "type": "boolean" },
+    "failure": { "type": "string" },
+    "buildUtc": { "type": "string" },
+    "capturedUtc": { "type": "string" },
+    "sourceRevision": { "type": "string", "minLength": 1 },
+    "sourceWorkingTreeState": {
+      "enum": ["clean", "dirty", "unavailable"]
+    },
+    "sourceDirtyPaths": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "sourceDirtyEntries": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/dirtyEntry" }
+    },
+    "unityVersion": { "type": "string", "minLength": 1 },
+    "operatingSystem": { "type": "string", "minLength": 1 },
+    "processor": { "type": "string", "minLength": 1 },
+    "processorCount": { "type": "integer", "minimum": 1 },
+    "systemMemoryMegabytes": { "type": "integer", "minimum": 0 },
+    "graphicsDevice": { "type": "string", "minLength": 1 },
+    "graphicsMemoryMegabytes": { "type": "integer", "minimum": 0 },
+    "graphicsApi": { "type": "string", "minLength": 1 },
+    "qualityLevel": { "type": "string", "minLength": 1 },
+    "requestedWidth": { "const": 1920 },
+    "requestedHeight": { "const": 1080 },
+    "vSyncCount": { "const": 0 },
+    "targetFrameRate": { "const": -1 },
+    "frameTimingStatsExpected": { "const": true },
+    "renderMethod": { "const": "ordinary-player-backbuffer" },
+    "verificationScreenshotMethod": {
+      "const": "hdrp-standard-request-rendertexture-argb32-srgb-after-measured-frames"
+    },
+    "pilotSceneBuildIndex": { "type": "integer", "minimum": 1 },
+    "nextSceneBuildIndex": { "type": "integer", "minimum": 1 },
+    "enabledBuildScenePaths": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "type": "string", "pattern": "^Assets/.+\\.unity$" },
+      "uniqueItems": true
+    },
+    "locations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/location" }
+    },
+    "unavailableScope": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "completed": { "const": true } } },
+      "then": {
+        "properties": {
+          "failure": { "const": "" },
+          "locations": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "prefixItems": [
+              { "allOf": [{ "$ref": "#/$defs/location" }, { "properties": { "locationId": { "const": "pilot-home" } } }] },
+              { "allOf": [{ "$ref": "#/$defs/location" }, { "properties": { "locationId": { "const": "dense-vegetation" } } }] },
+              { "allOf": [{ "$ref": "#/$defs/location" }, { "properties": { "locationId": { "const": "interior-transition" } } }] },
+              { "allOf": [{ "$ref": "#/$defs/location" }, { "properties": { "locationId": { "const": "water-shoreline" } } }] }
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "failure": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "vector3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "z"],
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "z": { "type": "number" }
+      }
+    },
+    "dirtyEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["porcelainStatus", "path", "sha256"],
+      "properties": {
+        "porcelainStatus": { "type": "string", "minLength": 2, "maxLength": 2 },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?![A-Za-z]:|/).+"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{64}|missing)$"
+        }
+      }
+    },
+    "counter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["markerName", "available", "unit", "sampleCount", "mean", "peak"],
+      "properties": {
+        "markerName": { "type": "string", "minLength": 1 },
+        "available": { "type": "boolean" },
+        "unit": { "enum": ["bytes", "count", "milliseconds"] },
+        "sampleCount": { "type": "integer", "minimum": 0 },
+        "mean": { "type": "number", "minimum": 0 },
+        "peak": { "type": "number", "minimum": 0 }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "locationId",
+        "expectedCell",
+        "expectedSceneBuildIndex",
+        "requestedPlayerPosition",
+        "requestedPlayerEulerAngles",
+        "actualPlayerPosition",
+        "cameraTargetObject",
+        "cameraTargetRendererCount",
+        "cameraTargetWorldPosition",
+        "actualCameraPosition",
+        "actualCameraForward",
+        "sceneWasLoadedBeforeMove",
+        "expectedCellLoaded",
+        "loadTransitionFrames",
+        "loadTransitionMilliseconds",
+        "loadTransitionMaximumFrameTimeMilliseconds",
+        "loadedSceneBuildIndicesAfterMove",
+        "actualWidth",
+        "actualHeight",
+        "warmupFrames",
+        "sampledFrames",
+        "meanFrameTimeMilliseconds",
+        "medianFrameTimeMilliseconds",
+        "percentile95FrameTimeMilliseconds",
+        "percentile99FrameTimeMilliseconds",
+        "worstFrameTimeMilliseconds",
+        "estimatedMeanFramesPerSecond",
+        "cpuFrameTimingSamples",
+        "meanCpuFrameTimeMilliseconds",
+        "percentile95CpuFrameTimeMilliseconds",
+        "gpuFrameTimingSamples",
+        "meanGpuFrameTimeMilliseconds",
+        "percentile95GpuFrameTimeMilliseconds",
+        "percentile95Within60FpsBudget",
+        "profilerCounters",
+        "unavailableMetrics",
+        "screenshotFile",
+        "screenshotCaptureMethod",
+        "screenshotSampleCount",
+        "screenshotDistinctColorBuckets",
+        "screenshotDominantColorFraction",
+        "screenshotLuminanceRange",
+        "screenshotSampleSignature",
+        "screenshotContentValid"
+      ],
+      "properties": {
+        "locationId": {
+          "enum": ["pilot-home", "dense-vegetation", "interior-transition", "water-shoreline"]
+        },
+        "expectedCell": { "enum": ["cell_0_-3", "cell_0_-2"] },
+        "expectedSceneBuildIndex": { "type": "integer", "minimum": 1 },
+        "requestedPlayerPosition": { "$ref": "#/$defs/vector3" },
+        "requestedPlayerEulerAngles": { "$ref": "#/$defs/vector3" },
+        "actualPlayerPosition": { "$ref": "#/$defs/vector3" },
+        "cameraTargetObject": { "type": "string", "minLength": 1 },
+        "cameraTargetRendererCount": { "type": "integer", "minimum": 1 },
+        "cameraTargetWorldPosition": { "$ref": "#/$defs/vector3" },
+        "actualCameraPosition": { "$ref": "#/$defs/vector3" },
+        "actualCameraForward": { "$ref": "#/$defs/vector3" },
+        "sceneWasLoadedBeforeMove": { "type": "boolean" },
+        "expectedCellLoaded": { "type": "boolean" },
+        "loadTransitionFrames": { "type": "integer", "minimum": 1 },
+        "loadTransitionMilliseconds": { "type": "number", "minimum": 0 },
+        "loadTransitionMaximumFrameTimeMilliseconds": { "type": "number", "minimum": 0 },
+        "loadedSceneBuildIndicesAfterMove": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0 },
+          "uniqueItems": true
+        },
+        "actualWidth": { "type": "integer", "minimum": 1 },
+        "actualHeight": { "type": "integer", "minimum": 1 },
+        "warmupFrames": { "const": 120 },
+        "sampledFrames": { "const": 300 },
+        "meanFrameTimeMilliseconds": { "type": "number", "minimum": 0 },
+        "medianFrameTimeMilliseconds": { "type": "number", "minimum": 0 },
+        "percentile95FrameTimeMilliseconds": { "type": "number", "minimum": 0 },
+        "percentile99FrameTimeMilliseconds": { "type": "number", "minimum": 0 },
+        "worstFrameTimeMilliseconds": { "type": "number", "minimum": 0 },
+        "estimatedMeanFramesPerSecond": { "type": "number", "minimum": 0 },
+        "cpuFrameTimingSamples": { "type": "integer", "minimum": 0 },
+        "meanCpuFrameTimeMilliseconds": { "type": "number", "minimum": 0 },
+        "percentile95CpuFrameTimeMilliseconds": { "type": "number", "minimum": 0 },
+        "gpuFrameTimingSamples": { "type": "integer", "minimum": 0 },
+        "meanGpuFrameTimeMilliseconds": { "type": "number", "minimum": 0 },
+        "percentile95GpuFrameTimeMilliseconds": { "type": "number", "minimum": 0 },
+        "percentile95Within60FpsBudget": { "type": "boolean" },
+        "profilerCounters": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/counter" }
+        },
+        "unavailableMetrics": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "screenshotFile": { "type": "string", "pattern": "\\.png$" },
+        "screenshotCaptureMethod": {
+          "const": "hdrp-standard-request-rendertexture-argb32-srgb"
+        },
+        "screenshotSampleCount": { "type": "integer", "minimum": 1 },
+        "screenshotDistinctColorBuckets": { "type": "integer", "minimum": 6 },
+        "screenshotDominantColorFraction": { "type": "number", "minimum": 0, "maximum": 0.985 },
+        "screenshotLuminanceRange": { "type": "number", "minimum": 0.05, "maximum": 1 },
+        "screenshotSampleSignature": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+        "screenshotContentValid": { "const": true }
+      }
+    }
+  }
+}

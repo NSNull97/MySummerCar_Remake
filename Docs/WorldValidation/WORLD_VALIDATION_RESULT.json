@@ -5,7 +5,7 @@
     "scope": "Project",
     "evaluatedGate": "None",
     "selectedZone": "",
-    "achievedGate": "None",
+    "achievedGate": "PilotGate",
     "sourceRecordCount": 13509,
     "eligibleWorldRecordCount": 3842,
     "productionBindingCount": 33,
@@ -16,12 +16,9 @@
     "gates": [
         {
             "gate": "PilotGate",
-            "achieved": false,
-            "blockingIssueIds": [
-                "WORLD-COL-002",
-                "WORLD-STREAM-001"
-            ],
-            "evidence": "productionValidator=True;geometryValidator=True;cellIdentity=True;productionStreamer=False"
+            "achieved": true,
+            "blockingIssueIds": [],
+            "evidence": "productionValidator=True;geometryValidator=True;cellIdentity=True;productionStreamer=True;streamingLifecycle=True;m4Traversal=True"
         },
         {
             "gate": "VerticalSliceGate",
@@ -29,20 +26,17 @@
             "blockingIssueIds": [
                 "WORLD-BLD-001",
                 "WORLD-COL-001",
-                "WORLD-COL-002",
                 "WORLD-GEO-001",
                 "WORLD-GEO-002",
                 "WORLD-LOD-001",
-                "WORLD-PERF-001",
                 "WORLD-PERF-002",
                 "WORLD-PERF-003",
                 "WORLD-ROAD-001",
-                "WORLD-STREAM-001",
                 "WORLD-STREAM-003",
                 "WORLD-STREAM-004",
                 "WORLD-STREAM-005"
             ],
-            "evidence": "eligibleBindings=33/3842;productionStreamer=False;currentWorldPerformance=false;prerequisite=PilotGate:false"
+            "evidence": "eligibleBindings=33/3842;productionStreamer=True;currentWorldPerformance=false"
         },
         {
             "gate": "FullWorldGate",
@@ -50,18 +44,15 @@
             "blockingIssueIds": [
                 "WORLD-BLD-001",
                 "WORLD-COL-001",
-                "WORLD-COL-002",
                 "WORLD-DONOR-002",
                 "WORLD-GEO-001",
                 "WORLD-GEO-002",
                 "WORLD-GEO-004",
                 "WORLD-ID-002",
                 "WORLD-LOD-001",
-                "WORLD-PERF-001",
                 "WORLD-PERF-002",
                 "WORLD-PERF-003",
                 "WORLD-ROAD-001",
-                "WORLD-STREAM-001",
                 "WORLD-STREAM-003",
                 "WORLD-STREAM-004",
                 "WORLD-STREAM-005"
@@ -96,15 +87,15 @@
         },
         {
             "issueId": "WORLD-COL-002",
-            "state": "Open",
+            "state": "Closed",
             "severity": "Blocker",
             "domain": "Traversal",
-            "blockingGates": "PilotGate;VerticalSliceGate;FullWorldGate",
+            "blockingGates": "",
             "zoneId": "cell_0_-3",
             "stableWorldId": "",
             "summary": "The full representative pilot traversal is not automated with the real M4 CharacterController.",
-            "evidence": "User accepted door/gate operation and the home-to-pier seam; automated tests use raycasts/overlap volumes, not a complete player walkthrough.",
-            "requiredAction": "Add a deterministic real-player traversal fixture for the home/garage/interior route."
+            "evidence": "Fingerprint-validated real M4 CharacterController evidence covers the authored exterior, garage, crouched house portal, representative interior and return route.",
+            "requiredAction": "Retain the fingerprinted scene/player/route evidence and rerun the fixture after relevant content changes."
         },
         {
             "issueId": "WORLD-COL-003",
@@ -127,8 +118,8 @@
             "zoneId": "cell_0_-3",
             "stableWorldId": "",
             "summary": "Synchronize pilot manual status with the recorded user smoke review.",
-            "evidence": "DoorGatePass;LightingReadabilityLow;FullTraversalPending;PerformancePending",
-            "requiredAction": "Keep full traversal and performance explicitly pending."
+            "evidence": "DoorGatePass;LightingReadabilityLow;M4TraversalPass;PerformancePending",
+            "requiredAction": "Keep the automated M4 traversal pass and remaining performance work explicit."
         },
         {
             "issueId": "WORLD-DONOR-001",
@@ -139,7 +130,7 @@
             "zoneId": "",
             "stableWorldId": "",
             "summary": "Audit the complete production/build dependency graph rather than a hard-coded asset list.",
-            "evidence": "seeds=49;visited=230;edges=482;violations=0",
+            "evidence": "seeds=50;visited=235;edges=489;violations=0",
             "requiredAction": "Retain the full graph audit and fail on ReferenceOnly, DonorGenerated or Editor asset dependencies."
         },
         {
@@ -288,15 +279,15 @@
         },
         {
             "issueId": "WORLD-PERF-001",
-            "state": "Open",
+            "state": "Closed",
             "severity": "Blocker",
             "domain": "Performance",
-            "blockingGates": "VerticalSliceGate;FullWorldGate",
+            "blockingGates": "",
             "zoneId": "",
             "stableWorldId": "",
-            "summary": "No current-world standalone performance capture exists.",
-            "evidence": "05A supplies static counts only; the M3 garage capture is not the current integrated world.",
-            "requiredAction": "Capture the current world slice in a Windows x64 Development Player at 1920x1080."
+            "summary": "A current-world standalone bounded performance capture must exist.",
+            "evidence": "capture=m05b1-bounded-world-pilot-1080p;locations=4;resolution=1920x1080;rawSha256=da9f0dc40d23d2c65ae2b7e7d1d90243b4b00a1da07a51ea26df9e0a9b285ad6;pilot-home:p95=3.62ms,gpuSamples=239;dense-vegetation:p95=3.863ms,gpuSamples=261;interior-transition:p95=4.003ms,gpuSamples=284;water-shoreline:p95=3.803ms,gpuSamples=259",
+            "requiredAction": "Retain the fingerprinted 1920x1080 capture and repeat it after material runtime changes."
         },
         {
             "issueId": "WORLD-PERF-002",
@@ -306,9 +297,9 @@
             "blockingGates": "VerticalSliceGate;FullWorldGate",
             "zoneId": "",
             "stableWorldId": "",
-            "summary": "GPU/Present time, draw calls, memory, VRAM, physics cost and streaming spikes are unavailable.",
-            "evidence": "Fresh static audit: 370 renderers, 164 colliders, 67 LOD groups, 159548 triangles; no runtime timing series.",
-            "requiredAction": "Record unavailable GPU timing explicitly if the driver again returns zero."
+            "summary": "The full performance metric and route set is incomplete.",
+            "evidence": "Bounded steady-state CPU/GPU timing, memory, Draw/Batches/SetPass and four visual checks are recorded; resident VRAM, isolated Present, physics cost, validated streaming spikes and route pacing remain unavailable.",
+            "requiredAction": "Measure the unavailable counters, validated streaming spikes and continuous-route frame pacing in a later performance pass."
         },
         {
             "issueId": "WORLD-PERF-003",
@@ -336,14 +327,14 @@
         },
         {
             "issueId": "WORLD-STREAM-001",
-            "state": "Open",
+            "state": "Closed",
             "severity": "Blocker",
             "domain": "Streaming",
-            "blockingGates": "PilotGate;VerticalSliceGate;FullWorldGate",
+            "blockingGates": "",
             "zoneId": "",
             "stableWorldId": "",
             "summary": "No production runtime streaming service is wired into Bootstrap or production scenes.",
-            "evidence": "No enabled non-EditorOnly production IWorldStreamingService component exists in enabled build scenes; the runtime WorldReferenceCellLoader type is used only by a disabled EditorOnly generated reference instance.",
+            "evidence": "pilot-gate-remediation: exactCells=2; cells=cell_0_-3|cell_0_-2; explicitM4Focus=true; loadAddress=buildIndex; errors=0; warnings=0",
             "requiredAction": "Implement a bounded production streamer/composition-root integration in an explicitly approved remediation milestone."
         },
         {
@@ -355,8 +346,8 @@
             "zoneId": "",
             "stableWorldId": "",
             "summary": "The old load/unload fixture duplicated a cell already embedded in its playtest scene.",
-            "evidence": "Fresh preview audit matches exact runtime stable-ID sets (7/8) and mapped-record marker counts (24/9); PlayMode fixture starts from Bootstrap and checks two lifecycle cycles.",
-            "requiredAction": "Keep the clean-host lifecycle regression test."
+            "evidence": "Production streamer completed 2 clean two-cell lifecycle cycles; sequenceSteps=8; implementation=e9f55de71f62b5b995b82e871305621ee5b79ba9a80e92c4c34427831c07f878. Preview identity audit passed=True.",
+            "requiredAction": "Regenerate fingerprinted two-cycle lifecycle evidence after relevant implementation or Bootstrap changes."
         },
         {
             "issueId": "WORLD-STREAM-003",
@@ -1755,26 +1746,26 @@
         {
             "locationId": "pilot-home",
             "zoneId": "cell_0_-3",
-            "status": "StaticOnly",
-            "availableMetrics": "332 renderers;134 colliders;64 LOD groups;158548 triangles (fresh prefab scan)",
-            "unavailableMetrics": "current-world CPU/GPU frame time;memory;draw calls;VRAM;frame pacing",
-            "evidence": "Docs/WorldRemaster/WORLD_REMASTER_PERFORMANCE_REPORT.md"
+            "status": "MeasuredBounded",
+            "availableMetrics": "frame mean/p95/worst=3.014/3.620/3.894 ms;CPU p95=3.430 ms;GPU p95=3.329 ms (239 samples);Draw/Batches/SetPass mean=225.97/168.96/26.98",
+            "unavailableMetrics": "resident VRAM;isolated Present;physics counter;validated streaming spike",
+            "evidence": "Docs/WorldValidation/M05B1_WORLD_PERFORMANCE_EVIDENCE.json"
         },
         {
             "locationId": "dense-vegetation",
             "zoneId": "cell_0_-3",
-            "status": "StaticOnly",
-            "availableMetrics": "64 pilot LOD groups present; tree/other split is not inferred",
-            "unavailableMetrics": "CPU/GPU cost;instancing batches;shadow cost",
-            "evidence": "Assets/Game/World/Production/Prefabs/WR_PilotVegetation.prefab"
+            "status": "MeasuredBounded",
+            "availableMetrics": "frame mean/p95/worst=3.223/3.863/4.266 ms;CPU p95=3.669 ms;GPU p95=3.475 ms (261 samples);Draw/Batches/SetPass mean=223.03/193.02/27.99",
+            "unavailableMetrics": "resident VRAM;isolated Present;physics counter;validated streaming spike",
+            "evidence": "Docs/WorldValidation/M05B1_WORLD_PERFORMANCE_EVIDENCE.json"
         },
         {
             "locationId": "interior-transition",
             "zoneId": "cell_0_-3",
-            "status": "StaticOnly",
-            "availableMetrics": "representative garage/living/kitchen/sauna slice present",
-            "unavailableMetrics": "exposure transition;CPU/GPU;visible set;memory",
-            "evidence": "Assets/Game/World/Production/Prefabs/WR_HomeInteriorSlice.prefab"
+            "status": "MeasuredBounded",
+            "availableMetrics": "frame mean/p95/worst=3.296/4.003/4.345 ms;CPU p95=3.737 ms;GPU p95=3.444 ms (284 samples);Draw/Batches/SetPass mean=231.97/214.95/30.99",
+            "unavailableMetrics": "resident VRAM;isolated Present;physics counter;validated streaming spike;lighting readability",
+            "evidence": "Docs/WorldValidation/M05B1_WORLD_PERFORMANCE_EVIDENCE.json"
         },
         {
             "locationId": "road-driving-speed",
@@ -1787,18 +1778,18 @@
         {
             "locationId": "water-shoreline",
             "zoneId": "cell_0_-2",
-            "status": "StaticOnly",
-            "availableMetrics": "38 renderers;30 colliders;3 LOD groups;1000 triangles (fresh prefab scan)",
-            "unavailableMetrics": "CPU/GPU water cost;VRAM;underwater/weather cost",
-            "evidence": "Docs/Milestones/MILESTONE_05A_BATCH_01_CELL_0_-2.md"
+            "status": "MeasuredBounded",
+            "availableMetrics": "frame mean/p95/worst=3.131/3.803/4.001 ms;CPU p95=3.570 ms;GPU p95=3.442 ms (259 samples);Draw/Batches/SetPass mean=57.00/45.00/28.00",
+            "unavailableMetrics": "resident VRAM;isolated Present;physics counter;validated streaming spike;underwater/weather cost",
+            "evidence": "Docs/WorldValidation/M05B1_WORLD_PERFORMANCE_EVIDENCE.json"
         },
         {
             "locationId": "most-expensive-production-cell",
             "zoneId": "cell_0_-3",
-            "status": "StaticOnly",
-            "availableMetrics": "fresh triangle scan: cell_0_-3=158548;cell_0_-2=1000",
-            "unavailableMetrics": "measured load spike;peak memory;recovery;GPU time",
-            "evidence": "Only two production-bound cells exist"
+            "status": "PartialMeasured",
+            "availableMetrics": "steady-state locations captured;fresh triangle scan: cell_0_-3=158548;cell_0_-2=1000",
+            "unavailableMetrics": "validated load spike;peak/recovered memory;most-expensive-cell proof",
+            "evidence": "Docs/WorldValidation/M05B1_WORLD_PERFORMANCE_EVIDENCE.json"
         },
         {
             "locationId": "vertical-slice-route",
@@ -1810,20 +1801,20 @@
         }
     ],
     "dependencyAudit": {
-        "seedAssets": 49,
-        "visitedAssets": 230,
-        "dependencyEdges": 482,
+        "seedAssets": 50,
+        "visitedAssets": 235,
+        "dependencyEdges": 489,
         "violations": [],
         "enabledBuildScenes": [
             "Assets/Game/Bootstrap/Bootstrap.unity",
             "Assets/Game/Player/Content/Scenes/PlayerInteractionPrototype.unity",
             "Assets/Game/Vehicle/Content/Assembly/Scenes/VehicleAssemblyPrototype.unity",
             "Assets/Game/World/Content/GaragePrototype/Scenes/GarageArtPrototype.unity",
-            "Assets/Game/World/Generated/ProductionCells/Production_cell_0_-2.unity",
+            "Assets/OutdoorsScene.unity",
+            "Assets/Game/World/Production/Scenes/WorldRemasterPilotPlaytest.unity",
             "Assets/Game/World/Generated/ProductionCells/Production_cell_0_-3.unity",
             "Assets/Game/World/Production/Scenes/WorldRemasterHomeShorelinePlaytest.unity",
-            "Assets/Game/World/Production/Scenes/WorldRemasterPilotPlaytest.unity",
-            "Assets/OutdoorsScene.unity"
+            "Assets/Game/World/Generated/ProductionCells/Production_cell_0_-2.unity"
         ],
         "editorAssemblyPlayerAuditAvailable": false
     },
@@ -1889,14 +1880,45 @@
         {
             "validatorId": "production-streaming-wiring",
             "executed": true,
-            "passed": false,
-            "status": "MissingRequiredImplementation",
-            "errorCount": 1,
+            "passed": true,
+            "status": "Pass",
+            "errorCount": 0,
             "warningCount": 0,
-            "evidence": "No enabled non-EditorOnly production IWorldStreamingService component exists in enabled build scenes; the runtime WorldReferenceCellLoader type is used only by a disabled EditorOnly generated reference instance.",
-            "errors": [
-                "No enabled non-EditorOnly production IWorldStreamingService component exists in enabled build scenes; the runtime WorldReferenceCellLoader type is used only by a disabled EditorOnly generated reference instance."
-            ],
+            "evidence": "pilot-gate-remediation: exactCells=2; cells=cell_0_-3|cell_0_-2; explicitM4Focus=true; loadAddress=buildIndex; errors=0; warnings=0",
+            "errors": [],
+            "warnings": []
+        },
+        {
+            "validatorId": "production-streaming-lifecycle",
+            "executed": true,
+            "passed": true,
+            "status": "Pass",
+            "errorCount": 0,
+            "warningCount": 0,
+            "evidence": "Production streamer completed 2 clean two-cell lifecycle cycles; sequenceSteps=8; implementation=e9f55de71f62b5b995b82e871305621ee5b79ba9a80e92c4c34427831c07f878.",
+            "errors": [],
+            "warnings": []
+        },
+        {
+            "validatorId": "m4-character-controller-traversal",
+            "executed": true,
+            "passed": true,
+            "status": "Pass",
+            "errorCount": 0,
+            "warningCount": 0,
+            "evidence": "Real M4 CharacterController completed 16 authored waypoints; route fingerprint f8c915039e48f3c5f8f8fe1a2a8f75b84bca614c01f8505720a69cd402e2e1da.",
+            "errors": [],
+            "warnings": []
+        },
+        {
+            "validatorId": "m05b1-bounded-world-performance",
+            "executed": true,
+            "passed": true,
+            "status": "Pass",
+            "errorCount": 0,
+            "warningCount": 0,
+            "evidence": "capture=m05b1-bounded-world-pilot-1080p;locations=4;resolution=1920x1080;rawSha256=da9f0dc40d23d2c65ae2b7e7d1d90243b4b00a1da07a51ea26df9e0a9b285ad6;pilot-home:p95=3.62ms,gpuSamples=239;dense-vegetation:p95=3.863ms,gpuSamples=261;interior-transition:p95=4.003ms,gpuSamples=284;water-shoreline:p95=3.803ms,gpuSamples=259",
+            "errors": [],
             "warnings": []
         }
     ]

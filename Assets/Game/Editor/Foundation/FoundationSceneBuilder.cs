@@ -15,6 +15,7 @@ namespace MSC.Editor.Foundation
         public const string BootstrapScenePath = "Assets/Game/Bootstrap/Bootstrap.unity";
         public const string BootstrapVolumeProfilePath =
             "Assets/Game/Presentation/Lighting/BootstrapGlobalVolume.asset";
+        public const float BootstrapFixedExposure = 14f;
 
         [MenuItem("Tools/My Summer Car/Foundation/Create Missing Bootstrap Content")]
         public static void EnsureBootstrapContent()
@@ -49,7 +50,7 @@ namespace MSC.Editor.Foundation
             Exposure exposure = GetOrAdd<Exposure>(profile);
             exposure.active = true;
             exposure.mode.Override(ExposureMode.Fixed);
-            exposure.fixedExposure.Override(0f);
+            exposure.fixedExposure.Override(BootstrapFixedExposure);
             exposure.compensation.Override(0f);
 
             Tonemapping tonemapping = GetOrAdd<Tonemapping>(profile);

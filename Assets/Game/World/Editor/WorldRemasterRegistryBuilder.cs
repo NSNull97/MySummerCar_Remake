@@ -15,7 +15,7 @@ namespace MSC.World.Remaster.Editor
         private const string BaselineValidationTimestamp = "2026-07-14T00:00:00+05:00";
         private const string Batch01ValidationTimestamp = "2026-07-15T00:00:00+05:00";
         private const string PilotManualValidation =
-            "DoorGatePass;LightingReadabilityLow;FullTraversalPending;PerformancePending";
+            "DoorGatePass;LightingReadabilityLow;M4TraversalPass;PerformancePending";
         private const string Batch01ManualValidation =
             "TraversalPass;WaterPass;HedgePass;VisualReferencePending;PerformancePending";
         private const string ProductionMaterials =

@@ -1,10 +1,15 @@
 using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using MSC.Bootstrap;
 using MSC.Core.Identity;
 using MSC.Player;
 using MSC.Vehicle.Assembly;
 using MSC.World.Remaster;
+using MSC.World.Streaming;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,6 +20,28 @@ namespace MSC.Tests.PlayMode.WorldRemaster
 {
     public sealed class WorldRemasterPlayModeTests
     {
+        private const int StreamingEvidenceSchemaVersion = 1;
+        private const string StreamingEvidenceValidatorId = "production-streaming-lifecycle";
+        private const string StreamingEvidenceRelativePath =
+            "Docs/WorldValidation/M05B1_PRODUCTION_STREAMING_LIFECYCLE.json";
+        private const string StreamingManifestPath =
+            "Assets/Game/World/Content/Streaming/ProductionWorldStreamingManifest.asset";
+        private const string BootstrapScenePath = "Assets/Game/Bootstrap/Bootstrap.unity";
+
+        private static readonly string[] StreamingImplementationPaths =
+        {
+            "Assets/Game/World/Runtime/Partition/WorldPartition.cs",
+            "Assets/Game/World/Runtime/Streaming/ProductionWorldStreamingManifest.cs",
+            "Assets/Game/World/Runtime/Streaming/ProductionWorldStreamingService.cs",
+            "Assets/Game/Bootstrap/ProductionWorldStreamingInstaller.cs",
+            "Assets/Game/Bootstrap/GameServiceBindings.cs",
+            "Assets/Game/Editor/WorldStreaming/ProductionWorldStreamingBuilder.cs",
+            "Assets/Game/Editor/WorldStreaming/WorldPilotGateRemediationValidator.cs",
+            "Assets/Game/World/Editor/ProductionWorldStreamingLifecycleEvidenceReader.cs",
+            "Assets/Game/World/Editor/WorldValidationRunner.cs",
+            "Assets/Game/Tests/PlayMode/WorldRemaster/WorldRemasterPlayModeTests.cs"
+        };
+
         private static readonly string[] PilotRuntimeStableIds =
         {
             "3be598c0aa9798dd8ab43e20f4a35e8f",
@@ -52,14 +79,38 @@ namespace MSC.Tests.PlayMode.WorldRemaster
         }
 
         [UnityTest]
-        public IEnumerator ProductionCell_LoadsAndUnloadsAdditively()
+        public IEnumerator ProductionStreaming_PilotCellOwnedLifecycleIsRepeatable()
         {
-            yield return LoadSingle("Bootstrap");
-            yield return ValidateProductionCellLifecycle(
-                "Production_cell_0_-3",
-                "cell_0_-3",
-                expectedMappedReferenceRecordCount: 24,
-                expectedStableIds: PilotRuntimeStableIds);
+            ProductionWorldStreamingService service = null;
+            ProductionWorldStreamingInstaller installer = null;
+            yield return LoadProductionStreamingSession(
+                resolvedService => service = resolvedService,
+                resolvedInstaller => installer = resolvedInstaller);
+
+            service.enabled = false;
+            DisablePlayerInputAndMotor(installer.SpawnedPlayer);
+            for (int cycle = 0; cycle < 2; cycle++)
+            {
+                if (!service.IsCellLoaded("cell_0_-3"))
+                {
+                    yield return service.RefreshNow();
+                }
+
+                GameObject[] roots = ValidateLoadedProductionCell(
+                    service,
+                    "cell_0_-3",
+                    expectedMappedReferenceRecordCount: 24,
+                    expectedStableIds: PilotRuntimeStableIds,
+                    cycle: cycle);
+                Assert.That(service.OwnedLoadedSceneCount, Is.EqualTo(1));
+
+                yield return service.UnloadOwnedScenes();
+                yield return null;
+
+                Assert.That(service.IsCellLoaded("cell_0_-3"), Is.False);
+                Assert.That(service.OwnedLoadedSceneCount, Is.Zero);
+                Assert.That(roots.All(root => root == null), Is.True, "Owned pilot-cell roots survived unload.");
+            }
         }
 
         [UnityTest]
@@ -85,14 +136,124 @@ namespace MSC.Tests.PlayMode.WorldRemaster
         }
 
         [UnityTest]
-        public IEnumerator Batch01ProductionCell_LoadsAndUnloadsAdditively()
+        public IEnumerator ProductionStreaming_CellTransitionAndOwnedUnloadAreRepeatable()
         {
-            yield return LoadSingle("Bootstrap");
-            yield return ValidateProductionCellLifecycle(
-                "Production_cell_0_-2",
-                "cell_0_-2",
-                expectedMappedReferenceRecordCount: 9,
-                expectedStableIds: NextZoneRuntimeStableIds);
+            DeletePreviousStreamingLifecycleEvidence();
+            ProductionWorldStreamingService service = null;
+            ProductionWorldStreamingInstaller installer = null;
+            yield return LoadProductionStreamingSession(
+                resolvedService => service = resolvedService,
+                resolvedInstaller => installer = resolvedInstaller);
+
+            service.enabled = false;
+            DisablePlayerInputAndMotor(installer.SpawnedPlayer);
+            var completedSequence = new string[8];
+            var ownedSceneCounts = new int[8];
+            var pilotRootCleanup = new bool[2];
+            var nextRootCleanup = new bool[2];
+            for (int cycle = 0; cycle < 2; cycle++)
+            {
+                int evidenceOffset = cycle * 4;
+                service.Focus.position = new Vector3(153.495f, 10f, -1280f);
+                yield return service.RefreshNow();
+                GameObject[] pilotRoots = ValidateLoadedProductionCell(
+                    service,
+                    "cell_0_-3",
+                    expectedMappedReferenceRecordCount: 24,
+                    expectedStableIds: PilotRuntimeStableIds,
+                    cycle: cycle);
+                Assert.That(service.IsCellLoaded("cell_0_-2"), Is.False);
+                Assert.That(service.OwnedLoadedSceneCount, Is.EqualTo(1));
+                completedSequence[evidenceOffset] = $"cycle-{cycle + 1}:pilot";
+                ownedSceneCounts[evidenceOffset] = service.OwnedLoadedSceneCount;
+
+                service.Focus.position = new Vector3(153.495f, 10f, -800f);
+                yield return service.RefreshNow();
+                GameObject[] nextRoots = ValidateLoadedProductionCell(
+                    service,
+                    "cell_0_-2",
+                    expectedMappedReferenceRecordCount: 9,
+                    expectedStableIds: NextZoneRuntimeStableIds,
+                    cycle: cycle);
+                Assert.That(service.IsCellLoaded("cell_0_-3"), Is.True);
+                Assert.That(service.OwnedLoadedSceneCount, Is.EqualTo(2));
+                completedSequence[evidenceOffset + 1] = $"cycle-{cycle + 1}:pilot+next";
+                ownedSceneCounts[evidenceOffset + 1] = service.OwnedLoadedSceneCount;
+
+                service.Focus.position = new Vector3(153.495f, 10f, -200f);
+                yield return service.RefreshNow();
+                yield return null;
+                Assert.That(service.IsCellLoaded("cell_0_-3"), Is.False);
+                Assert.That(service.IsCellLoaded("cell_0_-2"), Is.True);
+                Assert.That(service.OwnedLoadedSceneCount, Is.EqualTo(1));
+                pilotRootCleanup[cycle] = pilotRoots.All(root => root == null);
+                Assert.That(pilotRootCleanup[cycle], Is.True, "Pilot-cell roots survived the owned transition unload.");
+                completedSequence[evidenceOffset + 2] = $"cycle-{cycle + 1}:next";
+                ownedSceneCounts[evidenceOffset + 2] = service.OwnedLoadedSceneCount;
+
+                service.Focus.position = new Vector3(153.495f, 10f, -1800f);
+                yield return service.RefreshNow();
+                yield return null;
+                Assert.That(service.IsCellLoaded("cell_0_-3"), Is.False);
+                Assert.That(service.IsCellLoaded("cell_0_-2"), Is.False);
+                Assert.That(service.OwnedLoadedSceneCount, Is.Zero);
+                nextRootCleanup[cycle] = nextRoots.All(root => root == null);
+                Assert.That(nextRootCleanup[cycle], Is.True, "Next-cell roots survived the owned transition unload.");
+                completedSequence[evidenceOffset + 3] = $"cycle-{cycle + 1}:none";
+                ownedSceneCounts[evidenceOffset + 3] = service.OwnedLoadedSceneCount;
+            }
+
+            WritePassingStreamingLifecycleEvidence(
+                completedSequence,
+                ownedSceneCounts,
+                pilotRootCleanup,
+                nextRootCleanup);
+        }
+
+        [UnityTearDown]
+        public IEnumerator CleanupProductionStreamingSession()
+        {
+            ProductionWorldStreamingService[] services = Object.FindObjectsByType<ProductionWorldStreamingService>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None);
+            foreach (ProductionWorldStreamingService service in services)
+            {
+                service.enabled = false;
+                int timeoutFrames = 120;
+                while (service.IsStreaming && timeoutFrames-- > 0)
+                {
+                    yield return null;
+                }
+
+                if (!service.IsStreaming)
+                {
+                    yield return service.UnloadOwnedScenes();
+                }
+            }
+
+            foreach (GameCompositionRoot root in Object.FindObjectsByType<GameCompositionRoot>(
+                         FindObjectsInactive.Include,
+                         FindObjectsSortMode.None))
+            {
+                Object.Destroy(root.gameObject);
+            }
+
+            yield return null;
+
+            for (int index = SceneManager.sceneCount - 1; index >= 0; index--)
+            {
+                Scene scene = SceneManager.GetSceneAt(index);
+                if (!scene.isLoaded || !IsProductionCellPath(scene.path))
+                {
+                    continue;
+                }
+
+                AsyncOperation unload = SceneManager.UnloadSceneAsync(scene);
+                if (unload != null)
+                {
+                    yield return unload;
+                }
+            }
         }
 
         [UnityTest]
@@ -198,48 +359,204 @@ namespace MSC.Tests.PlayMode.WorldRemaster
             yield return load;
         }
 
-        private static IEnumerator ValidateProductionCellLifecycle(
-            string sceneName,
+        private static IEnumerator LoadProductionStreamingSession(
+            Action<ProductionWorldStreamingService> setService,
+            Action<ProductionWorldStreamingInstaller> setInstaller)
+        {
+            yield return LoadSingle("Bootstrap");
+            ProductionWorldStreamingInstaller installer = Find<ProductionWorldStreamingInstaller>();
+            ProductionWorldStreamingService service = Find<ProductionWorldStreamingService>();
+            Assert.That(installer, Is.Not.Null);
+            Assert.That(service, Is.Not.Null);
+
+            int timeoutFrames = 300;
+            while ((!installer.IsReady || service.IsStreaming || !service.IsCellLoaded("cell_0_-3")) &&
+                   timeoutFrames-- > 0)
+            {
+                yield return null;
+            }
+
+            Assert.That(installer.IsReady, Is.True, "Bootstrap installer did not finish its initial production-cell refresh.");
+            Assert.That(service.HasFocus, Is.True);
+            Assert.That(service.Focus, Is.SameAs(installer.SpawnedPlayer.transform));
+            Assert.That(service.IsCellLoaded("cell_0_-3"), Is.True);
+            setService(service);
+            setInstaller(installer);
+        }
+
+        private static GameObject[] ValidateLoadedProductionCell(
+            ProductionWorldStreamingService service,
             string expectedZoneId,
             int expectedMappedReferenceRecordCount,
-            string[] expectedStableIds)
+            string[] expectedStableIds,
+            int cycle)
         {
-            for (int cycle = 0; cycle < 2; cycle++)
+            Assert.That(service.Manifest, Is.Not.Null);
+            Assert.That(service.Manifest.TryGetCell(expectedZoneId, out ProductionWorldCellScene entry), Is.True);
+            Scene cell = GetLoadedSceneByBuildIndex(entry.BuildIndex);
+            Assert.That(cell.IsValid() && cell.isLoaded, Is.True);
+            Assert.That(cell.path, Is.EqualTo(entry.ScenePath));
+            GameObject[] roots = cell.GetRootGameObjects();
+            WorldRemasterPilotMarker[] markers = roots
+                .SelectMany(root => root.GetComponentsInChildren<WorldRemasterPilotMarker>(true))
+                .ToArray();
+            Assert.That(markers.Count(marker => marker.ZoneId == expectedZoneId), Is.EqualTo(1));
+            WorldRemasterPilotMarker marker = markers.Single(candidate => candidate.ZoneId == expectedZoneId);
+            Assert.That(marker.MappedReferenceRecordCount, Is.EqualTo(expectedMappedReferenceRecordCount));
+
+            string[] stableIds = roots
+                .SelectMany(root => root.GetComponentsInChildren<StableEntityIdAuthoring>(true))
+                .Select(identity => identity.SerializedId)
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .OrderBy(id => id, StringComparer.Ordinal)
+                .ToArray();
+            Assert.That(stableIds.Distinct(StringComparer.Ordinal).Count(), Is.EqualTo(stableIds.Length));
+            Assert.That(
+                stableIds,
+                Is.EqualTo(expectedStableIds),
+                $"Stable-ID snapshot drifted for {entry.ScenePath} during lifecycle cycle {cycle + 1}.");
+            return roots;
+        }
+
+        private static Scene GetLoadedSceneByBuildIndex(int buildIndex)
+        {
+            for (int index = 0; index < SceneManager.sceneCount; index++)
             {
-                AsyncOperation load = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-                Assert.That(load, Is.Not.Null);
-                yield return load;
-
-                Scene cell = SceneManager.GetSceneByName(sceneName);
-                Assert.That(cell.IsValid() && cell.isLoaded, Is.True);
-                GameObject[] roots = cell.GetRootGameObjects();
-                WorldRemasterPilotMarker[] markers = roots
-                    .SelectMany(root => root.GetComponentsInChildren<WorldRemasterPilotMarker>(true))
-                    .ToArray();
-                Assert.That(markers.Count(marker => marker.ZoneId == expectedZoneId), Is.EqualTo(1));
-                WorldRemasterPilotMarker marker = markers.Single(candidate => candidate.ZoneId == expectedZoneId);
-                Assert.That(marker.MappedReferenceRecordCount, Is.EqualTo(expectedMappedReferenceRecordCount));
-
-                string[] stableIds = roots
-                    .SelectMany(root => root.GetComponentsInChildren<StableEntityIdAuthoring>(true))
-                    .Select(identity => identity.SerializedId)
-                    .Where(id => !string.IsNullOrWhiteSpace(id))
-                    .OrderBy(id => id, StringComparer.Ordinal)
-                    .ToArray();
-                Assert.That(stableIds.Distinct(StringComparer.Ordinal).Count(), Is.EqualTo(stableIds.Length));
-                Assert.That(
-                    stableIds,
-                    Is.EqualTo(expectedStableIds),
-                    $"Stable-ID snapshot drifted for {sceneName} during lifecycle cycle {cycle + 1}.");
-
-                AsyncOperation unload = SceneManager.UnloadSceneAsync(cell);
-                Assert.That(unload, Is.Not.Null);
-                yield return unload;
-                yield return null;
-
-                Assert.That(SceneManager.GetSceneByName(sceneName).isLoaded, Is.False);
-                Assert.That(roots.All(root => root == null), Is.True, "Production-cell roots survived unload.");
+                Scene scene = SceneManager.GetSceneAt(index);
+                if (scene.buildIndex == buildIndex && scene.isLoaded)
+                {
+                    return scene;
+                }
             }
+
+            return default;
+        }
+
+        private static void DisablePlayerInputAndMotor(GameObject player)
+        {
+            FirstPersonMotor motor = player.GetComponent<FirstPersonMotor>();
+            PlayerInputRouter input = player.GetComponent<PlayerInputRouter>();
+            if (motor != null)
+            {
+                motor.enabled = false;
+            }
+
+            if (input != null)
+            {
+                input.enabled = false;
+            }
+        }
+
+        private static bool IsProductionCellPath(string scenePath) =>
+            string.Equals(
+                scenePath,
+                "Assets/Game/World/Generated/ProductionCells/Production_cell_0_-3.unity",
+                StringComparison.Ordinal) ||
+            string.Equals(
+                scenePath,
+                "Assets/Game/World/Generated/ProductionCells/Production_cell_0_-2.unity",
+                StringComparison.Ordinal);
+
+        private static void DeletePreviousStreamingLifecycleEvidence()
+        {
+            string path = GetStreamingEvidenceAbsolutePath();
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+
+        private static void WritePassingStreamingLifecycleEvidence(
+            string[] completedSequence,
+            int[] ownedSceneCounts,
+            bool[] pilotRootCleanup,
+            bool[] nextRootCleanup)
+        {
+            string projectRoot = GetProjectRoot();
+            var evidence = new ProductionStreamingLifecycleEvidenceDto
+            {
+                schemaVersion = StreamingEvidenceSchemaVersion,
+                validatorId = StreamingEvidenceValidatorId,
+                passed = true,
+                unityVersion = Application.unityVersion,
+                completedCycles = 2,
+                completedSequence = completedSequence.ToArray(),
+                ownedSceneCounts = ownedSceneCounts.ToArray(),
+                pilotRootsDestroyed = pilotRootCleanup.ToArray(),
+                nextRootsDestroyed = nextRootCleanup.ToArray(),
+                stableIdsUnique = true,
+                pilotStableIds = PilotRuntimeStableIds.ToArray(),
+                nextZoneStableIds = NextZoneRuntimeStableIds.ToArray(),
+                manifestFingerprint = CalculateFileSha256(ResolveProjectPath(projectRoot, StreamingManifestPath)),
+                bootstrapFingerprint = CalculateFileSha256(ResolveProjectPath(projectRoot, BootstrapScenePath)),
+                implementationFingerprint = CalculateSourceSetFingerprint(projectRoot, StreamingImplementationPaths)
+            };
+
+            string path = GetStreamingEvidenceAbsolutePath();
+            Directory.CreateDirectory(Path.GetDirectoryName(path) ?? throw new InvalidOperationException());
+            string temporary = path + ".tmp";
+            File.WriteAllText(
+                temporary,
+                JsonUtility.ToJson(evidence, prettyPrint: true) + Environment.NewLine,
+                new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+            if (File.Exists(path))
+            {
+                File.Replace(temporary, path, null);
+            }
+            else
+            {
+                File.Move(temporary, path);
+            }
+        }
+
+        private static string GetStreamingEvidenceAbsolutePath() =>
+            ResolveProjectPath(GetProjectRoot(), StreamingEvidenceRelativePath);
+
+        private static string GetProjectRoot() =>
+            Directory.GetParent(Application.dataPath)?.FullName ??
+            throw new InvalidOperationException("Unity project root cannot be resolved.");
+
+        private static string ResolveProjectPath(string projectRoot, string projectRelativePath) =>
+            Path.Combine(projectRoot, projectRelativePath.Replace('/', Path.DirectorySeparatorChar));
+
+        private static string CalculateSourceSetFingerprint(string projectRoot, string[] relativePaths)
+        {
+            var canonical = new StringBuilder();
+            foreach (string relativePath in relativePaths
+                         .Select(path => path.Replace('\\', '/'))
+                         .Distinct(StringComparer.Ordinal)
+                         .OrderBy(path => path, StringComparer.Ordinal))
+            {
+                string absolutePath = ResolveProjectPath(projectRoot, relativePath);
+                canonical.Append(relativePath).Append('\n')
+                    .Append(CalculateFileSha256(absolutePath)).Append('\n');
+            }
+
+            using SHA256 sha256 = SHA256.Create();
+            return ToLowerHex(sha256.ComputeHash(Encoding.UTF8.GetBytes(canonical.ToString())));
+        }
+
+        private static string CalculateFileSha256(string absolutePath)
+        {
+            if (!File.Exists(absolutePath))
+            {
+                throw new FileNotFoundException("Streaming lifecycle fingerprint input is missing.", absolutePath);
+            }
+
+            using SHA256 sha256 = SHA256.Create();
+            using FileStream stream = File.OpenRead(absolutePath);
+            return ToLowerHex(sha256.ComputeHash(stream));
+        }
+
+        private static string ToLowerHex(byte[] hash)
+        {
+            var output = new StringBuilder(hash.Length * 2);
+            foreach (byte value in hash)
+            {
+                output.Append(value.ToString("x2"));
+            }
+
+            return output.ToString();
         }
 
         private static bool IsHomeToPierWalkable(Collider collider) =>
@@ -251,5 +568,25 @@ namespace MSC.Tests.PlayMode.WorldRemaster
 
         private static T Find<T>() where T : UnityEngine.Object =>
             UnityEngine.Object.FindFirstObjectByType<T>(FindObjectsInactive.Include);
+
+        [Serializable]
+        private sealed class ProductionStreamingLifecycleEvidenceDto
+        {
+            public int schemaVersion;
+            public string validatorId = string.Empty;
+            public bool passed;
+            public string unityVersion = string.Empty;
+            public int completedCycles;
+            public string[] completedSequence = Array.Empty<string>();
+            public int[] ownedSceneCounts = Array.Empty<int>();
+            public bool[] pilotRootsDestroyed = Array.Empty<bool>();
+            public bool[] nextRootsDestroyed = Array.Empty<bool>();
+            public bool stableIdsUnique;
+            public string[] pilotStableIds = Array.Empty<string>();
+            public string[] nextZoneStableIds = Array.Empty<string>();
+            public string manifestFingerprint = string.Empty;
+            public string bootstrapFingerprint = string.Empty;
+            public string implementationFingerprint = string.Empty;
+        }
     }
 }
