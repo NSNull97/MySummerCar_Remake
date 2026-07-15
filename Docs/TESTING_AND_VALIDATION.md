@@ -128,3 +128,135 @@ Implemented commands:
 - batch entry points `MSC.Editor.WorldLayoutPilot.WorldLayoutPilotComparisonSceneBuilder.RunBatch` and `MSC.Editor.WorldLayoutPilot.WorldLayoutPilotValidator.RunBatch`.
 
 The 04A validator checks the bounded allow-list, exact sample sequence, provenance, coordinate/measurement tolerance, external manifest hash, configured-root separation, unique stable IDs, comparison-scene exclusion and production/build-scene reference leaks.
+
+## Milestone 04B validation update
+
+Milestone 04B/04B.4 has 14 EditMode tests covering the required categories: database validation/serialization, schema migration, stable IDs, duplicates, unit conversion, coordinate spaces, source/evidence provenance, confidence, derived dependencies, measured-versus-tuned separation, missing P0/P1 reporting, fixture loading and explicit coverage of both rear-drum M05 assembly gates.
+
+The main-project Unity `6000.3.11f1` runs completed on 2026-07-14:
+
+- M04B batch validator: passed, `42` records, `22` non-covered P0 and `6` non-covered P1 requirements;
+- full EditMode regression: **80 total, 80 passed, 0 failed, 0 skipped**;
+- full PlayMode regression: **9 total, 9 passed, 0 failed, 0 skipped**.
+
+Ignored outputs: `Logs/Milestone04B_Validator.log`, `Logs/Milestone04B_EditMode.log`, `Logs/Milestone04B_PlayMode.log`, `TestResults/Milestone04B_EditMode.xml` and `TestResults/Milestone04B_PlayMode.xml`.
+
+Implemented commands:
+
+- `Tools > MSC Remake > Reference Capture`;
+- `Tools > MSC Remake > Reference Capture > Validate Database`;
+- batch entry point `MSC.Editor.ReferenceCapture.ReferenceCaptureValidationRunner.RunBatch`.
+
+The validator treats missing P0/P1 as an explicit capture queue rather than a structural failure. It fails on invalid/duplicate IDs, unresolved source/evidence/derived references, missing units/coordinate spaces, invalid tolerance/confidence, tuning leakage, unknown fixture records or missing required documentation.
+
+Dataset `04B.2` baseline supplemental run on 2026-07-14:
+
+- static source SHA-256 recheck: `GAME.unity` remains `c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4`;
+- JSON parse, fixture version consistency and CSV width checks: passed;
+- final M04B validator: passed, `47` records, `22` non-covered P0 and `6` non-covered P1; no new reference-schema warnings;
+- full EditMode regression: **81 total, 81 passed, 0 failed, 0 skipped**;
+- full PlayMode regression: **9 total, 9 passed, 0 failed, 0 skipped**;
+- `git diff --check`: passed.
+
+Ignored outputs: `Logs/Milestone04B2_Validator_Final.log`, `Logs/Milestone04B2_EditMode.log`, `Logs/Milestone04B2_PlayMode.log`, `TestResults/Milestone04B2_EditMode.xml` and `TestResults/Milestone04B2_PlayMode.xml`.
+
+Dataset `04B.3` diagnostic-video review run on 2026-07-14:
+
+- external video SHA-256: `adffd52e9dce4171c30b969caf1102bd7ef8af9f0686ce934f2ea0ae675689af`;
+- external static `GAME.unity` recheck: `c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4`;
+- JSON parse, 14 fixture/database version checks and `git diff --check`: passed;
+- M04B batch validator: passed, `49` records, `22` non-covered P0 and `6` non-covered P1;
+- filtered ReferenceCapture EditMode suite: **14/14 passed**;
+- full PlayMode regression: **9/9 passed**;
+- full EditMode regression: **81 total, 80 passed, 1 failed**. The unrelated `WorldTransferDataTests.Validation_DryRunMatchesDatabasePlan` detects that the freshly reinstalled donor `sharedassets3.assets` and `sharedassets3.resource` hashes differ from the frozen 04A1 provenance. The 04A1 database was not rewritten without a new audited extraction.
+
+Ignored outputs: `Logs/Milestone04B3_Validator.log`, `Logs/Milestone04B3_EditMode.log`, `Logs/Milestone04B3_ReferenceCapture_EditMode.log`, `Logs/Milestone04B3_PlayMode.log` and matching `TestResults/Milestone04B3_*.xml`.
+
+Dataset `04B.4` runtime-repetition and blocked-removal evidence run on 2026-07-14:
+
+- external repetition video SHA-256: `86ad948bda1450fb8d2cf32583b51d0c2bc55ccef5aad9f428da3bc38e8e3c84`;
+- 14 JSON files parse and report dataset `04B.4`; project evidence hashes and CSV parsing checks pass;
+- M04B batch validator: passed, `51` records, `20` non-covered P0 and `6` non-covered P1;
+- filtered ReferenceCapture EditMode suite: **14/14 passed**;
+- full PlayMode regression: **9/9 passed**;
+- full EditMode regression: **81 total, 80 passed, 1 failed**. The same unrelated `WorldTransferDataTests.Validation_DryRunMatchesDatabasePlan` reports the frozen 04A1 versus reinstalled donor hash drift for `sharedassets3.assets` and `sharedassets3.resource`;
+- `git diff --check`: passed apart from Git's informational CRLF-to-LF warning for `PORTING_LEDGER.csv`.
+
+Ignored outputs: `Logs/Milestone04B4_Validator.log`, `Logs/Milestone04B4_ReferenceCapture_EditMode.log`, `Logs/Milestone04B4_PlayMode.log`, `Logs/Milestone04B4_EditMode.log` and matching `TestResults/Milestone04B4_*.xml`.
+
+## Milestone 05 validation update
+
+Implemented commands:
+
+- `Tools > MSC Remake > Vehicle Assembly > Build Representative Test Vehicle`;
+- `Tools > MSC Remake > Vehicle Assembly > Validate Definitions and Prototype`;
+- `Tools > MSC Remake > Vehicle Assembly > Dependency Graph`;
+- `Tools > MSC Remake > Vehicle Assembly > Export Validation Report`;
+- `Tools > MSC Remake > Vehicle Assembly > Run Performance Audit`;
+- batch entry points `VehicleAssemblyPrototypeBuilder.RunBatch`, `VehicleAssemblyPrototypeValidator.RunBatch` and `VehicleAssemblyPerformanceAudit.RunBatch`.
+
+The static validator checks required assets, one assembly root, 12–20 representative parts, mount/fastener ownership, compatible tools, unique mount/stable IDs, dependency cycles, M4 capability wiring, exact rear-drum fixture semantics, Build Settings and absence of `ReferenceOnly`/`DonorGenerated` dependencies.
+
+Focused Unity `6000.3.11f1` results from 2026-07-14:
+
+- M05 builder: passed, 15 parts and 14 mounts generated;
+- M05 static validator: passed;
+- M05 EditMode: **22/22 passed**;
+- M05 PlayMode: **8/8 passed**;
+- performance audit: 10 000 deterministic mount queries, 0 managed bytes, 0 graph mutations, about 26.2 microseconds/query in Editor batch mode.
+
+Full regressions: PlayMode **17/17 passed**; EditMode **102/103 passed**. The single failure is the already-known unrelated 04A1 hash drift against the reinstalled donor; M05 does not rewrite the frozen provenance.
+
+## Post-M05 Crossdot baseline update
+
+The shared first-person player now has a presentation-only centered `CrossdotPresenter`. Because the main project was open in Unity, the reproducible builder and tests were executed against an isolated copy containing the exact updated `Assets`, `Packages` and `ProjectSettings` inputs.
+
+Results from 2026-07-14:
+
+- M4 player builder `1.1.0`: passed;
+- M4 Player/Interaction validator: passed;
+- M05 Vehicle Assembly validator: passed against the updated shared player prefab; its builder, validator and scene-boot test now explicitly require `CrossdotPresenter`;
+- focused Player/Interaction EditMode: **8/8 passed**;
+- focused Player/Interaction PlayMode: **5/5 passed**.
+
+The working prefab YAML was also copied into the isolated project after builder validation and passed both M4 and M05 validators. A manual Game View check remains required for subjective dot size and contrast.
+
+## Post-M05 installed-part scale correction
+
+The original M05 prototype parented `MountPose` below a `0.13`-scale debug cube. `PartInstance.InstallAt` used local-space reparenting, so an installed part inherited that scale and appeared to disappear. Runtime installation now preserves world scale, while Vehicle Assembly builder `1.1.0` keeps logical mount transforms at unit scale and places marker geometry in a separate child.
+
+Verification on 2026-07-14 used the exact current scene before rebuilding and then a freshly generated scene:
+
+- current `0.13`-scale scene, focused M05 PlayMode: **8/8 passed**;
+- builder `1.1.0`: passed, 15 parts / 14 unit-scale logical mounts;
+- rebuilt-scene M05 validator: passed;
+- rebuilt-scene focused M05 PlayMode: **8/8 passed**;
+- regression assertion confirms active renderers and unchanged world scale after carry handoff/install.
+
+## Milestone 05A world-remaster validation
+
+Unity `6000.3.11f1` results from 2026-07-14:
+
+- production builder: passed, version `05A.1`, pilot `cell_0_-3`, 24 direct bindings;
+- production validator: passed with 0 errors and 0 warnings;
+- focused World Remaster EditMode: **13/13 passed**;
+- focused World Remaster PlayMode: **5/5 passed**;
+- M4 Player/Interaction validator: passed;
+- M05 Vehicle Assembly validator: passed against the integrated pilot;
+- full PlayMode regression: **22/22 passed**;
+- full EditMode regression: **117 total, 114 passed, 3 failed**.
+
+The three full-EditMode failures are reported rather than hidden:
+
+1. `LightingPreset_UsesPhysicalSkyFogFixedExposureAndAces` and `Validator_ReportsNoMilestoneThreeErrors` observe the retained working-tree edit in `M3_NeutralVolume.asset`: sky type is `1` while the frozen M3 contract expects Physical Sky type `4`. 05A did not overwrite that existing edit. The dark 05A baseline capture is consistent with a pending lighting review.
+2. `WorldTransferDataTests.Validation_DryRunMatchesDatabasePlan` reports the already-known frozen 04A1 provenance mismatch for the reinstalled donor `sharedassets3.assets` and `.resource`. No historical provenance was rewritten.
+
+Determinism and data checks:
+
+- two consecutive production-cell builds produced SHA-256 `C0FC69B0C21FE86C1C8435BAE7D47FB3A1A964327DCEFE28DA9AFB773CAFDD52`;
+- ledger/backlog/zone SHA-256 values are `558A10FA485C753357CD2A308B3EA5DB11D790DCC10349EBF5F6FBE87CACB500`, `B4E17025222CEFCA691264B6A592318B52CF9151FD9FF7401E6040FE85E5330D`, `5C1CA13C69554FB9290492E1A08B669B95A2C9A873616DC61D79B4B36806947F`;
+- all 13,509 ledger rows parse; all 13,485 unassigned rows have a manual-art dependency; 263 backlog tasks and 51 zone rows parse;
+- dependency validator found no donor/reference content reachable from production assets;
+- `git diff --check` passed (apart from the existing informational CRLF/LF warning for `PORTING_LEDGER.csv`).
+
+Visual capture generated three 1920 × 1080 modes plus a manifest under ignored `PerformanceCaptures/Milestone05A/`. They were inspected for mode separation; final art, lighting and gameplay traversal approval remains manual.

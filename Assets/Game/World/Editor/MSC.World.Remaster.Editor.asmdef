@@ -1,0 +1,24 @@
+{
+  "name": "MSC.World.Remaster.Editor",
+  "rootNamespace": "MSC.World.Remaster.Editor",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Player.Runtime",
+    "MSC.Vehicle.Assembly",
+    "MSC.World.Runtime",
+    "MSC.World.Remaster.Runtime",
+    "Unity.InputSystem",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

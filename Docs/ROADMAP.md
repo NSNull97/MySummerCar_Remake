@@ -194,7 +194,7 @@ Exit gate:
 - ReferenceOnly content can be deleted without breaking production assets or build scenes;
 - no complete-map, production terrain or exact road-centerline claim is made.
 
-No 04B or Milestone 5 implementation has started.
+Milestone 04B reference capture and the subsequent Milestone 5 implementation are tracked in the completion sections below.
 
 ## Milestone 04A1 — Full world geometry reference transfer
 
@@ -216,4 +216,67 @@ Exit gate:
 - no donor payload enters production folders or normal builds;
 - known bounds, topology, semantic and manual-fidelity limitations are machine-readable and documented.
 
-No 04B or Milestone 5 implementation has started in this change.
+Milestone 04B reference capture and the subsequent Milestone 5 implementation are tracked in the completion sections below.
+
+## Milestone 04B — Reference capture and measurement database
+
+Status: **completed on 2026-07-14 with an explicit P0 capture queue**. See `Docs/Milestones/MILESTONE_04B_REPORT.md`, supplemental `Docs/Milestones/MILESTONE_04B1_VEHICLE_ASSEMBLY_STATIC_CAPTURE_REPORT.md` and `Docs/ReferenceCapture/`.
+
+Delivered:
+
+- versioned schema/dataset `1` / `04B.4` with 40 measurements, 11 behavior records and 35 coverage requirements;
+- explicit units, coordinate spaces, source hashes, evidence, confidence, tolerance and derived dependencies;
+- separate remake tuning overrides, never stored in donor measurement fields;
+- 11 machine-readable calibration fixtures and seven manual category checklists;
+- Editor dashboard at `Tools > MSC Remake > Reference Capture` plus batch validation;
+- 14 focused EditMode tests, a complete database index, missing-data queue and capture-session log;
+- bounded rear-drum evidence: static `0.01 m` candidate/graph, one discrete `0..8` marker, wrench `14`, three clean runtime repetitions and a user-confirmed wheel-installed removal blocker, without M05 implementation.
+
+Exit gate:
+
+- database/tooling validation covers 51 records; latest verification results are recorded in `Docs/TESTING_AND_VALIDATION.md`;
+- 20 P0 and 6 P1 requirements remain `Partial`/`Missing` and are reported, not fabricated;
+- donor installation and saves remain read-only; no donor payload or raw capture entered Git;
+- detailed simulation and world remastering did not start.
+
+Readiness decision: **GO for Milestone 5 in its declared scope**. Both representative assembly requirements are `Covered` and the fixture is `Ready`. Fitted-wheel identity and assembled/curb mass remain `Partial` and cannot be treated as production calibration. The next milestone is `Prompts/05_VEHICLE_ASSEMBLY.md`.
+
+## Milestone 05 — Vehicle assembly completion update
+
+Status: **completed on 2026-07-14**. See `Docs/Milestones/MILESTONE_05_REPORT.md` and `Docs/Vehicle/`.
+
+Delivered:
+
+- immutable definitions and mutable instances for parts, mounts, fasteners and tools;
+- deterministic assembly graph with install prerequisites, removal blockers and validation;
+- preserved M4 carry/handoff/tool/context boundaries;
+- safe loose/held/installed/detached Rigidbody transitions;
+- 15-part, 14-mount project-authored representative vehicle scene;
+- rear-drum clean-room fixture with one BoltPM, wrench 14, discrete `0..8` stages and installed-wheel blocker;
+- versioned part/mount/fastener DTO capture and validated restore;
+- Editor builder, validator, gizmos, dependency graph and performance audit;
+- 22 focused EditMode and 8 focused PlayMode tests.
+
+Exit gate:
+
+- install/tighten/loosen/remove and save/restore cycles pass automated tests;
+- the prototype scene has no donor/reference-only production dependency;
+- candidate preview is deterministic and measured allocation-free;
+- all approximations and unresolved donor measurements remain explicit.
+
+Readiness decision: **GO for the bounded first world-remaster integration pass (`Prompts/05A_WORLD_REMASTER.md`)**. Vehicle simulation remains a later independent milestone.
+
+## Milestone 05A — bounded world-remaster pilot
+
+Status: **bounded first execution completed on 2026-07-14; manual visual acceptance pending**. See `Docs/Milestones/MILESTONE_05A_REPORT.md` and `Docs/WorldRemaster/`.
+
+Delivered:
+
+- separate production/reference/comparison layers and an Editor dashboard;
+- durable registry for all 13,509 world records and status rows for all 51 discovered zone groups;
+- deterministic `cell_0_-3` home/garage pilot with terrain, road, ditch, buildings, interior, moving architecture, props, vegetation, collision and LOD;
+- M4 player and M05 assembly integration without subsystem rewrites;
+- 263 grouped manual-art tasks covering every unassigned record;
+- dependency, fit, cell, material, collision and LOD validation plus focused EditMode/PlayMode coverage.
+
+Exit boundary: only 24 records are directly bound (`0.178%` global; `3.577%` in the pilot cell), and no record is marked `Approved`/`Verified`. The remaining map is not called remastered. Continue exactly with `Prompts/05A_CONTINUE_NEXT_WORLD_ZONE.md` after the pilot's manual Unity review.

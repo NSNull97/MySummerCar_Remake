@@ -8,6 +8,7 @@
     "MSC.Player.Runtime",
     "MSC.Vehicle.Assembly",
     "MSC.World.Runtime",
+    "MSC.World.Remaster.Runtime",
     "Unity.InputSystem"
   ],
   "includePlatforms": [],

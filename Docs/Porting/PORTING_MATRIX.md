@@ -1,4 +1,4 @@
-# Porting Matrix — through Milestone 04A1
+# Porting Matrix — through Milestone 05
 
 Status: controlled reference pipeline, Milestone 3 garage art prototype and the clean-room Milestone 4 player/interaction slice are complete. M4 did not inspect or transfer donor input/FSM code, constants or configuration; player and interaction are `Reimplemented`. Two donor meshes remain `ReferenceOnly`. No donor visual asset is classified as production-ready.
 
@@ -97,3 +97,39 @@ The retained samples place the nearest reviewed road-route point `204.768 m` fro
 | Generated scenes/materials | `ReferenceOnly` | Ignored, clear/rebuild validated | Unity YAML byte hashes не стабильны, stable IDs/plan стабильны |
 
 Ни один 04A1 результат не классифицирован как `ProductionReady`, `CodePorted`, `ReauthoredGeometry` или `ReauthoredTexture`. Player/Interaction остаются независимыми `Reimplemented` модулями.
+
+## Milestone 04B reference-data state
+
+| Domain | Evidence/classification | Dataset status | Boundary |
+|---|---|---|---|
+| World/garage coordinates and roof | `WorldLayoutReference`, `DimensionalReference`, `PivotSource` | P0 anchor/scale/roof covered | Garage opening/interior and road surface remain missing |
+| Player base settings | `ConfigurationTransferred` | Camera anchor, walk speed, controller and acceleration/gravity static records | Sprint, crouch, reach and pickup/throw runtime behavior missing |
+| Satsuma body/wheels | `DimensionalReference`, `ConfigurationTransferred` | Body mesh envelope, four wheel anchors, wheelbase/tracks, root mass | Overall envelope, curb state and fitted tire identity partial |
+| Rear brake drum | `DimensionalReference`, `PivotSource`, `MountPointSource`, `BehavioralReference` | Mesh/pivot/installed transform, 0.01 m collider candidate, install/removal gates, one marker, discrete stages 0..8, wrench 14, scroll direction, three clean runtime repetitions and wheel-installed blocker recorded | Both M05 gates `Covered`; blocker attestation has `Medium` confidence, physical torque is outside the discrete donor contract |
+| Powertrain/dynamics | `BehavioralReference` procedures only | Fixtures `Missing` | No simulation constants or algorithms implemented |
+| Time/weather/audio/UI | `BehavioralReference` procedures only | Fixtures/checklists `Missing` | No runtime implementation and no raw capture payload |
+| M4 remake tuning | project-authored `Reimplemented` | Separate tuning overrides | Never stored as donor measurement |
+
+`ReferenceCaptureDatabase` is project-owned metadata and calibration input, not donor runtime content. No 04B item is classified `CodePorted`, `TemporaryDirectImport` or `ProductionReady`.
+
+## Milestone 05 assembly implementation state
+
+| System | Source evidence | Classification | Implemented boundary |
+|---|---|---|---|
+| General part/mount graph | Project architecture and M05 requirements | `Reimplemented` | Project-owned IDs, definitions/instances, explicit dependencies and deterministic operations |
+| Rear-left drum mount | Dataset `04B.4`, pivot/mount fixture and three runtime repetitions | `Reimplemented` from `MountPointSource`/`BehavioralReference` | Clean mount definition; donor marker retained as provenance; remake tolerances labelled tuning |
+| Drum fastener/tool | One BoltPM, wrench 14, discrete `0..8` and direction observations | `Reimplemented` | Integer fastener stages and tool-size rule; no torque/thread simulation |
+| Drum removal blocker | Static wheel gate plus user runtime attestation | `Reimplemented` | Explicit removal dependency on `vehicle.wheel_rl` |
+| Other 14 representative parts | Project-authored prototype requirements | `Reimplemented` | Graybox definitions/configuration; not donor-calibrated or production-ready |
+| Assembly save state | Project-owned stable IDs and DTO architecture | `Reimplemented` | Schema-v1 capture/validated restore; storage and legacy import excluded |
+
+## Milestone 05A production-world state
+
+| Area | Reference input | Classification | Bounded result |
+|---|---|---|---|
+| Production registry | 13,509 frozen 04A1 geometry records and cell IDs | `WorldLayoutReference` | Every record has a replacement status; 24 direct bindings and 13,485 explicit backlog links |
+| Home/garage pilot | `YARD/Building/Garage` anchor and selected building/opening/cable records | `ReauthoredGeometry`, `ReauthoredMaterial` | Deterministic `cell_0_-3` production cell; first-pass rather than final art |
+| Terrain/road/water context | Cell assignment and gameplay-space needs | `Reimplemented` | Project-authored pilot geometry; direct donor terrain/road/water parity remains unverified |
+| Moving architecture | Source pivots/relationships where mapped plus project fit rules | `Reimplemented` | Six separate hinges using the existing interaction capability; manual arc/parity review pending |
+| Vegetation/props | Reference categories/masses | `ReauthoredGeometry` | Reusable pilot prototypes; raw-record direct coverage remains zero and is backlogged |
+| Comparison layer | 04A1 bounds/placements | `ReferenceOnly` | Metadata proxies only; removable and not a production dependency |

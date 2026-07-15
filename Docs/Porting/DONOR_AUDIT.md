@@ -1,4 +1,4 @@
-# Donor Audit — Milestone 0 baseline through Milestone 04A1
+# Donor Audit — Milestone 0 baseline through Milestone 05
 
 Audit dates: 2026-07-13 baseline; 2026-07-14 Milestones 3–04A1 updates
 
@@ -245,3 +245,58 @@ External staging stores only `manifests/MILESTONE_04A_WORLD_LAYOUT_INSPECTION.js
 2 007 review records относятся к неоднозначным AssetRipper combined/static mesh bounds, а не к отсутствующим mesh GUID. 37 неподдерживаемых serialized class IDs сохранены metadata-only. Одна непрочитанная Texture2D не влияет на geometry transfer и не используется как production texture.
 
 Generated scenes и category materials находятся только под ignored `Assets/Game/LegacyImport/ReferenceOnly/World/Generated`; production prefabs/build content от них не зависят. Durable database, provenance, tools, tests и отчёты отслеживаются Git. Детали: `Docs/WorldTransfer/`.
+
+## Milestone 04B reference capture audit
+
+Milestone 04B reused the exact-hash 04A/04A1 external manifests and performed read-only static inspection of the external AssetRipper `GAME.unity` representation. Donor build ID is `20171487`, donor Unity is `5.0.0f4`; the local installation remains mod-contaminated and is not claimed as clean stock.
+
+Imported project-owned records cover the garage/world coordinate baseline, player camera/serialized base movement settings, Satsuma body/wheel geometry, root Rigidbody mass and one representative rear-drum pivot/mount marker chain. Each record preserves source ID/hash, locator, method, date, confidence, tolerance, raw observation, normalized unit/coordinate space and evidence references.
+
+Interpretation boundaries are explicit:
+
+- `Rigidbody.mass = 389 kg` is not labelled curb/assembled mass;
+- `datsun_body` AABB is not the complete assembled vehicle envelope;
+- named `tire_stock` mesh radius is not a proven fitted tire;
+- a zero drum transform and `BoltPM` marker do not establish compatibility, install/detach rules, tool size or turn count;
+- serialized `CharacterMotor` values do not establish sprint/crouch runtime behavior;
+- M4 tuning remains in a separate override dataset and is not donor evidence.
+
+В initial `04B.1` baseline donor runtime capture не заявлялся. В supplements raw video осталось external и в Git не добавлялось; сохраняются только hashes, observations и project-owned review reports. Ни donor file, ни save не открывались для записи, не патчились, не внедрялись и не использовались как runtime dependency.
+
+### Dataset 04B.2 / 04B.3 — bounded rear-drum trace and diagnostic video review
+
+После M05 preflight был выполнен только допустимый read-only разбор representative rear-left drum в уже существующем внешнем `GAME.unity` с повторно подтверждённым SHA-256 `c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4`. Donor executable и saves не запускались и не изменялись.
+
+Трассированы `Assembly` FSM `112903`, `Removal` FSM `105234`, `BoltCheck` FSM `105233`, `Screw` FSM `107744`, player `Check tool` FSM `105041` и tool pickup FSM `110228`. Статически подтверждены collision trigger radius `0.01 m` at local `(-0.1,0,0)`, candidate identity `PART`/`drum brake(Clone)`, prerequisites `Trailarm_RL.Data.Installed/Bolted`, removal gates `TriggerWheelRL_New active` and `Drumbrake_RL.Data.Bolted=false`, один `BoltPM` control marker, discrete stage range `0..8`, wrench `14` scale mapping и positive-tighten/negative-untighten scroll direction. Local `Screw.BoltSize=0` не участвует в tool check.
+
+Первый предоставленный MP4 добавлен только как external `BehavioralReference`: он диагностически отвергает ключ `11`, но содержит `0` валидных clean trials. Эти записи не являются `CodePorted` или `ProductionReady`; на этапе `04B.3` оба P0 requirement оставались `Partial`.
+
+### Dataset 04B.4 — runtime repetitions and blocked-removal attestation
+
+Внешний `My Summer Car 2026-07-14 18-52-48.mp4`, SHA-256 `86ad948bda1450fb8d2cf32583b51d0c2bc55ccef5aad9f428da3bc38e8e3c84`, просмотрен последовательным frame sampling. Ключ `14` показан явно; три отдельные последовательности дают одинаковый install → forward progression → reverse progression → removal outcome при отсутствующем rear-left wheel. Raw video и временные кадры не добавлялись в Git.
+
+Пользователь отдельно подтвердил runtime blocked case: установленное rear-left wheel блокирует снятие барабана. Это attestation записано как `BehavioralReference` с `Medium` confidence, поскольку отдельного frame-addressable видео blocked case нет. Вместе с exact static `TriggerWheelRL_New` gate, отсутствием отдельного angular compare в donor rule и тремя runtime snap/remove repetitions это переводит `P0-ASSEMBLY-MOUNT-RULE` и `P0-ASSEMBLY-FASTENER-SEMANTICS` в `Covered`; fixture становится `Ready`.
+
+Контракт остаётся дискретным `0..8`; physical torque, continuous turn angle и strip/failure не заявляются. Donor code/runtime не перенесён. Assembly-specific M05 gate открыт, а fitted-wheel identity и assembled/curb mass остаются отдельными `Partial` требованиями.
+
+### Post-reinstall donor hash drift
+
+После переустановки donor game текущий appmanifest по-прежнему сообщает build `20171487`, однако read-only SHA-256 текущих `sharedassets3.assets` и `sharedassets3.resource` равны соответственно `9511802c7fbcc5abcb11cb800d8fbba69edc38fea45cdde3edd2476e855331df` и `53aa0a2198b29ffe24d33a6d5e38a219d5724c99f5a737b537889865f1ea6fb1`. Они отличаются от frozen 04A1 provenance `1e956c...` / `19797f...`.
+
+Исторические 04A1 source records не переписаны: они описывают уже созданный external extraction и должны оставаться привязаны к его исходным hashes. Для привязки нового donor install к world-transfer database требуется отдельная read-only audited extraction/reconciliation; до неё full EditMode dry-run честно сообщает hash mismatch.
+
+## Milestone 05 donor-use audit
+
+Milestone 05 did not read or modify the donor installation. It consumed only project-owned dataset `04B.4`, its ready representative fixture and the already reauthored M2 rear-brake-drum proof prefab.
+
+Transferred behavior is narrowly classified `Reimplemented`: one BoltPM, wrench 14, discrete `0..8` endpoints, full loosen before removal and rear-left-wheel removal blocker. The `0.01 m` donor overlap marker is retained as provenance, while the remake position/orientation tolerances are explicitly project-authored tuning.
+
+The generated M05 scene and all 15 prototype visuals have no dependency on `LegacyImport/ReferenceOnly`, `Imported/DonorGenerated`, donor Unity assemblies, executable, PlayMaker or raw videos. No item is claimed `CodePorted`, `TemporaryDirectImport` or `ProductionReady`.
+
+## Milestone 05A world-remaster audit
+
+05A consumes the frozen project-owned 04A1 world database as `WorldLayoutReference` and does not modify the donor installation or historical source records. The ambiguous 04A1 `CABIN/Shed` landmark label is preserved as an audit finding; the bounded home/garage pilot uses the separately identified `YARD/Building/Garage` anchor in `cell_0_-3`.
+
+All production meshes, materials, prefabs and scenes are project-authored. Dependency validation reports no path from production content to `LegacyImport/ReferenceOnly` or `Imported/DonorGenerated`; donor textures and runtime assemblies are not used. The comparison scene contains only removable metadata proxies and is excluded from normal production ownership.
+
+Registry coverage is 24/13,509 direct bindings. Statuses remain four `ProductionCandidate`, twenty `FirstPass` and 13,485 `Unassigned`; no item is mislabeled `ProductionReady`, `Approved`, `Verified` or `CodePorted`. The 263 grouped backlog tasks explicitly carry unfinished manual art.

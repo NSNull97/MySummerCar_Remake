@@ -10,6 +10,8 @@
     "MSC.Save.Runtime",
     "MSC.Editor",
     "MSC.World.Runtime",
+    "MSC.World.Remaster.Runtime",
+    "MSC.World.Remaster.Editor",
     "MSC.LegacyImport.Runtime",
     "MSC.LegacyImport.Editor",
     "Unity.RenderPipelines.Core.Runtime",

@@ -197,3 +197,35 @@ Milestone 04A adds a deliberately narrow data path without introducing a world m
 - the external staging manifest stays outside Git, and the generated comparison scene stays below ignored `LegacyImport/ReferenceOnly` and outside Build Settings.
 
 The project-local origin is the reviewed donor garage anchor. Runtime source contains no machine-specific path, file I/O, `AssetDatabase` or donor dependency. Donor PathIDs are provenance only and never persistent entity IDs. The M3 road/terrain remain project-authored prototypes; their known disagreement with the measured `204.768 m` garage-to-nearest-route-sample relationship is documented rather than silently corrected in 04A.
+
+## Reference capture ownership
+
+Milestone 04B adds a data boundary, not a gameplay subsystem:
+
+- `MSC.Core.Runtime` owns `ReferenceCaptureDatabase`, records, fixtures, stable IDs, units, deterministic JSON, schema migration and pure validation;
+- `Assets/Game/Core/Configuration/ReferenceCapture` owns the versioned dataset, separate tuning overrides and calibration fixtures;
+- `MSC.Editor` owns import/manual authoring, local evidence-path resolution, comparison, checklist generation and project validation;
+- `Docs/ReferenceCapture` owns capture protocols, source map, indexes and the explicit missing-data queue;
+- external donor staging/reference media owns raw donor representations, screenshots, video and audio and never becomes a runtime dependency.
+
+The measured database cannot contain `tunedValue`. A tuning override references a measured record by project-owned stable ID and preserves its own rationale. Missing behavior is represented by a requirement and fixture, not by a fallback constant. Future simulation may consume validated fixtures, but it must not query donor assets or Editor APIs.
+
+Dataset `04B.4` keeps that boundary intact: the rear-left drum state graph, wrench-14 mapping, scroll direction, three runtime repetitions and wheel-installed removal blocker are stored only as project-owned `BehavioralReference` records and a `Ready` fixture. No PlayMaker action, donor assembly or donor object-name dispatcher was added to runtime; future `PartDefinition`/`MountPoint`/fastener systems must reimplement the verified discrete `0..8` contract behind project-owned IDs and interfaces. Remake orientation tolerance remains project-authored tuning because the traced donor rule has no separate angular compare.
+
+## Vehicle assembly ownership — Milestone 05
+
+`MSC.Vehicle.Assembly` now implements the previously reserved assembly boundary. Immutable `PartDefinition`, `MountPointDefinition`, `FastenerDefinition` and `ToolDefinition` assets are separated from `PartRuntimeState`, `MountPointRuntime`, `FastenerInstance` and the versioned save DTOs. `AssemblyGraph` owns explicit install/removal dependencies; `VehicleAssemblyQuery` performs deterministic candidate and completeness queries; `VehicleAssemblyController` is the composition root for one vehicle assembly, not a global manager.
+
+M4 architecture is preserved: `PlayerInteractionController` still produces intent, `PhysicalCarryController` still owns held-body physics, and `IMountHandoffTarget` is the only pickup-to-assembly transfer boundary. Thin assembly capabilities implement mount handoff, fastener tool activation and contextual removal. Object names are presentation only and never drive compatibility or persistence.
+
+The representative scene under `Assets/Game/Vehicle/Content/Assembly/Scenes` contains 15 project-authored prototype parts and 14 mounts. Runtime dependencies are clean: no `ReferenceOnly`, `DonorGenerated`, donor executable, donor Unity assembly or PlayMaker runtime is reachable. Rear-drum `0..8`, wrench `14`, `0.01 m` reference marker and wheel blocker are a clean-room reimplementation of dataset `04B.4`; interaction tolerances are separately documented remake tuning.
+
+Full design, authoring rules and limitations are in `Docs/Vehicle/ASSEMBLY_ARCHITECTURE.md`, `PART_AUTHORING_GUIDE.md`, `MOUNT_AND_FASTENER_GUIDE.md` and `ASSEMBLY_KNOWN_LIMITATIONS.md`.
+
+## World production replacement ownership — Milestone 05A
+
+The frozen 04A1 database remains spatial truth and is not overwritten by scene state. `MSC.World.Remaster.Runtime` owns durable production-registry records, comparison-mode state and thin moving-architecture capability. `MSC.World.Remaster.Editor` owns registry/backlog generation, deterministic prefab/cell construction, the dashboard, comparison scenes, dependency checks and pilot validation.
+
+Three layers are explicit: removable donor/reference metadata, project-authored production assets, and a separate comparison scene. Production prefabs and generated production cells have no dependency on `LegacyImport/ReferenceOnly` or `Imported/DonorGenerated`. The first bounded pass produces only `cell_0_-3`; all other source records stay in the registry with explicit statuses and art-task links.
+
+Player and Vehicle Assembly remain consumers. The pilot reuses M4 player intent and `IContextInteractionTarget`, and is composed into the M05 assembly scene without changing either subsystem's ownership. Generated cell content is updated in place so project-owned scene stable IDs and Unity file IDs remain deterministic across rebuilds.

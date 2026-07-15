@@ -74,3 +74,9 @@ runtime series and memory snapshot. A representative integrated Player + World
 slice does not yet exist; creating one during the review-fix task would cross
 the approved milestone boundary. `PERF-001` therefore remains explicitly
 blocked rather than being reported as fixed.
+
+## Milestone 05A pilot static budget
+
+The integrated production pilot now provides the first representative Player + World + Assembly content slice. Static Editor audit records 332 renderers, 134 colliders, 64 LOD groups, 158,548 instance-counted mesh triangles and approximately 0.18 MiB of unique mesh data for `WR_HomeYardPilot.prefab`.
+
+These are content counts, not an FPS claim. CPU/GPU frame time, draw calls, VRAM, peak memory, streaming load/unload time and standalone 1920 × 1080 frame pacing remain unmeasured. The 60 FPS target is therefore still a manual performance gate after visual acceptance.

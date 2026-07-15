@@ -1,4 +1,4 @@
-# Current Repository State — Milestone 4 complete
+# Current Repository State — Milestone 05 complete
 
 Captured: 2026-07-14
 
@@ -11,9 +11,9 @@ Open workspace: `E:\GAYmDev_Studio\MySummerCar_Remake`
 | Unity | `6000.3.11f1 (3000ef702840)` |
 | Render pipeline | HDRP `17.3.0`, Linear color space |
 | Input | Input System `1.19.0`; project-authored M4 action map |
-| Build scenes | Bootstrap first, M4 PlayerInteractionPrototype second, M3 GarageArtPrototype third, existing Outdoors fourth |
+| Build scenes | Bootstrap first, M4 PlayerInteractionPrototype second, M05 VehicleAssemblyPrototype third, M3 GarageArtPrototype fourth, existing Outdoors fifth |
 | Runtime boundary | Independent Unity 6 runtime; no donor executable/assemblies/assets required |
-| Tests | Post-review fix gate: EditMode `48/48`; PlayMode `5/5`; foundation, donor, M3 and M4 validators pass in an isolated copy using Unity `6000.3.11f1` |
+| Tests | M05 focused EditMode `22/22`, focused PlayMode `8/8`, full PlayMode `17/17`; full EditMode `102/103` with the known unrelated 04A1 donor-hash drift; foundation, donor, M3, M4 and M05 validators pass |
 
 ## Milestone 4 runtime state
 
@@ -66,6 +66,32 @@ The external staging manifest contains metadata only and is bound by SHA-256. Th
 
 No Player or Interaction source, prefab, scene, input asset or assembly definition changed during 04A. No purpose-specific production scene, terrain, building, vegetation, water, vehicle, weather, audio or save implementation was added.
 
+## Milestone 04B reference-data state
+
+`MSC.Core.Runtime` now owns the donor-independent reference schema, stable IDs, deterministic serialization, migration, unit conversion and validation. The dataset is `Assets/Game/Core/Configuration/ReferenceCapture/ReferenceCaptureDatabase.json`; separate remake tuning is `ReferenceTuningOverrides.json`. It contains no donor binary payload and performs no donor file I/O.
+
+`MSC.Editor` owns the dashboard/import/manual-observation/evidence-resolution workflow and batch validator. Absolute roots are resolved only from ignored local configuration. `Docs/ReferenceCapture/` owns procedures, index, source map, missing queue and session log. Raw screenshots, video and audio stay outside Git.
+
+The current dataset `04B.4` contains 40 measurements plus 11 behavior fixtures. Static world/player/vehicle facts are imported where sources are unambiguous. The representative rear-left drum has a traced candidate trigger, install/removal gates, one `BoltPM` marker, discrete `0..8` endpoints, wrench `14` and scroll mapping, three clean runtime repetitions and a user-confirmed wheel-installed removal blocker. Both assembly requirements are `Covered` and the fixture is `Ready`. Runtime sprint/crouch/interaction, powertrain, vehicle dynamics, time/weather, audio and UI values remain explicitly `Missing`/`Partial`; fitted-wheel identity and curb mass also remain `Partial`. M4 tuning is not reclassified as donor evidence.
+
+## Milestone 05 assembly state
+
+`MSC.Vehicle.Assembly` owns immutable definitions, mutable runtime state, mount/fastener instances, explicit dependency graph, deterministic queries, operation results, validation and schema-v1 DTOs. It depends only on Core and Interaction. Player and Interaction keep their M4 responsibilities and communicate through the existing handoff/tool/context capabilities.
+
+The shared `M4_FirstPersonPlayer.prefab` also owns a presentation-only `CrossdotPresenter`: a permanent centered dot with a contrast outline that identifies the exact camera-ray direction without changing candidate selection or interaction state. The updated builder is version `1.1.0`; focused Player/Interaction tests pass `8/8` EditMode and `5/5` PlayMode, and both M4 and M05 validators accept the updated prefab.
+
+Post-M05 scale correction makes installation preserve a part's world scale even when consuming an older scaled mount pose. Vehicle Assembly builder `1.1.0` additionally separates unit-scale logical mount transforms from scaled debug marker geometry. Focused M05 PlayMode passes `8/8` both against the current scene and a freshly generated scene.
+
+The reproducible scene `Assets/Game/Vehicle/Content/Assembly/Scenes/VehicleAssemblyPrototype.unity` contains 15 clean project-authored prototype parts, 14 mount points and the M4 player prefab. The rear-left drum consumes the `04B.4` behavioral fixture without donor runtime dependencies. Static validation, 22 focused EditMode tests and 8 focused PlayMode tests pass; the 10 000-query performance audit records 0 managed allocations and 0 graph mutations.
+
 ## Next boundary
 
-The next recommended milestone is exactly `Prompts/04B_REFERENCE_CAPTURE_AND_MEASUREMENTS.md`. It may use the completed 04A pilot as evidence, but must not reinterpret it as a complete-world database or silently promote the blocked combined terrain mesh. No 04B or Milestone 5 work has started.
+## Milestone 05A bounded world-remaster state
+
+The production layer now has a full 13,509-record replacement registry, 51 discovered zone/status groups, 263 grouped manual-art tasks and a deterministic pilot production cell for `cell_0_-3`. The pilot contains project-authored terrain/road/ditch, home and garage shells, a representative interior, six moving hinges, props/infrastructure and 64 LOD spruce instances. It is integrated with the existing M4 player and M05 assembly scene.
+
+Coverage is deliberately narrow: 24 direct bindings globally (0.178%) and 24/671 in the pilot source cell (3.577%). Four records are `ProductionCandidate`, twenty are `FirstPass`, none is `Approved`/`Verified`, and the other 13,485 records remain `Unassigned` with explicit backlog links. Production dependencies are donor-binary independent and the two-run production-cell SHA-256 is stable.
+
+The next recommended milestone is exactly `Prompts/05A_CONTINUE_NEXT_WORLD_ZONE.md`, after manual acceptance of the pilot. Final terrain/road measurements, hero modelling, authored textures, map-scale vegetation/water/infrastructure, HLOD and standalone GPU profiling remain explicit work.
+
+The freshly reinstalled donor installation has different `sharedassets3.assets` / `.resource` hashes from the frozen 04A1 extraction provenance. The 04A1 records were intentionally not rewritten; current full EditMode regression therefore has one expected world-transfer provenance mismatch until a separate audited extraction/reconciliation is performed.

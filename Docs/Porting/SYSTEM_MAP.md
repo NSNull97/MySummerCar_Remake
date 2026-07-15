@@ -1,4 +1,4 @@
-# Donor System Map — Milestone 4
+# Donor System Map — through Milestone 05
 
 This map describes observed donor ownership/coupling and the intended transfer boundary. It is not a claim that any subsystem has been ported.
 
@@ -165,3 +165,69 @@ Ownership:
 - `Docs/WorldTransfer` и world database — durable audit/source of truth.
 
 Runtime assemblies не ссылаются на Editor assemblies. Generated loader disabled в reference bootstrap, поскольку ignored cell scenes не входят в normal Build Settings; Editor overview открывает выбранные cells additively.
+
+## Milestone 04B reference capture flow
+
+```mermaid
+flowchart LR
+    DONOR["Read-only donor containers"] --> STATIC["Reviewed static metadata/transforms"]
+    STAGING["External donor staging"] --> STATIC
+    MANUAL["External manual capture evidence"] -. "future sessions" .-> IMPORT["Structured import/manual observation"]
+    STATIC --> DB["Versioned project-owned reference database"]
+    IMPORT --> DB
+    TUNING["Separate remake tuning overrides"] --> COMPARE["Editor comparison"]
+    DB --> COMPARE
+    DB --> FIXTURES["Calibration fixtures"]
+    DB --> VALIDATE["Pure validator + EditMode tests"]
+    PROCEDURES["Manual guide + category checklists"] --> IMPORT
+    DB -. "no donor I/O" .-> FUTURE["Future calibration consumers"]
+```
+
+Ownership:
+
+- `MSC.Core.Runtime` — schema, stable IDs, units, migration, querying and validation;
+- `MSC.Editor` — dashboard, import/manual authoring, evidence path resolution and project validation;
+- project JSON/CSV/Markdown — durable diffable truth and capture queue;
+- external staging/reference storage — donor representations and future raw media;
+- future vehicle/weather/audio/UI systems — consumers of validated fixtures only, not implemented in 04B.
+
+The database can be loaded without donor assets. Machine paths remain in ignored local configuration, evidence payload stays external and runtime assemblies do not reference Editor assemblies.
+
+Dataset `04B.4` adds only a bounded behavioral specification for the representative rear-left drum: trigger/candidate identity, Trailarm prerequisites, wheel-state removal gate, serialized `0..8` fastener stages, wrench `14`, scroll direction, three clean runtime repetitions and a user-confirmed wheel-installed blocker. It does not add a donor FSM runtime, assembly implementation or production prefab. Both M05 assembly gates are `Covered`; physical torque is intentionally not inferred from the discrete donor contract.
+
+## Milestone 05 clean-room assembly flow
+
+```mermaid
+flowchart LR
+    INTENT["M4 player intent"] --> CARRY["PhysicalCarryController"]
+    CARRY --> HANDOFF["IMountHandoffTarget"]
+    HANDOFF --> QUERY["VehicleAssemblyQuery"]
+    DATA["Project-owned definitions + 04B.4 fixture"] --> QUERY
+    QUERY --> CTRL["VehicleAssemblyController"]
+    CTRL --> GRAPH["AssemblyGraph + dependencies"]
+    CTRL --> PHYS["PartInstance physics transition"]
+    CTRL --> FASTENER["FastenerInstance stages"]
+    GRAPH --> DTO["Schema-v1 save DTOs"]
+    DONOR["Donor runtime / PlayMaker"] -. "no dependency" .-> CTRL
+```
+
+The assembly runtime uses project-owned stable/definition/mount IDs. Compatibility and blockers are data-driven; donor object names are not dispatch keys. Editor owns content generation, validation, dependency visualization and reports. The production prototype dependency graph excludes all donor/reference-only payload.
+
+## Milestone 05A world-production flow
+
+```mermaid
+flowchart LR
+    DB["Frozen 04A1 world database"] --> REG["Production replacement registry"]
+    REG --> BACKLOG["Art backlog + zone status"]
+    REG --> BUILD["Deterministic production builder"]
+    BUILD --> CELL["Production cell_0_-3"]
+    CELL --> PLAYER["M4 player consumer"]
+    CELL --> ASSEMBLY["M05 assembly consumer"]
+    REF["Removable reference metadata"] --> COMPARE["Reference / production / overlay scene"]
+    CELL --> COMPARE
+    VALIDATE["Editor dependency + fit + cell validation"] --> REG
+    VALIDATE --> CELL
+    DONOR["Donor binaries"] -. "no runtime dependency" .-> CELL
+```
+
+`MSC.World.Remaster.Runtime` owns serializable registry data and runtime comparison/hinge presentation. `MSC.World.Remaster.Editor` owns content generation, report generation, dashboard, capture and validation. The source database remains authoritative for identities/cells; generated scene state is never copied back into it.
