@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Game/Player/Content/Scenes/PlayerInteractionPrototype.unity
     guid: 4dadd02479955a94ab3589f5da6186c3
   - enabled: 1
+    path: Assets/Game/Vehicle/Content/Assembly/Scenes/VehicleAssemblyPrototype.unity
+    guid: 0cd960cbc1ca71246b434bb1265ed71e
+  - enabled: 1
     path: Assets/Game/World/Content/GaragePrototype/Scenes/GarageArtPrototype.unity
     guid: 15c50cd1d13c4d443a898ef6f1aa42b2
   - enabled: 1

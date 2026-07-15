@@ -186,6 +186,17 @@ namespace MSC.Tests.EditMode.PlayerInteraction
             Assert.That(stickAtSixtyFps.y * 2f, Is.EqualTo(stickAtThirtyFps.y).Within(0.0001f));
         }
 
+        [Test]
+        public void CrossdotRectStaysCenteredAtDifferentResolutions()
+        {
+            Rect fullHd = CrossdotPresenter.CalculateCenteredRect(1920f, 1080f, 6f);
+            Rect ultrawide = CrossdotPresenter.CalculateCenteredRect(3440f, 1440f, 6f);
+
+            Assert.That(fullHd.center, Is.EqualTo(new Vector2(960f, 540f)));
+            Assert.That(fullHd.size, Is.EqualTo(new Vector2(6f, 6f)));
+            Assert.That(ultrawide.center, Is.EqualTo(new Vector2(1720f, 720f)));
+        }
+
         private static void SetStableId(StableEntityIdAuthoring authoring, string stableId)
         {
             var serializedObject = new SerializedObject(authoring);

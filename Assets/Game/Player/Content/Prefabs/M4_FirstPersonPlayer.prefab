@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 99254237992288729}
   - component: {fileID: 6923902959632967467}
   - component: {fileID: 3832096157754649875}
+  - component: {fileID: 7349811234567890123}
   m_Layer: 0
   m_Name: M4_FirstPersonPlayer
   m_TagString: Untagged
@@ -75,7 +76,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c7f7435c720a89447a652c12405f2704, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.FirstPersonMotor
   characterController: {fileID: 308266103335443960}
   cameraPivot: {fileID: 4723528873291826988}
@@ -100,7 +101,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d4802db06826875458223b7f39dea247, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.FirstPersonLook
   yawRoot: {fileID: 6648689435124771412}
   pitchPivot: {fileID: 4723528873291826988}
@@ -118,7 +119,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1238fbf7de7abd343aae4199eee7f9d4, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicalCarryController
   carryAnchor: {fileID: 8868523566865734410}
   playerCollider: {fileID: 308266103335443960}
@@ -137,7 +138,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a83420e4ff7d1e74e9cd238fd827ca70, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.RaycastInteractionCandidateSource
   rayOrigin: {fileID: 815926928966353497}
   maximumDistance: 2.25
@@ -154,7 +155,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 359b5ed4d1731a94b9ee8661047c5da4, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.PlayerInteractionController
   candidateSource: {fileID: 3128540900010246669}
   carryController: {fileID: 6815543078582569416}
@@ -174,7 +175,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4751366a712ef6a448805fc81376a908, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.PlayerInputRouter
   inputActions: {fileID: -944628639613478452, guid: f327eb21151ec584f9bcbdb57248ce15, type: 3}
   motor: {fileID: 4232095539942077169}
@@ -191,10 +192,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b6d57797f98074f469d8075a65b135e1, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.InteractionDebugOverlay
   interactionController: {fileID: 99254237992288729}
   showDebugInformation: 1
+--- !u!114 &7349811234567890123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334472089413303144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00620ced3bb640168db20a873f884f1b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.CrossdotPresenter
+  visible: 1
+  dotDiameterPixels: 4
+  outlineWidthPixels: 1
+  dotColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineColor: {r: 0, g: 0, b: 0, a: 0.85}
 --- !u!1 &2409733988275828977
 GameObject:
   m_ObjectHideFlags: 0

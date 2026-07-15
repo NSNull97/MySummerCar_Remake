@@ -128,3 +128,11 @@ Build comparison tests for:
 - suspension response;
 - part masses;
 - stall conditions.
+
+## Milestone 05 implemented assembly baseline
+
+The assembly half of this document is now implemented under `Assets/Game/Vehicle/Assembly/Runtime`; drivetrain, engine, wheels, damage and wear remain future simulation work.
+
+Implemented concrete types include `PartDefinition`, `PartInstance`, `PartRuntimeState`, `PartCompatibilityRule`, `MountPointDefinition`, `MountPointAuthoring`, `MountPointRuntime`, `MountConstraint`, `MountPose`, `FastenerDefinition`, `FastenerInstance`, `FastenerState`, `FastenerSize`, `ToolDefinition`, `ToolCompatibilityRule`, `AssemblyDependency`, `AssemblyGraph`, `AssemblyOperation`, `AssemblyOperationResult`, `VehicleAssemblyController`, `VehicleAssemblyQuery`, `VehicleAssemblyValidator` and schema-v1 DTOs.
+
+The current representative asset set contains 15 clean prototype parts and 14 mounts. It supports pickup, deterministic preview, handoff/install, discrete tighten/loosen, blocked removal, detach and save DTO round trip. The detailed contract is maintained in `Docs/Vehicle/ASSEMBLY_ARCHITECTURE.md`.

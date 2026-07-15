@@ -23,14 +23,6 @@ namespace MSC.Player
                 return;
             }
 
-            const float crosshairSize = 8f;
-            Rect crosshair = new Rect(
-                Screen.width * 0.5f - crosshairSize * 0.5f,
-                Screen.height * 0.5f - crosshairSize * 0.5f,
-                crosshairSize,
-                crosshairSize);
-            GUI.Label(crosshair, "+");
-
             string prompt = interactionController.CurrentPrompt;
             if (!string.IsNullOrEmpty(prompt))
             {

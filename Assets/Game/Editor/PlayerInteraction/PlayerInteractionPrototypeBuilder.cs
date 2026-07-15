@@ -133,6 +133,13 @@ namespace MSC.Editor.PlayerInteraction
                 InteractionDebugOverlay debugOverlay = root.AddComponent<InteractionDebugOverlay>();
                 debugOverlay.Configure(interaction);
 
+                CrossdotPresenter crossdot = root.AddComponent<CrossdotPresenter>();
+                crossdot.Configure(
+                    diameterPixels: 4f,
+                    outlinePixels: 1f,
+                    fillColor: Color.white,
+                    borderColor: new Color(0f, 0f, 0f, 0.85f));
+
                 PrefabUtility.SaveAsPrefabAsset(root, PlayerInteractionPrototypePaths.PlayerPrefab);
             }
             finally

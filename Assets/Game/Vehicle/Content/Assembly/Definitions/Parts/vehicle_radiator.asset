@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e71e08d25a1364ba7c9c5007e00656, type: 3}
+  m_Name: vehicle_radiator
+  m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartDefinition
+  definitionId: vehicle.radiator
+  displayName: "\u0420\u0430\u0434\u0438\u0430\u0442\u043E\u0440"
+  category: 6
+  massKilograms: 7
+  visualPrefab: {fileID: 921479739492980146, guid: 03d412a9305fce540964a53b07de4428, type: 3}
+  compatibilityRules:
+  - mountSocketType: cooling.radiator
+    requiredOwnerPartDefinitionId: vehicle.chassis

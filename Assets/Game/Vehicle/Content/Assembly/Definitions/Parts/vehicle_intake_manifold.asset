@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e71e08d25a1364ba7c9c5007e00656, type: 3}
+  m_Name: vehicle_intake_manifold
+  m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartDefinition
+  definitionId: vehicle.intake_manifold
+  displayName: "\u0412\u043F\u0443\u0441\u043A\u043D\u043E\u0439 \u043A\u043E\u043B\u043B\u0435\u043A\u0442\u043E\u0440"
+  category: 4
+  massKilograms: 4
+  visualPrefab: {fileID: 5278902078094209797, guid: 8cb19e80b5af1514f87016b389bb31a5, type: 3}
+  compatibilityRules:
+  - mountSocketType: engine.intake
+    requiredOwnerPartDefinitionId: vehicle.cylinder_head

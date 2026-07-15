@@ -29,12 +29,15 @@ namespace MSC.Tests.PlayMode.PlayerInteraction
             PlayerInteractionPrototypeMarker marker = FindInScene<PlayerInteractionPrototypeMarker>(scene);
             PlayerInputRouter inputRouter = FindInScene<PlayerInputRouter>(scene);
             PlayerInteractionController interaction = FindInScene<PlayerInteractionController>(scene);
+            CrossdotPresenter crossdot = FindInScene<CrossdotPresenter>(scene);
             PhysicsPickupTarget[] pickupTargets = FindAllInScene<PhysicsPickupTarget>(scene);
 
             Assert.That(marker, Is.Not.Null);
             Assert.That(inputRouter, Is.Not.Null);
             Assert.That(inputRouter.IsReady, Is.True);
             Assert.That(interaction, Is.Not.Null);
+            Assert.That(crossdot, Is.Not.Null);
+            Assert.That(crossdot.Visible, Is.True);
             Assert.That(pickupTargets.Length, Is.GreaterThanOrEqualTo(2));
             foreach (PhysicsPickupTarget target in pickupTargets)
             {

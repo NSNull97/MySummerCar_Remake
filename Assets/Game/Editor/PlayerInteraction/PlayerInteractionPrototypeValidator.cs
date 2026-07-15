@@ -142,6 +142,15 @@ namespace MSC.Editor.PlayerInteraction
             RequireComponent<PlayerInteractionController>(prefab, errors);
             RequireComponent<PlayerInputRouter>(prefab, errors);
             RequireComponent<InteractionDebugOverlay>(prefab, errors);
+            RequireComponent<CrossdotPresenter>(prefab, errors);
+
+            CrossdotPresenter crossdot = prefab.GetComponent<CrossdotPresenter>();
+            if (crossdot != null &&
+                (!crossdot.Visible || crossdot.DotDiameterPixels < 1f ||
+                 crossdot.OutlineWidthPixels < 0f))
+            {
+                errors.Add("Player prefab has an invalid or hidden Crossdot configuration.");
+            }
 
             PlayerInputRouter input = prefab.GetComponent<PlayerInputRouter>();
             if (input != null && input.InputActions == null)

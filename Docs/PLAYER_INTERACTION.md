@@ -10,7 +10,8 @@
 - simple object rotation;
 - contextual interaction;
 - tool activation;
-- clear debug visualization.
+- clear debug visualization;
+- a permanent centered Crossdot showing the exact camera-ray direction.
 
 ## Interaction boundary
 
@@ -93,6 +94,8 @@ InputActionAsset
 ```
 
 `InteractionTargetHost` is an explicit registry of `MonoBehaviour` capability implementations. The query never dispatches by object name. A collider without a host is an invalid/occluding target; a destroyed or unloaded host invalidates the cached candidate. The currently carried Rigidbody is the only explicit query exclusion, allowing a mount behind the held item to remain selectable without making walls or unrelated props transparent.
+
+`CrossdotPresenter` is an independent presentation-only component on the shared player prefab. It draws a small white dot with a dark outline at the exact screen center, allocates its tiny texture only when configured/enabled and does not influence raycast selection or interaction state. `InteractionDebugOverlay` remains responsible only for prompts and diagnostic text.
 
 Implemented capabilities have concrete uses:
 

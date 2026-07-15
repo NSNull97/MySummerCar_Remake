@@ -6,6 +6,8 @@
     "MSC.Bootstrap.Runtime",
     "MSC.Interaction.Runtime",
     "MSC.Player.Runtime",
+    "MSC.Vehicle.Assembly",
+    "MSC.Save.Runtime",
     "MSC.Editor",
     "MSC.World.Runtime",
     "MSC.LegacyImport.Runtime",

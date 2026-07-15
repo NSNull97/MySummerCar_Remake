@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cc27dd07836cdd49913c73ff5ad6e07, type: 3}
+  m_Name: mount_trailing_arm_rl
+  m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointDefinition
+  definitionId: mount.trailing_arm_rl
+  displayName: "\u0422\u043E\u0447\u043A\u0430: \u0417\u0430\u0434\u043D\u0438\u0439
+    \u043B\u0435\u0432\u044B\u0439 \u0440\u044B\u0447\u0430\u0433"
+  socketType: suspension.rear_left
+  ownerPartDefinitionId: vehicle.chassis
+  acceptedPartDefinitionIds:
+  - vehicle.trailing_arm_rl
+  constraint:
+    positionToleranceMeters: 0.55
+    angularToleranceDegrees: 55
+    previewDistanceMeters: 1.4
+    obstructionRadiusMeters: 0.09
+  referenceCandidateRadiusMeters: 0
+  fasteners:
+  - {fileID: 11400000, guid: dbfe0c04ad5244a4fbe8f539b9ad49d8, type: 2}

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e71e08d25a1364ba7c9c5007e00656, type: 3}
+  m_Name: vehicle_trailing_arm_rl
+  m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartDefinition
+  definitionId: vehicle.trailing_arm_rl
+  displayName: "\u0417\u0430\u0434\u043D\u0438\u0439 \u043B\u0435\u0432\u044B\u0439
+    \u0440\u044B\u0447\u0430\u0433"
+  category: 1
+  massKilograms: 9
+  visualPrefab: {fileID: 1664689901925520515, guid: 28086c33e2fdcbd44aa7d455ef6956cb, type: 3}
+  compatibilityRules:
+  - mountSocketType: suspension.rear_left
+    requiredOwnerPartDefinitionId: vehicle.chassis

@@ -6,6 +6,7 @@
     "MSC.Bootstrap.Runtime",
     "MSC.Interaction.Runtime",
     "MSC.Player.Runtime",
+    "MSC.Vehicle.Assembly",
     "MSC.World.Runtime",
     "Unity.InputSystem"
   ],
