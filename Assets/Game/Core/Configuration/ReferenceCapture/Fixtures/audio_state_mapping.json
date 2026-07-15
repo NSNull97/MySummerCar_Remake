@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "04B.4",
+  "fixtureId": "audio-state-mapping-v1",
+  "category": "Audio",
+  "title": "Audio event and state mapping",
+  "priority": "P0",
+  "status": "Missing",
+  "recordIds": [],
+  "missingRequirementIds": [
+    "P0-AUDIO-ENGINE-STATES",
+    "P1-AUDIO-ENVIRONMENT-STATES"
+  ],
+  "inputs": [
+    "Fix donor master/mix settings and document recording device and sample rate",
+    "Capture starter, idle, load, gear and interior/exterior state changes",
+    "Capture representative surface, impact, rain and indoor/outdoor transitions"
+  ],
+  "expected": [
+    "State-to-event map and transition timing",
+    "Relative level and filtering observations without treating them as production assets",
+    "External raw recordings referenced by session/evidence ID and kept outside Git"
+  ],
+  "toleranceNotes": "At least five repetitions for short events. Audio clips are reference evidence only; no donor audio payload enters production Assets or Git."
+}

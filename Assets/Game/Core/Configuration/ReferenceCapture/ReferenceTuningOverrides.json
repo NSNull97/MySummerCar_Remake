@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "04B.4",
+  "overrides": [
+    { "stableId": "8b366c5b0b21e4de0714e3378d061c6e", "measuredRecordId": "2c597f6e555b1489fc65f243073e56d3", "tunedValue": { "kind": "Numeric", "numericValue": 4.2 }, "unit": "MeterPerSecond", "rationale": "Existing M4 prototype authoring value; not donor-calibrated and preserved separately for comparison.", "authoringSource": "Assets/Game/Player/Content/Prefabs/M4_FirstPersonPlayer.prefab", "updatedUtc": "2026-07-14" },
+    { "stableId": "393f7661ceb1ffcfa5068bea04786b83", "measuredRecordId": "932da7530b44aafe3dcf2fbe1fbfa555", "tunedValue": { "kind": "Numeric", "numericValue": 1.68 }, "unit": "Meter", "rationale": "Existing M4 standing eye-height authoring value; donor camera anchor is 1.4 m.", "authoringSource": "Assets/Game/Player/Content/Prefabs/M4_FirstPersonPlayer.prefab", "updatedUtc": "2026-07-14" },
+    { "stableId": "c4e30fbc531c1f04cb36b6de483f7e8c", "measuredRecordId": "a0cc3d6bb92d7b24bd31d458f42c7d22", "tunedValue": { "kind": "Numeric", "numericValue": 22 }, "unit": "MeterPerSecondSquared", "rationale": "Existing M4 prototype gravity; modern CharacterController behavior differs from the legacy controller.", "authoringSource": "Assets/Game/Player/Content/Prefabs/M4_FirstPersonPlayer.prefab", "updatedUtc": "2026-07-14" },
+    { "stableId": "0644c703f4b733a760cd5c3675116831", "measuredRecordId": "dd6e95a31847f0b17c28555651ffaa49", "tunedValue": { "kind": "Vector3", "vectorValue": { "x": 1.8, "y": 0.32, "z": 0.35 } }, "unit": "Meter", "rationale": "M4 uses a full-height controller; vector order remains height/radius/step and is a deliberate architecture difference.", "authoringSource": "Assets/Game/Player/Content/Prefabs/M4_FirstPersonPlayer.prefab", "updatedUtc": "2026-07-14" }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "04B.4",
+  "fixtureId": "engine-idle-start-stall-v1",
+  "category": "PowertrainVehicleBehavior",
+  "title": "Engine idle, start and stall behavior",
+  "priority": "P0",
+  "status": "Missing",
+  "recordIds": [],
+  "missingRequirementIds": [
+    "P0-ENGINE-IDLE",
+    "P0-ENGINE-START",
+    "P0-ENGINE-STALL"
+  ],
+  "inputs": [
+    "Document engine assembly, fuel, electrical, temperature and choke states",
+    "Capture cold start, warm start, stable warm idle and controlled load-to-stall",
+    "Synchronize visible tachometer/video markers with input timing"
+  ],
+  "expected": [
+    "Starter duration and start prerequisites",
+    "Idle RPM band, warm-up behavior and stability",
+    "Stall RPM or condition with gear, clutch and load context"
+  ],
+  "toleranceNotes": "At least five valid trials per state. Report median, minimum and maximum; no exact RPM claim from dashboard pixels without declared reading uncertainty."
+}

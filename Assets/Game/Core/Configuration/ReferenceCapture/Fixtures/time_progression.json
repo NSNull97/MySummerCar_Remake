@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "04B.4",
+  "fixtureId": "time-progression-v1",
+  "category": "TimeWeatherEnvironment",
+  "title": "Game-time progression",
+  "priority": "P0",
+  "status": "Missing",
+  "recordIds": [],
+  "missingRequirementIds": [
+    "P0-TIME-PROGRESSION"
+  ],
+  "inputs": [
+    "Observe a visible in-game clock against a monotonic real-time timer",
+    "Run at least 30 real minutes without sleep, teleport, save mutation or pause ambiguity",
+    "Repeat after a normal reload and document any discontinuities"
+  ],
+  "expected": [
+    "Game-minute to real-second ratio",
+    "Pause/menu behavior",
+    "Reload continuity and any scheduled discontinuities"
+  ],
+  "toleranceNotes": "Three long observations. Timing uncertainty must include clock display granularity and human marker reaction."
+}

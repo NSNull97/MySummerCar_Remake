@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "04B.4",
+  "fixtureId": "vehicle-body-wheel-geometry-v1",
+  "category": "VehicleGeometryAssembly",
+  "title": "Satsuma body, wheel anchors, mass and fitted tire",
+  "priority": "P0",
+  "status": "Partial",
+  "recordIds": [
+    "3041151e93c71a87d89d19779615dc68",
+    "5b658bae6d89917e377db64110842c6a",
+    "0b20bde79481aa8087c05f64cedc5a3b",
+    "a6790761807d4f904830d0fb64d6bc54",
+    "0d2f89ee7c4017506f09cb67511b8f1e",
+    "7c3299db3bd1591b4a38aa997eb6b05b",
+    "a2a2647de4c9f2e05568e98a27d59380",
+    "93b15a1420a962441f82ad53e074ed09",
+    "98bbe4fc8f0e5702bfbbbf03592d0b28",
+    "f7d49044cec918b66ac64e0099a7781f"
+  ],
+  "missingRequirementIds": [
+    "P0-VEHICLE-TOTAL-MASS",
+    "P0-VEHICLE-FITTED-WHEEL"
+  ],
+  "inputs": [
+    "Identify a reproducible assembled vehicle state and list installed parts, fluids and cargo",
+    "Resolve the fitted wheel and tire object identity before measuring radius and width",
+    "Measure overall envelope independently from the body mesh AABB"
+  ],
+  "expected": [
+    "Wheelbase and tracks resolve to four serialized wheel-root anchors",
+    "Mass is labelled by state and is not inferred from a GameObject name",
+    "Fitted wheel radius, width and variant are verified or remain explicitly missing"
+  ],
+  "toleranceNotes": "Transform-derived geometry uses 5 mm tolerance. Mass and fitted tire require state-controlled evidence; candidate mesh metadata is not sufficient."
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "04B.4",
+  "fixtureId": "steering-suspension-v1",
+  "category": "PowertrainVehicleBehavior",
+  "title": "Steering lock and suspension response",
+  "priority": "P0",
+  "status": "Missing",
+  "recordIds": [],
+  "missingRequirementIds": [
+    "P0-STEERING-LOCK",
+    "P0-SUSPENSION-TRAVEL"
+  ],
+  "inputs": [
+    "Use a level marked surface and document tire, wheel, mass and alignment state",
+    "Capture straight-ahead and full-left/full-right wheel angles",
+    "Capture static ride height plus controlled compression and rebound timing"
+  ],
+  "expected": [
+    "Left/right steering lock and asymmetry",
+    "Steering input-to-wheel relationship or bounded ratio",
+    "Suspension travel, static deflection and response band"
+  ],
+  "toleranceNotes": "At least five repetitions. Declare angle-reading uncertainty and marker-placement error; do not infer spring/damper constants from visual travel alone."
+}

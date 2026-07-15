@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "04B.4",
+  "fixtureId": "braking-acceleration-v1",
+  "category": "PowertrainVehicleBehavior",
+  "title": "Controlled acceleration and braking windows",
+  "priority": "P0",
+  "status": "Missing",
+  "recordIds": [],
+  "missingRequirementIds": [
+    "P0-ACCELERATION-WINDOWS",
+    "P0-BRAKING-DISTANCE"
+  ],
+  "inputs": [
+    "Document surface, weather, vehicle load, tire state, engine temperature and controls",
+    "Capture 0-40 and 0-80 km/h acceleration windows",
+    "Capture 40-0 and 80-0 km/h braking distance and time"
+  ],
+  "expected": [
+    "Median acceleration time with observed range",
+    "Median braking distance/time with observed range",
+    "Invalid trials identified rather than silently discarded"
+  ],
+  "toleranceNotes": "Seven valid trials per condition. Use median and range; comparisons are invalid across different surface, weather, tire or load states."
+}

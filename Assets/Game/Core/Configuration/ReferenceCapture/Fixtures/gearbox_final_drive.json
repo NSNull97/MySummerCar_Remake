@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "04B.4",
+  "fixtureId": "gearbox-final-drive-v1",
+  "category": "PowertrainVehicleBehavior",
+  "title": "Gearbox ratios, indexing and final drive",
+  "priority": "P0",
+  "status": "Missing",
+  "recordIds": [],
+  "missingRequirementIds": [
+    "P0-GEARBOX-RATIOS",
+    "P0-FINAL-DRIVE"
+  ],
+  "inputs": [
+    "Establish fitted tire rolling circumference and tachometer/speed reading method",
+    "Capture steady RPM and speed pairs in every forward gear and reverse",
+    "Record neutral and gear-index behavior plus shift timing"
+  ],
+  "expected": [
+    "Per-gear ratio estimates with trial spread",
+    "Final-drive estimate with stated tire circumference dependency",
+    "Verified index order, reverse and neutral behavior"
+  ],
+  "toleranceNotes": "Use at least five steady samples per gear. Do not validate ratios until tire circumference, instrument uncertainty and clutch slip are bounded."
+}

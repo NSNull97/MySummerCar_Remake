@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "04B.4",
+  "fixtureId": "weather-transition-v1",
+  "category": "TimeWeatherEnvironment",
+  "title": "Natural weather transitions and wetness lag",
+  "priority": "P0",
+  "status": "Missing",
+  "recordIds": [],
+  "missingRequirementIds": [
+    "P0-WEATHER-TRANSITION",
+    "P1-WETNESS-DRYING"
+  ],
+  "inputs": [
+    "Use a fixed outdoor viewpoint with visible sky, distance landmark and ground surface",
+    "Capture natural clear, overcast, rain and fog onset/decay without state injection",
+    "Capture indoor/outdoor transition plus wetness onset and drying lag"
+  ],
+  "expected": [
+    "State order and transition-duration bands",
+    "Visibility and lighting observations at fixed landmarks",
+    "Wetness onset and drying lag relative to precipitation"
+  ],
+  "toleranceNotes": "At least three natural transitions where feasible. Rare states remain Missing rather than being forced through console or save edits."
+}

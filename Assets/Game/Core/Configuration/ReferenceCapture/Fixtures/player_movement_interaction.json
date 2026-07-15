@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "04B.4",
+  "fixtureId": "player-movement-interaction-v1",
+  "category": "PlayerInteraction",
+  "title": "Player movement and interaction baseline",
+  "priority": "P0",
+  "status": "Partial",
+  "recordIds": [
+    "932da7530b44aafe3dcf2fbe1fbfa555",
+    "dd6e95a31847f0b17c28555651ffaa49",
+    "2c597f6e555b1489fc65f243073e56d3",
+    "2f37c9290aa208d3a699458e039591ce",
+    "a0cc3d6bb92d7b24bd31d458f42c7d22"
+  ],
+  "missingRequirementIds": [
+    "P0-PLAYER-SPRINT",
+    "P0-PLAYER-CROUCH",
+    "P0-INTERACTION-REACH",
+    "P0-INTERACTION-PICKUP-THROW"
+  ],
+  "inputs": [
+    "Measure standing, walking, sprinting and crouching on a level marked route",
+    "Repeat pickup, carry, place and throw trials with at least three mass classes",
+    "Record control bindings, frame rate, start/end markers and object state"
+  ],
+  "expected": [
+    "Standing eye height and base serialized movement settings resolve to database records",
+    "Runtime sprint/crouch speeds and transitions are captured as repeated observations",
+    "Interaction reach and carry/throw outcomes are recorded without save mutation"
+  ],
+  "toleranceNotes": "Static serialized values use their record tolerances. Runtime values require at least five trials and median plus observed range before validation."
+}

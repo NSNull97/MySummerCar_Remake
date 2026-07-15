@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "04B.4",
+  "fixtureId": "garage-dimensions-clearance-v1",
+  "category": "WorldLandmarks",
+  "title": "Garage dimensions, opening and vehicle clearance",
+  "priority": "P0",
+  "status": "Partial",
+  "recordIds": [
+    "35c29d136fad665e3bf3045c95d6e8d8",
+    "d9cca0c1e9333bb80820b86eaaa7afbb",
+    "1598e1ee9fa5f87dd1635cf16f14eb7e",
+    "06391075272cdc5c1d792547d66f2d06",
+    "d7f49324f52e3d4346ba2749e9b470bb"
+  ],
+  "missingRequirementIds": [
+    "P0-GARAGE-DOOR-CLEARANCE",
+    "P0-GARAGE-INTERIOR",
+    "P1-GARAGE-WORKBENCH"
+  ],
+  "inputs": [
+    "Capture reviewed donor mesh bounds or orthogonal ruler observations",
+    "Measure door opening width and height at the narrowest usable section",
+    "Record wall-to-wall spans, usable height, workbench anchor and coordinate space"
+  ],
+  "expected": [
+    "Garage anchor and roof envelope remain traceable to existing records",
+    "Door opening and interior dimensions receive source, evidence and tolerance",
+    "Vehicle-clearance conclusion names the tested vehicle configuration"
+  ],
+  "toleranceNotes": "Serialized transforms target 5 mm absolute tolerance. Manual screen/ruler measurements must declare pixel or marker uncertainty explicitly."
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "04B.4",
+  "fixtureId": "representative-part-mount-pivot-v1",
+  "category": "VehicleGeometryAssembly",
+  "title": "Representative rear brake drum mount, pivot and fastener semantics",
+  "priority": "P0",
+  "status": "Ready",
+  "recordIds": [
+    "b9784d5724a9dde0b9df88f2de883781",
+    "0fad39d279a669c3124cd7becfed277f",
+    "70b9e8445df4b04df94378f3502f465c",
+    "4e9f1585f8a6fb35ba56d202f1fcf21c",
+    "37b878fd9d25bba52b8b421d1b12f325",
+    "9c6544a9f3852df5e34ffe12d5248867",
+    "fc1c6c58bf384ed7b61ab8c000372a72",
+    "8ee671ce6693c086c59f5c53fe39b183",
+    "670da877660d6dfe7b0639bf7c1fe0c2",
+    "a2835d196e7954f09d04832d9fabbef9",
+    "7ff3ff61c2bae103500744ffbf2ca28e",
+    "e7aedfd32241bd4ab85987282e4073d7",
+    "b9af6c2398d63e5f3f84fe5f939b5a09"
+  ],
+  "missingRequirementIds": [],
+  "inputs": [
+    "Place the loose drum into the 0.01 m collider-overlap candidate",
+    "Use wrench 14 for one full 0..8 progression and reverse progression",
+    "Attempt removal with and without the rear-left wheel installed"
+  ],
+  "expected": [
+    "Three identical install/remove outcomes with the wheel absent",
+    "One BoltPM marker reaches and leaves the 0/8 completion gates",
+    "Wheel-installed state blocks removal; wheel-absent unfastened state allows removal"
+  ],
+  "toleranceNotes": "Transform evidence targets 5 mm. Three clean install/forward/reverse/remove repetitions and the discrete fastener contract are validated. The donor candidate uses collider overlap and has no separate angular compare; remake orientation tolerance is project-authored tuning."
+}
