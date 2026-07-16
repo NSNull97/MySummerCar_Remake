@@ -11,13 +11,19 @@ using UnityEngine.SceneManagement;
 namespace MSC.Editor.WorldStreaming
 {
     /// <summary>
-    /// Authors the bounded 05B.1 production-streaming catalog and its explicit Bootstrap wiring.
+    /// Preserves the accepted 05B.1 two-cell world as an explicit regression
+    /// fixture. Milestone 06B2 owns the active Bootstrap profile.
     /// </summary>
     public static class ProductionWorldStreamingBuilder
     {
-        public const string BootstrapScenePath = "Assets/Game/Bootstrap/Bootstrap.unity";
+        public const string ActiveBootstrapScenePath =
+            "Assets/Game/Bootstrap/Bootstrap.unity";
+        public const string BootstrapScenePath =
+            "Assets/Game/World/Debug/Streaming/" +
+            "PrototypeWorldStreamingFixture.unity";
         public const string ManifestAssetPath =
-            "Assets/Game/World/Content/Streaming/ProductionWorldStreamingManifest.asset";
+            "Assets/Game/World/Content/Streaming/" +
+            "PrototypeWorldStreamingManifest.asset";
         public const string PlayerPrefabPath = "Assets/Game/Player/Content/Prefabs/M4_FirstPersonPlayer.prefab";
         public const string PilotCellId = "cell_0_-3";
         public const string PilotCellScenePath =
@@ -33,14 +39,17 @@ namespace MSC.Editor.WorldStreaming
         public static readonly Vector3 PlayerSpawnPosition = new Vector3(153.495f, 1.1f, -1028.03f);
         public static readonly Quaternion PlayerSpawnRotation = Quaternion.Euler(0f, 180f, 0f);
 
-        [MenuItem("Tools/MSC Remake/World Streaming/Build 05B.1 Pilot Gate Remediation")]
+        [MenuItem(
+            "Tools/MSC Remake/World Streaming/" +
+            "Build 05B.1 Prototype Fixture")]
         public static void Build()
         {
-            RequireAsset<SceneAsset>(BootstrapScenePath);
+            RequireAsset<SceneAsset>(ActiveBootstrapScenePath);
             RequireAsset<SceneAsset>(PilotCellScenePath);
             RequireAsset<SceneAsset>(NextCellScenePath);
             GameObject playerPrefab = RequireAsset<GameObject>(PlayerPrefabPath);
 
+            EnsurePrototypeFixtureScene();
             EnsureBuildSettings();
             ProductionWorldStreamingManifest manifest = CreateOrUpdateManifest();
             WireBootstrapScene(manifest, playerPrefab);
@@ -55,7 +64,9 @@ namespace MSC.Editor.WorldStreaming
                     string.Join(" | ", result.Errors));
             }
 
-            Debug.Log("WORLD_STREAMING_05B1_BUILD_OK " + result.Evidence);
+            Debug.Log(
+                "WORLD_STREAMING_05B1_FIXTURE_BUILD_OK " +
+                result.Evidence);
         }
 
         public static void RunBatch()
@@ -121,6 +132,30 @@ namespace MSC.Editor.WorldStreaming
                 });
             EditorUtility.SetDirty(manifest);
             return manifest;
+        }
+
+        private static void EnsurePrototypeFixtureScene()
+        {
+            EnsureAssetFolder(BootstrapScenePath);
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(
+                    BootstrapScenePath) != null)
+            {
+                return;
+            }
+
+            if (!AssetDatabase.CopyAsset(
+                    ActiveBootstrapScenePath,
+                    BootstrapScenePath))
+            {
+                throw new InvalidOperationException(
+                    "Could not create the 05B.1 prototype streaming fixture " +
+                    "from the project Bootstrap scene.");
+            }
+
+            AssetDatabase.ImportAsset(
+                BootstrapScenePath,
+                ImportAssetOptions.ForceSynchronousImport |
+                ImportAssetOptions.ForceUpdate);
         }
 
         private static void WireBootstrapScene(
@@ -213,12 +248,15 @@ namespace MSC.Editor.WorldStreaming
         {
             var updated = new List<EditorBuildSettingsScene>
             {
-                new EditorBuildSettingsScene(BootstrapScenePath, true)
+                new EditorBuildSettingsScene(ActiveBootstrapScenePath, true)
             };
 
             foreach (EditorBuildSettingsScene existing in EditorBuildSettings.scenes)
             {
-                if (string.Equals(existing.path, BootstrapScenePath, StringComparison.Ordinal))
+                if (string.Equals(
+                        existing.path,
+                        ActiveBootstrapScenePath,
+                        StringComparison.Ordinal))
                 {
                     continue;
                 }
@@ -228,6 +266,7 @@ namespace MSC.Editor.WorldStreaming
                 updated.Add(new EditorBuildSettingsScene(existing.path, requiredCell || existing.enabled));
             }
 
+            AddBuildSceneIfMissing(updated, BootstrapScenePath);
             AddBuildSceneIfMissing(updated, PilotCellScenePath);
             AddBuildSceneIfMissing(updated, NextCellScenePath);
             EditorBuildSettings.scenes = updated.ToArray();

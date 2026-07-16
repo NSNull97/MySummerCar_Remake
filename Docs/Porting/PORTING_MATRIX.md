@@ -1,4 +1,4 @@
-# Porting Matrix — through Milestone 06B1
+# Porting Matrix — through Milestone 06B2
 
 Status: controlled reference pipeline, Milestone 3 garage art prototype and the clean-room Milestone 4 player/interaction slice are complete. M4 did not inspect or transfer donor input/FSM code, constants or configuration; player and interaction are `Reimplemented`. Two donor meshes remain `ReferenceOnly`. No donor visual asset is classified as production-ready.
 
@@ -193,3 +193,22 @@ Repeated generation is locked by semantic and generated-payload fingerprints,
 not by self-comparison after manifest overwrite. Cold validation, focused
 EditMode `4/4` and PlayMode `1/1` passed. No result is `CodePorted` or
 `ProductionReady`.
+
+## Milestone 06B2 active donor-world streaming baseline
+
+| Layer | Input/evidence | Classification | Implemented boundary / status |
+|---|---|---|---|
+| Global/cell legacy presentation | Frozen 06B1 canonical scene and project-owned 512 m partition | `TemporaryDirectImport` | 1 global + 49 cell scenes; 3,842 exact-transform entities; active private-local profile; automated validation PASS and user visual/traversal acceptance recorded |
+| Deterministic ownership | Frozen source cell assignments, large-object policy and explicit exceptions | `WorldLayoutReference` | 3,754 cell-owned and 88 global entities; fingerprint `0a9de0be…13f3`; no geometry split or layout reinterpretation |
+| Safe runtime collision subset | Frozen collider inventory plus project-owned 32-record allowlist | `TemporaryDirectImport` | 20 static mesh and 12 static box colliders; no triggers, bodies, joints or donor behavior; representative raycasts PASS |
+| Legacy identity/replacement | Source provenance IDs plus project-owned mapping | `Reimplemented` | Unique `LegacyWorldObjectId` and `legacy-world:<stable-id>` replacement key; donor name/path is not runtime or save identity |
+| Gameplay anchors | 15 project-owned stable anchors in the two former prototype regions | `Reimplemented` | Separate `WorldGameplayCellCatalog`; persists independently of legacy visual load/unload and override state |
+| Existing prototype visuals | Custom `cell_0_-3` and `cell_0_-2` scenes | `Rejected` for feature-parity fidelity | Removed from active donor profile; retained as `PrototypeOnly` regression fixture; no asset deletion |
+| Streaming lifecycle | Existing manifest/service/bootstrap architecture | `Reimplemented` | Global lifetime, focus streaming, radius hysteresis, 12 m/s vehicle preload, owned-scene reconciliation and out-of-bounds recovery |
+| Distribution boundary | Ignored generated RuntimeBaseline plus exact-scene build guard | `Reimplemented` | Private local Development only with explicit acknowledgement; public/distributable build blocked |
+
+No 06B2 result is `CodePorted` or `ProductionReady`. Donor visual/collision
+content remains temporary and non-distributable. Human acceptance was recorded
+2026-07-16 for Bootstrap, donor-map fidelity, lake/Teimo traversal and streaming
+reload, and OOB recovery. The flat lake and original-game voids remain explicit
+remaster debt. 06B3 may follow after a focused 06B2 commit.

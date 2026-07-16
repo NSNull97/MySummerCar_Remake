@@ -12,18 +12,263 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08a18a99ed6f41b458a8b68d3d9a8651, type: 3}
   m_Name: ProductionWorldStreamingManifest
   m_EditorClassIdentifier: MSC.World.Runtime::MSC.World.Streaming.ProductionWorldStreamingManifest
-  schemaVersion: 1
+  schemaVersion: 2
+  profileId: donor-feature-parity-06b2
+  profileKind: 1
+  privateLocalRuntimeBaseline: 1
   cellSizeMeters: 512
-  loadingRadiusCells: 0
-  unloadingRadiusCells: 1
+  loadingRadiusCells: 1
+  unloadingRadiusCells: 2
+  vehiclePreloadSpeedMetersPerSecond: 12
+  vehiclePreloadRadiusCells: 2
+  globalScenes:
+  - sceneId: global-legacy
+    buildIndex: 11
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/World_Global_Legacy.unity
   cells:
+  - cellId: cell_-4_-3
+    x: -4
+    z: -3
+    buildIndex: 12
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-4_-3_Legacy.unity
+  - cellId: cell_-4_-1
+    x: -4
+    z: -1
+    buildIndex: 13
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-4_-1_Legacy.unity
+  - cellId: cell_-4_0
+    x: -4
+    z: 0
+    buildIndex: 14
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-4_0_Legacy.unity
+  - cellId: cell_-4_1
+    x: -4
+    z: 1
+    buildIndex: 15
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-4_1_Legacy.unity
+  - cellId: cell_-3_-4
+    x: -3
+    z: -4
+    buildIndex: 16
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-3_-4_Legacy.unity
+  - cellId: cell_-3_-3
+    x: -3
+    z: -3
+    buildIndex: 17
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-3_-3_Legacy.unity
+  - cellId: cell_-3_-2
+    x: -3
+    z: -2
+    buildIndex: 18
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-3_-2_Legacy.unity
+  - cellId: cell_-3_-1
+    x: -3
+    z: -1
+    buildIndex: 19
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-3_-1_Legacy.unity
+  - cellId: cell_-3_0
+    x: -3
+    z: 0
+    buildIndex: 20
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-3_0_Legacy.unity
+  - cellId: cell_-2_-5
+    x: -2
+    z: -5
+    buildIndex: 21
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-2_-5_Legacy.unity
+  - cellId: cell_-2_-4
+    x: -2
+    z: -4
+    buildIndex: 22
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-2_-4_Legacy.unity
+  - cellId: cell_-2_-3
+    x: -2
+    z: -3
+    buildIndex: 23
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-2_-3_Legacy.unity
+  - cellId: cell_-2_-2
+    x: -2
+    z: -2
+    buildIndex: 24
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-2_-2_Legacy.unity
+  - cellId: cell_-2_0
+    x: -2
+    z: 0
+    buildIndex: 25
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-2_0_Legacy.unity
+  - cellId: cell_-2_1
+    x: -2
+    z: 1
+    buildIndex: 26
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-2_1_Legacy.unity
+  - cellId: cell_-1_-5
+    x: -1
+    z: -5
+    buildIndex: 27
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-1_-5_Legacy.unity
+  - cellId: cell_-1_-4
+    x: -1
+    z: -4
+    buildIndex: 28
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-1_-4_Legacy.unity
+  - cellId: cell_-1_-3
+    x: -1
+    z: -3
+    buildIndex: 29
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-1_-3_Legacy.unity
+  - cellId: cell_-1_-2
+    x: -1
+    z: -2
+    buildIndex: 30
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-1_-2_Legacy.unity
+  - cellId: cell_-1_-1
+    x: -1
+    z: -1
+    buildIndex: 31
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-1_-1_Legacy.unity
+  - cellId: cell_-1_0
+    x: -1
+    z: 0
+    buildIndex: 32
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-1_0_Legacy.unity
+  - cellId: cell_-1_1
+    x: -1
+    z: 1
+    buildIndex: 33
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-1_1_Legacy.unity
+  - cellId: cell_0_-5
+    x: 0
+    z: -5
+    buildIndex: 34
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_0_-5_Legacy.unity
+  - cellId: cell_0_-4
+    x: 0
+    z: -4
+    buildIndex: 35
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_0_-4_Legacy.unity
   - cellId: cell_0_-3
     x: 0
     z: -3
-    buildIndex: 6
-    scenePath: Assets/Game/World/Generated/ProductionCells/Production_cell_0_-3.unity
+    buildIndex: 36
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_0_-3_Legacy.unity
   - cellId: cell_0_-2
     x: 0
     z: -2
-    buildIndex: 8
-    scenePath: Assets/Game/World/Generated/ProductionCells/Production_cell_0_-2.unity
+    buildIndex: 37
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_0_-2_Legacy.unity
+  - cellId: cell_0_-1
+    x: 0
+    z: -1
+    buildIndex: 38
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_0_-1_Legacy.unity
+  - cellId: cell_0_0
+    x: 0
+    z: 0
+    buildIndex: 39
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_0_0_Legacy.unity
+  - cellId: cell_0_1
+    x: 0
+    z: 1
+    buildIndex: 40
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_0_1_Legacy.unity
+  - cellId: cell_1_-5
+    x: 1
+    z: -5
+    buildIndex: 41
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_1_-5_Legacy.unity
+  - cellId: cell_1_-3
+    x: 1
+    z: -3
+    buildIndex: 42
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_1_-3_Legacy.unity
+  - cellId: cell_1_0
+    x: 1
+    z: 0
+    buildIndex: 43
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_1_0_Legacy.unity
+  - cellId: cell_1_1
+    x: 1
+    z: 1
+    buildIndex: 44
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_1_1_Legacy.unity
+  - cellId: cell_1_2
+    x: 1
+    z: 2
+    buildIndex: 45
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_1_2_Legacy.unity
+  - cellId: cell_2_-5
+    x: 2
+    z: -5
+    buildIndex: 46
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_2_-5_Legacy.unity
+  - cellId: cell_2_-4
+    x: 2
+    z: -4
+    buildIndex: 47
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_2_-4_Legacy.unity
+  - cellId: cell_2_-2
+    x: 2
+    z: -2
+    buildIndex: 48
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_2_-2_Legacy.unity
+  - cellId: cell_2_-1
+    x: 2
+    z: -1
+    buildIndex: 49
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_2_-1_Legacy.unity
+  - cellId: cell_3_-5
+    x: 3
+    z: -5
+    buildIndex: 50
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_3_-5_Legacy.unity
+  - cellId: cell_3_-4
+    x: 3
+    z: -4
+    buildIndex: 51
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_3_-4_Legacy.unity
+  - cellId: cell_3_-2
+    x: 3
+    z: -2
+    buildIndex: 52
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_3_-2_Legacy.unity
+  - cellId: cell_3_-1
+    x: 3
+    z: -1
+    buildIndex: 53
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_3_-1_Legacy.unity
+  - cellId: cell_3_0
+    x: 3
+    z: 0
+    buildIndex: 54
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_3_0_Legacy.unity
+  - cellId: cell_4_-5
+    x: 4
+    z: -5
+    buildIndex: 55
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_4_-5_Legacy.unity
+  - cellId: cell_4_-4
+    x: 4
+    z: -4
+    buildIndex: 56
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_4_-4_Legacy.unity
+  - cellId: cell_4_-3
+    x: 4
+    z: -3
+    buildIndex: 57
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_4_-3_Legacy.unity
+  - cellId: cell_4_-2
+    x: 4
+    z: -2
+    buildIndex: 58
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_4_-2_Legacy.unity
+  - cellId: cell_4_1
+    x: 4
+    z: 1
+    buildIndex: 59
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_4_1_Legacy.unity
+  - cellId: cell_5_-2
+    x: 5
+    z: -2
+    buildIndex: 60
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_5_-2_Legacy.unity
+  gameplayCatalog: {fileID: 11400000, guid: f66f5e873b5be99499af3231cef886e2, type: 2}

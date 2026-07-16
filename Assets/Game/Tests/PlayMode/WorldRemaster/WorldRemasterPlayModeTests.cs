@@ -25,8 +25,9 @@ namespace MSC.Tests.PlayMode.WorldRemaster
         private const string StreamingEvidenceRelativePath =
             "Docs/WorldValidation/M05B1_PRODUCTION_STREAMING_LIFECYCLE.json";
         private const string StreamingManifestPath =
-            "Assets/Game/World/Content/Streaming/ProductionWorldStreamingManifest.asset";
-        private const string BootstrapScenePath = "Assets/Game/Bootstrap/Bootstrap.unity";
+            "Assets/Game/World/Content/Streaming/PrototypeWorldStreamingManifest.asset";
+        private const string BootstrapScenePath =
+            "Assets/Game/World/Debug/Streaming/PrototypeWorldStreamingFixture.unity";
 
         private static readonly string[] StreamingImplementationPaths =
         {
@@ -363,7 +364,7 @@ namespace MSC.Tests.PlayMode.WorldRemaster
             Action<ProductionWorldStreamingService> setService,
             Action<ProductionWorldStreamingInstaller> setInstaller)
         {
-            yield return LoadSingle("Bootstrap");
+            yield return LoadSingle("PrototypeWorldStreamingFixture");
             ProductionWorldStreamingInstaller installer = Find<ProductionWorldStreamingInstaller>();
             ProductionWorldStreamingService service = Find<ProductionWorldStreamingService>();
             Assert.That(installer, Is.Not.Null);

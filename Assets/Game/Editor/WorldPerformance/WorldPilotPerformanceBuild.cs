@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using MSC.Development.Performance;
+using MSC.Editor.WorldBaseline;
 using MSC.Editor.WorldStreaming;
 using MSC.World.Streaming;
 using UnityEditor;
@@ -26,12 +27,18 @@ namespace MSC.Editor.WorldPerformance
     }
 
     /// <summary>
-    /// Builds the bounded world-pilot capture player without changing the persistent Bootstrap scene.
-    /// Every currently enabled scene is retained in its current order because the immutable streaming
-    /// manifest addresses the two production cells by those enabled build indices.
+    /// Builds the bounded world-pilot capture player without changing the
+    /// persistent Bootstrap scene or depending on the project's active build
+    /// profile. The build contains only the 05B.1 fixture and its two cells.
     /// </summary>
     public static class WorldPilotPerformanceBuild
     {
+        private const int FixtureBuildIndex = 0;
+        private const int PilotBuildIndex = 1;
+        private const int NextBuildIndex = 2;
+        private const string DonorRuntimeBaselineRoot =
+            "Assets/Game/LegacyImport/RuntimeBaseline/";
+
         [MenuItem("Tools/MSC Remake/World Validation/Build 05B.1 Performance Player")]
         public static void BuildPlayer()
         {
@@ -48,13 +55,19 @@ namespace MSC.Editor.WorldPerformance
             try
             {
                 PlayerSettings.enableFrameTimingStats = true;
+                using IDisposable buildGuardScope =
+                    DonorRuntimeBaselineBuildGuard
+                        .BeginExplicitSceneBuild(
+                            configuration.EnabledScenePaths);
                 WorldPilotPerformanceBuildContext.Begin(configuration);
                 var options = new BuildPlayerOptions
                 {
                     scenes = configuration.EnabledScenePaths,
                     locationPathName = fullOutputPath,
                     target = BuildTarget.StandaloneWindows64,
-                    options = BuildOptions.Development
+                    options =
+                        BuildOptions.Development |
+                        BuildOptions.CleanBuildCache
                 };
                 BuildReport report = BuildPipeline.BuildPlayer(options);
                 if (report.summary.result != BuildResult.Succeeded)
@@ -66,7 +79,7 @@ namespace MSC.Editor.WorldPerformance
                 if (WorldPilotPerformanceBuildContext.BootstrapInjectionCount != 1)
                 {
                     throw new InvalidOperationException(
-                        "05B.1 performance probe was not injected exactly once into the build copy of Bootstrap.");
+                        "05B.1 performance probe was not injected exactly once into the build copy of the prototype fixture.");
                 }
 
                 Debug.Log(
@@ -95,11 +108,13 @@ namespace MSC.Editor.WorldPerformance
         private static BuildConfiguration ValidateAndCreateConfiguration()
         {
             WorldPilotGateRemediationValidationResult validation =
-                WorldPilotGateRemediationValidator.Validate(logResult: false);
+                WorldPilotGateRemediationValidator.Validate(
+                    logResult: false);
             if (!validation.Passed)
             {
                 throw new InvalidOperationException(
-                    "Cannot build the 05B.1 performance player because PilotGate remediation validation failed:\n- " +
+                    "Cannot build the 05B.1 performance player because " +
+                    "PilotGate remediation validation failed:\n- " +
                     string.Join("\n- ", validation.Errors));
             }
 
@@ -121,6 +136,16 @@ namespace MSC.Editor.WorldPerformance
                     string.Join("\n- ", manifestErrors));
             }
 
+            if (manifest.ProfileKind !=
+                    ProductionWorldProfileKind.PrototypeFixture ||
+                manifest.PrivateLocalRuntimeBaseline ||
+                manifest.GlobalScenes.Count != 0)
+            {
+                throw new InvalidOperationException(
+                    "05B.1 performance capture requires the isolated " +
+                    "prototype fixture profile without donor global scenes.");
+            }
+
             if (manifest.Cells.Count != 2 ||
                 !manifest.TryGetCell(
                     ProductionWorldStreamingBuilder.PilotCellId,
@@ -133,34 +158,32 @@ namespace MSC.Editor.WorldPerformance
                     "05B.1 performance capture requires the exact accepted two-cell production manifest.");
             }
 
-            string[] enabledScenePaths = EditorBuildSettings.scenes
-                .Where(scene => scene.enabled)
-                .Select(scene => scene.path)
-                .ToArray();
-            if (enabledScenePaths.Length == 0 ||
-                !string.Equals(
-                    enabledScenePaths[0],
-                    ProductionWorldStreamingBuilder.BootstrapScenePath,
-                    StringComparison.Ordinal))
-            {
-                throw new InvalidOperationException(
-                    "Bootstrap must remain enabled build index 0 for the 05B.1 performance player.");
-            }
+            ValidateManifestCell(
+                pilotCell,
+                ProductionWorldStreamingBuilder.PilotCellId,
+                0,
+                -3,
+                ProductionWorldStreamingBuilder.PilotCellScenePath);
+            ValidateManifestCell(
+                nextCell,
+                ProductionWorldStreamingBuilder.NextCellId,
+                0,
+                -2,
+                ProductionWorldStreamingBuilder.NextCellScenePath);
 
-            if (enabledScenePaths.Distinct(StringComparer.Ordinal).Count() != enabledScenePaths.Length)
+            string[] boundedScenePaths =
             {
-                throw new InvalidOperationException(
-                    "Enabled Build Settings contains duplicate scene paths; build indices are ambiguous.");
-            }
-
-            ValidateManifestAddress(pilotCell, enabledScenePaths);
-            ValidateManifestAddress(nextCell, enabledScenePaths);
+                ProductionWorldStreamingBuilder.BootstrapScenePath,
+                ProductionWorldStreamingBuilder.PilotCellScenePath,
+                ProductionWorldStreamingBuilder.NextCellScenePath
+            };
+            ValidateBoundedSceneList(boundedScenePaths);
 
             GitProvenance provenance = GitProvenance.Capture();
             return new BuildConfiguration(
-                enabledScenePaths,
-                pilotCell.BuildIndex,
-                nextCell.BuildIndex,
+                boundedScenePaths,
+                PilotBuildIndex,
+                NextBuildIndex,
                 provenance.Revision,
                 provenance.WorkingTreeState,
                 provenance.DirtyPaths,
@@ -168,24 +191,84 @@ namespace MSC.Editor.WorldPerformance
                 DateTime.UtcNow.ToString("O"));
         }
 
-        private static void ValidateManifestAddress(
+        private static void ValidateManifestCell(
             ProductionWorldCellScene cell,
-            IReadOnlyList<string> enabledScenePaths)
+            string expectedId,
+            int expectedX,
+            int expectedZ,
+            string expectedPath)
         {
-            if (cell.BuildIndex < 0 || cell.BuildIndex >= enabledScenePaths.Count)
-            {
-                throw new InvalidOperationException(
-                    $"Manifest cell {cell.CellId} build index {cell.BuildIndex} is outside the enabled scene list.");
-            }
-
             if (!string.Equals(
-                    enabledScenePaths[cell.BuildIndex],
+                    cell.CellId,
+                    expectedId,
+                    StringComparison.Ordinal) ||
+                cell.Index.X != expectedX ||
+                cell.Index.Z != expectedZ ||
+                !string.Equals(
                     cell.ScenePath,
+                    expectedPath,
                     StringComparison.Ordinal))
             {
                 throw new InvalidOperationException(
-                    $"Manifest cell {cell.CellId} expects build index {cell.BuildIndex} to be " +
-                    $"{cell.ScenePath}, but Build Settings contains {enabledScenePaths[cell.BuildIndex]}.");
+                    $"Manifest cell {expectedId} does not match its accepted " +
+                    "ID, coordinates, and scene path.");
+            }
+        }
+
+        private static void ValidateBoundedSceneList(
+            IReadOnlyList<string> scenePaths)
+        {
+            if (scenePaths.Count != 3 ||
+                !string.Equals(
+                    scenePaths[FixtureBuildIndex],
+                    ProductionWorldStreamingBuilder.BootstrapScenePath,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    scenePaths[PilotBuildIndex],
+                    ProductionWorldStreamingBuilder.PilotCellScenePath,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    scenePaths[NextBuildIndex],
+                    ProductionWorldStreamingBuilder.NextCellScenePath,
+                    StringComparison.Ordinal) ||
+                scenePaths.Distinct(StringComparer.Ordinal).Count() !=
+                    scenePaths.Count)
+            {
+                throw new InvalidOperationException(
+                    "05B.1 performance build scene order must be exactly " +
+                    "fixture, pilot cell, next cell.");
+            }
+
+            for (int index = 0; index < scenePaths.Count; index++)
+            {
+                string scenePath = scenePaths[index];
+                if (AssetDatabase.LoadAssetAtPath<SceneAsset>(
+                        scenePath) == null)
+                {
+                    throw new InvalidOperationException(
+                        "Required 05B.1 performance scene is missing: " +
+                        scenePath);
+                }
+
+                string[] dependencies = AssetDatabase.GetDependencies(
+                    scenePath,
+                    recursive: true);
+                for (int dependencyIndex = 0;
+                     dependencyIndex < dependencies.Length;
+                     dependencyIndex++)
+                {
+                    string dependency = dependencies[dependencyIndex]
+                        .Replace('\\', '/');
+                    if (dependency.StartsWith(
+                            DonorRuntimeBaselineRoot,
+                            StringComparison.Ordinal))
+                    {
+                        throw new InvalidOperationException(
+                            "Bounded 05B.1 performance scene depends on the " +
+                            "donor RuntimeBaseline: " + scenePath + " -> " +
+                            dependency);
+                    }
+                }
             }
         }
 
@@ -410,9 +493,63 @@ namespace MSC.Editor.WorldPerformance
                 throw new InvalidOperationException("A 05B.1 performance build context is already active.");
             }
 
-            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
+            Configuration = configuration;
             BootstrapInjectionCount = 0;
             Active = true;
+        }
+
+        public static ProductionWorldStreamingManifest
+            CreateBuildManifest()
+        {
+            if (!Active || Configuration == null)
+            {
+                throw new InvalidOperationException(
+                    "05B.1 performance build context is not active.");
+            }
+
+            ProductionWorldStreamingManifest buildManifest =
+                ScriptableObject.CreateInstance<
+                    ProductionWorldStreamingManifest>();
+            buildManifest.name =
+                "M05B1_PerformanceStreamingManifest__BUILD_ONLY";
+            buildManifest.ConfigureForAuthoring(
+                ProductionWorldStreamingBuilder.CellSizeMeters,
+                ProductionWorldStreamingBuilder.LoadingRadiusCells,
+                ProductionWorldStreamingBuilder.UnloadingRadiusCells,
+                new[]
+                {
+                    new ProductionWorldCellScene(
+                        ProductionWorldStreamingBuilder.PilotCellId,
+                        0,
+                        -3,
+                        Configuration.PilotBuildIndex,
+                        ProductionWorldStreamingBuilder
+                            .PilotCellScenePath),
+                    new ProductionWorldCellScene(
+                        ProductionWorldStreamingBuilder.NextCellId,
+                        0,
+                        -2,
+                        Configuration.NextBuildIndex,
+                        ProductionWorldStreamingBuilder
+                            .NextCellScenePath)
+                });
+
+            IReadOnlyList<string> manifestErrors =
+                buildManifest.ValidateConfiguration();
+            if (manifestErrors.Count > 0)
+            {
+                UnityEngine.Object.DestroyImmediate(buildManifest);
+                throw new InvalidOperationException(
+                    "Build-only 05B.1 streaming manifest is invalid:\n- " +
+                    string.Join("\n- ", manifestErrors));
+            }
+
+            return buildManifest;
         }
 
         public static void RegisterBootstrapInjection()
@@ -429,7 +566,8 @@ namespace MSC.Editor.WorldPerformance
     }
 
     /// <summary>
-    /// Adds the opt-in probe only to the transient build copy of Bootstrap.
+    /// Adds the opt-in probe and local-index manifest only to the transient
+    /// build copy of the 05B.1 fixture.
     /// No profiling component is saved into production scenes.
     /// </summary>
     public sealed class WorldPilotPerformanceSceneProcessor : IProcessSceneWithReport
@@ -453,11 +591,33 @@ namespace MSC.Editor.WorldPerformance
             if (existing.Length != 0)
             {
                 throw new BuildFailedException(
-                    "Persistent Bootstrap must not contain WorldPilotPerformanceProbe; it is injected into the build copy.");
+                    "Persistent 05B.1 fixture must not contain " +
+                    "WorldPilotPerformanceProbe; it is injected into the " +
+                    "build copy.");
             }
 
             WorldPilotPerformanceBuild.BuildConfiguration configuration =
                 WorldPilotPerformanceBuildContext.Configuration;
+            ProductionWorldStreamingService[] streamingServices =
+                scene.GetRootGameObjects()
+                    .SelectMany(
+                        root => root.GetComponentsInChildren<
+                            ProductionWorldStreamingService>(
+                            includeInactive: true))
+                    .ToArray();
+            if (streamingServices.Length != 1)
+            {
+                throw new BuildFailedException(
+                    "05B.1 fixture build copy requires exactly one " +
+                    "streaming service; found " +
+                    streamingServices.Length + ".");
+            }
+
+            ProductionWorldStreamingManifest buildManifest =
+                WorldPilotPerformanceBuildContext
+                    .CreateBuildManifest();
+            streamingServices[0].ConfigureForAuthoring(
+                buildManifest);
             var root = new GameObject("M05B1_PerformanceCapture__DEVELOPMENT_ONLY");
             SceneManager.MoveGameObjectToScene(root, scene);
             WorldPilotPerformanceProbe probe = root.AddComponent<WorldPilotPerformanceProbe>();

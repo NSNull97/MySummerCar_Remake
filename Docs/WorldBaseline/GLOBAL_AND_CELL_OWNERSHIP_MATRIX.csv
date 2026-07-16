@@ -1,0 +1,6 @@
+OwnershipClass,Rule,EntityCount,RendererCount,ColliderCount,Reason,FutureAction
+GlobalLegacy,BootstrapSpawnOrTraversalCollisionGlobal,15,0,15,The audited collider must exist before the focus cell finishes loading or must remain continuous while travelling.,Keep global until a seam-safe production replacement tool is validated.
+GlobalLegacy,ExplicitCrossCellTraversalGlobal,1,1,1,Traversal geometry crosses or approaches a cell boundary and is not split in 06B2.,Keep global until a seam-safe production replacement tool is validated.
+GlobalLegacy,ExplicitMapMeshAggregateGlobal,41,29,10,MAP/MESH contains static-batch aggregates whose source pivot/bounds do not represent their real cross-cell mesh extent.,Keep global until a seam-safe production replacement tool is validated.
+CellLegacy,SourceCellDeterministic,3754,2544,0,Normal static content keeps the frozen source cell assignment; no geometry is moved or split.,Replace cell-by-cell through the matching ReplacementKey.
+GlobalLegacy,SourceGlobalLargeOrContinuous,31,31,6,The frozen 06B1 partition already classified the object as global because it is large or continuous.,Keep global until a seam-safe production replacement tool is validated.

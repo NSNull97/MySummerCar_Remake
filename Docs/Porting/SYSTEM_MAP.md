@@ -1,4 +1,4 @@
-# Donor System Map — through Milestone 06B1
+# Donor System Map — through Milestone 06B2
 
 This map describes observed donor ownership/coupling and the intended transfer boundary. It is not a claim that any subsystem has been ported.
 
@@ -389,3 +389,52 @@ hysteresis and owned-scene unload remain the reusable streaming authority.
 06B2 must add the explicit legacy/global/cell profile, collision/traversal
 validation and prototype-visual deactivation without changing stable gameplay
 identity.
+
+## Milestone 06B2 active streaming and ownership flow
+
+```mermaid
+flowchart LR
+    CANON["06B1 canonical sanitized donor scene"] --> PLAN["Deterministic 06B2 ownership plan"]
+    PART["Existing 512 m project cell grid"] --> PLAN
+    ALLOW["32-record safe collider allowlist"] --> PLAN
+    PLAN --> GLOBAL["World_Global_Legacy"]
+    PLAN --> CELLS["49 World_Cell_X_Z_Legacy scenes"]
+    GLOBAL --> SERVICE["Existing ProductionWorldStreamingService"]
+    CELLS --> SERVICE
+    BOOT["Bootstrap composition root"] --> SERVICE
+    SPEED["Player focus / vehicle speed"] --> SERVICE
+    GAMEPLAY["Project-owned gameplay catalog: 15 StableEntityId anchors"] --> BOOT
+    REPLACE["Production override registry"] --> KEYS["legacy-world:stable-id keys"]
+    KEYS --> GLOBAL
+    KEYS --> CELLS
+    PROTO["Rejected custom cell_0_-3 / cell_0_-2 visuals"] -. "separate prototype fixture only" .-> SERVICE
+    SERVICE --> PRIVATE["Private local Development runtime"]
+    GUARD["Exact-scene pre-build guard"] --> PRIVATE
+    GUARD -. "blocks" .-> PUBLIC["Public/distributable build"]
+```
+
+`MSC.Editor.WorldBaseline` owns deterministic planning, generation, inspection,
+validation and build guarding. `MSC.LegacyImport.Runtime` owns only
+project-authored metadata/replacement contracts. `MSC.World.Streaming` remains
+the runtime scene lifecycle authority. `MSC.Bootstrap` waits for required
+global/focus scenes before player activation and installs project-owned
+out-of-bounds recovery.
+
+The runtime distinguishes scene ownership by scene handle and reconciles
+external unload/reload, preventing an externally reloaded scene from being
+unloaded by stale streaming ownership. Global legacy content remains loaded
+while focus cells change. A speed at or above `12 m/s` expands preload from
+radius `1` to radius `2`; unloading uses radius `2`.
+
+Gameplay identity does not live in generated donor scenes. The separate catalog
+survives visual replacement, and each legacy presentation record can be disabled
+through its stable replacement key. Donor hierarchy paths remain provenance
+metadata only.
+
+The active donor profile replaces the two rejected custom visual cells without
+deleting their technical fixtures. Automated lifecycle/collision validation
+passes. The user accepted Bootstrap startup, donor-map fidelity, walking to the
+lake, Teimo-area unload/reload and out-of-bounds recovery on 2026-07-16.
+The flat lake and original-game terrain voids remain late-remaster debt;
+dedicated vehicle/bridge traversal remains useful 06B3 coverage. The 06B2 gate
+is human-accepted and 06B3 may follow after a focused commit.

@@ -1,0 +1,783 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using MSC.Bootstrap;
+using MSC.LegacyImport;
+using MSC.Player;
+using MSC.World.Streaming;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.TestTools;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+using Object = UnityEngine.Object;
+
+namespace MSC.Tests.PlayMode.WorldBaseline
+{
+    [Category("LocalDonorBaseline")]
+    public sealed class DonorWorldCellizationPlayModeTests
+    {
+        private const string RuntimeScenePrefix =
+            "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/" +
+            "Streaming/Scenes/";
+        private const string GlobalScenePath =
+            RuntimeScenePrefix + "World_Global_Legacy.unity";
+        private const string HomeCellScenePath =
+            RuntimeScenePrefix +
+            "Cells/World_Cell_0_-3_Legacy.unity";
+
+        [SetUp]
+        public void RequireGeneratedRuntimeBaseline()
+        {
+#if UNITY_EDITOR
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(
+                    GlobalScenePath) == null ||
+                AssetDatabase.LoadAssetAtPath<SceneAsset>(
+                    HomeCellScenePath) == null)
+            {
+                Assert.Ignore(
+                    "Локальный generated RuntimeBaseline 06B2 отсутствует. " +
+                    "Сгенерируйте donor streaming profile перед запуском " +
+                    "этих тестов.");
+            }
+#else
+            Assert.Ignore(
+                "Generated donor RuntimeBaseline доступен только для " +
+                "приватной локальной проверки в Unity Editor.");
+#endif
+        }
+
+        [UnityTest]
+        public IEnumerator Bootstrap_LoadsGlobalAndHomeCells_WithUniqueIdsAndRepresentativeMeshColliderRaycasts()
+        {
+            RuntimeSession session = null;
+            yield return StartSession(value => session = value);
+
+            Assert.That(
+                session.Streaming.Manifest.ProfileKind,
+                Is.EqualTo(
+                    ProductionWorldProfileKind.DonorFeatureParity));
+            Assert.That(
+                session.Streaming.IsGlobalSceneLoaded("global-legacy"),
+                Is.True);
+            Assert.That(
+                session.Streaming.IsCellLoaded("cell_0_-3"),
+                Is.True);
+            Assert.That(
+                session.Streaming.IsCellLoaded("cell_0_-2"),
+                Is.True);
+            Assert.That(
+                Object.FindObjectsByType<Transform>(
+                        FindObjectsInactive.Include,
+                        FindObjectsSortMode.None)
+                    .Any(transform => transform.name.StartsWith(
+                        "WR_Production_cell_",
+                        StringComparison.Ordinal)),
+                Is.False);
+
+            DonorWorldBaselineEntityMetadata[] entities =
+                Object.FindObjectsByType<
+                    DonorWorldBaselineEntityMetadata>(
+                    FindObjectsInactive.Include,
+                    FindObjectsSortMode.None);
+            DonorWorldBaselineColliderMetadata[] colliderMetadata =
+                Object.FindObjectsByType<
+                    DonorWorldBaselineColliderMetadata>(
+                    FindObjectsInactive.Include,
+                    FindObjectsSortMode.None);
+
+            Assert.That(entities, Is.Not.Empty);
+            Assert.That(
+                entities.Select(entity => entity.StableId)
+                    .Distinct(StringComparer.Ordinal).Count(),
+                Is.EqualTo(entities.Length));
+            Assert.That(
+                entities.Select(entity => entity.ReplacementKey)
+                    .Distinct(StringComparer.Ordinal).Count(),
+                Is.EqualTo(entities.Length));
+            Assert.That(
+                colliderMetadata.Select(metadata =>
+                        metadata.ColliderStableId)
+                    .Distinct(StringComparer.Ordinal).Count(),
+                Is.EqualTo(colliderMetadata.Length));
+            Assert.That(
+                colliderMetadata.Select(metadata =>
+                        metadata.EntityStableId)
+                    .Distinct(StringComparer.Ordinal).Count(),
+                Is.EqualTo(colliderMetadata.Length));
+            Assert.That(
+                colliderMetadata.All(metadata =>
+                    string.Equals(
+                        metadata.ReplacementKey,
+                        "legacy-world:" + metadata.EntityStableId,
+                        StringComparison.Ordinal)),
+                Is.True);
+
+            yield return null;
+            Assert.That(
+                session.Registry.LoadedReplacementCount,
+                Is.EqualTo(entities.Length));
+
+            Physics.SyncTransforms();
+            MeshCollider[] meshColliders = colliderMetadata
+                .Select(metadata =>
+                    metadata.GetComponent<MeshCollider>())
+                .Where(collider => collider != null &&
+                                   collider.enabled &&
+                                   collider.gameObject.activeInHierarchy)
+                .ToArray();
+            var failures = new List<string>();
+            int successfulRaycasts = 0;
+            foreach (MeshCollider collider in meshColliders)
+            {
+                if (TryRaycastUpwardFacingTriangle(
+                        collider,
+                        out string failure))
+                {
+                    successfulRaycasts++;
+                }
+                else
+                {
+                    failures.Add(collider.name + ": " + failure);
+                }
+            }
+
+            Assert.That(
+                meshColliders.Length,
+                Is.GreaterThanOrEqualTo(3));
+            Assert.That(
+                successfulRaycasts,
+                Is.GreaterThanOrEqualTo(3),
+                "Representative MeshCollider raycasts failed: " +
+                string.Join(" | ", failures));
+        }
+
+        [UnityTest]
+        public IEnumerator GlobalScene_PersistsAcrossRepeatedFocusMoves_AndReportedSpeedPreloadsRadiusTwo()
+        {
+            RuntimeSession session = null;
+            yield return StartSession(value => session = value);
+            int globalRootInstanceId =
+                session.GlobalMetadata.gameObject.GetInstanceID();
+            int registryInstanceId =
+                session.Registry.gameObject.GetInstanceID();
+
+            Assert.That(
+                session.Streaming.EffectiveLoadingRadiusCells,
+                Is.EqualTo(1));
+            Assert.That(
+                session.Streaming.IsCellLoaded("cell_1_-5"),
+                Is.False);
+
+            session.Streaming.ReportFocusSpeedMetersPerSecond(12f);
+            Assert.That(
+                session.Streaming.EffectiveLoadingRadiusCells,
+                Is.EqualTo(2));
+            yield return session.Streaming.RefreshNow();
+            Assert.That(
+                session.Streaming.IsCellLoaded("cell_1_-5"),
+                Is.True,
+                "ReportFocusSpeed did not preload the known radius-two cell.");
+            AssertGlobalLifetime(
+                session,
+                globalRootInstanceId,
+                registryInstanceId);
+
+            session.Streaming.ReportFocusSpeedMetersPerSecond(0f);
+            Vector3 farCellPosition =
+                new Vector3(1568f, 10f, 32f);
+            for (int cycle = 0; cycle < 2; cycle++)
+            {
+                MoveFocus(session.Player, farCellPosition);
+                yield return session.Streaming.RefreshNow();
+                Assert.That(
+                    session.Streaming.IsCellLoaded("cell_3_0"),
+                    Is.True);
+                AssertGlobalLifetime(
+                    session,
+                    globalRootInstanceId,
+                    registryInstanceId);
+
+                MoveFocus(
+                    session.Player,
+                    session.Installer.PlayerSpawnPosition);
+                yield return session.Streaming.RefreshNow();
+                Assert.That(
+                    session.Streaming.IsCellLoaded("cell_0_-3"),
+                    Is.True);
+                AssertGlobalLifetime(
+                    session,
+                    globalRootInstanceId,
+                    registryInstanceId);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator ReplacementRegistry_PreservesOverrideAndGameplayCatalogAcrossCellUnloadReload()
+        {
+            RuntimeSession session = null;
+            yield return StartSession(value => session = value);
+            Scene homeScene = FindLoadedScene(HomeCellScenePath);
+            DonorWorldBaselineEntityMetadata target =
+                GetSceneComponents<DonorWorldBaselineEntityMetadata>(
+                        homeScene)
+                    .FirstOrDefault(entity =>
+                        entity.HasSanitizedRenderer &&
+                        entity.gameObject.activeInHierarchy &&
+                        entity.GetComponentsInChildren<Renderer>(
+                                includeInactive: true)
+                            .Any(renderer => renderer.enabled));
+
+            Assert.That(
+                target,
+                Is.Not.Null,
+                "Home cell has no active renderer suitable for a " +
+                "replacement-registry round trip.");
+            string stableId = target.StableId;
+            string replacementKey = target.ReplacementKey;
+            Renderer[] initialRenderers =
+                target.GetComponentsInChildren<Renderer>(
+                    includeInactive: true);
+            WorldGameplayCellCatalog catalog =
+                session.Streaming.Manifest.GameplayCatalog;
+            WorldGameplayAnchorRecord[] anchorSnapshot =
+                catalog.Anchors.ToArray();
+
+            Assert.That(
+                session.Registry.SetProductionOverrideActive(
+                    replacementKey,
+                    productionOverrideActive: true),
+                Is.True);
+            Assert.That(
+                session.Registry.IsProductionOverrideActive(
+                    replacementKey),
+                Is.True);
+            Assert.That(
+                initialRenderers.All(renderer => !renderer.enabled),
+                Is.True);
+            Assert.That(
+                target.GetComponentsInChildren<Collider>(
+                        includeInactive: true)
+                    .All(collider => !collider.enabled),
+                Is.True);
+
+            MoveFocus(
+                session.Player,
+                new Vector3(153.495f, 10f, -700f));
+            yield return session.Streaming.RefreshNow();
+            Assert.That(
+                session.Registry.SetProductionOverrideActive(
+                    replacementKey,
+                    productionOverrideActive: false),
+                Is.True);
+            Assert.That(
+                initialRenderers.Any(renderer => renderer.enabled),
+                Is.True,
+                "A neighboring scene load must not replace the canonical " +
+                "renderer state with the temporary override state.");
+            Assert.That(
+                session.Registry.SetProductionOverrideActive(
+                    replacementKey,
+                    productionOverrideActive: true),
+                Is.True);
+
+            MoveFocus(
+                session.Player,
+                new Vector3(1568f, 10f, 32f));
+            yield return session.Streaming.RefreshNow();
+            Assert.That(
+                session.Streaming.IsCellLoaded("cell_0_-3"),
+                Is.False);
+
+            MoveFocus(
+                session.Player,
+                session.Installer.PlayerSpawnPosition);
+            yield return session.Streaming.RefreshNow();
+            Assert.That(
+                session.Streaming.IsCellLoaded("cell_0_-3"),
+                Is.True);
+
+            DonorWorldBaselineEntityMetadata reloaded =
+                GetSceneComponents<DonorWorldBaselineEntityMetadata>(
+                        FindLoadedScene(HomeCellScenePath))
+                    .Single(entity => string.Equals(
+                        entity.StableId,
+                        stableId,
+                        StringComparison.Ordinal));
+            Assert.That(
+                session.Registry.IsProductionOverrideActive(
+                    replacementKey),
+                Is.True);
+            Assert.That(
+                reloaded.GetComponentsInChildren<Renderer>(
+                        includeInactive: true)
+                    .All(renderer => !renderer.enabled),
+                Is.True);
+            Assert.That(
+                reloaded.GetComponentsInChildren<Collider>(
+                        includeInactive: true)
+                    .All(collider => !collider.enabled),
+                Is.True);
+
+            Assert.That(
+                session.Streaming.Manifest.GameplayCatalog,
+                Is.SameAs(catalog));
+            AssertGameplayCatalogUnchanged(
+                catalog,
+                anchorSnapshot);
+
+            Assert.That(
+                session.Registry.SetProductionOverrideActive(
+                    replacementKey,
+                    productionOverrideActive: false),
+                Is.True);
+            Assert.That(
+                reloaded.GetComponentsInChildren<Renderer>(
+                        includeInactive: true)
+                    .Any(renderer => renderer.enabled),
+                Is.True);
+        }
+
+        [UnityTest]
+        public IEnumerator ExternalUnloadReload_DoesNotTransferSceneOwnershipToStreamingService()
+        {
+            RuntimeSession session = null;
+            yield return StartSession(value => session = value);
+            Assert.That(
+                session.Streaming.Manifest.TryGetCell(
+                    "cell_0_-3",
+                    out ProductionWorldCellScene homeCell),
+                Is.True);
+            Assert.That(
+                session.Streaming.OwnsLoadedScene(
+                    homeCell.ScenePath),
+                Is.True);
+            int ownedBefore =
+                session.Streaming.OwnedLoadedSceneCount;
+
+            Scene initiallyOwned =
+                FindLoadedScene(homeCell.ScenePath);
+            AsyncOperation externalUnload =
+                SceneManager.UnloadSceneAsync(initiallyOwned);
+            Assert.That(externalUnload, Is.Not.Null);
+            yield return externalUnload;
+            Assert.That(
+                session.Streaming.OwnsLoadedScene(
+                    homeCell.ScenePath),
+                Is.False);
+            Assert.That(
+                session.Streaming.OwnedLoadedSceneCount,
+                Is.EqualTo(ownedBefore - 1));
+
+            AsyncOperation externalReload =
+                SceneManager.LoadSceneAsync(
+                    homeCell.BuildIndex,
+                    LoadSceneMode.Additive);
+            Assert.That(externalReload, Is.Not.Null);
+            yield return externalReload;
+            yield return null;
+            Assert.That(
+                FindLoadedScene(homeCell.ScenePath).isLoaded,
+                Is.True);
+            Assert.That(
+                session.Streaming.OwnsLoadedScene(
+                    homeCell.ScenePath),
+                Is.False);
+
+            MoveFocus(
+                session.Player,
+                new Vector3(1568f, 10f, 32f));
+            yield return session.Streaming.RefreshNow();
+            Assert.That(
+                FindLoadedScene(homeCell.ScenePath).isLoaded,
+                Is.True,
+                "Streaming service unloaded an externally reloaded scene.");
+            Assert.That(
+                session.Streaming.OwnsLoadedScene(
+                    homeCell.ScenePath),
+                Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator OutOfBoundsRecovery_ReturnsSpawnedPlayerToConfiguredSafeTransform()
+        {
+            RuntimeSession session = null;
+            yield return StartSession(value => session = value);
+            WorldOutOfBoundsRecovery recovery =
+                session.Installer.OutOfBoundsRecovery;
+
+            Assert.That(recovery, Is.Not.Null);
+            Assert.That(recovery.IsConfigured, Is.True);
+            int initialRecoveryCount = recovery.RecoveryCount;
+            CharacterController controller =
+                session.Player.GetComponent<CharacterController>();
+            bool controllerWasEnabled =
+                controller != null && controller.enabled;
+            if (controllerWasEnabled)
+            {
+                controller.enabled = false;
+            }
+
+            session.Player.transform.position =
+                new Vector3(
+                    recovery.RecoveryPosition.x,
+                    recovery.MinimumAllowedY - 10f,
+                    recovery.RecoveryPosition.z);
+            if (controllerWasEnabled)
+            {
+                controller.enabled = true;
+            }
+            Physics.SyncTransforms();
+
+            yield return null;
+
+            Assert.That(
+                recovery.RecoveryCount,
+                Is.EqualTo(initialRecoveryCount + 1));
+            Assert.That(
+                Vector3.Distance(
+                    session.Player.transform.position,
+                    recovery.RecoveryPosition),
+                Is.LessThan(0.05f));
+            Assert.That(
+                Quaternion.Angle(
+                    session.Player.transform.rotation,
+                    recovery.RecoveryRotation),
+                Is.LessThan(0.1f));
+        }
+
+        [UnityTearDown]
+        public IEnumerator Cleanup()
+        {
+            ProductionWorldStreamingService[] services =
+                Object.FindObjectsByType<
+                    ProductionWorldStreamingService>(
+                    FindObjectsInactive.Include,
+                    FindObjectsSortMode.None);
+            foreach (ProductionWorldStreamingService service in services)
+            {
+                service.enabled = false;
+                double timeout =
+                    Time.realtimeSinceStartupAsDouble + 30d;
+                while (service.IsStreaming &&
+                       Time.realtimeSinceStartupAsDouble < timeout)
+                {
+                    yield return null;
+                }
+                if (!service.IsStreaming)
+                {
+                    yield return service.UnloadOwnedScenes();
+                }
+            }
+
+            GameCompositionRoot[] roots =
+                Object.FindObjectsByType<GameCompositionRoot>(
+                    FindObjectsInactive.Include,
+                    FindObjectsSortMode.None);
+            foreach (GameCompositionRoot root in roots)
+            {
+                Object.Destroy(root.gameObject);
+            }
+            yield return null;
+
+            var remainingScenes = new List<Scene>();
+            for (int index = 0; index < SceneManager.sceneCount; index++)
+            {
+                Scene scene = SceneManager.GetSceneAt(index);
+                if (scene.isLoaded &&
+                    scene.path.StartsWith(
+                        RuntimeScenePrefix,
+                        StringComparison.Ordinal))
+                {
+                    remainingScenes.Add(scene);
+                }
+            }
+            foreach (Scene scene in remainingScenes)
+            {
+                AsyncOperation unload =
+                    SceneManager.UnloadSceneAsync(scene);
+                if (unload != null)
+                {
+                    yield return unload;
+                }
+            }
+        }
+
+        private static IEnumerator StartSession(
+            Action<RuntimeSession> completed)
+        {
+            AsyncOperation load = SceneManager.LoadSceneAsync(
+                "Bootstrap",
+                LoadSceneMode.Single);
+            Assert.That(
+                load,
+                Is.Not.Null,
+                "Bootstrap is missing from Build Settings.");
+            yield return load;
+            yield return null;
+
+            ProductionWorldStreamingInstaller installer =
+                Object.FindFirstObjectByType<
+                    ProductionWorldStreamingInstaller>();
+            ProductionWorldStreamingService streaming =
+                Object.FindFirstObjectByType<
+                    ProductionWorldStreamingService>();
+            Assert.That(installer, Is.Not.Null);
+            Assert.That(streaming, Is.Not.Null);
+
+            double timeout =
+                Time.realtimeSinceStartupAsDouble + 120d;
+            while ((!installer.IsReady || streaming.IsStreaming) &&
+                   Time.realtimeSinceStartupAsDouble < timeout)
+            {
+                yield return null;
+            }
+            Assert.That(
+                Time.realtimeSinceStartupAsDouble,
+                Is.LessThan(timeout),
+                "Bootstrap donor streaming timed out.");
+            Assert.That(installer.IsReady, Is.True);
+            Assert.That(installer.SpawnedPlayer, Is.Not.Null);
+
+            DisablePlayer(installer.SpawnedPlayer);
+            streaming.enabled = false;
+            yield return null;
+
+            DonorWorldStreamingSceneMetadata globalMetadata =
+                Object.FindObjectsByType<
+                        DonorWorldStreamingSceneMetadata>(
+                        FindObjectsInactive.Include,
+                        FindObjectsSortMode.None)
+                    .Single(metadata => string.Equals(
+                        metadata.SceneId,
+                        "global-legacy",
+                        StringComparison.Ordinal));
+            DonorWorldLegacyReplacementRegistry registry =
+                Object.FindObjectsByType<
+                        DonorWorldLegacyReplacementRegistry>(
+                        FindObjectsInactive.Include,
+                        FindObjectsSortMode.None)
+                    .Single();
+            completed(new RuntimeSession(
+                installer,
+                streaming,
+                installer.SpawnedPlayer,
+                globalMetadata,
+                registry));
+        }
+
+        private static void DisablePlayer(GameObject player)
+        {
+            FirstPersonMotor motor =
+                player.GetComponent<FirstPersonMotor>();
+            PlayerInputRouter input =
+                player.GetComponent<PlayerInputRouter>();
+            if (motor != null)
+            {
+                motor.enabled = false;
+            }
+            if (input != null)
+            {
+                input.enabled = false;
+            }
+        }
+
+        private static void MoveFocus(
+            GameObject player,
+            Vector3 position)
+        {
+            CharacterController controller =
+                player.GetComponent<CharacterController>();
+            bool wasEnabled =
+                controller != null && controller.enabled;
+            if (wasEnabled)
+            {
+                controller.enabled = false;
+            }
+            player.transform.position = position;
+            if (wasEnabled)
+            {
+                controller.enabled = true;
+            }
+            Physics.SyncTransforms();
+        }
+
+        private static void AssertGlobalLifetime(
+            RuntimeSession session,
+            int expectedGlobalRootInstanceId,
+            int expectedRegistryInstanceId)
+        {
+            Assert.That(
+                session.Streaming.IsGlobalSceneLoaded("global-legacy"),
+                Is.True);
+            DonorWorldStreamingSceneMetadata globalMetadata =
+                Object.FindObjectsByType<
+                        DonorWorldStreamingSceneMetadata>(
+                        FindObjectsInactive.Include,
+                        FindObjectsSortMode.None)
+                    .Single(metadata => string.Equals(
+                        metadata.SceneId,
+                        "global-legacy",
+                        StringComparison.Ordinal));
+            DonorWorldLegacyReplacementRegistry registry =
+                Object.FindObjectsByType<
+                        DonorWorldLegacyReplacementRegistry>(
+                        FindObjectsInactive.Include,
+                        FindObjectsSortMode.None)
+                    .Single();
+            Assert.That(
+                globalMetadata.gameObject.GetInstanceID(),
+                Is.EqualTo(expectedGlobalRootInstanceId));
+            Assert.That(
+                registry.gameObject.GetInstanceID(),
+                Is.EqualTo(expectedRegistryInstanceId));
+        }
+
+        private static bool TryRaycastUpwardFacingTriangle(
+            MeshCollider collider,
+            out string failure)
+        {
+            Mesh mesh = collider.sharedMesh;
+            if (mesh == null)
+            {
+                failure = "shared mesh is missing";
+                return false;
+            }
+
+            Vector3[] vertices;
+            int[] triangles;
+            try
+            {
+                vertices = mesh.vertices;
+                triangles = mesh.triangles;
+            }
+            catch (UnityException exception)
+            {
+                failure = "mesh data is not readable: " + exception.Message;
+                return false;
+            }
+
+            Transform transform = collider.transform;
+            for (int index = 0; index + 2 < triangles.Length; index += 3)
+            {
+                Vector3 first =
+                    transform.TransformPoint(vertices[triangles[index]]);
+                Vector3 second =
+                    transform.TransformPoint(vertices[triangles[index + 1]]);
+                Vector3 third =
+                    transform.TransformPoint(vertices[triangles[index + 2]]);
+                Vector3 normal =
+                    Vector3.Cross(second - first, third - first);
+                if (normal.sqrMagnitude < 0.000001f)
+                {
+                    continue;
+                }
+                normal.Normalize();
+                if (Vector3.Dot(normal, Vector3.up) < 0.5f)
+                {
+                    continue;
+                }
+
+                Vector3 centroid = (first + second + third) / 3f;
+                var ray = new Ray(
+                    centroid + Vector3.up * 0.75f,
+                    Vector3.down);
+                if (collider.Raycast(
+                        ray,
+                        out RaycastHit hit,
+                        1.5f) &&
+                    Vector3.Distance(hit.point, centroid) < 0.05f)
+                {
+                    failure = string.Empty;
+                    return true;
+                }
+            }
+
+            failure =
+                "no upward-facing triangle produced a centroid raycast";
+            return false;
+        }
+
+        private static Scene FindLoadedScene(string path)
+        {
+            for (int index = 0; index < SceneManager.sceneCount; index++)
+            {
+                Scene scene = SceneManager.GetSceneAt(index);
+                if (scene.isLoaded &&
+                    string.Equals(
+                        scene.path,
+                        path,
+                        StringComparison.Ordinal))
+                {
+                    return scene;
+                }
+            }
+
+            Assert.Fail("Expected loaded scene was not found: " + path);
+            return default;
+        }
+
+        private static T[] GetSceneComponents<T>(Scene scene)
+            where T : Component =>
+            scene.GetRootGameObjects()
+                .SelectMany(root =>
+                    root.GetComponentsInChildren<T>(
+                        includeInactive: true))
+                .ToArray();
+
+        private static void AssertGameplayCatalogUnchanged(
+            WorldGameplayCellCatalog catalog,
+            IReadOnlyList<WorldGameplayAnchorRecord> expected)
+        {
+            Assert.That(catalog.Anchors.Count, Is.EqualTo(expected.Count));
+            for (int index = 0; index < expected.Count; index++)
+            {
+                WorldGameplayAnchorRecord actual =
+                    catalog.Anchors[index];
+                Assert.That(
+                    actual.AnchorId,
+                    Is.EqualTo(expected[index].AnchorId));
+                Assert.That(
+                    actual.StableEntityId,
+                    Is.EqualTo(expected[index].StableEntityId));
+                Assert.That(
+                    actual.Cell,
+                    Is.EqualTo(expected[index].Cell));
+                Assert.That(
+                    actual.Position,
+                    Is.EqualTo(expected[index].Position));
+                Assert.That(
+                    Quaternion.Angle(
+                        actual.Rotation,
+                        expected[index].Rotation),
+                    Is.LessThan(0.001f));
+            }
+        }
+
+        private sealed class RuntimeSession
+        {
+            public RuntimeSession(
+                ProductionWorldStreamingInstaller installer,
+                ProductionWorldStreamingService streaming,
+                GameObject player,
+                DonorWorldStreamingSceneMetadata globalMetadata,
+                DonorWorldLegacyReplacementRegistry registry)
+            {
+                Installer = installer;
+                Streaming = streaming;
+                Player = player;
+                GlobalMetadata = globalMetadata;
+                Registry = registry;
+            }
+
+            public ProductionWorldStreamingInstaller Installer { get; }
+            public ProductionWorldStreamingService Streaming { get; }
+            public GameObject Player { get; }
+            public DonorWorldStreamingSceneMetadata GlobalMetadata { get; }
+            public DonorWorldLegacyReplacementRegistry Registry { get; }
+        }
+    }
+}

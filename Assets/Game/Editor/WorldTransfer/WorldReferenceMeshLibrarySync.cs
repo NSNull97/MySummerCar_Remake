@@ -35,12 +35,34 @@ namespace MSC.Editor.WorldTransfer
                 .Distinct(StringComparer.Ordinal)
                 .OrderBy(value => value, StringComparer.Ordinal)
                 .ToArray();
+            return SynchronizeGuids(requiredGuids);
+        }
+
+        public static WorldReferenceMeshSyncResult SynchronizeGuids(
+            IEnumerable<string> meshGuids)
+        {
+            if (meshGuids == null)
+            {
+                throw new ArgumentNullException(nameof(meshGuids));
+            }
+
+            string[] requiredGuids = meshGuids
+                .Where(IsUsableMeshGuid)
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(value => value, StringComparer.Ordinal)
+                .ToArray();
             WorldTransferEditorConfiguration config = WorldTransferEditorConfiguration.Load();
             string manifestPath = Path.Combine(config.NormalizedDataPath, MeshManifestFileName);
-            IReadOnlyDictionary<string, string> manifest = ReadResolvedManifest(manifestPath);
             string sourceAssetRoot = SafeCombine(config.RawExtractionPath, AssetRipperAssetsRelativePath);
             if (!Directory.Exists(sourceAssetRoot))
                 throw new DirectoryNotFoundException("Frozen AssetRipper Assets root is missing: " + sourceAssetRoot);
+            var manifest = new Dictionary<string, string>(
+                ReadResolvedManifest(manifestPath),
+                StringComparer.Ordinal);
+            ResolveRequestedGuidsFromRawMeta(
+                sourceAssetRoot,
+                requiredGuids.Where(guid => !manifest.ContainsKey(guid)),
+                manifest);
 
             var result = new WorldReferenceMeshSyncResult { RequestedGuidCount = requiredGuids.Length };
             foreach (string guid in requiredGuids)
@@ -84,6 +106,62 @@ namespace MSC.Editor.WorldTransfer
 
             Debug.Log($"WORLD_REFERENCE_MESH_SYNC_OK requested={result.RequestedGuidCount} copied={result.CopiedAssetCount} unchanged={result.UnchangedAssetCount} verified={result.VerifiedAssetCount} resolved={result.ResolvedAssetCount} missing={result.MissingGuids.Count}");
             return result;
+        }
+
+        private static void ResolveRequestedGuidsFromRawMeta(
+            string sourceAssetRoot,
+            IEnumerable<string> unresolvedGuids,
+            IDictionary<string, string> resolved)
+        {
+            var requested = unresolvedGuids.ToHashSet(
+                StringComparer.Ordinal);
+            if (requested.Count == 0)
+            {
+                return;
+            }
+
+            foreach (string metaPath in Directory.EnumerateFiles(
+                         sourceAssetRoot,
+                         "*.asset.meta",
+                         SearchOption.AllDirectories)
+                     .OrderBy(
+                         path => path,
+                         StringComparer.Ordinal))
+            {
+                string guid = File.ReadLines(metaPath)
+                    .Select(line => line.Trim())
+                    .FirstOrDefault(line => line.StartsWith(
+                        "guid: ",
+                        StringComparison.Ordinal))?["guid: ".Length..] ??
+                    string.Empty;
+                if (!requested.Contains(guid))
+                {
+                    continue;
+                }
+
+                string assetPath = metaPath.Substring(
+                    0,
+                    metaPath.Length - ".meta".Length);
+                string relative = Path.GetRelativePath(
+                        sourceAssetRoot,
+                        assetPath)
+                    .Replace('\\', '/');
+                relative = NormalizeSafeAssetRelativePath(relative);
+                if (resolved.TryGetValue(
+                        guid,
+                        out string existing) &&
+                    !string.Equals(
+                        existing,
+                        relative,
+                        StringComparison.Ordinal))
+                {
+                    throw new InvalidDataException(
+                        "Requested mesh GUID resolves to more than one raw " +
+                        "AssetRipper asset: " + guid);
+                }
+
+                resolved[guid] = relative;
+            }
         }
 
         public static IReadOnlyDictionary<string, string> ReadResolvedManifest(string path)

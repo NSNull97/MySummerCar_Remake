@@ -647,6 +647,9 @@ namespace MSC.Editor.WorldBaseline
 
             string[] actualAssets = Directory.EnumerateFiles(
                     absoluteRoot, "*", SearchOption.AllDirectories)
+                .Where(file => !ToProjectRelativePath(file).StartsWith(
+                    WorldBaseline06B2Paths.StreamingRoot + "/",
+                    StringComparison.Ordinal))
                 .Where(file =>
                 {
                     string extension = Path.GetExtension(file);
@@ -727,7 +730,8 @@ namespace MSC.Editor.WorldBaseline
             {
                 if (scene.path.StartsWith(
                         WorldBaselinePaths.RuntimeRoot + "/",
-                        StringComparison.Ordinal))
+                        StringComparison.Ordinal) &&
+                    !IsAllowed06B2StreamingScene(scene.path))
                 {
                     result.Errors.Add(
                         "06B1 baseline scene must not be present in Build Settings: " +
@@ -745,7 +749,12 @@ namespace MSC.Editor.WorldBaseline
                 {
                     if (dependency.StartsWith(
                             WorldBaselinePaths.RuntimeRoot + "/",
-                            StringComparison.Ordinal))
+                            StringComparison.Ordinal) &&
+                        !(IsAllowed06B2StreamingScene(scene.path) &&
+                          !string.Equals(
+                              dependency,
+                              WorldBaselinePaths.CanonicalScene,
+                              StringComparison.Ordinal)))
                     {
                         result.Errors.Add(
                             "Enabled build scene depends on inactive 06B1 " +
@@ -777,6 +786,15 @@ namespace MSC.Editor.WorldBaseline
                     "baseline payload: " + leaked);
             }
         }
+
+        private static bool IsAllowed06B2StreamingScene(string scenePath) =>
+            string.Equals(
+                scenePath,
+                WorldBaseline06B2Paths.GlobalScene,
+                StringComparison.Ordinal) ||
+            scenePath.StartsWith(
+                WorldBaseline06B2Paths.StreamingCellSceneRoot + "/",
+                StringComparison.Ordinal);
 
         private static void ValidateGameplayHierarchyIsolation(
             DonorWorldBaselineValidationResult result)

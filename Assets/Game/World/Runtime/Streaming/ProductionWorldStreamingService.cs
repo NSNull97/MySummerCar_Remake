@@ -17,17 +17,36 @@ namespace MSC.World.Streaming
         [SerializeField] private ProductionWorldStreamingManifest manifest;
         [SerializeField] private Transform focus;
 
-        private readonly HashSet<int> ownedLoadedBuildIndices = new HashSet<int>();
+        private readonly Dictionary<string, int> ownedLoadedSceneHandles =
+            new Dictionary<string, int>(StringComparer.Ordinal);
         private bool isStreaming;
         private bool hasObservedCell;
+        private bool hasObservedLoadingRadius;
         private WorldCellIndex observedCell;
+        private int observedLoadingRadius;
+        private float reportedFocusSpeedMetersPerSecond;
+        private Rigidbody boundFocusRigidbody;
         private Coroutine automaticRefresh;
 
         public bool IsStreaming => isStreaming;
         public bool HasFocus => focus != null;
-        public int OwnedLoadedSceneCount => ownedLoadedBuildIndices.Count;
+        public int OwnedLoadedSceneCount
+        {
+            get
+            {
+                PruneStaleOwnership();
+                return ownedLoadedSceneHandles.Count;
+            }
+        }
         public ProductionWorldStreamingManifest Manifest => manifest;
         public Transform Focus => focus;
+        public float ReportedFocusSpeedMetersPerSecond =>
+            reportedFocusSpeedMetersPerSecond;
+        public int EffectiveLoadingRadiusCells =>
+            manifest == null
+                ? 0
+                : manifest.GetLoadingRadiusForSpeed(
+                    reportedFocusSpeedMetersPerSecond);
 
         public void BindFocus(Transform streamingFocus)
         {
@@ -35,62 +54,110 @@ namespace MSC.World.Streaming
                 ? streamingFocus
                 : throw new ArgumentNullException(nameof(streamingFocus));
             hasObservedCell = false;
+            hasObservedLoadingRadius = false;
+            reportedFocusSpeedMetersPerSecond = 0f;
+            boundFocusRigidbody =
+                focus.GetComponentInParent<Rigidbody>();
+        }
+
+        public void ReportFocusSpeedMetersPerSecond(float speedMetersPerSecond)
+        {
+            if (!float.IsFinite(speedMetersPerSecond) ||
+                speedMetersPerSecond < 0f)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(speedMetersPerSecond),
+                    "Streaming focus speed must be finite and non-negative.");
+            }
+
+            reportedFocusSpeedMetersPerSecond = speedMetersPerSecond;
         }
 
         public bool IsCellLoaded(string cellId)
         {
             return manifest != null &&
                    manifest.TryGetCell(cellId, out ProductionWorldCellScene cell) &&
-                   TryGetLoadedScene(cell.BuildIndex, out _);
+                   TryGetLoadedScene(cell.ScenePath, out _);
+        }
+
+        public bool IsGlobalSceneLoaded(string sceneId)
+        {
+            if (manifest == null)
+            {
+                return false;
+            }
+
+            IReadOnlyList<ProductionWorldGlobalScene> globalScenes =
+                manifest.GlobalScenes;
+            for (int index = 0; index < globalScenes.Count; index++)
+            {
+                ProductionWorldGlobalScene globalScene = globalScenes[index];
+                if (string.Equals(
+                        globalScene.SceneId,
+                        sceneId,
+                        StringComparison.Ordinal))
+                {
+                    return TryGetLoadedScene(globalScene.ScenePath, out _);
+                }
+            }
+
+            return false;
+        }
+
+        public bool OwnsLoadedScene(string scenePath)
+        {
+            if (string.IsNullOrWhiteSpace(scenePath) ||
+                !TryGetLoadedScene(scenePath, out Scene scene))
+            {
+                ownedLoadedSceneHandles.Remove(
+                    scenePath ?? string.Empty);
+                return false;
+            }
+
+            return OwnsLoadedScene(scene);
         }
 
         public IEnumerator RefreshNow()
         {
-            if (isStreaming)
+            while (isStreaming)
             {
-                yield break;
+                yield return null;
             }
 
             ValidateRuntimeConfiguration();
+            PruneStaleOwnership();
             isStreaming = true;
             try
             {
-                WorldCellIndex center = WorldCellMembershipUtility.FromPosition(focus.position, manifest.CellSizeMeters);
-                observedCell = center;
-                hasObservedCell = true;
+                WorldCellIndex center = GetCurrentFocusCell();
+                int loadingRadius = manifest.GetLoadingRadiusForSpeed(
+                    reportedFocusSpeedMetersPerSecond);
+
+                yield return EnsureGlobalScenesLoaded();
 
                 IReadOnlyList<ProductionWorldCellScene> cells = manifest.Cells;
                 for (int index = 0; index < cells.Count; index++)
                 {
                     ProductionWorldCellScene cell = cells[index];
-                    ValidateBuildEntry(cell);
                     int distance = Mathf.Max(
                         Mathf.Abs(cell.Index.X - center.X),
                         Mathf.Abs(cell.Index.Z - center.Z));
 
-                    bool isLoaded = TryGetLoadedScene(cell.BuildIndex, out Scene loadedScene);
-                    if (distance <= manifest.LoadingRadiusCells && !isLoaded)
+                    bool isLoaded = TryGetLoadedScene(
+                        cell.ScenePath,
+                        out Scene loadedScene);
+                    if (distance <= loadingRadius && !isLoaded)
                     {
-                        AsyncOperation load = SceneManager.LoadSceneAsync(cell.BuildIndex, LoadSceneMode.Additive);
-                        if (load == null)
-                        {
-                            throw new InvalidOperationException(
-                                $"Could not start additive load for production cell {cell.CellId} at build index {cell.BuildIndex}.");
-                        }
-
-                        yield return load;
-                        if (!TryGetLoadedScene(cell.BuildIndex, out _))
-                        {
-                            throw new InvalidOperationException(
-                                $"Production cell {cell.CellId} did not become loaded after its load operation completed.");
-                        }
-
-                        ownedLoadedBuildIndices.Add(cell.BuildIndex);
+                        yield return LoadOwnedScene(
+                            cell.BuildIndex,
+                            cell.ScenePath,
+                            "production cell " + cell.CellId);
                     }
                     else if (distance > manifest.UnloadingRadiusCells &&
                              isLoaded &&
-                             ownedLoadedBuildIndices.Contains(cell.BuildIndex))
+                             OwnsLoadedScene(loadedScene))
                     {
+                        int ownedHandle = loadedScene.handle;
                         AsyncOperation unload = SceneManager.UnloadSceneAsync(loadedScene);
                         if (unload == null)
                         {
@@ -99,9 +166,16 @@ namespace MSC.World.Streaming
                         }
 
                         yield return unload;
-                        ownedLoadedBuildIndices.Remove(cell.BuildIndex);
+                        RemoveOwnershipIfHandleMatches(
+                            cell.ScenePath,
+                            ownedHandle);
                     }
                 }
+
+                observedCell = center;
+                hasObservedCell = true;
+                observedLoadingRadius = loadingRadius;
+                hasObservedLoadingRadius = true;
             }
             finally
             {
@@ -111,19 +185,30 @@ namespace MSC.World.Streaming
 
         public IEnumerator UnloadOwnedScenes()
         {
-            if (isStreaming)
+            while (isStreaming)
             {
-                yield break;
+                yield return null;
             }
 
             isStreaming = true;
             try
             {
-                var ownedIndices = new List<int>(ownedLoadedBuildIndices);
-                for (int index = 0; index < ownedIndices.Count; index++)
+                PruneStaleOwnership();
+                var ownedPaths = new List<string>(
+                    ownedLoadedSceneHandles.Keys);
+                ownedPaths.Sort(CompareOwnedUnloadOrder);
+                for (int index = 0; index < ownedPaths.Count; index++)
                 {
-                    int buildIndex = ownedIndices[index];
-                    if (TryGetLoadedScene(buildIndex, out Scene scene))
+                    string scenePath = ownedPaths[index];
+                    if (!ownedLoadedSceneHandles.TryGetValue(
+                            scenePath,
+                            out int ownedHandle))
+                    {
+                        continue;
+                    }
+
+                    if (TryGetLoadedScene(scenePath, out Scene scene) &&
+                        scene.handle == ownedHandle)
                     {
                         AsyncOperation unload = SceneManager.UnloadSceneAsync(scene);
                         if (unload != null)
@@ -132,13 +217,16 @@ namespace MSC.World.Streaming
                         }
                     }
 
-                    ownedLoadedBuildIndices.Remove(buildIndex);
+                    RemoveOwnershipIfHandleMatches(
+                        scenePath,
+                        ownedHandle);
                 }
             }
             finally
             {
                 isStreaming = false;
                 hasObservedCell = false;
+                hasObservedLoadingRadius = false;
             }
         }
 
@@ -149,6 +237,16 @@ namespace MSC.World.Streaming
         }
 #endif
 
+        private void Awake()
+        {
+            SceneManager.sceneUnloaded += HandleSceneUnloaded;
+        }
+
+        private void OnDestroy()
+        {
+            SceneManager.sceneUnloaded -= HandleSceneUnloaded;
+        }
+
         private void Update()
         {
             if (focus == null || manifest == null || isStreaming || automaticRefresh != null)
@@ -156,8 +254,39 @@ namespace MSC.World.Streaming
                 return;
             }
 
-            WorldCellIndex currentCell = WorldCellMembershipUtility.FromPosition(focus.position, manifest.CellSizeMeters);
-            if (!hasObservedCell || !currentCell.Equals(observedCell))
+            if (boundFocusRigidbody != null)
+            {
+                float rigidbodySpeed =
+                    boundFocusRigidbody.linearVelocity.magnitude;
+                if (!float.IsFinite(rigidbodySpeed))
+                {
+                    return;
+                }
+
+                reportedFocusSpeedMetersPerSecond =
+                    rigidbodySpeed;
+            }
+
+            if (!IsFinite(focus.position))
+            {
+                return;
+            }
+
+            WorldCellIndex currentCell =
+                WorldCellMembershipUtility.FromPosition(
+                    focus.position,
+                    manifest.CellSizeMeters);
+            int currentLoadingRadius =
+                manifest.GetLoadingRadiusForSpeed(
+                    reportedFocusSpeedMetersPerSecond);
+            if (!hasObservedCell ||
+                !currentCell.Equals(observedCell) ||
+                !hasObservedLoadingRadius ||
+                currentLoadingRadius != observedLoadingRadius ||
+                !AreGlobalScenesLoaded() ||
+                !AreRequiredCellScenesLoaded(
+                    currentCell,
+                    currentLoadingRadius))
             {
                 automaticRefresh = StartCoroutine(RefreshAutomatically());
             }
@@ -187,31 +316,265 @@ namespace MSC.World.Streaming
                 throw new InvalidOperationException("Production world streaming focus is not bound.");
             }
 
+            if (!IsFinite(focus.position))
+            {
+                throw new InvalidOperationException(
+                    "Production world streaming focus has a non-finite position.");
+            }
+
             IReadOnlyList<string> errors = manifest.ValidateConfiguration();
             if (errors.Count > 0)
             {
                 throw new InvalidOperationException(
                     "Production world streaming manifest is invalid: " + string.Join(" | ", errors));
             }
-        }
 
-        private static void ValidateBuildEntry(ProductionWorldCellScene cell)
-        {
-            string buildPath = SceneUtility.GetScenePathByBuildIndex(cell.BuildIndex);
-            if (!string.Equals(buildPath, cell.ScenePath, StringComparison.Ordinal))
+            IReadOnlyList<ProductionWorldGlobalScene> globalScenes =
+                manifest.GlobalScenes;
+            for (int index = 0; index < globalScenes.Count; index++)
             {
-                throw new InvalidOperationException(
-                    $"Production cell {cell.CellId} expects build index {cell.BuildIndex} to resolve to " +
-                    $"{cell.ScenePath}, but it resolves to {buildPath ?? "<null>"}.");
+                ProductionWorldGlobalScene globalScene = globalScenes[index];
+                ValidateBuildEntry(
+                    globalScene.BuildIndex,
+                    globalScene.ScenePath,
+                    "Global scene " + globalScene.SceneId);
+            }
+
+            IReadOnlyList<ProductionWorldCellScene> cells = manifest.Cells;
+            for (int index = 0; index < cells.Count; index++)
+            {
+                ProductionWorldCellScene cell = cells[index];
+                ValidateBuildEntry(
+                    cell.BuildIndex,
+                    cell.ScenePath,
+                    "Production cell " + cell.CellId);
             }
         }
 
-        private static bool TryGetLoadedScene(int buildIndex, out Scene scene)
+        private IEnumerator EnsureGlobalScenesLoaded()
+        {
+            IReadOnlyList<ProductionWorldGlobalScene> globalScenes =
+                manifest.GlobalScenes;
+            for (int index = 0; index < globalScenes.Count; index++)
+            {
+                ProductionWorldGlobalScene globalScene = globalScenes[index];
+                if (TryGetLoadedScene(globalScene.ScenePath, out _))
+                {
+                    continue;
+                }
+
+                yield return LoadOwnedScene(
+                    globalScene.BuildIndex,
+                    globalScene.ScenePath,
+                    "global scene " + globalScene.SceneId);
+            }
+        }
+
+        private IEnumerator LoadOwnedScene(
+            int buildIndex,
+            string scenePath,
+            string label)
+        {
+            AsyncOperation load = SceneManager.LoadSceneAsync(
+                buildIndex,
+                LoadSceneMode.Additive);
+            if (load == null)
+            {
+                throw new InvalidOperationException(
+                    $"Could not start additive load for {label} at build " +
+                    $"index {buildIndex} ({scenePath}).");
+            }
+
+            yield return load;
+            if (!TryGetLoadedScene(scenePath, out Scene loadedScene))
+            {
+                throw new InvalidOperationException(
+                    $"{label} did not become loaded at its authoritative " +
+                    $"scene path {scenePath}.");
+            }
+
+            ownedLoadedSceneHandles[scenePath] = loadedScene.handle;
+        }
+
+        private void HandleSceneUnloaded(Scene scene)
+        {
+            RemoveOwnershipIfHandleMatches(
+                scene.path,
+                scene.handle);
+        }
+
+        private bool OwnsLoadedScene(Scene scene)
+        {
+            if (!ownedLoadedSceneHandles.TryGetValue(
+                    scene.path,
+                    out int ownedHandle))
+            {
+                return false;
+            }
+            if (ownedHandle == scene.handle)
+            {
+                return true;
+            }
+
+            ownedLoadedSceneHandles.Remove(scene.path);
+            return false;
+        }
+
+        private void PruneStaleOwnership()
+        {
+            if (ownedLoadedSceneHandles.Count == 0)
+            {
+                return;
+            }
+
+            var stalePaths = new List<string>();
+            foreach (KeyValuePair<string, int> owned in
+                     ownedLoadedSceneHandles)
+            {
+                if (!TryGetLoadedScene(
+                        owned.Key,
+                        out Scene scene) ||
+                    scene.handle != owned.Value)
+                {
+                    stalePaths.Add(owned.Key);
+                }
+            }
+
+            for (int index = 0;
+                 index < stalePaths.Count;
+                 index++)
+            {
+                ownedLoadedSceneHandles.Remove(stalePaths[index]);
+            }
+        }
+
+        private void RemoveOwnershipIfHandleMatches(
+            string scenePath,
+            int sceneHandle)
+        {
+            if (!string.IsNullOrWhiteSpace(scenePath) &&
+                ownedLoadedSceneHandles.TryGetValue(
+                    scenePath,
+                    out int ownedHandle) &&
+                ownedHandle == sceneHandle)
+            {
+                ownedLoadedSceneHandles.Remove(scenePath);
+            }
+        }
+
+        private WorldCellIndex GetCurrentFocusCell()
+        {
+            Vector3 position = focus.position;
+            if (!IsFinite(position))
+            {
+                throw new InvalidOperationException(
+                    "Production world streaming focus has a non-finite position.");
+            }
+
+            return WorldCellMembershipUtility.FromPosition(
+                position,
+                manifest.CellSizeMeters);
+        }
+
+        private int CompareOwnedUnloadOrder(string left, string right)
+        {
+            bool leftIsGlobal = IsGlobalScenePath(left);
+            bool rightIsGlobal = IsGlobalScenePath(right);
+            if (leftIsGlobal != rightIsGlobal)
+            {
+                return leftIsGlobal ? 1 : -1;
+            }
+
+            return string.Compare(left, right, StringComparison.Ordinal);
+        }
+
+        private bool IsGlobalScenePath(string scenePath)
+        {
+            if (manifest == null)
+            {
+                return false;
+            }
+
+            IReadOnlyList<ProductionWorldGlobalScene> globalScenes =
+                manifest.GlobalScenes;
+            for (int index = 0; index < globalScenes.Count; index++)
+            {
+                if (string.Equals(
+                        globalScenes[index].ScenePath,
+                        scenePath,
+                        StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool AreGlobalScenesLoaded()
+        {
+            IReadOnlyList<ProductionWorldGlobalScene> globalScenes =
+                manifest.GlobalScenes;
+            for (int index = 0; index < globalScenes.Count; index++)
+            {
+                if (!TryGetLoadedScene(
+                        globalScenes[index].ScenePath,
+                        out _))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool AreRequiredCellScenesLoaded(
+            WorldCellIndex center,
+            int loadingRadius)
+        {
+            IReadOnlyList<ProductionWorldCellScene> cells =
+                manifest.Cells;
+            for (int index = 0; index < cells.Count; index++)
+            {
+                ProductionWorldCellScene cell = cells[index];
+                int distance = Mathf.Max(
+                    Mathf.Abs(cell.Index.X - center.X),
+                    Mathf.Abs(cell.Index.Z - center.Z));
+                if (distance <= loadingRadius &&
+                    !TryGetLoadedScene(cell.ScenePath, out _))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static void ValidateBuildEntry(
+            int buildIndex,
+            string scenePath,
+            string label)
+        {
+            string buildPath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
+            if (!string.Equals(buildPath, scenePath, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    $"{label} expects build index {buildIndex} to resolve to " +
+                    $"{scenePath}, but it resolves to " +
+                    $"{buildPath ?? "<null>"}.");
+            }
+        }
+
+        private static bool TryGetLoadedScene(string scenePath, out Scene scene)
         {
             for (int index = 0; index < SceneManager.sceneCount; index++)
             {
                 Scene candidate = SceneManager.GetSceneAt(index);
-                if (candidate.buildIndex == buildIndex && candidate.isLoaded)
+                if (candidate.isLoaded &&
+                    string.Equals(
+                        candidate.path,
+                        scenePath,
+                        StringComparison.Ordinal))
                 {
                     scene = candidate;
                     return true;
@@ -221,5 +584,10 @@ namespace MSC.World.Streaming
             scene = default;
             return false;
         }
+
+        private static bool IsFinite(Vector3 value) =>
+            float.IsFinite(value.x) &&
+            float.IsFinite(value.y) &&
+            float.IsFinite(value.z);
     }
 }

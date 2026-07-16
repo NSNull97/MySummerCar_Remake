@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a18a99ed6f41b458a8b68d3d9a8651, type: 3}
+  m_Name: PrototypeWorldStreamingManifest
+  m_EditorClassIdentifier: MSC.World.Runtime::MSC.World.Streaming.ProductionWorldStreamingManifest
+  schemaVersion: 2
+  profileId: prototype-fixture
+  profileKind: 0
+  privateLocalRuntimeBaseline: 0
+  cellSizeMeters: 512
+  loadingRadiusCells: 0
+  unloadingRadiusCells: 1
+  vehiclePreloadSpeedMetersPerSecond: 3.4028235e+38
+  vehiclePreloadRadiusCells: 0
+  globalScenes: []
+  cells:
+  - cellId: cell_0_-3
+    x: 0
+    z: -3
+    buildIndex: 6
+    scenePath: Assets/Game/World/Generated/ProductionCells/Production_cell_0_-3.unity
+  - cellId: cell_0_-2
+    x: 0
+    z: -2
+    buildIndex: 8
+    scenePath: Assets/Game/World/Generated/ProductionCells/Production_cell_0_-2.unity
+  gameplayCatalog: {fileID: 0}

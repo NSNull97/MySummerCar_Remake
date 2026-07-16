@@ -39,8 +39,9 @@ namespace MSC.World.Remaster.Editor
             "Docs/WorldValidation/M05B1_PRODUCTION_STREAMING_LIFECYCLE.json";
 
         private const string ManifestPath =
-            "Assets/Game/World/Content/Streaming/ProductionWorldStreamingManifest.asset";
-        private const string BootstrapScenePath = "Assets/Game/Bootstrap/Bootstrap.unity";
+            "Assets/Game/World/Content/Streaming/PrototypeWorldStreamingManifest.asset";
+        private const string BootstrapScenePath =
+            "Assets/Game/World/Debug/Streaming/PrototypeWorldStreamingFixture.unity";
 
         private static readonly string[] ExpectedSequence =
         {

@@ -1,6 +1,6 @@
-# Donor Audit — Milestone 0 baseline through Milestone 06B1
+# Donor Audit — Milestone 0 baseline through Milestone 06B2
 
-Audit dates: 2026-07-13 baseline; 2026-07-14 Milestones 3–05A updates; 2026-07-15 Milestones 05B–06 updates; 2026-07-16 M06 diagnostic-audio and M06B1 world-baseline addenda
+Audit dates: 2026-07-13 baseline; 2026-07-14 Milestones 3–05A updates; 2026-07-15 Milestones 05B–06 updates; 2026-07-16 M06 diagnostic-audio, M06B1 sanitation and M06B2 cellization addenda
 
 Scope: read-only filesystem, binary-header, log, file-hash, reflection-only managed metadata inspection, audited use of previously staged references, and a user-authorized local-only Satsuma diagnostic-audio mapping from frozen external staging
 
@@ -419,5 +419,60 @@ Cold validation, focused EditMode `4/4` and PlayMode boot `1/1` passed.
 The existing `cell_0_-3` and `cell_0_-2` custom visuals remain retained
 technical fixtures but are classified
 `PrototypeOnly / RejectedForFidelity / InactiveInFeatureParityProfile`.
-06B1 did not switch Bootstrap, activate a donor profile, split the map or
-transfer collision; those actions remain bounded to 06B2.
+At the 06B1 close Bootstrap/profile activation, cellization and safe collision
+transfer remained deferred. Their bounded 06B2 disposition is recorded below.
+
+## Milestone 06B2 donor-world cellization and activation audit
+
+06B2 reused the frozen 06B1 canonical source and the existing project-owned
+512 m streaming architecture. It did not extract the donor game again and did
+not use the current installed donor files as a fallback.
+
+The active private-local profile is `donor-feature-parity-06b2`. Its generated
+ignored payload contains:
+
+- one `World_Global_Legacy` scene;
+- 49 `World_Cell_<X>_<Z>_Legacy` scenes;
+- 3,842 project-owned legacy metadata entities;
+- 2,605 static renderers;
+- 32 explicitly allowed static colliders;
+- no donor MonoBehaviour, PlayMaker FSM, assembly, camera, audio, lighting,
+  weather, UI, NPC logic, Rigidbody, joint or trigger.
+
+Ownership is deterministic. 3,754 normal static entities retain their frozen
+source cell. 88 entities remain global: 31 already-classified large/continuous
+objects, 41 `MAP/MESH` static-batch aggregates, one explicit cross-cell
+traversal object and 15 bootstrap/traversal safety-collider owners. Geometry was
+not artistically changed or destructively split. The ownership fingerprint is
+`0a9de0beb45d83d6983153a48d0eb1eb93bb51fdfcc63baa629425f2777b13f3`.
+
+The collision subset is a project-owned allowlist of 20 `MeshCollider` and 12
+`BoxCollider` records. It is `TemporaryDirectImport`, not a transfer of donor
+physics behavior. Doors, windows, dynamic props, NPC collision and trigger
+volumes remain excluded.
+
+All legacy visuals receive a project-owned replacement key
+`legacy-world:<stable-id>`. Donor names and hierarchy paths remain provenance
+only. Fifteen project-owned gameplay anchors are stored in a separate
+`WorldGameplayCellCatalog` and retain `StableEntityId` independent of visual
+scene load/unload or future production replacement.
+
+The rejected custom visuals for `cell_0_-3` and `cell_0_-2` are absent from the
+active donor profile. They are retained only in the separate
+`prototype-fixture` manifest and debug scene. No deletion or remodelling was
+performed.
+
+Generated RuntimeBaseline content remains ignored by Git. A pre-build guard
+blocks any public/distributable build and permits donor content only in an
+explicitly acknowledged private local Development build.
+
+Full validator, focused EditMode `4/4`, focused PlayMode `5/5`, prototype
+regressions `3/3` and `8/8`, and performance PlayMode `1/1` passed. The user
+then accepted Bootstrap startup, donor-map fidelity, walking to the lake,
+Teimo-area unload/reload and out-of-bounds recovery on 2026-07-16.
+
+The lake remains visually flat and original-game terrain voids remain present.
+They are recorded legacy/remaster debt rather than being misreported as fixed.
+Dedicated vehicle/bridge traversal was not separately attested and remains
+useful 06B3 coverage. 06B2 is `HumanAccepted`; 06B3 is allowed after a focused
+06B2 commit.

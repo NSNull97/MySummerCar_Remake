@@ -25,7 +25,8 @@ namespace MSC.Editor.WorldStreaming
     }
 
     /// <summary>
-    /// Strict project validation for the bounded two-cell production streaming and Bootstrap composition.
+    /// Strict regression-fixture validation for the accepted bounded 05B.1
+    /// two-cell streaming composition.
     /// </summary>
     public static class WorldPilotGateRemediationValidator
     {
@@ -93,12 +94,15 @@ namespace MSC.Editor.WorldStreaming
             if (enabledPaths.Length == 0 ||
                 !string.Equals(
                     enabledPaths[0],
-                    ProductionWorldStreamingBuilder.BootstrapScenePath,
+                    ProductionWorldStreamingBuilder.ActiveBootstrapScenePath,
                     StringComparison.Ordinal))
             {
                 result.AddError("Bootstrap scene must be the first enabled Build Settings scene.");
             }
 
+            RequireEnabledBuildScene(
+                result,
+                ProductionWorldStreamingBuilder.BootstrapScenePath);
             RequireEnabledBuildScene(result, ProductionWorldStreamingBuilder.PilotCellScenePath);
             RequireEnabledBuildScene(result, ProductionWorldStreamingBuilder.NextCellScenePath);
         }
@@ -178,7 +182,8 @@ namespace MSC.Editor.WorldStreaming
         {
             if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ProductionWorldStreamingBuilder.BootstrapScenePath) == null)
             {
-                result.AddError("Bootstrap scene asset is missing.");
+                result.AddError(
+                    "05B.1 prototype fixture scene asset is missing.");
                 return;
             }
 
@@ -196,7 +201,7 @@ namespace MSC.Editor.WorldStreaming
                 if (roots.Length != 1 || services.Length != 1 || installers.Length != 1)
                 {
                     result.AddError(
-                        $"Bootstrap requires exactly one composition root, production streaming service, and installer; " +
+                        $"Prototype fixture requires exactly one composition root, production streaming service, and installer; " +
                         $"found {roots.Length}/{services.Length}/{installers.Length}.");
                     return;
                 }
@@ -206,18 +211,21 @@ namespace MSC.Editor.WorldStreaming
                 ProductionWorldStreamingInstaller installer = installers[0];
                 if (referenceLoaders.Length != 0)
                 {
-                    result.AddError("Bootstrap must not contain the reference-only WorldReferenceCellLoader.");
+                    result.AddError(
+                        "Prototype fixture must not contain the reference-only WorldReferenceCellLoader.");
                 }
 
                 if (root.gameObject != service.gameObject || root.gameObject != installer.gameObject)
                 {
-                    result.AddError("Bootstrap composition root, production streaming service, and installer must share one object.");
+                    result.AddError(
+                        "Prototype fixture composition root, production streaming service, and installer must share one object.");
                 }
 
                 if (!root.gameObject.activeInHierarchy || !service.enabled || !installer.enabled ||
                     HasEditorOnlyAncestor(root.transform))
                 {
-                    result.AddError("Bootstrap production streaming composition must be active, enabled, and build-visible.");
+                    result.AddError(
+                        "Prototype fixture streaming composition must be active, enabled, and build-visible.");
                 }
 
                 ProductionWorldStreamingManifest expectedManifest =
@@ -228,7 +236,8 @@ namespace MSC.Editor.WorldStreaming
                 if (service.Manifest != expectedManifest || installer.WorldStreaming != service ||
                     installer.CompositionRoot != root)
                 {
-                    result.AddError("Bootstrap serialized service/root/manifest references are not wired explicitly.");
+                    result.AddError(
+                        "Prototype fixture serialized service/root/manifest references are not wired explicitly.");
                 }
 
                 if (installer.PlayerPrefab != expectedPlayer)
@@ -253,7 +262,9 @@ namespace MSC.Editor.WorldStreaming
             }
             catch (Exception exception)
             {
-                result.AddError("Could not inspect Bootstrap production streaming wiring: " + exception.Message);
+                result.AddError(
+                    "Could not inspect the prototype streaming fixture: " +
+                    exception.Message);
             }
             finally
             {

@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3b3f3fc360450043a6658eb2978a0a0, type: 3}
+  m_Name: WorldGameplayCellCatalog
+  m_EditorClassIdentifier: MSC.World.Runtime::MSC.World.Streaming.WorldGameplayCellCatalog
+  schemaVersion: 1
+  catalogId: project-gameplay-anchors-06b2
+  anchors:
+  - anchorId: world-gameplay:0b03b3508f6be68192698ac5f7ae7550
+    stableEntityId: 0b03b3508f6be68192698ac5f7ae7550
+    cellX: 0
+    cellZ: -2
+    position: {x: 170.83, y: 1.4309996, z: -1023.005}
+    eulerAngles: {x: -0, y: 28.049994, z: 0}
+  - anchorId: world-gameplay:2d9650c25f6324b6367493f48c56c908
+    stableEntityId: 2d9650c25f6324b6367493f48c56c908
+    cellX: 0
+    cellZ: -2
+    position: {x: 362.28, y: -35.029, z: -828.725}
+    eulerAngles: {x: -0, y: 0, z: 0}
+  - anchorId: world-gameplay:3be598c0aa9798dd8ab43e20f4a35e8f
+    stableEntityId: 3be598c0aa9798dd8ab43e20f4a35e8f
+    cellX: 0
+    cellZ: -3
+    position: {x: 150.19499, y: 0.95, z: -1039.58}
+    eulerAngles: {x: -0, y: 180, z: 0}
+  - anchorId: world-gameplay:504a5620f62904b2d93d7803efc4eecf
+    stableEntityId: 504a5620f62904b2d93d7803efc4eecf
+    cellX: 0
+    cellZ: -3
+    position: {x: 157.745, y: 0.95, z: -1018.43}
+    eulerAngles: {x: -0, y: 180, z: 0}
+  - anchorId: world-gameplay:615645f7ce4d6ee6836547a00c3dedb9
+    stableEntityId: 615645f7ce4d6ee6836547a00c3dedb9
+    cellX: 0
+    cellZ: -2
+    position: {x: 279.97998, y: -2.929, z: -606.625}
+    eulerAngles: {x: -0, y: 0, z: 0}
+  - anchorId: world-gameplay:68783d0b852bcffb1eced37581f4aff8
+    stableEntityId: 68783d0b852bcffb1eced37581f4aff8
+    cellX: 0
+    cellZ: -2
+    position: {x: 177.67, y: -1.7789999, z: -894.185}
+    eulerAngles: {x: -0, y: 0, z: 0}
+  - anchorId: world-gameplay:6f4c37ebb3d0b019392e9fe6a16da65d
+    stableEntityId: 6f4c37ebb3d0b019392e9fe6a16da65d
+    cellX: 0
+    cellZ: -3
+    position: {x: 151.935, y: 0.95, z: -1033.13}
+    eulerAngles: {x: -0, y: 180, z: 0}
+  - anchorId: world-gameplay:7201412942822b5b4724b5e72c74065f
+    stableEntityId: 7201412942822b5b4724b5e72c74065f
+    cellX: 0
+    cellZ: -2
+    position: {x: 177.67, y: -1.7789999, z: -894.185}
+    eulerAngles: {x: -0, y: 0, z: 0}
+  - anchorId: world-gameplay:bb26b42e9fe463fd254bc0478a56946d
+    stableEntityId: bb26b42e9fe463fd254bc0478a56946d
+    cellX: 0
+    cellZ: -3
+    position: {x: 155.055, y: 0.95, z: -1033.13}
+    eulerAngles: {x: -0, y: 180, z: 0}
+  - anchorId: world-gameplay:c4bbad1ab8714ff807bee9195a77399a
+    stableEntityId: c4bbad1ab8714ff807bee9195a77399a
+    cellX: 0
+    cellZ: -3
+    position: {x: 139.045, y: 0.95, z: -1033.13}
+    eulerAngles: {x: -0, y: 180, z: 0}
+  - anchorId: world-gameplay:d7b7b8ce9d3e448a346b5344e18c2023
+    stableEntityId: d7b7b8ce9d3e448a346b5344e18c2023
+    cellX: 0
+    cellZ: -2
+    position: {x: 166.39, y: 1.4309996, z: -1020.635}
+    eulerAngles: {x: -0, y: 28.049994, z: 0}
+  - anchorId: world-gameplay:dcd8f98c103fb4eb4640d2abb757d089
+    stableEntityId: dcd8f98c103fb4eb4640d2abb757d089
+    cellX: 0
+    cellZ: -2
+    position: {x: 161.94, y: 1.4309994, z: -1018.265}
+    eulerAngles: {x: -0, y: 28.049994, z: 0}
+  - anchorId: world-gameplay:dd8587032e6c12708151d60bd881aec6
+    stableEntityId: dd8587032e6c12708151d60bd881aec6
+    cellX: 0
+    cellZ: -2
+    position: {x: 177.67, y: -1.7789999, z: -894.185}
+    eulerAngles: {x: -0, y: 0, z: 0}
+  - anchorId: world-gameplay:fc6a437b97ea997ca03a5e8bad1ba9b7
+    stableEntityId: fc6a437b97ea997ca03a5e8bad1ba9b7
+    cellX: 0
+    cellZ: -3
+    position: {x: 149.245, y: 0.95, z: -1018.43}
+    eulerAngles: {x: -0, y: 180, z: 0}
+  - anchorId: world-gameplay:ff8e5e6cb145461b84108d4f24eaee07
+    stableEntityId: ff8e5e6cb145461b84108d4f24eaee07
+    cellX: 0
+    cellZ: -3
+    position: {x: 153.495, y: 0.95, z: -1033.23}
+    eulerAngles: {x: -0, y: 180, z: 0}

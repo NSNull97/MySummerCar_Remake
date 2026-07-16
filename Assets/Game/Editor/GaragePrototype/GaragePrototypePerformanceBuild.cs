@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using MSC.Editor.WorldBaseline;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
@@ -32,9 +33,16 @@ namespace MSC.Editor.GaragePrototype
             try
             {
                 PlayerSettings.enableFrameTimingStats = true;
+                string[] buildScenes =
+                {
+                    GaragePrototypePaths.ProductionScene
+                };
+                using IDisposable buildGuardScope =
+                    DonorRuntimeBaselineBuildGuard
+                        .BeginExplicitSceneBuild(buildScenes);
                 var options = new BuildPlayerOptions
                 {
-                    scenes = new[] { GaragePrototypePaths.ProductionScene },
+                    scenes = buildScenes,
                     locationPathName = fullOutputPath,
                     target = BuildTarget.StandaloneWindows64,
                     options = BuildOptions.Development
