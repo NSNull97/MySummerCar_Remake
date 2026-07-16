@@ -4,6 +4,8 @@
 
 Read `AGENTS.md` completely before doing anything.
 
+Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md` when present.
+
 Read:
 
 - all reports through Milestone 05B;
@@ -13,6 +15,12 @@ Read:
 - world-validation and road/collision reports;
 - save, audio, performance, and testing documentation;
 - current Git status and diff.
+
+## Player-representation boundary
+
+Do not introduce a physical full-body player, world-space hand IK, or animation-
+dependent interaction. Assembly, controls and vehicle entry remain gameplay-
+driven; optional first-person viewmodel arms are presentation only.
 
 ## Objective
 

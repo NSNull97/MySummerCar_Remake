@@ -4,6 +4,8 @@
 
 Read `AGENTS.md` completely.
 
+Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md`.
+
 Read:
 
 - all milestone reports through 10;
@@ -14,6 +16,8 @@ Read:
 - visual regression reports;
 - UI/accessibility checklist;
 - performance and content-audit reports;
+- Enviro integration, quality, vendor-boundary, and environment-owner reports;
+- world-cell donor-fidelity comparisons and human approval records;
 - current Git status and diff.
 
 ## Objective
@@ -116,10 +120,29 @@ silently expanding the milestone.
 - no blocking seams;
 - LOD transitions are tolerable;
 - lighting remains readable;
-- rain/wetness works;
+- clear/overcast/rain/storm transitions work without sky/fog flashes;
+- rain/wetness/drying works;
+- only one sky/cloud/fog/light owner is active;
+- Enviro audio remains disabled in production;
+- no immediate gameplay lightning after load/spawn;
 - interiors have no major leaks;
-- reference-only geometry is absent in production mode;
+- reference-only geometry is absent; temporary donor runtime baseline content is present only when the build is explicitly marked private feature-parity and is never mislabelled as final art;
 - visual identity remains consistent.
+
+### Donor world fidelity
+
+- every production override cell is recognizable as its original location;
+- inactive prototype-rejected custom visuals remain disabled;
+- donor baseline regions remain exact until a production override receives explicit approval;
+- matched neutral donor/production captures still pass after weather/lighting;
+- road approaches, terrain profile, building silhouette, landmarks, clutter and
+  vegetation boundaries remain donor-faithful;
+- no fog, DOF, grading or foliage hides unresolved structure;
+- AI-generated concepts are not used as layout evidence;
+- stable world IDs/transforms have not drifted during polish.
+
+A donor-fidelity failure is not a minor visual polish issue. Record it as a
+blocking world defect.
 
 ### UI and accessibility
 
@@ -141,7 +164,8 @@ silently expanding the milestone.
 - no uncontrolled volume jumps;
 - interior/exterior transitions;
 - engine state;
-- weather;
+- weather and distance-delayed thunder;
+- no duplicate Enviro/Wwise rain, wind, lightning, or ambience;
 - UI;
 - streaming cleanup;
 - fallback behavior.
@@ -175,7 +199,7 @@ Include:
 - crash-report instructions;
 - privacy/legal notice appropriate for a private test.
 
-Do not include donor source/extraction/decompiled content.
+Do not include donor source/extraction/decompiled content. A generated sanitized donor runtime baseline may be included only in an explicitly private local feature-parity test package, with clear non-distribution notice and provenance classification.
 
 Do not present the package as a public release.
 
@@ -191,7 +215,7 @@ Run:
 - new game;
 - load game;
 - representative playthrough;
-- weather/audio/UI;
+- weather/Enviro/lightning/audio/UI;
 - performance spot checks;
 - reference-only content scan;
 - missing-script/reference scan.
@@ -205,6 +229,8 @@ Create:
 - `Docs/ReleaseCandidate/ISSUE_TRIAGE.csv`;
 - `Docs/ReleaseCandidate/POLISH_CHANGE_LOG.csv`;
 - `Docs/ReleaseCandidate/REGRESSION_REPORT.md`;
+- `Docs/ReleaseCandidate/WEATHER_ENVIRO_REGRESSION.md`;
+- `Docs/ReleaseCandidate/WORLD_DONOR_FIDELITY_REGRESSION.md`;
 - `Docs/ReleaseCandidate/PRIVATE_TEST_GUIDE.md`;
 - `Docs/ReleaseCandidate/FEEDBACK_TEMPLATE.md`;
 - `Docs/ReleaseCandidate/KNOWN_ISSUES.md`;
@@ -223,6 +249,7 @@ Create:
 8. Known issues are honest.
 9. Performance remains within the documented accepted range.
 10. No major new scope was added.
+11. Enviro vendor source is unchanged and production contains no duplicate environment/audio owner.
 
 ## Final response
 

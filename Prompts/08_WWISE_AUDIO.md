@@ -4,13 +4,18 @@
 
 Read `AGENTS.md` completely.
 
+Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md`.
+
 Read:
 
-- all reports through Milestone 07;
+- all reports through Milestone 07C and the Milestone 07 summary;
 - `Docs/AUDIO_GUIDE.md`;
 - vehicle telemetry and simulation reports;
 - world/interior/streaming reports;
-- weather outputs;
+- project-owned weather outputs and lightning architecture;
+- `Docs/Weather/ENVIRO3_PRESENTATION_BINDINGS.md`;
+- `Docs/Weather/LIGHTNING_ARCHITECTURE.md`;
+- `Docs/Weather/PRODUCTION_ROLLOUT.md`;
 - reference-capture audio inventory;
 - package manifest and assembly definitions;
 - current Git status and diff.
@@ -74,6 +79,23 @@ Keep gameplay systems dependent on project-owned contracts.
 Do not spread direct Wwise API calls through vehicle, player, weather, or world
 code.
 
+## Enviro 3 audio ownership boundary
+
+Enviro 3 must remain a visual environment backend, not the production audio
+backend.
+
+Mandatory rules:
+
+- keep Enviro weather and ambient audio disabled in production configurations;
+- consume `WeatherEnvironmentOutputs`, `LightningStrikeEvent`, and
+  `ThunderAudioRequest` or their existing project-owned equivalents;
+- do not subscribe gameplay audio directly to Enviro weather/preset events;
+- do not call Enviro APIs from Wwise/Unity audio emitters or view code;
+- prevent duplicate rain, wind, ambience, lightning, or thunder playback;
+- preserve Unity-audio fallback behavior without enabling Enviro audio;
+- if Enviro audio is temporarily used in WeatherLab, mark it diagnostic-only and
+  keep it excluded from production validation.
+
 ## Vehicle audio
 
 Map stable parameters from telemetry:
@@ -115,14 +137,17 @@ Prototype:
 
 - forest ambience;
 - lake/shore ambience;
-- wind;
-- rain;
+- wind driven by project-owned wind outputs;
+- rain driven by project-owned precipitation/exposure outputs;
 - interior room tone;
 - garage/workshop ambience;
 - distant traffic/future hook;
 - insects/birds as design allows;
 - day/night state;
 - weather state;
+- distant lightning ambience;
+- gameplay-strike thunder using distance-based delay and intensity;
+- shelter/interior filtering for rain and thunder;
 - streaming-safe emitters.
 
 Create zone/portal hooks for:
@@ -233,6 +258,8 @@ Add tests for:
 - surface mapping;
 - interior/exterior context;
 - weather parameter mapping;
+- lightning/thunder delay mapping;
+- Enviro production-audio-disabled validation;
 - emitter lifecycle;
 - no duplicate registration;
 - missing-bank error reporting.
@@ -267,6 +294,7 @@ Create or update:
 - `Docs/Audio/NAMING_AND_BANK_POLICY.md`;
 - `Docs/Audio/VEHICLE_AUDIO_MODEL.md`;
 - `Docs/Audio/WORLD_AUDIO_ZONES.md`;
+- `Docs/Audio/WEATHER_AND_LIGHTNING_AUDIO.md`;
 - `Docs/Audio/AUDIO_EVENT_MATRIX.csv`;
 - `Docs/Audio/AUDIO_PARAMETER_MATRIX.csv`;
 - `Docs/Audio/PERFORMANCE_REPORT.md`;
@@ -277,12 +305,13 @@ Create or update:
 1. Gameplay depends on project-owned audio contracts.
 2. Unity fallback works.
 3. Official Wwise adapter exists only when official types exist.
-4. Vehicle/weather/world parameters are mapped.
+4. Vehicle/weather/world parameters are mapped through project-owned contracts.
 5. Prototype audio events work or exact external setup blockers are documented.
 6. Streaming cleanup works.
 7. Validation and tests exist.
 8. Generated-content policy is documented.
-9. No fake Wwise implementation exists.
+9. Enviro production audio is disabled and no duplicate weather playback exists.
+10. No fake Wwise implementation exists.
 
 ## Final response
 

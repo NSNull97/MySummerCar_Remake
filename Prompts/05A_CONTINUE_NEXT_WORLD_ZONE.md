@@ -4,6 +4,8 @@
 
 Read `AGENTS.md` completely.
 
+Read `Prompts/CURRENT_STATE.md`, `Prompts/PROJECT_DESIGN_GUARDRAILS.md`, and `Prompts/WORLD_CELL_FIDELITY_CAPTURE_GUIDE_RU.md`.
+
 Read:
 
 - `Prompts/05A_WORLD_REMASTER.md`;
@@ -60,6 +62,21 @@ For the selected zone:
 If the zone is too large, split it into a documented sub-zone and process only
 that sub-zone.
 
+## Donor-identity precondition
+
+Before authoring the selected zone, freeze a real-donor visual fixture set.
+AI-generated concepts are not valid layout/identity references.
+
+The fixture must include matched canonical cameras, neutral clear daylight,
+recorded FOV/eye height, road approach, landmark/façade views, silhouette, and a
+vehicle-seat approach.
+
+If the fixture is missing, stop and request the exact captures. Do not generate a
+generic Finnish substitute.
+
+The target is reconstruction, not reinterpretation. A prettier but unrecognizable
+zone fails the batch.
+
 ## Required batch workflow
 
 1. Freeze the reference fixture version.
@@ -93,6 +110,20 @@ that sub-zone.
 - Do not install asset packs or packages silently.
 - Do not call blockouts final art.
 - Do not mark the zone complete while known blockers remain unreported.
+
+## Visual identity acceptance
+
+Before reporting the batch as ready:
+
+- capture donor/reference, production-before and production-after views;
+- use matched camera/FOV/time and neutral presentation;
+- document road, terrain, building, landmark, clutter and vegetation differences;
+- run a stable transform/geometry diff;
+- state whether the place is recognizable without labels;
+- provide a human approval package.
+
+Codex may set only `ProductionCandidate / AwaitingHumanApproval`. It may not
+self-assign `Approved` or `Complete`.
 
 ## Batch output
 

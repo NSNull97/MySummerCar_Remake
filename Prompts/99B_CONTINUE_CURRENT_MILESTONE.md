@@ -4,6 +4,8 @@
 
 Read `AGENTS.md` completely.
 
+Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md`.
+
 Read:
 
 - the main prompt for the currently active milestone;
@@ -52,7 +54,9 @@ If the active milestone is a world-transfer or world-remaster batch:
 - continue only the selected zone or current batch;
 - preserve stable IDs;
 - update zone status and ledgers;
-- do not silently select several additional zones.
+- do not silently select several additional zones;
+- do not reactivate an inactive prototype-rejected custom visual zone;
+- for a production-override/remaster batch, do not mark a zone complete without matched donor captures and explicit human approval.
 
 ## Completion
 

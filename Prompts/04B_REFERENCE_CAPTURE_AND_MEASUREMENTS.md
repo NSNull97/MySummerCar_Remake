@@ -4,9 +4,10 @@
 
 Read `AGENTS.md` completely before doing anything.
 
+Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md`.
+
 Read:
 
-- `Prompts/CURRENT_STATE_AFTER_04.md`;
 - all reports through Milestone 04A;
 - donor audit, system map, porting matrix, and porting ledger;
 - world-transfer coordinate/scale reports;
@@ -77,6 +78,52 @@ Capture or prepare capture procedures for the following categories.
 - representative travel distances and travel times.
 
 Reuse Milestone 04A data rather than duplicating it.
+
+### World visual-identity fixtures
+
+For every production-cell candidate, capture or prepare a canonical visual
+fixture set from the real donor game. Measurements alone are not sufficient for
+recognizable location parity.
+
+Required fixture categories:
+
+- main road approach;
+- primary landmark view;
+- reverse view;
+- façade front and characteristic oblique view;
+- side/rear silhouette;
+- road-level sightline;
+- vehicle-seat approach view;
+- distant forest/field/shore silhouette;
+- characteristic clutter/sign/fence composition;
+- any user-reported mismatch view.
+
+Every visual fixture must record, where possible:
+
+- real donor capture path;
+- source build/save/session;
+- camera position/rotation/eye height;
+- FOV and aspect ratio;
+- time/weather/exposure condition;
+- capture method and confidence;
+- landmark IDs visible;
+- known occlusion/uncertainty.
+
+Use neutral clear daylight and restrained post effects for geometry comparison.
+AI-generated concepts and generic Finnish references may not be recorded as
+donor-fidelity evidence. They may be stored separately as art-direction mood
+references only.
+
+Create a stable approval field for each production cell:
+
+- `Rejected`;
+- `NeedsRework`;
+- `ProductionCandidate`;
+- `Approved`;
+- `Complete`.
+
+Automated measurements may move a cell to `ProductionCandidate`; only explicit
+human review may move it to `Approved`.
 
 ### Player and interaction
 

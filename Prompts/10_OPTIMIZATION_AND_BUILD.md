@@ -4,12 +4,17 @@
 
 Read `AGENTS.md` completely.
 
+Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md`.
+
 Read:
 
 - all milestone reports through 09;
 - latest reviews;
 - performance budget;
-- world/vehicle/weather/audio/UI/save performance reports;
+- world/vehicle/weather/Enviro/audio/UI/save performance reports;
+- Enviro vendor-boundary and environment-owner reports;
+- donor runtime baseline revision/validation reports;
+- production-override fidelity reports and human approval metadata where such overrides are included;
 - build and source-control policy;
 - current Git status and diff.
 
@@ -21,6 +26,33 @@ current vertical slice.
 Optimize only measured bottlenecks.
 
 Do not perform speculative architecture rewrites.
+
+## World-baseline and production-override build gate
+
+A validated sanitized donor runtime baseline is allowed in an explicitly private
+local feature-parity development build.
+
+Do not produce a candidate build when:
+
+- inactive prototype-rejected custom visual roots are enabled;
+- the donor baseline revision is missing or fails validation;
+- forbidden donor scripts/FSM/runtime assemblies are present;
+- reference-only content leaks into the build;
+- gameplay depends on donor hierarchy names/paths;
+- a production override is included as complete without donor comparison and
+  explicit human approval.
+
+The build audit must distinguish:
+
+- `ReferenceOnly` — never included;
+- `TemporaryDirectImport` donor runtime baseline — allowed only in the explicit
+  private feature-parity build profile;
+- `ProductionOverride` — allowed when technically validated; visual-complete
+  status requires human approval;
+- distributable/public profile — donor baseline excluded unless explicit rights
+  allow it.
+
+Do not claim the temporary donor baseline is final remastered art.
 
 ## Vertical-slice definition
 
@@ -86,13 +118,13 @@ Use representative builds where possible, not Editor-only conclusions.
 ### GPU
 
 - shadows;
-- volumetrics;
-- clouds;
+- Enviro volumetrics/fog;
+- Enviro volumetric/flat clouds;
 - transparency;
 - vegetation;
 - water;
 - post-processing;
-- reflections;
+- reflections and Enviro-triggered refresh cadence;
 - decals;
 - overdraw;
 - resolution scaling.
@@ -159,8 +191,12 @@ Inspect and optimize when measured:
 - HLOD/LOD;
 - vegetation density/culling;
 - shadow distance/casters;
+- Enviro module/quality configuration;
+- custom post-process registration and empty/inactive overhead;
+- duplicate sky/cloud/fog/light owners;
 - volumetric quality;
-- rain/puddle cost;
+- rain/puddle/lightning cost;
+- reflection update cadence/spikes;
 - water;
 - material variants;
 - texture sizes/streaming;
@@ -189,7 +225,7 @@ Presets must map coherently across:
 - reflections;
 - volumetrics;
 - vegetation;
-- weather;
+- weather through project-owned quality bindings to Enviro;
 - water;
 - post-processing;
 - LOD;
@@ -212,6 +248,11 @@ Create a strict audit for:
 - unused scenes;
 - missing licenses/notices;
 - generated Wwise caches/banks policy;
+- Enviro demo scenes/sample content accidentally included in Build Settings;
+- WeatherLab or other development scenes included in shipping;
+- Azure Sky or duplicate environment packages active in production;
+- direct gameplay/core references to Enviro vendor types;
+- modified Enviro vendor files;
 - absolute local paths;
 - secrets;
 - duplicate stable IDs;
@@ -234,6 +275,7 @@ Run:
 - PlayMode tests;
 - project validation;
 - world validation;
+- Enviro integration/environment-owner validation;
 - vehicle validation smoke tests;
 - save round trip;
 - UI flow smoke tests;
@@ -255,7 +297,7 @@ Create and execute a checklist covering:
 7. vehicle part install/fasten;
 8. engine start;
 9. drive;
-10. weather transition;
+10. clear/rain/storm weather transition and wetness response;
 11. audio;
 12. pause/settings;
 13. save;
@@ -294,6 +336,8 @@ Create or update:
 - `Docs/Build/PROFILING_BASELINE.md`;
 - `Docs/Build/OPTIMIZATION_CHANGE_LOG.csv`;
 - `Docs/Build/QUALITY_PRESETS.md`;
+- `Docs/Build/ENVIRO3_BUILD_AND_PERFORMANCE_AUDIT.md`;
+- `Docs/Build/WORLD_CELL_FIDELITY_BUILD_GATE.md`;
 - `Docs/Build/BUILD_REPORT.md`;
 - `Docs/Build/PLAYTHROUGH_REPORT.md`;
 - `Docs/Milestones/BUILD_CONTENT_AUDIT.md`;
@@ -312,6 +356,8 @@ Create or update:
 8. The build is launched and smoke-tested when possible.
 9. Known issues are stable and prioritized.
 10. No donor/reference leakage is hidden.
+11. Enviro vendor files are unchanged, WeatherLab/demo scenes are excluded, and only one environment owner is active.
+12. Included production world cells have required donor-fidelity evidence and human approval.
 
 ## Final response
 

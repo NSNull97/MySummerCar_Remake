@@ -4,6 +4,8 @@
 
 Read `AGENTS.md` completely before doing anything.
 
+Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md`.
+
 Read:
 
 - all milestone reports through 08A;
@@ -11,7 +13,7 @@ Read:
 - stable-ID architecture;
 - world-streaming and world-ID documentation;
 - vehicle assembly and simulation DTOs;
-- weather/time DTOs;
+- project-owned weather/time/wetness/lightning DTOs, 07C production restore order, and Enviro integration boundary;
 - UI settings schema;
 - donor audit and known donor-save findings;
 - current Git status and diff.
@@ -32,7 +34,7 @@ Support, as implemented by the current project:
 - world time and weather;
 - player transform and state;
 - player needs/status;
-- inventory/held item;
+- held item and only already-implemented bounded pocket/container state;
 - stable world-entity state;
 - doors/gates/windows;
 - vehicle part instances;
@@ -47,6 +49,8 @@ Support, as implemented by the current project:
 - settings stored separately when appropriate.
 
 Do not serialize raw scene-object graphs.
+
+Do not introduce an RPG inventory merely to simplify persistence.
 
 Do not persist Unity instance IDs.
 
@@ -79,6 +83,34 @@ Create or align:
 
 Keep storage, serialization, domain collection, migration, and presentation
 separate.
+
+## Enviro-independent weather persistence
+
+The native save must store only project-owned time/weather/wetness/lightning
+state.
+
+Persist, as implemented:
+
+- logical game time/date/day index;
+- current and target weather IDs;
+- deterministic seed/timeline cursor;
+- transition progress;
+- scoped override only when explicitly serializable;
+- accumulated wetness/puddle values;
+- recent-lightning cooldown/fairness state.
+
+Never serialize:
+
+- Enviro asset references;
+- Enviro preset indices or display names as identity;
+- Enviro manager/module/runtime objects;
+- vendor instance IDs;
+- current VFX/lightning animation frame;
+- first-person viewmodel animation frame.
+
+Load order must restore project-owned domain state first and then send one
+coherent presentation sync through the Enviro adapter. Avoid a visible default
+clear-sky flash or immediate post-load gameplay strike.
 
 ## File behavior
 
@@ -126,7 +158,8 @@ Saving/loading must tolerate:
 - renamed scene;
 - regenerated cell scenes with stable IDs;
 - duplicate-ID detection;
-- deferred state application.
+- deferred state application;
+- out-of-bounds recovery records for critical objects when the existing world-item system supports them.
 
 Create a clear deferred-state policy.
 
@@ -256,7 +289,9 @@ Add tests for:
 - duplicate stable IDs;
 - deferred world-entity state;
 - vehicle assembly reconstruction;
-- weather/time reconstruction;
+- weather/time/wetness/lightning reconstruction;
+- no Enviro/vendor references in native save fixtures;
+- no immediate post-load lightning;
 - settings separation;
 - invalid numeric values;
 - path validation;
@@ -305,7 +340,7 @@ Create or update:
 1. Native saves are versioned.
 2. Writes are safe and recoverable.
 3. Stable entities reconstruct correctly.
-4. Vehicle/world/weather state round-trips.
+4. Vehicle/world/project-owned weather state round-trips without vendor references.
 5. Migrations exist and are tested.
 6. Failures are visible and non-destructive.
 7. Settings persist separately.

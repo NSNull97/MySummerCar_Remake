@@ -4,9 +4,11 @@
 
 Read `AGENTS.md` completely before doing anything.
 
+Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md` when present.
+
 Read:
 
-- `Prompts/CURRENT_STATE_AFTER_04.md`;
+- `Prompts/CURRENT_STATE.md`;
 - all milestone reports through 04B;
 - `Docs/VEHICLE_SYSTEM.md`;
 - player/interaction architecture;
@@ -15,6 +17,12 @@ Read:
 - reference-capture database and missing-data report;
 - world/garage clearance fixtures;
 - relevant tests and assembly definitions.
+
+## Player-representation boundary
+
+Do not introduce a physical full-body player, world-space hand IK, or animation-
+dependent interaction. Assembly, controls and vehicle entry remain gameplay-
+driven; optional first-person viewmodel arms are presentation only.
 
 ## Objective
 

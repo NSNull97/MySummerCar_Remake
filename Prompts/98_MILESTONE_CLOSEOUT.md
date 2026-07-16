@@ -48,6 +48,24 @@ This is a verification/documentation pass, not an implementation expansion.
 - check generated content version stamps;
 - check donor/reference leakage into production where relevant.
 
+### Visual/world approval when applicable
+
+- verify real donor/reference fixtures were used;
+- verify canonical matched captures exist;
+- verify no AI concept was used as layout authority;
+- verify inactive prototype-rejected visual content was not reactivated or marked complete;
+- verify human approval metadata exists before `Approved`/`Complete`;
+- report `AwaitingHumanVisualApproval` when technical checks pass but visual
+  approval is absent.
+
+### Vendor boundary when applicable
+
+- record exact installed dependency version evidence;
+- record project assemblies that reference vendor types;
+- verify vendor source change count;
+- verify no paid dependency was silently installed/updated;
+- verify sample/demo content and duplicate owners are excluded from shipping.
+
 ### Documentation
 
 - ensure the milestone report exists;
@@ -87,7 +105,9 @@ Final response:
 4. Tests and validation.
 5. Missing/manual checks.
 6. Git summary.
-7. Recommended commit message.
-8. Go/no-go for the next prompt.
+7. Human visual approval status, when applicable.
+8. Vendor-boundary status, when applicable.
+9. Recommended commit message.
+10. Go/no-go for the next prompt.
 
 Stop.

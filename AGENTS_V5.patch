@@ -1,0 +1,262 @@
+--- AGENTS.md.current
++++ AGENTS.md.v5
+@@ -73,7 +73,7 @@
+ - use the original executable as a runtime component;
+ - reference donor `UnityEngine` assemblies from the new project;
+ - compile the full decompiled `Assembly-CSharp` into the new project;
+-- mass-import the donor project directly into production `Assets`;
++- mass-import raw donor project content directly into ordinary production `Assets`; the only exception is the sanitized, generated temporary world runtime baseline defined in section 6.4;
+ - commit raw extractions, decompiled source, original assets, or generated donor dumps;
+ - claim that a donor subsystem was ported when it was only approximated.
+ 
+@@ -158,6 +158,76 @@
+ - be excluded from builds;
+ - have a provenance record;
+ - be removable without breaking runtime content.
++
++### 6.4 Temporary donor world runtime baseline
++
++During the private feature-parity phase, the already extracted donor world may be
++used as a temporary playable runtime baseline. This is a deliberate exception to
++the normal production-art replacement policy.
++
++Place generated baseline content under:
++
++```text
++Assets/Game/LegacyImport/RuntimeBaseline/
++```
++
++The baseline may contain sanitized donor-derived:
++
++- terrain or world meshes;
++- static buildings and props;
++- roads and bridges;
++- vegetation and legacy backdrop objects;
++- temporary donor materials and textures;
++- simple or donor-derived collision used only as an interim runtime baseline;
++- transforms and hierarchy needed to preserve the original map exactly.
++
++The baseline must not contain or depend on donor:
++
++- `MonoBehaviour` scripts;
++- PlayMaker FSMs or generated state-machine runtime logic;
++- runtime assemblies or old `UnityEngine` references;
++- cameras, player controllers, UI, audio logic, lighting logic, weather logic,
++  Steam/platform code, DRM logic, save logic, or gameplay managers;
++- scene-name or hierarchy-name lookups used as project architecture.
++
++Mandatory rules:
++
++1. Classify every baseline item as `TemporaryDirectImport`.
++2. Keep raw extraction and donor-generated payloads outside Git. Commit only
++   project-owned import tools, manifests, mappings, reports, and replacement
++   metadata.
++3. The baseline may be included in private local feature-parity development
++   builds, but it is not `ProductionReady` and must not be treated as final art.
++4. Do not include the baseline in any distributable/public build unless explicit
++   rights allow it.
++5. Preserve original coordinates, scale, road layout, terrain silhouette,
++   landmarks, and gameplay distances. Do not artistically reinterpret the map
++   during baseline integration.
++6. Gameplay systems must reference project-owned stable IDs, anchors, registries,
++   and interfaces, never donor hierarchy paths, object names, or instance IDs.
++7. Use separate logical layers or equivalent architecture for:
++
++   ```text
++   World_Global_Legacy
++   World_Cell_<ID>_Legacy
++   World_Cell_<ID>_Gameplay
++   World_Cell_<ID>_ProductionOverride
++   ```
++
++8. Do not destructively split a single terrain, road, water body, or large mesh
++   until a tested tool proves that seams, collision, scale, and transforms remain
++   correct. Large cross-cell objects may remain in a global legacy scene.
++9. A future production replacement disables the matching legacy renderer and
++   collider through an explicit replacement key while keeping gameplay anchors,
++   stable IDs, saves, and streaming metadata intact.
++10. Visible donor defects such as sprite forests, flat proxy objects, terrain
++    voids, and under-map hacks may remain only as documented temporary visual
++    debt. Critical traversal, collision, out-of-bounds, and streaming failures
++    must be made safe immediately without pretending the art defect is fixed.
++11. The import/cellization process must be deterministic and repeatable from the
++    canonical extracted source and recorded source hashes.
++12. Never duplicate an already imported canonical map merely because a milestone
++    prompt mentions import. Audit and reuse the existing extraction/import first.
+ 
+ ## 7. Donor transfer classifications
+ 
+@@ -316,6 +386,7 @@
+     Editor/
+     Manifests/
+     ReferenceOnly/
++    RuntimeBaseline/
+   Presentation/
+     Materials/
+     Shaders/
+@@ -422,7 +493,14 @@
+ - pickup, carry, place, rotate, and throw;
+ - contextual interaction targets;
+ - tool use;
+-- later full-body presentation and procedural IK.
++- lightweight first-person viewmodel arms for drinking, smoking, driving, and a
++  small approved set of presentation-only gestures.
++
++Do not create a physical full-body first-person player, world-space hand
++collision, generic two-hand physics, animated vehicle entry/exit, or gameplay
++that depends on an animation frame. Pickup, carrying, assembly, fastening, door
++use, and seat transitions remain logic-driven. Viewmodel animations must be
++safely interruptible and resettable.
+ 
+ Interaction candidates must expose explicit capabilities. Do not build a giant switch statement keyed by object names.
+ 
+@@ -487,13 +565,37 @@
+ 
+ ## 20. World and streaming
+ 
+-Use donor world data to preserve identity, scale, road layout, key locations, and gameplay distances.
+-
+-Rebuild production terrain, roads, vegetation, buildings, and props.
+-
+-Plan world content as streaming cells or additive scenes. Persistent state must be independent of whether a cell is loaded.
+-
+-Road reconstruction should normally follow:
++Use donor world data to preserve identity, scale, road layout, key locations,
++and gameplay distances.
++
++Use a two-phase world strategy.
++
++### Feature-parity phase
++
++- Adopt the already extracted donor map as the sanitized temporary runtime
++  baseline described in section 6.4.
++- Reuse the existing streaming architecture instead of rebuilding it without
++  evidence.
++- Preserve the donor world exactly; do not reconstruct locations from memory or
++  AI concepts while a direct donor baseline exists.
++- Keep large continuous terrain, roads, water, or cross-cell geometry global
++  when destructive splitting would create seams.
++- Stream cell-owned static objects through additive scenes or the existing world
++  cell system.
++- Keep gameplay content in project-owned gameplay layers independent from legacy
++  visual hierarchy.
++- Existing custom cells that do not resemble the donor location are
++  `PrototypeOnly / RejectedForFidelity`; disable their visual content in the
++  active profile and use donor baseline content instead. Preserve useful
++  streaming metadata, registries, tools, and tests.
++
++### Remaster phase
++
++Replace terrain, roads, vegetation, buildings, props, materials, textures, and
++collisions cell by cell through production override layers. Preserve gameplay
++coordinates, stable IDs, replacement keys, road geometry, and location identity.
++
++Road replacement should normally follow:
+ 
+ ```text
+ Donor road geometry/data
+@@ -504,25 +606,41 @@
+   -> add ditches, gravel, wetness, decals, and collision
+ ```
+ 
++Persistent state must be independent of whether a cell is loaded and independent
++of whether the visible object currently comes from the legacy baseline or a
++production override.
++
+ ## 21. HDRP presentation and weather
+ 
++Enviro 3 is the approved visual sky and weather backend. Project-owned systems
++remain authoritative for game time, calendar, deterministic weather scheduling,
++weather transitions, accumulated wetness/drying, gameplay lightning, saves, and
++cross-system outputs.
++
++Use a dedicated Enviro integration assembly. Gameplay/core assemblies must not
++reference Enviro types directly. Do not modify Enviro vendor files and do not run
++Azure Sky or duplicate HDRP sky/cloud/fog owners alongside Enviro.
++
+ Plan:
+ 
+-- physically based sky;
++- physically based sky through the validated Enviro/HDRP ownership strategy;
+ - sun and moon/time-of-day;
+-- volumetric fog;
+-- dynamic clouds where practical;
+-- rain;
+-- wetness;
+-- puddles;
+-- wind;
+-- vegetation response;
++- clouds;
++- rain and storm presentation;
++- one explicit fog owner;
++- project-owned wetness and puddle outputs;
++- wind and vegetation response;
++- project-owned gameplay lightning with Enviro used only for presentation;
+ - indoor/outdoor exposure transitions;
+ - restrained post-processing.
+ 
+-Avoid excessive bloom, chromatic aberration, motion blur, or gameplay depth of field. Readability comes first.
+-
+-Use material-property or global-parameter systems for wetness rather than duplicating every material.
++Avoid excessive bloom, chromatic aberration, motion blur, or gameplay depth of
++field. Readability comes first.
++
++Use global/material-property wetness contracts rather than duplicating every
++material. Temporary donor baseline materials may have partial wetness coverage;
++record the limitation rather than silently reauthoring the whole world during
++the weather milestone.
+ 
+ ## 22. Audio and Wwise
+ 
+@@ -559,10 +677,16 @@
+ Plan:
+ 
+ - generic rigs where mechanical alignment matters;
+-- humanoid retargeting only for suitable character rigs;
+-- procedural IK for steering wheel, gear lever, ignition, tools, fasteners, and held objects;
+-- explicit interaction targets;
+-- animation events only for presentation synchronization, not core state authority.
++- humanoid retargeting only for suitable NPC character rigs;
++- lightweight first-person viewmodel animation for drinking, smoking, driving,
++  and approved optional gestures;
++- steering-wheel and gear-lever viewmodel presentation where practical;
++- explicit interaction targets for logic, not physical player hands;
++- animation events only for presentation synchronization, never core state
++  authority.
++
++Do not require a physical first-person body, world-space hand IK, or animated
++vehicle entry/exit for the current project scope.
+ 
+ ## 24. Save system
+ 
+@@ -642,8 +766,11 @@
+ 
+ - duplicate IDs;
+ - missing required fields;
+-- donor references in production prefabs;
++- forbidden donor scripts/components in the temporary runtime baseline;
++- gameplay dependencies on donor hierarchy names or paths;
++- donor references in production override prefabs;
+ - reference-only assets leaking into builds;
++- temporary runtime baseline content leaking into distributable/public builds;
+ - editor assemblies referenced by runtime assemblies;
+ - missing meshes/materials;
+ - invalid destination paths;
+@@ -662,7 +789,7 @@
+ - physics substeps configurable;
+ - distant rigidbodies sleeping or simplified;
+ - world streaming and LOD from the beginning;
+-- reference-only donor assets excluded from builds.
++- reference-only donor assets excluded from builds; temporary runtime baseline assets may appear only in explicitly private local feature-parity builds and must remain streamable and profiled.
+ 
+ Maintain a performance capture for each major vertical slice.
+ 
+@@ -714,7 +841,7 @@
+ - a requested action might modify the donor installation;
+ - an external tool/package must be installed;
+ - a donor format is encrypted or access-controlled;
+-- a direct import would contaminate production assets;
++- a direct import would contaminate normal production assets or violate the dedicated sanitized runtime-baseline rules in section 6.4;
+ - the exact Unity/Wwise package version is unknown and material to the task;
+ - a change would cross the current milestone boundary;
+ - tests cannot actually be executed;

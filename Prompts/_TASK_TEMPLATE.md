@@ -4,6 +4,8 @@
 
 Read `AGENTS.md` completely.
 
+Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md` when present.
+
 Read the latest milestone report, latest review, current Git diff, and every
 document directly relevant to this task.
 
@@ -16,6 +18,8 @@ document directly relevant to this task.
 - Active milestone:
 - Existing implementation:
 - Known blockers:
+- User-rejected/awaiting-approval content:
+- Third-party/vendor boundary:
 - Stable IDs/data that must be preserved:
 - Relevant scenes/assets:
 - Relevant reports:
@@ -46,6 +50,8 @@ document directly relevant to this task.
 - EditMode tests:
 - PlayMode tests:
 - Manual check:
+- Donor/reference comparison and human approval, when visual/world-facing:
+- Vendor file change count, when third-party integration is involved:
 - Performance check:
 - Documentation/report:
 
@@ -56,7 +62,7 @@ Stop and report when:
 - the task requires guessing about unavailable data;
 - a donor file would be modified;
 - an unapproved dependency is required;
-- the requested change conflicts with AGENTS;
+- the requested change conflicts with AGENTS or fixed design guardrails;
 - a broader rewrite is required;
 - the active milestone cannot be identified.
 

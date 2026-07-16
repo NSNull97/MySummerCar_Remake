@@ -4,6 +4,8 @@
 
 Read `AGENTS.md` completely.
 
+Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md` when present.
+
 Read:
 
 - all reports through Milestone 06;
@@ -25,6 +27,24 @@ Do not add unrelated vehicle features.
 
 Do not hide incorrect physics by changing the camera, time scale, road, or
 telemetry.
+
+## Weather dependency boundary
+
+Milestone 07 is not a prerequisite for completing 06A.
+
+When the project-owned weather/wetness system is not yet implemented:
+
+- run calibration under an explicit `ClearDryBaseline` environment context;
+- record `WeatherIntegrationAvailable = false` and `RoadWetness = 0` in every
+  fixture/run;
+- do not create temporary wet-road physics, fake weather services, or direct
+  Enviro integration inside vehicle code;
+- do not tune dry physics to compensate for future wet conditions;
+- preserve a stable project-owned surface/wetness input hook for Milestone 07;
+- list wet-surface calibration as a later bounded validation task.
+
+If an incomplete weather prototype already exists, it must be disabled or frozen
+for baseline calibration unless the run explicitly documents otherwise.
 
 ## Validation levels
 

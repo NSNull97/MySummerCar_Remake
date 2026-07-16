@@ -6,7 +6,8 @@ Read `AGENTS.md` completely.
 
 Inspect the current repository, including:
 
-- `Prompts/CURRENT_STATE_AFTER_04.md`;
+- `Prompts/CURRENT_STATE.md`;
+- `Prompts/PROJECT_DESIGN_GUARDRAILS.md`;
 - current Git branch, status, recent commits, and diff;
 - `Packages/manifest.json`;
 - `ProjectSettings/ProjectVersion.txt`;
@@ -45,12 +46,13 @@ Report:
 7. Existing scenes and bootstrap path.
 8. Current player/interaction state.
 9. Current donor/reference pipeline state.
-10. Current world-transfer/remaster state.
+10. Current world-transfer/remaster state, including rejected/awaiting-approval production cells.
 11. Current vehicle state.
 12. Current tests and last known results.
-13. Known blockers and TODOs.
-14. Exact next prompt that should be run.
-15. Files that the next prompt must read.
+13. Enviro 3 installation/integration state when present.
+14. Known blockers and TODOs.
+15. Exact next prompt that should be run.
+16. Files that the next prompt must read.
 
 Distinguish observed facts from assumptions.
 

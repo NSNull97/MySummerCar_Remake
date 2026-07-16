@@ -4,9 +4,11 @@
 
 Read `AGENTS.md` completely before doing anything.
 
+Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md`.
+
 Read:
 
-- all reports through Milestone 08;
+- all reports through Milestone 08, including the complete 07A–07C weather sequence;
 - player/interaction, vehicle, weather, audio, save, and input documentation;
 - existing UI code and packages;
 - accessibility and localization documentation when present;
@@ -31,9 +33,9 @@ Required prototype screens and systems:
 - mods entry placeholder when supported by project scope;
 - gameplay HUD;
 - interaction prompts;
-- survival/status panel hooks;
+- donor-faithful survival/status panel;
 - vehicle HUD/telemetry presentation;
-- inventory/tool quick bar prototype;
+- held item/tool context indicator only when justified;
 - notifications;
 - save/load status;
 - confirmation dialogs;
@@ -41,6 +43,25 @@ Required prototype screens and systems:
 
 The generated concept images are visual references, not final pixel-perfect
 specifications and not authoritative for text content.
+
+## Donor-faithful UI guardrails
+
+The default UI must not simplify the game into a modern guided experience.
+
+Do not add as baseline features:
+
+- permanent minimap/GPS;
+- route lines or world-space navigation markers;
+- quest tracker with objectives/checklists;
+- exact hidden survival percentages;
+- RPG inventory grid;
+- permanent tool hotbar/quick bar;
+- item rarity/color coding;
+- profile levels, XP, achievements, or trophy progress on the main menu;
+- modern phone/app metaphors.
+
+Development/debug UI may expose telemetry, numeric values, and quick-access
+controls, but it must be clearly separated and disabled in normal play.
 
 ## Technology decision
 
@@ -99,8 +120,8 @@ Do not let gameplay systems know concrete UI widgets.
 Use the concept references as direction:
 
 - dark translucent panels;
-- restrained glass effect;
-- warm amber/orange focus accent;
+- restrained translucent panels with little or no expensive live blur;
+- warm amber/orange focus accent with donor-like colored status categories;
 - white/gray primary typography;
 - subtle industrial/automotive details;
 - Finnish rural/mechanic identity;
@@ -145,9 +166,9 @@ Prototype:
 - Mods placeholder only when supported;
 - Credits;
 - Quit;
-- current profile/save summary;
+- current save summary without levels/XP/achievement gamification;
 - version/build label;
-- background-scene integration;
+- lightweight background-scene integration using recognizable world/garage views;
 - controller/keyboard/mouse navigation;
 - confirmation dialogs.
 
@@ -177,7 +198,7 @@ Categories:
 - post-processing;
 - motion blur;
 - depth of field;
-- weather quality;
+- weather quality through project-owned settings/binding APIs, never direct Enviro widget access;
 - UI scale.
 
 Do not expose unsupported features as working.
@@ -220,7 +241,7 @@ Use Unity Input System APIs and existing input architecture.
 - interaction behavior;
 - camera settings;
 - HUD detail;
-- tutorial/help options;
+- optional help/manual visibility without waypoint guidance;
 - autosave policy hooks;
 - difficulty/design options only when implemented.
 
@@ -240,7 +261,23 @@ Use Unity Input System APIs and existing input architecture.
 
 ## Gameplay HUD
 
-Build a restrained, configurable HUD.
+Build a restrained, configurable HUD inspired primarily by the approved compact
+vertical needs-panel direction.
+
+Default presentation:
+
+- compact vertical needs/status panel;
+- dark translucent background or optional panel-less variant;
+- clear icons and bars;
+- distinct but restrained category colors;
+- no numeric percentages by default;
+- no permanent task/objective tracker;
+- no GPS/minimap;
+- time/day and money shown in a compact donor-recognizable form;
+- interaction prompt only while a valid interaction is targeted;
+- notifications used sparingly;
+- save/load status visible only when active;
+- no permanent held-item inventory strip.
 
 Support view models for:
 
@@ -250,35 +287,43 @@ Support view models for:
 - hunger;
 - fatigue;
 - stress;
+- urine;
 - dirtiness;
+- alcohol only when the approved design exposes it;
 - other project-approved needs;
 - interaction prompt;
-- task/progress prompt;
-- held tool/item;
-- quick bar;
+- held tool/item context where useful;
+- short contextual warning/feedback;
 - notifications;
 - save status.
 
-Do not show every panel permanently.
+Use smooth bars and qualitative warning states. Exact values belong in DEV tools
+or an explicitly enabled accessibility/debug option, not the default experience.
 
-Allow context-based visibility and user-configurable detail.
+Allow:
+
+- compact/full/immersive HUD visibility modes;
+- panel opacity;
+- UI scale;
+- color-independent critical cues;
+- optional labels/icons;
+- critical-state pulse with reduced-motion alternative.
+
+Do not show every panel permanently.
 
 ## Vehicle HUD
 
-Support:
+Support project-owned vehicle view models for:
 
-- speed;
-- RPM;
-- gear;
-- fuel;
-- coolant/temperature;
-- voltage/electrical state;
+- speed/RPM/gear only when the physical dashboard is unavailable, unreadable, or
+  the player enables an accessibility/compact overlay;
+- fuel, coolant/temperature, voltage/electrical warning hooks;
 - warning indicators;
-- surface/traction debug only in development;
-- optional compact/full modes.
+- surface/traction telemetry only in development;
+- optional compact/full/accessibility modes.
 
-Respect the physical dashboard and avoid duplicating every real gauge unless
-accessibility or gameplay settings request it.
+The physical dashboard is primary. The default driving HUD must not duplicate
+every real gauge or add a modern navigation panel.
 
 ## Loading and async flow
 
@@ -367,6 +412,8 @@ Add tests for:
 - UI scale;
 - reduced-motion behavior;
 - HUD view-model mapping;
+- default HUD contains no numeric survival percentages;
+- default HUD contains no GPS/quest tracker/inventory bar;
 - interaction prompt state;
 - vehicle telemetry mapping;
 - loading/error state;
@@ -407,6 +454,7 @@ Create or update:
 - `Docs/UI/SCREEN_FLOW.md`;
 - `Docs/UI/SETTINGS_SCHEMA.md`;
 - `Docs/UI/HUD_SPEC.md`;
+- `Docs/UI/DONOR_FAITHFUL_UI_GUARDRAILS.md`;
 - `Docs/UI/ACCESSIBILITY_CHECKLIST.md`;
 - `Docs/UI/LOCALIZATION_READINESS.md`;
 - `Docs/UI/UI_TEST_MATRIX.md`;
@@ -421,6 +469,9 @@ Do not implement:
 - store/monetization UI;
 - final credits content;
 - unsupported graphics features;
+- permanent GPS/minimap/quest tracker;
+- RPG inventory or mandatory quick bar;
+- menu XP/levels/achievement gamification;
 - unrelated gameplay systems.
 
 ## Definition of done
@@ -429,7 +480,7 @@ Do not implement:
 2. Main menu and pause flow work.
 3. Settings apply/cancel/default and persistence work.
 4. Keyboard/mouse/gamepad navigation works.
-5. HUD view models integrate with existing systems.
+5. HUD view models integrate without adding GPS, RPG inventory, or default numeric survival telemetry.
 6. Accessibility foundations exist.
 7. UI audio uses backend contracts.
 8. Tests exist and run when possible.

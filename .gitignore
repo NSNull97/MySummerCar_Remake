@@ -68,6 +68,9 @@ PerformanceCaptures/
 TestResults/
 Artifacts/
 
+# Local donor runtime reference media (metadata and hashes only are tracked)
+References/DonorRuntime/
+
 # Crash reports
 sysinfo.txt
 *.crash

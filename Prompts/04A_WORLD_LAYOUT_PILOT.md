@@ -4,6 +4,8 @@
 
 Read `AGENTS.md` completely before doing anything.
 
+Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md` when present.
+
 ## Authority and boundary
 
 This is the only executable Milestone 04A prompt during the current
@@ -18,6 +20,13 @@ Work on exactly one bounded acceptance zone:
   orientation, elevation and connection between those two elements.
 
 Do not expand the zone because additional donor objects are easy to discover.
+
+## Donor-fidelity rule
+
+The pilot is a spatial reconstruction fixture, not an artistic reinterpretation.
+Use real donor data/captures for placement and identity. AI-generated concepts
+may not define roads, terrain, building proportions or landmarks. Preserve
+canonical sightlines and create matched neutral comparison views.
 
 ## Objective
 

@@ -1,8 +1,35 @@
 /plan
 
-# MILESTONE 05A — COMPLETE WORLD REMASTER
+# HISTORICAL / FUTURE REMASTER BATCH — DO NOT RUN AS THE NEXT MILESTONE
 
 Read `AGENTS.md` completely before doing anything.
+
+Read `Prompts/CURRENT_STATE.md`, `Prompts/PROJECT_DESIGN_GUARDRAILS.md`, and
+`Prompts/WORLD_CELL_FIDELITY_CAPTURE_GUIDE_RU.md`.
+
+## AUTHORITATIVE DONOR-FIDELITY DIRECTIVE
+
+This project is reconstructing the original MSC world on a new foundation. It is
+not creating an attractive location merely inspired by it.
+
+For layout and identity, real donor captures/data outrank concept art. New
+meshes, materials and lighting must preserve the original location's road
+approach, terrain profile, building footprint, silhouette, proportions,
+landmarks, clutter character, vegetation boundaries, open space and gameplay
+clearances.
+
+Do not use weather, fog, depth of field, dramatic lighting or dense vegetation
+to conceal a structural mismatch. Do not make a location cleaner, wealthier,
+more symmetrical or more generically Scandinavian than the donor.
+
+Every production cell requires matched neutral side-by-side donor captures and
+explicit human approval before `Approved` or `Complete`. Automated parity is
+necessary but not sufficient.
+
+The inaccurate custom cell visuals are inactive prototypes. The active donor
+runtime baseline provides exact-map visuals during feature parity. Future
+production overrides must pass donor comparison and human approval; do not
+reactivate or silently mark the old custom visuals complete.
 
 Read all relevant project documentation and previous milestone reports,
 including these files when present:

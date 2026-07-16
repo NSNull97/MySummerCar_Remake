@@ -4,6 +4,8 @@
 
 Read `AGENTS.md` completely before doing anything.
 
+Read `Prompts/CURRENT_STATE.md`, `Prompts/PROJECT_DESIGN_GUARDRAILS.md`, and `Prompts/WORLD_CELL_FIDELITY_CAPTURE_GUIDE_RU.md`.
+
 Read:
 
 - all reports through Milestone 05A;
@@ -118,6 +120,30 @@ Validate by category:
 - interior/exterior alignment.
 
 Report maximum, average, and percentile deviations where meaningful.
+
+### Visual identity parity
+
+Spatial numbers do not prove that a location looks like the original. For every
+production zone/cell, validate:
+
+- real donor fixture provenance;
+- matched camera/FOV/eye height/time/weather;
+- road approach and sightlines;
+- landmark recognizability without labels;
+- building footprint, silhouette, roof/window/door proportions;
+- characteristic clutter, signs, fences and utility objects;
+- terrain/forest/field/shore boundaries;
+- preservation of original open space, asymmetry and rural roughness;
+- absence of generic redesign hidden by foliage/fog/lighting;
+- explicit human approval status.
+
+AI-generated concept art is not a donor-fidelity fixture.
+
+A cell with user status `Rejected` or `NeedsRework` cannot satisfy any production
+completion gate. Automated tools may produce `ProductionCandidate`; only human
+approval may produce `Approved`.
+
+Create stable `WORLD-FID-*` issues and a side-by-side capture index.
 
 ### Coverage
 
@@ -283,6 +309,12 @@ Add or run tests for:
 - production-only mode;
 - missing replacement reporting;
 - gate calculation.
+
+## Mandatory user-approval evidence
+
+For any gate claiming production readiness, output a compact human review pack
+with matched donor/production views. If explicit approval evidence is missing,
+report `No-Go: AwaitingHumanVisualApproval` even when technical checks pass.
 
 ## Output
 

@@ -10,6 +10,8 @@
 
 Read `AGENTS.md` completely before doing anything.
 
+Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md` when present.
+
 ## CURRENT SEQUENCE NOTE
 
 Milestones 00 through 04 are expected to be complete before this prompt is run.
@@ -229,6 +231,15 @@ Future production assets must bind to this layer.
     report.
 
 ---
+
+## DONOR-FIDELITY AUTHORITY
+
+Real donor captures/data and verified reference geometry are authoritative for
+layout. AI concepts and generic Finnish references are not valid sources for
+world placement, terrain, roads, buildings or landmark identity.
+
+Every later production cell must retain canonical camera fixtures and human
+approval state.
 
 ## PRIMARY OBJECTIVE
 

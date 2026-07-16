@@ -6,7 +6,8 @@ Read `AGENTS.md` completely.
 
 Then read:
 
-- `Prompts/CURRENT_STATE_AFTER_04.md`;
+- `Prompts/CURRENT_STATE.md`;
+- `Prompts/PROJECT_DESIGN_GUARDRAILS.md`;
 - all existing milestone reports;
 - architecture, porting, testing, performance, world, player, interaction, and
   vehicle documentation relevant to the current repository;
@@ -103,6 +104,29 @@ Inspect at minimum:
 - potential modification of the donor installation;
 - stale or ambiguous manifests.
 
+### World fidelity and production-cell status
+
+- production cells that do not match donor identity;
+- inactive prototype-rejected custom visuals enabled or incorrectly marked complete;
+- missing real-donor canonical capture fixtures;
+- AI-generated concepts used as layout authority;
+- spatially correct but visually unrecognizable zones;
+- generic redesign, beautification, wrong clutter/open-space character;
+- weather/fog/vegetation hiding structural mismatch;
+- missing human approval metadata;
+- stable world IDs/transforms changed without evidence.
+
+### Enviro/vendor integration when present
+
+- direct Enviro references outside the integration assembly;
+- vendor source modifications;
+- exact local version not evidenced;
+- duplicate Enviro/HDRP/Azure sky, cloud, fog, time, wind or audio owners;
+- Enviro autonomous time/weather competing with project services;
+- Enviro audio active alongside Wwise/project audio;
+- vendor demo/sample scenes in shipping configuration;
+- save data coupled to Enviro runtime objects or preset indices.
+
 ### Unity/HDRP
 
 - incorrect assembly placement;
@@ -178,6 +202,8 @@ Use finding ID prefixes:
 - `TEST-`
 - `PERF-`
 - `DOC-`
+- `WORLD-FID-`
+- `ENVIRO-`
 
 Do not invent findings merely to fill categories.
 

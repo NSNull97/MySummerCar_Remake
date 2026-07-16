@@ -30,6 +30,15 @@ donor map geometry so the whole map can be inspected for:
 
 This milestone evaluates the map only. It does not recreate gameplay systems.
 
+## Visual identity and void audit requirement
+
+In addition to geometry, mark internal terrain voids, sprite/tree walls, missing
+ground, clipped fields, fake backdrops and any location whose production
+replacement would be impossible to validate from current reference data.
+
+Create canonical real-donor camera fixtures for high-priority cells. Do not use
+AI-generated concepts as fidelity evidence.
+
 ## Scope
 
 Include:
