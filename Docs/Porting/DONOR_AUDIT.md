@@ -1,6 +1,6 @@
-# Donor Audit — Milestone 0 baseline through Milestone 06
+# Donor Audit — Milestone 0 baseline through Milestone 06B1
 
-Audit dates: 2026-07-13 baseline; 2026-07-14 Milestones 3–05A updates; 2026-07-15 Milestones 05B–06 updates; 2026-07-16 bounded M06 diagnostic-audio addendum
+Audit dates: 2026-07-13 baseline; 2026-07-14 Milestones 3–05A updates; 2026-07-15 Milestones 05B–06 updates; 2026-07-16 M06 diagnostic-audio and M06B1 world-baseline addenda
 
 Scope: read-only filesystem, binary-header, log, file-hash, reflection-only managed metadata inspection, audited use of previously staged references, and a user-authorized local-only Satsuma diagnostic-audio mapping from frozen external staging
 
@@ -374,3 +374,50 @@ The bounded mapping is:
 Static `GAME.unity` (frozen export SHA-256 `C3F2F3373CCAD4FCBE104840FCB83E364F55438070E808D11EBE4996BC0476C4`) `AudioEngineSatsuma` references confirm the three RPM-layer roles, and `MasterAudio/Starting` confirms the starter roles. That inspected routing metadata is `ReferenceOnly`; the seven external clips used by the local Editor prototype are `TemporaryDirectImport`. They stay outside Git, tracked `Assets`, player builds and production dependencies. No Satsuma-specific shutdown/stall clip has been proven, so loop fade-out is an explicit diagnostic approximation. No complete mixer, load response, interior/exterior behavior or donor audio parity is claimed; final clips and mix remain reauthored or properly licensed.
 
 The project-owned bridge is clean-room `Reimplemented` code: `VehicleAudioContracts.cs` defines `IVehicleAudioBackend`, `VehicleAudioPresenter.cs` consumes simulation telemetry at `FixedUpdate`, and `UnityAudioBackend.cs` performs Editor-only hash/load/mix work. Builder `1.1.0` creates `M06_LocalDiagnosticVehicleAudio`; the strict validator requires the scene to have no serialized `AudioSource`/`AudioClip` dependency. Fresh focused EditMode passes `18/18`, focused PlayMode passes `4/4`, full EditMode is `157/160` in `44.4875523 s` with exactly the same three unrelated baselines, and full PlayMode passes `31/31`; each M06 PlayMode case emits `M06_LOCAL_DIAGNOSTIC_AUDIO_READY clips=7 source=ExternalDonorStaging hashes=Verified` with configured staging. Missing staging remains a silent fallback rather than a simulation-test failure, and starter event ordering is asserted. Thus the local diagnostic can be removed or unavailable without changing simulation authority or build viability.
+
+## Milestone 06B1 canonical donor-world baseline audit
+
+06B1 did not repeat extraction and did not use the current reinstalled donor
+containers as an implicit fallback. The canonical source is the frozen
+AssetRipper export:
+
+`raw/world/milestone-04a1/assetripper-unity-project/ExportedProject/Assets/_Scenes/GAME.unity`
+
+Its SHA-256 is
+`c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4`.
+The accompanying `path_id_map.json`, twelve normalized manifests and six
+project-owned transfer inputs are independently hash-pinned before generation.
+The historical source revision remains separate from the current donor
+`sharedassets3` hash drift.
+
+The deterministic sanitation policy `06B1.4` creates a local ignored runtime
+payload only below:
+
+`Assets/Game/LegacyImport/RuntimeBaseline/`
+
+The canonical scene contains `3,842` project-owned metadata entities and
+`2,605` static renderers. `1,237` records remain metadata-only: `1,058` have no
+usable mesh, `62` are skinned renderers and `117` are static accessories below
+character `/skeleton/` hierarchies. Runtime collision is intentionally `0` until
+06B2. Donor MonoBehaviours, PlayMaker FSMs, assemblies, cameras, audio, lighting,
+weather, UI, NPC logic, physics bodies and gameplay managers are absent.
+
+The scene and generated mesh/material payload are classified
+`TemporaryDirectImport`, allowed only for private local feature-parity work and
+not `ProductionReady`. Generated payload remains ignored by Git and excluded
+from Build Settings. The committed source manifest contains portable relative
+paths, source hashes, counts and semantic/source/payload fingerprints.
+
+Two consecutive builds produced the same manifest SHA-256
+`e385298c0b6ef344ade8c3a5f1f7c5fd684b690a8114808d658aea5f7b15ec6a`,
+semantic fingerprint
+`32438aca354e85af6bb8356a0546fc4ac6a0009fb58b5276a97a843191476635`
+and payload fingerprint
+`ac500e0b81db904840b7a6d742db33699548553bf234fb1dfc393bbb56fc7e21`.
+Cold validation, focused EditMode `4/4` and PlayMode boot `1/1` passed.
+
+The existing `cell_0_-3` and `cell_0_-2` custom visuals remain retained
+technical fixtures but are classified
+`PrototypeOnly / RejectedForFidelity / InactiveInFeatureParityProfile`.
+06B1 did not switch Bootstrap, activate a donor profile, split the map or
+transfer collision; those actions remain bounded to 06B2.

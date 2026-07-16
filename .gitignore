@@ -52,6 +52,8 @@ ExtractionLogs/
 # Reference-only donor assets and generated donor content
 Assets/Game/LegacyImport/ReferenceOnly/**
 !Assets/Game/LegacyImport/ReferenceOnly/.gitkeep
+Assets/Game/LegacyImport/RuntimeBaseline/**
+!Assets/Game/LegacyImport/RuntimeBaseline/.gitkeep
 Assets/Game/Imported/DonorGenerated/**
 !Assets/Game/Imported/DonorGenerated/.gitkeep
 

@@ -1,4 +1,4 @@
-# Donor System Map — through Milestone 06A
+# Donor System Map — through Milestone 06B1
 
 This map describes observed donor ownership/coupling and the intended transfer boundary. It is not a claim that any subsystem has been ported.
 
@@ -355,3 +355,37 @@ unavailable.
 M06A is `Accepted / HumanAccepted` as a bounded prototype baseline on
 2026-07-16. Only `Prompts/06B_PRODUCTION_WORLD_CELL_FIDELITY_GATE.md` may
 follow.
+
+## Milestone 06B1 donor-world sanitation boundary
+
+```mermaid
+flowchart LR
+    FROZEN["Frozen AssetRipper GAME.unity + path map"] --> PREFLIGHT["Immutable SHA-256 preflight"]
+    NORMAL["12 normalized manifests + 6 project inputs"] --> PREFLIGHT
+    PREFLIGHT --> PLAN["06B1.4 explicit sanitation whitelist"]
+    PLAN --> META["3,842 project-owned metadata entities"]
+    PLAN --> RENDER["2,605 static renderers"]
+    PLAN --> EXCLUDE["1,237 metadata-only exclusions"]
+    RENDER --> LOCAL["Ignored RuntimeBaseline payload"]
+    META --> LOCAL
+    LOCAL --> SCENE["World_DonorBaseline_Canonical"]
+    SCENE --> VALIDATE["Cold validator + EditMode + PlayMode boot"]
+    PROTO["cell_0_-3 / cell_0_-2 prototype fixtures"] -. "retained but rejected for fidelity" .-> NEXT["06B2 active profile"]
+    SCENE -. "cellization and collision deferred" .-> NEXT
+    DONOR["Current donor install with sharedassets3 hash drift"] -. "never mixed" .-> PREFLIGHT
+```
+
+`MSC.Editor.WorldBaseline` owns preflight, sanitation, generation, source
+manifest, fingerprints, captures and validation.
+`MSC.LegacyImport.Runtime` owns only project-authored metadata components.
+Generated donor-derived scene/mesh/material payload stays below the ignored
+`Assets/Game/LegacyImport/RuntimeBaseline/` boundary and is classified
+`TemporaryDirectImport`.
+
+No gameplay module consumes donor hierarchy paths. The canonical baseline is
+not in Build Settings and is not an active world profile in 06B1. The existing
+project-owned 512 m cell grid, additive loading, exact scene-path checks,
+hysteresis and owned-scene unload remain the reusable streaming authority.
+06B2 must add the explicit legacy/global/cell profile, collision/traversal
+validation and prototype-visual deactivation without changing stable gameplay
+identity.

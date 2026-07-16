@@ -13,6 +13,7 @@
     "MSC.Vehicle.Assembly",
     "MSC.World.Runtime",
     "MSC.World.Remaster.Runtime",
+    "MSC.LegacyImport.Runtime",
     "Unity.InputSystem"
   ],
   "includePlatforms": [],

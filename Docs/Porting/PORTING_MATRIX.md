@@ -1,4 +1,4 @@
-# Porting Matrix — through Milestone 06
+# Porting Matrix — through Milestone 06B1
 
 Status: controlled reference pipeline, Milestone 3 garage art prototype and the clean-room Milestone 4 player/interaction slice are complete. M4 did not inspect or transfer donor input/FSM code, constants or configuration; player and interaction are `Reimplemented`. Two donor meshes remain `ReferenceOnly`. No donor visual asset is classified as production-ready.
 
@@ -175,4 +175,21 @@ claim `PilotGate`, `VerticalSliceGate` or `FullWorldGate`.
 | Post-manual rest/view remediation | User observation: about 5 km/h startup creep and environment shake | `Reimplemented` | First-sample suspension history, planar speed, bounded no-overshoot passive force, level-only startup settling and detached smoothed camera; focused PlayMode `4/4 PASS` proves a six-degree incline is not pinned and later external wake/velocity is not re-slept; bounded user recheck accepted 2026-07-16 |
 | Local Satsuma auditory diagnostic | Seven hash-pinned clips in frozen external staging; static `GAME.unity` mapping | Clips `TemporaryDirectImport`; routing evidence `ReferenceOnly` | Editor/local-only perceptual aid sampled at `FixedUpdate`; starter event order tested; missing staging is silent fallback; no donor binary in Git, production `Assets` or builds; no proven stop/stall clip; final soundscape remains reauthored |
 
-Reviewed donor dynamic fixtures remain `Missing`; no torque, ratios, tire, suspension, brake, acceleration or handling algorithm/value was ported. No implementation row is `CodePorted` or `ProductionReady`; `TemporaryDirectImport` applies only to the seven frozen external diagnostic clips. The M06 automated gate passes: focused EditMode `18/18`, focused PlayMode `4/4`, full PlayMode `31/31` and all M06 cases inside the fresh `157/160` full EditMode run (`44.4875523 s`). Its three failures are the same known unrelated baselines. Every focused PlayMode case verified all seven staged hashes/loads with configured staging; missing staging remains silent fallback. The first manual drive confirmed core start/shift/stall/RPM behavior and exposed creep/view-shake defects; the bounded post-remediation drive/listening recheck was accepted on 2026-07-16.
+Reviewed donor dynamic fixtures remain `Missing`; no torque, ratios, tire, suspension, brake, acceleration or handling algorithm/value was ported. Within the M06 vehicle scope, no implementation row is `CodePorted` or `ProductionReady`, and `TemporaryDirectImport` applies only to the seven frozen external diagnostic clips. The M06 automated gate passes: focused EditMode `18/18`, focused PlayMode `4/4`, full PlayMode `31/31` and all M06 cases inside the fresh `157/160` full EditMode run (`44.4875523 s`). Its three failures are the same known unrelated baselines. Every focused PlayMode case verified all seven staged hashes/loads with configured staging; missing staging remains silent fallback. The first manual drive confirmed core start/shift/stall/RPM behavior and exposed creep/view-shake defects; the bounded post-remediation drive/listening recheck was accepted on 2026-07-16.
+
+## Milestone 06B1 temporary donor-world runtime baseline
+
+| Layer | Source evidence | Classification | Implemented boundary / status |
+|---|---|---|---|
+| Canonical extracted scene | Frozen AssetRipper `GAME.unity`, SHA-256 `c3f2f337…0476c4`; path map and normalized manifests | `TemporaryDirectImport` source for private local feature parity | Source revision `msc-world-baseline-04a1.1-c3f2f337`; current donor hash-drift install is not mixed into it |
+| Sanitized static world presentation | 3,842 eligible world records, audited meshes and static-batch subsets | `TemporaryDirectImport` | 2,605 static renderers; exact transforms/effective activation retained; 1,237 metadata-only |
+| Character/NPC presentation | 62 skinned records and 117 static records below `/skeleton/` | `Rejected` for map-only baseline presentation | Metadata retained; runtime renderers excluded |
+| Runtime logic | Donor MonoBehaviours, PlayMaker, assemblies, camera/audio/weather/UI/gameplay components | `Rejected` | Zero transferred donor runtime components; explicit whitelist validator |
+| Collision | 5,001 normalized source records | `CollisionReference` | Runtime collider count `0`; safe transfer and traversal validation deferred to 06B2 |
+| Canonical local payload | Generated scene, 2,129 mesh assets and 22 neutral materials | `TemporaryDirectImport` | Ignored by Git, outside Build Settings, private-local-only, not `ProductionReady` |
+| Existing prototype cells | `cell_0_-3`, `cell_0_-2` custom scenes and project-owned streaming fixtures | `PrototypeOnly / RejectedForFidelity` | Infrastructure retained; visual activation in donor feature-parity profile deferred to 06B2 |
+
+Repeated generation is locked by semantic and generated-payload fingerprints,
+not by self-comparison after manifest overwrite. Cold validation, focused
+EditMode `4/4` and PlayMode `1/1` passed. No result is `CodePorted` or
+`ProductionReady`.
