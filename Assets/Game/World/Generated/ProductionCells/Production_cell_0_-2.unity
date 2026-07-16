@@ -194,7 +194,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: 7201412942822b5b4724b5e72c74065f
 --- !u!1660057539 &9223372036854775807

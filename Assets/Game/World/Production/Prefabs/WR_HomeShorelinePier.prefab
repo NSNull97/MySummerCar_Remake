@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 368e57ab0291e524589f6d7cbd7dc263, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.World.Remaster.Runtime::MSC.World.Remaster.WorldRemasterPilotMarker
   schemaVersion: 1
   zoneId: cell_0_-2
@@ -135,7 +135,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: d7b7b8ce9d3e448a346b5344e18c2023
 --- !u!4 &9216945824828410129 stripped
@@ -223,7 +223,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: dcd8f98c103fb4eb4640d2abb757d089
 --- !u!1001 &4246480929750583038
@@ -306,7 +306,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: 0b03b3508f6be68192698ac5f7ae7550
 --- !u!1001 &4938367605254542758
@@ -389,7 +389,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: 68783d0b852bcffb1eced37581f4aff8
 --- !u!1001 &8153225896421024394
@@ -472,6 +472,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: dd8587032e6c12708151d60bd881aec6
