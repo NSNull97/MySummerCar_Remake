@@ -1,0 +1,3 @@
+"cell_id","status","needs_rework","approved","complete","blocking_issue_ids","authoritative_source","updated_date","notes"
+"cell_0_-3","Rejected","true","false","false","FID-CELL-0-M3-001;FID-CELL-0-M3-002;FID-CELL-0-M3-003;FID-CELL-0-M3-004","User decision recorded in Prompts/CURRENT_STATE.md and Milestone 06B","2026-07-16","Technical collision/streaming fixture only; canonical donor camera set incomplete."
+"cell_0_-2","Rejected","true","false","false","FID-CELL-0-M2-001;FID-CELL-0-M2-002","User decision recorded in Prompts/CURRENT_STATE.md and Milestone 06B","2026-07-16","Technical collision/streaming fixture only; direct donor pier/shore camera set missing."

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "04B.4",
+  "fixtureId": "world-fidelity-cell-0-m2-v1",
+  "category": "WorldLandmarks",
+  "title": "Home shoreline and pier canonical fidelity fixture",
+  "priority": "P0",
+  "status": "Blocked",
+  "recordIds": [],
+  "missingRequirementIds": [
+    "P1-WORLD-LANDMARKS",
+    "P1-ROAD-WIDTH-ELEVATION"
+  ],
+  "inputs": [
+    "Capture M06B-CELL-0-M2-CAM-01 through M06B-CELL-0-M2-CAM-10 in the licensed donor runtime",
+    "Record resolution, aspect ratio, FOV, weather, time of day and camera state",
+    "Keep raw screenshots and videos outside Git and register logical paths plus SHA-256"
+  ],
+  "expected": [
+    "Ten frame-addressable donor views under a neutral comparison condition",
+    "Matched remake camera transforms and rejected-before captures without reframing",
+    "Measured pier, shoreline, terrain, hedge and sightline constraints with declared uncertainty"
+  ],
+  "toleranceNotes": "No repair tolerance is asserted until direct home-pier runtime views are captured. The rainy aerial overview has unproven cell assignment and is supplementary only."
+}
