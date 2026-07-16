@@ -199,7 +199,10 @@ EditMode `4/4` and PlayMode `1/1` passed. No result is `CodePorted` or
 | Layer | Input/evidence | Classification | Implemented boundary / status |
 |---|---|---|---|
 | Global/cell legacy presentation | Frozen 06B1 canonical scene and project-owned 512 m partition | `TemporaryDirectImport` | 1 global + 49 cell scenes; 3,842 exact-transform entities; active private-local profile; automated validation PASS and user visual/traversal acceptance recorded |
-| Deterministic ownership | Frozen source cell assignments, large-object policy and explicit exceptions | `WorldLayoutReference` | 3,754 cell-owned and 88 global entities; fingerprint `0a9de0be…13f3`; no geometry split or layout reinterpretation |
+| Deterministic ownership | Frozen source cell assignments, large-object policy and explicit exceptions | `WorldLayoutReference` | 3,754 cell-owned and 88 global entities; fingerprint `1abf88e…bf28b`; no geometry split or layout reinterpretation |
+| Donor material closure | 292 exported material definitions plus built-in material `10302` on two renderers | `TemporaryDirectImport` | 293 shared project-owned HDRP compatibility materials including one reviewed orange fallback; no donor shader code imported |
+| Donor texture closure | 265 referenced source images / 301,818,115 source bytes | `TemporaryDirectImport` | 267 shared role-specific variants with mipmaps/streaming/read-only import; one reflection cubemap excluded; detailed source hashes in `LEGACY_MATERIAL_TEXTURE_MANIFEST.csv` |
+| Legacy presentation modes | Ordered material GUID slots and project-owned runtime bindings | `Reimplemented` | `LegacyTextured` default, `LegacyDiagnostic` comparison, `PrototypeHidden` active-profile invariant; only `Renderer.sharedMaterials`, zero runtime material instances in performance tests |
 | Safe runtime collision subset | Frozen collider inventory plus project-owned 32-record allowlist | `TemporaryDirectImport` | 20 static mesh and 12 static box colliders; no triggers, bodies, joints or donor behavior; representative raycasts PASS |
 | Legacy identity/replacement | Source provenance IDs plus project-owned mapping | `Reimplemented` | Unique `LegacyWorldObjectId` and `legacy-world:<stable-id>` replacement key; donor name/path is not runtime or save identity |
 | Gameplay anchors | 15 project-owned stable anchors in the two former prototype regions | `Reimplemented` | Separate `WorldGameplayCellCatalog`; persists independently of legacy visual load/unload and override state |
@@ -209,6 +212,13 @@ EditMode `4/4` and PlayMode `1/1` passed. No result is `CodePorted` or
 
 No 06B2 result is `CodePorted` or `ProductionReady`. Donor visual/collision
 content remains temporary and non-distributable. Human acceptance was recorded
-2026-07-16 for Bootstrap, donor-map fidelity, lake/Teimo traversal and streaming
-reload, and OOB recovery. The flat lake and original-game voids remain explicit
-remaster debt. 06B3 may follow after a focused 06B2 commit.
+2026-07-16 for Bootstrap, donor-map geometry fidelity, lake/Teimo traversal,
+streaming reload, OOB recovery and the v5.1 textured presentation including
+corrected water. Legacy textures, terrain banding and tree-wall artifacts were
+accepted only as temporary visual debt. On 2026-07-16 the user walked the
+bridges and moved the character across cell boundaries without observing
+traversal, collision, seam, duplicate, popping or load/unload issues. This
+manual bridge/cell-boundary gate is `PASS / HumanAccepted`; dedicated vehicle
+driving was not repeated, while automated high-speed preload validation passed.
+The flat lake and original-game voids remain explicit remaster debt. The 06B3
+entry gate is `GO`; 06B3 itself has not started.

@@ -16,6 +16,7 @@ using MSC.World.Streaming;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 
@@ -31,6 +32,8 @@ namespace MSC.Editor.WorldBaseline
         public int RendererCount { get; internal set; }
         public int ColliderCount { get; internal set; }
         public int GameplayAnchorCount { get; internal set; }
+        public int GeneratedMaterialCount { get; internal set; }
+        public int GeneratedTextureCount { get; internal set; }
         public string OwnershipFingerprintSha256 { get; internal set; } =
             string.Empty;
         public string GameplayAnchorFingerprintSha256
@@ -42,6 +45,11 @@ namespace MSC.Editor.WorldBaseline
 
     public static class DonorWorldCellizationValidator
     {
+        // HDRP 17.3 offsets decal-supporting Lit materials inside the
+        // opaque and alpha-test ranges during material validation.
+        private const int HdrpLitOpaqueWithDecalsQueue = 2225;
+        private const int HdrpLitAlphaClipWithDecalsQueue = 2475;
+
         private static readonly HashSet<Type> AllowedGeneratedTypes =
             new HashSet<Type>
             {
@@ -53,7 +61,9 @@ namespace MSC.Editor.WorldBaseline
                 typeof(DonorWorldStreamingSceneMetadata),
                 typeof(DonorWorldBaselineEntityMetadata),
                 typeof(DonorWorldBaselineColliderMetadata),
-                typeof(DonorWorldLegacyReplacementRegistry)
+                typeof(DonorWorldLegacyReplacementRegistry),
+                typeof(DonorWorldLegacyMaterialBinding),
+                typeof(DonorWorldLegacyPresentationController)
             };
 
         private static readonly string[] ForbiddenDependencyFragments =
@@ -124,6 +134,34 @@ namespace MSC.Editor.WorldBaseline
                 result.Warnings.Add("06B1 source gate: " + warning);
             }
 
+            DonorWorldMaterialTextureAssets presentation = null;
+            try
+            {
+                DonorWorldMaterialTexturePlan presentationPlan =
+                    DonorWorldMaterialTexturePlan.Load();
+                DonorWorldMaterialTexturePlan repeatedPlan =
+                    DonorWorldMaterialTexturePlan.Load();
+                if (!string.Equals(
+                        presentationPlan.PresentationFingerprintSha256,
+                        repeatedPlan.PresentationFingerprintSha256,
+                        StringComparison.Ordinal))
+                {
+                    result.Errors.Add(
+                        "Repeated material/texture planning is not " +
+                        "deterministic.");
+                }
+                presentation =
+                    DonorWorldMaterialTexturePipeline.LoadGenerated(
+                        presentationPlan);
+                ValidatePresentationAssets(presentation, result);
+            }
+            catch (Exception exception)
+            {
+                result.Errors.Add(
+                    "06B2 v5.1 presentation gate failed: " +
+                    exception.Message);
+            }
+
             ProductionWorldStreamingManifest activeManifest =
                 ValidateActiveManifest(plan, result);
             ValidateBuildSettings(plan, activeManifest, result);
@@ -132,14 +170,22 @@ namespace MSC.Editor.WorldBaseline
             ValidateGameplayCatalog(activeManifest, result);
             ValidateGeneratedPayloadTrackedState(result);
             ValidateRequiredExports(plan, result);
-            if (inspectAllGeneratedScenes)
+            if (inspectAllGeneratedScenes && presentation != null)
             {
-                ValidateGeneratedScenes(plan, result);
+                ValidateGeneratedScenes(
+                    plan,
+                    presentation,
+                    result);
             }
 
             result.Warnings.Add(
-                "The feature-parity baseline uses temporary diagnostic " +
-                "materials and unsplit global static-batch aggregates.");
+                "The feature-parity baseline uses temporary donor-derived " +
+                "compatibility presentation and unsplit global " +
+                "static-batch aggregates; it is not ProductionReady.");
+            result.Warnings.Add(
+                "The donor night-gradient cubemap and donor shader/runtime " +
+                "lighting/weather/water systems remain intentionally " +
+                "excluded.");
             result.Warnings.Add(
                 "The 32-collider allowlist is deliberately narrow; doors, " +
                 "windows, dynamic props, NPCs and trigger volumes remain " +
@@ -390,19 +436,26 @@ namespace MSC.Editor.WorldBaseline
                 ProductionWorldStreamingInstaller[] installers =
                     GetSceneComponents<
                         ProductionWorldStreamingInstaller>(scene);
+                DonorWorldLegacyPresentationController[] controllers =
+                    GetSceneComponents<
+                        DonorWorldLegacyPresentationController>(scene);
                 if (roots.Length != 1 ||
                     services.Length != 1 ||
-                    installers.Length != 1)
+                    installers.Length != 1 ||
+                    controllers.Length != 1)
                 {
                     result.Errors.Add(
                         "Active Bootstrap must contain exactly one root, " +
-                        "streaming service and installer.");
+                        "streaming service, installer and legacy " +
+                        "presentation controller.");
                     return;
                 }
 
                 ProductionWorldStreamingService service = services[0];
                 ProductionWorldStreamingInstaller installer =
                     installers[0];
+                DonorWorldLegacyPresentationController controller =
+                    controllers[0];
                 if (service.Manifest != activeManifest)
                 {
                     result.Errors.Add(
@@ -411,7 +464,10 @@ namespace MSC.Editor.WorldBaseline
                 }
                 if (installer.WorldStreaming != service ||
                     installer.CompositionRoot != roots[0] ||
-                    installer.PlayerPrefab == null)
+                    installer.PlayerPrefab == null ||
+                    controller.gameObject != roots[0].gameObject ||
+                    controller.Mode !=
+                        DonorWorldLegacyPresentationMode.LegacyTextured)
                 {
                     result.Errors.Add(
                         "Active Bootstrap composition references are " +
@@ -596,8 +652,778 @@ namespace MSC.Editor.WorldBaseline
             }
         }
 
+        private static void ValidatePresentationAssets(
+            DonorWorldMaterialTextureAssets presentation,
+            DonorWorldCellizationValidationResult result)
+        {
+            DonorWorldMaterialTexturePlan plan = presentation.Plan;
+            result.GeneratedMaterialCount =
+                presentation.TexturedMaterials.Count + 1;
+            result.GeneratedTextureCount =
+                presentation.ConvertedTextures.Count;
+            RequireEqual(
+                result,
+                "generated compatibility material count",
+                presentation.TexturedMaterials.Count,
+                DonorWorldMaterialTexturePlan
+                    .ExpectedResolvedMaterialCount);
+            RequireEqual(
+                result,
+                "generated texture role-variant count",
+                presentation.ConvertedTextures.Count,
+                DonorWorldMaterialTexturePlan
+                    .ExpectedImportedTextureConversionCount);
+
+            foreach (DonorWorldSourceMaterial source in
+                     plan.Materials.Values)
+            {
+                if (!presentation.TexturedMaterials.TryGetValue(
+                        source.SourceGuid,
+                        out Material material) ||
+                    material == null)
+                {
+                    result.Errors.Add(
+                        "Generated HDRP compatibility material is " +
+                        "missing: " + source.SourceGuid);
+                    continue;
+                }
+
+                string path = AssetDatabase.GetAssetPath(material);
+                string expectedPath =
+                    WorldBaselinePaths.TexturedMaterial(
+                        source.SourceGuid);
+                bool expectedUnlit =
+                    DonorWorldMaterialTexturePipeline.IsUnlit(source);
+                string expectedShader =
+                    expectedUnlit ? "HDRP/Unlit" : "HDRP/Lit";
+                if (!string.Equals(
+                        path,
+                        expectedPath,
+                        StringComparison.Ordinal) ||
+                    material.shader == null ||
+                    !string.Equals(
+                        material.shader.name,
+                        expectedShader,
+                        StringComparison.Ordinal) ||
+                    !material.enableInstancing ||
+                    material.name.EndsWith(
+                        " (Instance)",
+                        StringComparison.Ordinal))
+                {
+                    result.Errors.Add(
+                        "Generated compatibility material contract " +
+                        "drifted: " + source.SourceGuid);
+                }
+
+                ValidateCompatibilityMaterialMapping(
+                    presentation,
+                    source,
+                    material,
+                    result);
+
+                foreach (string dependency in
+                         AssetDatabase.GetDependencies(
+                             path,
+                             recursive: true))
+                {
+                    string normalizedDependency =
+                        dependency.Replace('\\', '/');
+                    if (dependency.StartsWith(
+                            "Assets/Game/LegacyImport/" +
+                            "RuntimeBaseline/",
+                            StringComparison.Ordinal) &&
+                        dependency.EndsWith(
+                            ".shader",
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        result.Errors.Add(
+                            "Donor shader entered generated presentation: " +
+                            dependency);
+                    }
+                    if (ForbiddenDependencyFragments.Any(fragment =>
+                            normalizedDependency.IndexOf(
+                                fragment,
+                                StringComparison.OrdinalIgnoreCase) >= 0))
+                    {
+                        result.Errors.Add(
+                            "Forbidden donor/runtime dependency entered " +
+                            "generated presentation: " + dependency);
+                    }
+                }
+            }
+
+            foreach (DonorWorldTextureConversion conversion in
+                     plan.Textures.Values)
+            {
+                if (!conversion.IsImported)
+                {
+                    continue;
+                }
+                if (!presentation.ConvertedTextures.TryGetValue(
+                        conversion.Key,
+                        out Texture texture) ||
+                    texture == null)
+                {
+                    result.Errors.Add(
+                        "Generated compatibility texture is missing: " +
+                        conversion.Key);
+                    continue;
+                }
+
+                string path = AssetDatabase.GetAssetPath(texture);
+                TextureImporter importer =
+                    AssetImporter.GetAtPath(path) as TextureImporter;
+                string absolutePath =
+                    WorldBaselinePaths.ToAbsoluteProjectPath(path);
+                if (!string.Equals(
+                        path,
+                        conversion.GeneratedAssetPath,
+                        StringComparison.Ordinal) ||
+                    importer == null ||
+                    importer.isReadable ||
+                    !importer.mipmapEnabled ||
+                    !importer.streamingMipmaps ||
+                    importer.sRGBTexture != conversion.SRgb ||
+                    importer.wrapMode !=
+                    DonorWorldMaterialTexturePipeline.ResolveWrapMode(
+                        conversion.SourceWrapMode) ||
+                    importer.filterMode !=
+                    DonorWorldMaterialTexturePipeline.ResolveFilterMode(
+                        conversion.SourceFilterMode) ||
+                    importer.anisoLevel != Mathf.Clamp(
+                        conversion.SourceAnisoLevel,
+                        1,
+                        16) ||
+                    importer.textureType !=
+                    (conversion.IsNormalMap
+                        ? TextureImporterType.NormalMap
+                        : TextureImporterType.Default) ||
+                    !File.Exists(absolutePath) ||
+                    !string.Equals(
+                        DonorWorldBaselineManifest.ComputeFileSha256(
+                            absolutePath),
+                        DonorWorldMaterialTexturePipeline
+                            .GetExpectedGeneratedTextureSha256(
+                                conversion),
+                        StringComparison.Ordinal))
+                {
+                    result.Errors.Add(
+                        "Generated texture import contract drifted: " +
+                        conversion.Key);
+                }
+            }
+
+            Material fallback = presentation.UnsupportedMaterial;
+            if (fallback == null ||
+                fallback.shader == null ||
+                !string.Equals(
+                    fallback.shader.name,
+                    "HDRP/Unlit",
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    AssetDatabase.GetAssetPath(fallback),
+                    WorldBaselinePaths.UnsupportedMaterial,
+                    StringComparison.Ordinal) ||
+                !fallback.enableInstancing ||
+                fallback.name.EndsWith(
+                    " (Instance)",
+                    StringComparison.Ordinal))
+            {
+                result.Errors.Add(
+                    "Reviewed built-in material fallback is missing or " +
+                    "uses the shader-error state.");
+            }
+            else
+            {
+                Color expectedFallback =
+                    new Color(1f, 0.08f, 0.01f, 1f);
+                ValidateColorProperty(
+                    fallback,
+                    "_UnlitColor",
+                    expectedFallback,
+                    "built-in fallback",
+                    result);
+                ValidateColorProperty(
+                    fallback,
+                    "_BaseColor",
+                    expectedFallback,
+                    "built-in fallback",
+                    result);
+            }
+
+            string runtimeRoot =
+                WorldBaselinePaths.ToAbsoluteProjectPath(
+                    WorldBaselinePaths.RuntimeRoot);
+            if (Directory.Exists(runtimeRoot) &&
+                Directory.EnumerateFiles(
+                        runtimeRoot,
+                        "*.shader",
+                        SearchOption.AllDirectories)
+                    .Any())
+            {
+                result.Errors.Add(
+                    "Generated RuntimeBaseline contains donor shader " +
+                    "source, which is forbidden.");
+            }
+
+            string csvPath =
+                WorldBaselinePaths.ToAbsoluteProjectPath(
+                    WorldBaseline06B2Paths.MaterialTextureManifest);
+            if (File.Exists(csvPath))
+            {
+                string csv = File.ReadAllText(csvPath);
+                if (csv.IndexOf(
+                        ":\\",
+                        StringComparison.Ordinal) >= 0 ||
+                    csv.IndexOf(
+                        "file://",
+                        StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    result.Errors.Add(
+                        "Material/texture manifest leaks a machine-specific " +
+                        "absolute path.");
+                }
+            }
+        }
+
+        private static void ValidateCompatibilityMaterialMapping(
+            DonorWorldMaterialTextureAssets presentation,
+            DonorWorldSourceMaterial source,
+            Material material,
+            DonorWorldCellizationValidationResult result)
+        {
+            string label = "material " + source.SourceGuid;
+            bool unlit =
+                DonorWorldMaterialTexturePipeline.IsUnlit(source);
+            bool alphaClip =
+                DonorWorldMaterialTexturePipeline.IsAlphaClip(source);
+            bool transparent =
+                DonorWorldMaterialTexturePipeline.IsTransparent(source);
+            bool emissive =
+                DonorWorldMaterialTexturePipeline.IsEmissive(source);
+
+            Color expectedBaseColor =
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedBaseColor(source);
+            int baseColorPropertyCount = 0;
+            baseColorPropertyCount += ValidateColorProperty(
+                material,
+                "_BaseColor",
+                expectedBaseColor,
+                label,
+                result) ? 1 : 0;
+            baseColorPropertyCount += ValidateColorProperty(
+                material,
+                "_UnlitColor",
+                expectedBaseColor,
+                label,
+                result) ? 1 : 0;
+            if (baseColorPropertyCount == 0)
+            {
+                result.Errors.Add(
+                    label + " exposes no supported HDRP base-color property.");
+            }
+
+            if (!unlit)
+            {
+                ValidateFloatProperty(
+                    material,
+                    "_Metallic",
+                    DonorWorldMaterialTexturePipeline
+                        .GetExpectedMetallic(source),
+                    label,
+                    result);
+                ValidateFloatProperty(
+                    material,
+                    "_Smoothness",
+                    DonorWorldMaterialTexturePipeline
+                        .GetExpectedSmoothness(source),
+                    label,
+                    result);
+                ValidateFloatProperty(
+                    material,
+                    "_NormalMapSpace",
+                    0f,
+                    label,
+                    result);
+                ValidateFloatProperty(
+                    material,
+                    "_SupportDecals",
+                    1f,
+                    label,
+                    result);
+            }
+
+            Texture expectedBaseTexture = null;
+            DonorWorldTextureEnvironment baseTextureEnvironment = null;
+            if (DonorWorldMaterialTexturePipeline
+                .TryGetExpectedBaseTexture(
+                    source,
+                    out baseTextureEnvironment))
+            {
+                expectedBaseTexture =
+                    presentation.GetConvertedTexture(
+                        baseTextureEnvironment.TextureGuid,
+                        DonorWorldTextureRole.Color);
+            }
+            int baseMapPropertyCount = 0;
+            baseMapPropertyCount += ValidateTextureProperty(
+                material,
+                "_BaseColorMap",
+                expectedBaseTexture,
+                baseTextureEnvironment,
+                label,
+                result) ? 1 : 0;
+            baseMapPropertyCount += ValidateTextureProperty(
+                material,
+                "_UnlitColorMap",
+                expectedBaseTexture,
+                baseTextureEnvironment,
+                label,
+                result) ? 1 : 0;
+            if (expectedBaseTexture != null &&
+                baseMapPropertyCount == 0)
+            {
+                result.Errors.Add(
+                    label + " exposes no supported HDRP base-map property.");
+            }
+
+            Texture expectedNormalTexture = null;
+            DonorWorldTextureEnvironment normalEnvironment = null;
+            if (!unlit &&
+                DonorWorldMaterialTexturePipeline
+                    .TryGetExpectedPrimaryNormalTexture(
+                        source,
+                        out normalEnvironment))
+            {
+                expectedNormalTexture =
+                    presentation.GetConvertedTexture(
+                        normalEnvironment.TextureGuid,
+                        DonorWorldTextureRole.Normal);
+            }
+            bool hasNormalProperty = ValidateTextureProperty(
+                material,
+                "_NormalMap",
+                expectedNormalTexture,
+                normalEnvironment,
+                label,
+                result);
+            if (expectedNormalTexture != null)
+            {
+                if (!hasNormalProperty)
+                {
+                    result.Errors.Add(
+                        label +
+                        " exposes no supported HDRP primary-normal property.");
+                }
+                ValidateFloatProperty(
+                    material,
+                    "_NormalScale",
+                    DonorWorldMaterialTexturePipeline
+                        .GetExpectedNormalScale(source),
+                    label,
+                    result);
+            }
+
+            Texture expectedDetailTexture = null;
+            DonorWorldTextureEnvironment detailEnvironment = null;
+            if (!unlit &&
+                DonorWorldMaterialTexturePipeline
+                    .TryGetExpectedDetailNormalTexture(
+                        source,
+                        out detailEnvironment))
+            {
+                expectedDetailTexture =
+                    presentation.GetConvertedTexture(
+                        detailEnvironment.TextureGuid,
+                        DonorWorldTextureRole.DetailNormalPacked);
+            }
+            bool hasDetailProperty = ValidateTextureProperty(
+                material,
+                "_DetailMap",
+                expectedDetailTexture,
+                detailEnvironment,
+                label,
+                result);
+            if (expectedDetailTexture != null)
+            {
+                if (!hasDetailProperty)
+                {
+                    result.Errors.Add(
+                        label +
+                        " exposes no supported HDRP detail-map property.");
+                }
+                ValidateFloatProperty(
+                    material,
+                    "_DetailAlbedoScale",
+                    0f,
+                    label,
+                    result);
+                ValidateFloatProperty(
+                    material,
+                    "_DetailNormalScale",
+                    DonorWorldMaterialTexturePipeline
+                        .GetExpectedDetailNormalScale(source),
+                    label,
+                    result);
+                ValidateFloatProperty(
+                    material,
+                    "_DetailSmoothnessScale",
+                    0f,
+                    label,
+                    result);
+                ValidateFloatProperty(
+                    material,
+                    "_LinkDetailsWithBase",
+                    0f,
+                    label,
+                    result);
+                ValidateFloatProperty(
+                    material,
+                    "_UVDetail",
+                    DonorWorldMaterialTexturePipeline
+                        .GetExpectedDetailUv(source),
+                    label,
+                    result);
+                ValidateColorProperty(
+                    material,
+                    "_UVDetailsMappingMask",
+                    DonorWorldMaterialTexturePipeline
+                        .GetExpectedDetailUvMask(source),
+                    label,
+                    result);
+            }
+
+            Texture expectedEmissionTexture = null;
+            DonorWorldTextureEnvironment emissionEnvironment = null;
+            if (emissive &&
+                DonorWorldMaterialTexturePipeline
+                    .TryGetExpectedEmissionTexture(
+                        source,
+                        out emissionEnvironment))
+            {
+                expectedEmissionTexture =
+                    presentation.GetConvertedTexture(
+                        emissionEnvironment.TextureGuid,
+                        DonorWorldTextureRole.Color);
+            }
+            bool hasEmissionProperty = ValidateTextureProperty(
+                material,
+                "_EmissiveColorMap",
+                expectedEmissionTexture,
+                emissionEnvironment,
+                label,
+                result);
+            if (expectedEmissionTexture != null &&
+                !hasEmissionProperty)
+            {
+                result.Errors.Add(
+                    label +
+                    " exposes no supported HDRP emission-map property.");
+            }
+            if (emissive)
+            {
+                ValidateColorProperty(
+                    material,
+                    "_EmissiveColor",
+                    DonorWorldMaterialTexturePipeline
+                        .GetExpectedEmissionColor(source),
+                    label,
+                    result);
+            }
+            else if (material.HasProperty("_EmissiveColor"))
+            {
+                ValidateColorProperty(
+                    material,
+                    "_EmissiveColor",
+                    Color.black,
+                    label,
+                    result);
+            }
+            if (material.HasProperty("_UseEmissiveIntensity"))
+            {
+                ValidateFloatProperty(
+                    material,
+                    "_UseEmissiveIntensity",
+                    0f,
+                    label,
+                    result);
+            }
+
+            ValidateFloatProperty(
+                material,
+                "_SurfaceType",
+                transparent ? 1f : 0f,
+                label,
+                result);
+            ValidateFloatProperty(
+                material,
+                "_AlphaCutoffEnable",
+                alphaClip ? 1f : 0f,
+                label,
+                result);
+            ValidateFloatProperty(
+                material,
+                "_AlphaCutoff",
+                Mathf.Clamp01(source.GetFloat("_Cutoff", 0.5f)),
+                label,
+                result);
+            ValidateFloatProperty(
+                material,
+                "_DoubleSidedEnable",
+                source.DoubleSided ? 1f : 0f,
+                label,
+                result);
+            ValidateFloatProperty(
+                material,
+                "_CullMode",
+                source.DoubleSided
+                    ? (float)CullMode.Off
+                    : (float)CullMode.Back,
+                label,
+                result);
+            ValidateFloatProperty(
+                material,
+                "_CullModeForward",
+                source.DoubleSided
+                    ? (float)CullMode.Off
+                    : (float)CullMode.Back,
+                label,
+                result);
+            ValidateFloatProperty(
+                material,
+                "_ZWrite",
+                transparent ? 0f : 1f,
+                label,
+                result);
+            if (transparent)
+            {
+                ValidateFloatProperty(
+                    material,
+                    "_BlendMode",
+                    0f,
+                    label,
+                    result);
+                ValidateFloatProperty(
+                    material,
+                    "_TransparentZWrite",
+                    0f,
+                    label,
+                    result);
+            }
+
+            ValidateKeyword(
+                material,
+                "_SURFACE_TYPE_TRANSPARENT",
+                transparent,
+                label,
+                result);
+            ValidateKeyword(
+                material,
+                "_ALPHATEST_ON",
+                alphaClip,
+                label,
+                result);
+            ValidateKeyword(
+                material,
+                "_DOUBLESIDED_ON",
+                source.DoubleSided,
+                label,
+                result);
+            ValidateKeyword(
+                material,
+                "_EMISSIVE_COLOR_MAP",
+                expectedEmissionTexture != null,
+                label,
+                result);
+            ValidateKeyword(
+                material,
+                "_NORMALMAP",
+                expectedNormalTexture != null ||
+                expectedDetailTexture != null,
+                label,
+                result);
+            ValidateKeyword(
+                material,
+                "_DETAIL_MAP",
+                expectedDetailTexture != null,
+                label,
+                result);
+            ValidateKeyword(
+                material,
+                "_NORMALMAP_TANGENT_SPACE",
+                !unlit,
+                label,
+                result);
+
+            foreach (string intentionallyUnmapped in new[]
+                     {
+                         "_MaskMap",
+                         "_HeightMap",
+                         "_SpecularColorMap"
+                     })
+            {
+                if (material.HasProperty(intentionallyUnmapped) &&
+                    material.GetTexture(intentionallyUnmapped) != null)
+                {
+                    result.Errors.Add(
+                        label + " retained stale or unsupported texture " +
+                        intentionallyUnmapped + ".");
+                }
+            }
+
+            int expectedRenderQueue =
+                transparent
+                    ? (int)RenderQueue.Transparent
+                    : alphaClip
+                        ? (unlit
+                            ? (int)RenderQueue.AlphaTest
+                            : HdrpLitAlphaClipWithDecalsQueue)
+                        : (unlit
+                            ? (int)RenderQueue.Geometry
+                            : HdrpLitOpaqueWithDecalsQueue);
+            if (material.renderQueue != expectedRenderQueue)
+            {
+                result.Errors.Add(
+                    label + " render queue drifted: expected " +
+                    expectedRenderQueue + ", actual " +
+                    material.renderQueue + ".");
+            }
+        }
+
+        private static bool ValidateColorProperty(
+            Material material,
+            string propertyName,
+            Color expected,
+            string label,
+            DonorWorldCellizationValidationResult result)
+        {
+            if (!material.HasProperty(propertyName))
+            {
+                return false;
+            }
+
+            Color actual = material.GetColor(propertyName);
+            if (!Approximately(actual, expected))
+            {
+                result.Errors.Add(
+                    label + " color mapping drifted for " +
+                    propertyName + ".");
+            }
+            return true;
+        }
+
+        private static bool ValidateFloatProperty(
+            Material material,
+            string propertyName,
+            float expected,
+            string label,
+            DonorWorldCellizationValidationResult result)
+        {
+            if (!material.HasProperty(propertyName))
+            {
+                return false;
+            }
+
+            float actual = material.GetFloat(propertyName);
+            if (!Mathf.Approximately(actual, expected))
+            {
+                result.Errors.Add(
+                    label + " float mapping drifted for " +
+                    propertyName + $": expected {expected}, actual {actual}.");
+            }
+            return true;
+        }
+
+        private static bool ValidateTextureProperty(
+            Material material,
+            string propertyName,
+            Texture expectedTexture,
+            DonorWorldTextureEnvironment expectedEnvironment,
+            string label,
+            DonorWorldCellizationValidationResult result)
+        {
+            if (!material.HasProperty(propertyName))
+            {
+                return false;
+            }
+
+            Texture actualTexture = material.GetTexture(propertyName);
+            if (actualTexture != expectedTexture)
+            {
+                result.Errors.Add(
+                    label + " texture mapping drifted for " +
+                    propertyName + ".");
+                return true;
+            }
+            if (expectedTexture == null)
+            {
+                return true;
+            }
+
+            string expectedPath =
+                AssetDatabase.GetAssetPath(expectedTexture);
+            string actualPath =
+                AssetDatabase.GetAssetPath(actualTexture);
+            string expectedGuid =
+                AssetDatabase.AssetPathToGUID(expectedPath);
+            string actualGuid =
+                AssetDatabase.AssetPathToGUID(actualPath);
+            if (string.IsNullOrWhiteSpace(expectedGuid) ||
+                !string.Equals(
+                    actualPath,
+                    expectedPath,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    actualGuid,
+                    expectedGuid,
+                    StringComparison.Ordinal))
+            {
+                result.Errors.Add(
+                    label + " texture asset path/GUID drifted for " +
+                    propertyName + ".");
+            }
+            if (expectedEnvironment == null ||
+                !Approximately(
+                    material.GetTextureScale(propertyName),
+                    expectedEnvironment.Scale) ||
+                !Approximately(
+                    material.GetTextureOffset(propertyName),
+                    expectedEnvironment.Offset))
+            {
+                result.Errors.Add(
+                    label + " texture UV transform drifted for " +
+                    propertyName + ".");
+            }
+            return true;
+        }
+
+        private static void ValidateKeyword(
+            Material material,
+            string keyword,
+            bool expectedEnabled,
+            string label,
+            DonorWorldCellizationValidationResult result)
+        {
+            if (material.IsKeywordEnabled(keyword) != expectedEnabled)
+            {
+                result.Errors.Add(
+                    label + " keyword mapping drifted for " + keyword + ".");
+            }
+        }
+
+        private static bool Approximately(Color left, Color right) =>
+            Mathf.Abs(left.r - right.r) <= 0.0001f &&
+            Mathf.Abs(left.g - right.g) <= 0.0001f &&
+            Mathf.Abs(left.b - right.b) <= 0.0001f &&
+            Mathf.Abs(left.a - right.a) <= 0.0001f;
+
+        private static bool Approximately(Vector2 left, Vector2 right) =>
+            Vector2.SqrMagnitude(left - right) <= 0.00000001f;
+
         private static void ValidateGeneratedScenes(
             DonorWorldCellizationPlan plan,
+            DonorWorldMaterialTextureAssets presentation,
             DonorWorldCellizationValidationResult result)
         {
             var ownerPaths = new List<(string OwnerId, string ScenePath)>
@@ -622,6 +1448,7 @@ namespace MSC.Editor.WorldBaseline
                     ownerId,
                     scenePath,
                     staticBatchSubsets,
+                    presentation,
                     allEntityIds,
                     allReplacementKeys,
                     allColliderIds,
@@ -658,6 +1485,7 @@ namespace MSC.Editor.WorldBaseline
             string ownerId,
             string scenePath,
             IReadOnlyDictionary<long, int[]> staticBatchSubsets,
+            DonorWorldMaterialTextureAssets presentation,
             ISet<string> allEntityIds,
             ISet<string> allReplacementKeys,
             ISet<string> allColliderIds,
@@ -801,6 +1629,15 @@ namespace MSC.Editor.WorldBaseline
                     scenePath + " replacement registry count",
                     registries.Length,
                     expectedRegistryCount);
+                DonorWorldLegacyPresentationController[] controllers =
+                    root.GetComponentsInChildren<
+                        DonorWorldLegacyPresentationController>(
+                        includeInactive: true);
+                RequireEqual(
+                    result,
+                    scenePath + " presentation controller count",
+                    controllers.Length,
+                    0);
 
                 ValidateComponentWhitelist(root, scenePath, result);
                 if (root.GetComponentsInChildren<Light>(
@@ -871,6 +1708,7 @@ namespace MSC.Editor.WorldBaseline
                         entity,
                         assignment.SanitationEntry,
                         staticBatchSubsets,
+                        presentation,
                         result);
                 }
                 if (!localIds.SetEquals(expectedById.Keys))
@@ -963,6 +1801,7 @@ namespace MSC.Editor.WorldBaseline
             DonorWorldBaselineEntityMetadata entity,
             WorldBaselineSanitationEntry expected,
             IReadOnlyDictionary<long, int[]> staticBatchSubsets,
+            DonorWorldMaterialTextureAssets presentation,
             DonorWorldCellizationValidationResult result)
         {
             string prefix = "Entity " + entity.StableId + ": ";
@@ -1090,22 +1929,83 @@ namespace MSC.Editor.WorldBaseline
                     prefix + "sanitized render mesh path drifted.");
             }
 
-            string expectedMaterialPath =
-                WorldBaselinePaths.CategoryMaterial(
-                    expected.Placement.Category);
             Material[] materials = renderer.sharedMaterials;
             int expectedMaterialCount =
                 Mathf.Max(1, filter.sharedMesh.subMeshCount);
+            string[] expectedSourceSlots =
+                presentation.ResolveSourceMaterialSlots(
+                    expected,
+                    filter.sharedMesh.subMeshCount);
+            Material[] expectedTextured =
+                presentation.ResolveTexturedMaterials(
+                    expectedSourceSlots);
+            string expectedDiagnosticPath =
+                WorldBaselinePaths.CategoryMaterial(
+                    expected.Placement.Category);
+            DonorWorldLegacyMaterialBinding[] bindings =
+                entity.GetComponents<
+                    DonorWorldLegacyMaterialBinding>();
+            string bindingFailure = "invalid binding count";
+            bool bindingConfigured =
+                bindings.Length == 1 &&
+                bindings[0].TryValidateConfiguration(
+                    out bindingFailure);
             if (materials.Length != expectedMaterialCount ||
-                materials.Any(material =>
-                    material == null ||
-                    !string.Equals(
-                        AssetDatabase.GetAssetPath(material),
-                        expectedMaterialPath,
-                        StringComparison.Ordinal)))
+                bindings.Length != 1 ||
+                !bindingConfigured ||
+                bindings[0].TargetRenderer != renderer ||
+                !bindings[0].SourceMaterialGuids.SequenceEqual(
+                    expectedSourceSlots,
+                    StringComparer.Ordinal) ||
+                bindings[0].TexturedMaterials.Count !=
+                    expectedMaterialCount ||
+                bindings[0].DiagnosticMaterials.Count !=
+                    expectedMaterialCount)
             {
                 result.Errors.Add(
-                    prefix + "temporary material assignment drifted.");
+                    prefix +
+                    "legacy material binding is missing or drifted: " +
+                    bindingFailure);
+                return 1;
+            }
+
+            for (int index = 0;
+                 index < expectedMaterialCount;
+                 index++)
+            {
+                Material actualTextured =
+                    bindings[0].TexturedMaterials[index];
+                Material actualDiagnostic =
+                    bindings[0].DiagnosticMaterials[index];
+                if (materials[index] != actualTextured ||
+                    actualTextured != expectedTextured[index] ||
+                    actualTextured == null ||
+                    actualTextured.shader == null ||
+                    string.Equals(
+                        actualTextured.shader.name,
+                        "Hidden/InternalErrorShader",
+                        StringComparison.Ordinal) ||
+                    !AssetDatabase.GetAssetPath(actualTextured)
+                        .StartsWith(
+                            WorldBaselinePaths.TexturedMaterialRoot +
+                            "/",
+                            StringComparison.Ordinal) ||
+                    actualDiagnostic == null ||
+                    !string.Equals(
+                        AssetDatabase.GetAssetPath(
+                            actualDiagnostic),
+                        expectedDiagnosticPath,
+                        StringComparison.Ordinal) ||
+                    actualTextured.name.EndsWith(
+                        " (Instance)",
+                        StringComparison.Ordinal))
+                {
+                    result.Errors.Add(
+                        prefix +
+                        "textured/diagnostic material slot drifted at " +
+                        index + ".");
+                    break;
+                }
             }
 
             return 1;
@@ -1456,7 +2356,12 @@ namespace MSC.Editor.WorldBaseline
             string[] required =
             {
                 WorldBaseline06B2Paths.OwnershipManifest,
-                WorldBaseline06B2Paths.OwnershipMatrix
+                WorldBaseline06B2Paths.OwnershipMatrix,
+                WorldBaseline06B2Paths.MaterialTextureManifest,
+                WorldBaseline06B2Paths.MaterialShaderMapping,
+                WorldBaseline06B2Paths.VisualCompletenessReport,
+                WorldBaseline06B2Paths.TextureMemoryBaseline,
+                WorldBaseline06B2Paths.PresentationSourceManifest
             };
             foreach (string path in required)
             {
@@ -1496,7 +2401,11 @@ namespace MSC.Editor.WorldBaseline
                 "SourceObjectId", "SourceHierarchyPath",
                 "SemanticCategory", "SourceCellId", "AssignedOwner",
                 "OwnershipReason", "HasRenderer", "EffectiveActive",
-                "ColliderStableId", "Classification", "SourceRevisionId"
+                "ColliderStableId", "Classification", "SourceRevisionId",
+                "SourceMaterialGuids",
+                "LegacyTexturedMaterialPaths",
+                "LegacyDiagnosticMaterialPath",
+                "PresentationStatus"
             };
             Dictionary<string, int> indices =
                 BuildColumnIndices(
@@ -1519,6 +2428,8 @@ namespace MSC.Editor.WorldBaseline
                     collider => collider.EntityStableId,
                     collider => collider.ColliderStableId,
                     StringComparer.Ordinal);
+            IReadOnlyDictionary<long, int[]> staticBatchSubsets =
+                WorldStaticBatchSubsetTable.ParseCommittedTable();
             var seen = new HashSet<string>(StringComparer.Ordinal);
             string line;
             int lineNumber = 1;
@@ -1557,6 +2468,47 @@ namespace MSC.Editor.WorldBaseline
                 colliderByEntity.TryGetValue(
                     id,
                     out string colliderId);
+                string[] effectiveMaterialSlots = Array.Empty<string>();
+                if (entry.IncludeRenderer)
+                {
+                    string meshPath =
+                        staticBatchSubsets.ContainsKey(
+                            entry.Placement.SourceObjectId)
+                            ? WorldBaselinePaths.DerivedMeshRoot + "/" +
+                              entry.Placement.StableId + ".asset"
+                            : WorldBaselinePaths.SourceMeshRoot + "/" +
+                              entry.Placement.MeshGuid + ".asset";
+                    Mesh mesh =
+                        AssetDatabase.LoadAssetAtPath<Mesh>(meshPath);
+                    if (mesh == null)
+                    {
+                        result.Errors.Add(
+                            "Ownership manifest validation cannot load " +
+                            "sanitized mesh for entity " + id + ".");
+                        effectiveMaterialSlots =
+                            entry.SourceMaterialGuids;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            effectiveMaterialSlots =
+                                DonorWorldMaterialTexturePlan
+                                    .ResolveSourceMaterialSlots(
+                                        entry,
+                                        mesh.subMeshCount);
+                        }
+                        catch (Exception exception)
+                        {
+                            result.Errors.Add(
+                                "Ownership manifest material-slot " +
+                                "resolution failed for entity " + id +
+                                ": " + exception.Message);
+                            effectiveMaterialSlots =
+                                entry.SourceMaterialGuids;
+                        }
+                    }
+                }
                 string[] actual =
                 {
                     Get("ReplacementKey"),
@@ -1570,7 +2522,11 @@ namespace MSC.Editor.WorldBaseline
                     Get("EffectiveActive"),
                     Get("ColliderStableId"),
                     Get("Classification"),
-                    Get("SourceRevisionId")
+                    Get("SourceRevisionId"),
+                    Get("SourceMaterialGuids"),
+                    Get("LegacyTexturedMaterialPaths"),
+                    Get("LegacyDiagnosticMaterialPath"),
+                    Get("PresentationStatus")
                 };
                 string[] expectedValues =
                 {
@@ -1586,7 +2542,31 @@ namespace MSC.Editor.WorldBaseline
                     entry.EffectiveActive ? "1" : "0",
                     colliderId ?? string.Empty,
                     "TemporaryDirectImport",
-                    WorldBaselinePaths.SourceRevisionId
+                    WorldBaselinePaths.SourceRevisionId,
+                    string.Join(";", effectiveMaterialSlots),
+                    entry.IncludeRenderer
+                        ? string.Join(
+                            ";",
+                            effectiveMaterialSlots.Select(
+                                materialGuid =>
+                                    string.Equals(
+                                        materialGuid,
+                                        DonorWorldMaterialTexturePlan
+                                            .BuiltInFallbackGuid,
+                                        StringComparison.Ordinal)
+                                        ? WorldBaselinePaths
+                                            .UnsupportedMaterial
+                                        : WorldBaselinePaths
+                                            .TexturedMaterial(
+                                                materialGuid)))
+                        : string.Empty,
+                    entry.IncludeRenderer
+                        ? WorldBaselinePaths.CategoryMaterial(
+                            entry.Placement.Category)
+                        : string.Empty,
+                    entry.IncludeRenderer
+                        ? "LegacyTexturedActive;LegacyDiagnosticAvailable"
+                        : "MetadataOnly"
                 };
                 if (!actual.SequenceEqual(
                         expectedValues,
@@ -1618,7 +2598,8 @@ namespace MSC.Editor.WorldBaseline
             {
                 "OwnershipClass", "Rule", "EntityCount",
                 "RendererCount", "ColliderCount", "Reason",
-                "FutureAction"
+                "FutureAction", "PresentationAssets",
+                "PresentationPolicy"
             };
             Dictionary<string, int> indices =
                 BuildColumnIndices(
@@ -1704,7 +2685,11 @@ namespace MSC.Editor.WorldBaseline
                         expectedValues,
                         StringComparer.Ordinal) ||
                     string.IsNullOrWhiteSpace(Get("Reason")) ||
-                    string.IsNullOrWhiteSpace(Get("FutureAction")))
+                    string.IsNullOrWhiteSpace(Get("FutureAction")) ||
+                    string.IsNullOrWhiteSpace(
+                        Get("PresentationAssets")) ||
+                    string.IsNullOrWhiteSpace(
+                        Get("PresentationPolicy")))
                 {
                     result.Errors.Add(
                         "Ownership matrix row drifted for rule " + rule);

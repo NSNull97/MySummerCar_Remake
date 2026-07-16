@@ -192,6 +192,14 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                         streaming.OwnedLoadedSceneCount,
                     rendererCount = snapshot.rendererCount,
                     colliderCount = snapshot.colliderCount,
+                    generatedMaterialCount =
+                        snapshot.generatedMaterialCount,
+                    runtimeMaterialInstanceCount =
+                        snapshot.runtimeMaterialInstanceCount,
+                    generatedTextureCount =
+                        snapshot.generatedTextureCount,
+                    generatedTextureMemoryBytes =
+                        snapshot.generatedTextureMemoryBytes,
                     usedMemoryBytes =
                         snapshot.totalUsedMemoryBytes,
                     reservedMemoryBytes =
@@ -263,10 +271,45 @@ namespace MSC.Tests.PlayMode.WorldBaseline
             PerformanceSnapshot recovered = CaptureSnapshot(
                 "donor-recovered",
                 streaming);
+            peakUsedMemory = Math.Max(
+                peakUsedMemory,
+                recovered.totalUsedMemoryBytes);
+            peakReservedMemory = Math.Max(
+                peakReservedMemory,
+                recovered.totalReservedMemoryBytes);
+
+            foreach (Vector3 position in route)
+            {
+                installer.SpawnedPlayer.transform.position = position;
+                streaming.ReportFocusSpeedMetersPerSecond(0f);
+                yield return RefreshWithSampling(
+                    streaming,
+                    frameMilliseconds,
+                    mainThread,
+                    renderThread,
+                    null);
+            }
+            yield return WaitFrames(
+                30,
+                value =>
+                {
+                    frameMilliseconds.Add(value);
+                    mainThread.Sample();
+                    renderThread.Sample();
+                });
+            PerformanceSnapshot warmedRecovered = CaptureSnapshot(
+                "donor-warmed-recovered",
+                streaming);
+            peakUsedMemory = Math.Max(
+                peakUsedMemory,
+                warmedRecovered.totalUsedMemoryBytes);
+            peakReservedMemory = Math.Max(
+                peakReservedMemory,
+                warmedRecovered.totalReservedMemoryBytes);
 
             var evidence = new PerformanceEvidence
             {
-                schemaVersion = 1,
+                schemaVersion = 2,
                 validatorId =
                     "donor-world-streaming-performance-06b2",
                 capturedUtc = DateTime.UtcNow.ToString(
@@ -301,6 +344,7 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                 initial = initial,
                 vehiclePreload = preloadSnapshot,
                 recovered = recovered,
+                warmedRecovered = warmedRecovered,
                 peakUsedMemoryBytes = peakUsedMemory,
                 peakReservedMemoryBytes =
                     peakReservedMemory,
@@ -331,6 +375,37 @@ namespace MSC.Tests.PlayMode.WorldBaseline
             Assert.That(
                 streaming.IsGlobalSceneLoaded("global-legacy"),
                 Is.True);
+            Assert.That(
+                initial.generatedMaterialCount,
+                Is.GreaterThan(0));
+            Assert.That(
+                initial.generatedTextureCount,
+                Is.GreaterThan(0));
+            Assert.That(
+                initial.runtimeMaterialInstanceCount,
+                Is.Zero);
+            Assert.That(
+                preloadSnapshot.runtimeMaterialInstanceCount,
+                Is.Zero);
+            Assert.That(
+                recovered.runtimeMaterialInstanceCount,
+                Is.Zero);
+            Assert.That(
+                warmedRecovered.runtimeMaterialInstanceCount,
+                Is.Zero);
+            Assert.That(
+                transitions.All(transition =>
+                    transition.runtimeMaterialInstanceCount == 0),
+                Is.True);
+            Assert.That(
+                warmedRecovered.generatedMaterialCount,
+                Is.EqualTo(recovered.generatedMaterialCount));
+            Assert.That(
+                warmedRecovered.generatedTextureCount,
+                Is.EqualTo(recovered.generatedTextureCount));
+            Assert.That(
+                warmedRecovered.generatedTextureMemoryBytes,
+                Is.EqualTo(recovered.generatedTextureMemoryBytes));
             WriteEvidence(evidence);
             Debug.Log(
                 "M06B2_STREAMING_PERFORMANCE_EVIDENCE_WRITTEN path=" +
@@ -490,8 +565,23 @@ namespace MSC.Tests.PlayMode.WorldBaseline
 
         private static PerformanceSnapshot CaptureSnapshot(
             string id,
-            ProductionWorldStreamingService streaming) =>
-            new PerformanceSnapshot
+            ProductionWorldStreamingService streaming)
+        {
+            Material[] generatedMaterials =
+                Resources.FindObjectsOfTypeAll<Material>()
+                    .Where(material =>
+                        material.name.StartsWith(
+                            "M06B2_",
+                            StringComparison.Ordinal))
+                    .ToArray();
+            Texture[] generatedTextures =
+                Resources.FindObjectsOfTypeAll<Texture>()
+                    .Where(texture =>
+                        texture.name.StartsWith(
+                            "M06B2_",
+                            StringComparison.Ordinal))
+                    .ToArray();
+            return new PerformanceSnapshot
             {
                 id = id,
                 totalUsedMemoryBytes =
@@ -512,8 +602,27 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                 colliderCount =
                     Object.FindObjectsByType<Collider>(
                         FindObjectsInactive.Exclude,
-                        FindObjectsSortMode.None).Length
+                        FindObjectsSortMode.None).Length,
+                generatedMaterialCount =
+                    generatedMaterials.Select(material =>
+                            material.GetInstanceID())
+                        .Distinct()
+                        .Count(),
+                runtimeMaterialInstanceCount =
+                    generatedMaterials.Count(material =>
+                        material.name.EndsWith(
+                            " (Instance)",
+                            StringComparison.Ordinal)),
+                generatedTextureCount =
+                    generatedTextures.Select(texture =>
+                            texture.GetInstanceID())
+                        .Distinct()
+                        .Count(),
+                generatedTextureMemoryBytes =
+                    generatedTextures.Sum(texture =>
+                        Profiler.GetRuntimeMemorySizeLong(texture))
             };
+        }
 
         private static double FindSceneLoadTime(
             IReadOnlyDictionary<string, double> times,
@@ -616,6 +725,8 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                 new PerformanceSnapshot();
             public PerformanceSnapshot recovered =
                 new PerformanceSnapshot();
+            public PerformanceSnapshot warmedRecovered =
+                new PerformanceSnapshot();
             public long peakUsedMemoryBytes;
             public long peakReservedMemoryBytes;
             public double vehiclePreloadRefreshMilliseconds;
@@ -641,6 +752,10 @@ namespace MSC.Tests.PlayMode.WorldBaseline
             public int ownedSceneCount;
             public int rendererCount;
             public int colliderCount;
+            public int generatedMaterialCount;
+            public int runtimeMaterialInstanceCount;
+            public int generatedTextureCount;
+            public long generatedTextureMemoryBytes;
         }
 
         [Serializable]
@@ -654,6 +769,10 @@ namespace MSC.Tests.PlayMode.WorldBaseline
             public int loadedOwnedSceneCount;
             public int rendererCount;
             public int colliderCount;
+            public int generatedMaterialCount;
+            public int runtimeMaterialInstanceCount;
+            public int generatedTextureCount;
+            public long generatedTextureMemoryBytes;
             public long usedMemoryBytes;
             public long reservedMemoryBytes;
         }

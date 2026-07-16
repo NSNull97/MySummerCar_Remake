@@ -123,24 +123,40 @@ namespace MSC.Editor.WorldBaseline
                 EditorStyles.boldLabel);
             using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button("Legacy"))
+                if (GUILayout.Button("Legacy Textured"))
                 {
-                    OpenAndShowLegacy();
+                    ApplyPresentationMode(
+                        DonorWorldLegacyPresentationMode
+                            .LegacyTextured);
                 }
-                if (GUILayout.Button("Prototype fixture"))
+                if (GUILayout.Button("Legacy Diagnostic"))
+                {
+                    ApplyPresentationMode(
+                        DonorWorldLegacyPresentationMode
+                            .LegacyDiagnostic);
+                }
+                if (GUILayout.Button("Prototype Hidden"))
+                {
+                    ShowDonorProfileAndHidePrototype();
+                }
+            }
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button("Open prototype fixture"))
                 {
                     OpenSingleScene(
                         WorldBaseline06B2Paths.PrototypeFixtureScene);
                 }
-                if (GUILayout.Button("Production override"))
+                if (GUILayout.Button("Production override preview"))
                 {
                     OpenAndHideLegacy();
                 }
             }
             EditorGUILayout.HelpBox(
-                "Production override mode hides loaded legacy roots only in " +
-                "the Editor visibility state. No production replacement art " +
-                "is authored in 06B2.",
+                "LegacyTextured and LegacyDiagnostic switch shared " +
+                "materials without creating instances. PrototypeHidden " +
+                "returns to the active donor profile; production override " +
+                "preview only changes Editor visibility.",
                 MessageType.Info);
 
             DonorWorldBaselineEntityMetadata selected =
@@ -248,20 +264,67 @@ namespace MSC.Editor.WorldBaseline
             }
         }
 
-        private static void OpenAndShowLegacy()
+        private static void ApplyPresentationMode(
+            DonorWorldLegacyPresentationMode mode)
         {
-            Scene scene = OpenSingleScene(
+            Scene global = SceneManager.GetSceneByPath(
                 WorldBaseline06B2Paths.GlobalScene);
-            if (!scene.IsValid())
+            if (!global.IsValid() || !global.isLoaded)
+            {
+                global = OpenSingleScene(
+                    WorldBaseline06B2Paths.GlobalScene);
+            }
+            if (!global.IsValid())
             {
                 return;
             }
-            foreach (GameObject root in scene.GetRootGameObjects())
+
+            DonorWorldLegacyPresentationController controller =
+                global.GetRootGameObjects()
+                    .SelectMany(root =>
+                        root.GetComponentsInChildren<
+                            DonorWorldLegacyPresentationController>(
+                            includeInactive: true))
+                    .SingleOrDefault();
+            if (controller == null)
             {
-                SceneVisibilityManager.instance.Show(
-                    root,
-                    includeDescendants: true);
+                throw new InvalidOperationException(
+                    "Loaded donor global scene has no presentation " +
+                    "controller. Rebuild the 06B2 v5.1 profile.");
             }
+            controller.SetMode(mode);
+            foreach (Scene scene in Enumerable.Range(
+                         0,
+                         SceneManager.sceneCount)
+                     .Select(SceneManager.GetSceneAt))
+            {
+                foreach (GameObject root in scene.GetRootGameObjects())
+                {
+                    SceneVisibilityManager.instance.Show(
+                        root,
+                        includeDescendants: true);
+                }
+            }
+            SceneView.RepaintAll();
+        }
+
+        private static void ShowDonorProfileAndHidePrototype()
+        {
+            Scene prototype = SceneManager.GetSceneByPath(
+                WorldBaseline06B2Paths.PrototypeFixtureScene);
+            if (prototype.IsValid() && prototype.isLoaded)
+            {
+                if (!EditorSceneManager
+                        .SaveCurrentModifiedScenesIfUserWantsTo())
+                {
+                    return;
+                }
+                EditorSceneManager.CloseScene(
+                    prototype,
+                    removeScene: true);
+            }
+            ApplyPresentationMode(
+                DonorWorldLegacyPresentationMode.LegacyTextured);
         }
 
         private static void OpenAndHideLegacy()

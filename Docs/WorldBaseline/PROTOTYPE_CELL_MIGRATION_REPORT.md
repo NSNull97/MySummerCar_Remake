@@ -98,4 +98,20 @@ GameObject, hierarchy path или Unity scene object reference.
 legacy/remaster debt. Они не считаются дефектом migration и не заявляются
 исправленными.
 
-Migration gate закрыт: **PASS / HumanAccepted**.
+Migration geometry/traversal gate закрыт: **PASS / HumanAccepted**.
+
+## 6. Дополнение v5.1 — textured presentation
+
+Предыдущая ручная приёмка подтверждает расположение donor world, traversal,
+streaming и отсутствие rejected prototype visuals. Она не считается
+автоматической приёмкой нового textured/HDRP presentation layer.
+
+Для `cell_0_-3` и `cell_0_-2` active profile теперь использует общие
+`LegacyTextured` materials/textures, а `PrototypeHidden` остаётся обязательным
+режимом. Повторная визуальная проверка home/garage, shoreline/lake, исправленной
+воды и бывших prototype regions принята пользователем 2026-07-16:
+**PASS / HumanAccepted**. Legacy textures, terrain banding и tree-wall artifacts
+приняты только как temporary visual debt. Пользователь также прошёл по мостам и
+переносил персонажа между ячейками без обнаруженных проблем. Общий
+bridge/cell-boundary completion check имеет статус **PASS / HumanAccepted**;
+entry gate 06B3 — **GO**, сам 06B3 не начат.

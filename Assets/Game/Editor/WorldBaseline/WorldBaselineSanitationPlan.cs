@@ -12,6 +12,7 @@ namespace MSC.Editor.WorldBaseline
         public WorldBaselineSanitationEntry(
             WorldEntityPlacement placement,
             string sourceParentStableId,
+            string[] sourceMaterialGuids,
             bool effectiveActive,
             int[] componentClassIds,
             bool includeRenderer,
@@ -20,6 +21,7 @@ namespace MSC.Editor.WorldBaseline
         {
             Placement = placement;
             SourceParentStableId = sourceParentStableId;
+            SourceMaterialGuids = sourceMaterialGuids;
             EffectiveActive = effectiveActive;
             ComponentClassIds = componentClassIds;
             IncludeRenderer = includeRenderer;
@@ -29,6 +31,9 @@ namespace MSC.Editor.WorldBaseline
 
         public WorldEntityPlacement Placement { get; }
         public string SourceParentStableId { get; }
+        public string[] SourceMaterialGuids { get; }
+        public string SourceMaterialGuidsText =>
+            string.Join(";", SourceMaterialGuids);
         public bool SourceActiveSelf => Placement.Active;
         public bool EffectiveActive { get; }
         public int[] ComponentClassIds { get; }
@@ -64,6 +69,8 @@ namespace MSC.Editor.WorldBaseline
             IReadOnlyList<WorldEntityPlacement> placements =
                 WorldEntityTable.Parse(csv);
             Dictionary<string, int[]> components = ParseComponentClassIds(csv);
+            Dictionary<string, string[]> materials =
+                ParseSourceMaterialGuids(csv);
             Dictionary<string, SourceActivationRecord> activation =
                 ParseSourceActivation();
             var effectiveActivation =
@@ -85,6 +92,14 @@ namespace MSC.Editor.WorldBaseline
                     {
                         throw new InvalidDataException(
                             "Full source activation metadata is missing for " +
+                            placement.StableId);
+                    }
+                    if (!materials.TryGetValue(
+                            placement.StableId,
+                            out string[] sourceMaterialGuids))
+                    {
+                        throw new InvalidDataException(
+                            "Source material-slot metadata is missing for " +
                             placement.StableId);
                     }
                     if (activationRecord.ActiveSelf != placement.Active)
@@ -145,6 +160,7 @@ namespace MSC.Editor.WorldBaseline
                     return new WorldBaselineSanitationEntry(
                         placement,
                         activationRecord.ParentStableId,
+                        sourceMaterialGuids,
                         isEffectivelyActive,
                         classIds,
                         includeRenderer,
@@ -177,6 +193,52 @@ namespace MSC.Editor.WorldBaseline
                 throw new InvalidDataException(
                     $"Sanitation-plan count drift: entities={result.Length}, " +
                     $"renderers={rendererCount}, metadataOnly={result.Length - rendererCount}.");
+            }
+
+            return result;
+        }
+
+        private static Dictionary<string, string[]>
+            ParseSourceMaterialGuids(string csv)
+        {
+            using var reader = new StringReader(csv);
+            List<string> headers = WorldEntityTable.ParseRow(
+                reader.ReadLine() ?? string.Empty);
+            int stableIdIndex = headers.IndexOf("StableId");
+            int materialIndex = headers.IndexOf("MaterialGuids");
+            if (stableIdIndex < 0 || materialIndex < 0)
+            {
+                throw new FormatException(
+                    "World entity table lacks StableId or MaterialGuids.");
+            }
+
+            var result = new Dictionary<string, string[]>(
+                StringComparer.Ordinal);
+            string line;
+            int lineNumber = 1;
+            while ((line = reader.ReadLine()) != null)
+            {
+                lineNumber++;
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+
+                List<string> values = WorldEntityTable.ParseRow(line);
+                if (values.Count != headers.Count)
+                {
+                    throw new FormatException(
+                        $"World entity table line {lineNumber} has an invalid column count.");
+                }
+
+                string[] materialGuids = values[materialIndex]
+                    .Split(
+                        ';',
+                        StringSplitOptions.RemoveEmptyEntries)
+                    .Select(value => value.Trim())
+                    .Where(value => value.Length > 0)
+                    .ToArray();
+                result.Add(values[stableIdIndex], materialGuids);
             }
 
             return result;

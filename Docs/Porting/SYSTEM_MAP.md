@@ -395,10 +395,15 @@ identity.
 ```mermaid
 flowchart LR
     CANON["06B1 canonical sanitized donor scene"] --> PLAN["Deterministic 06B2 ownership plan"]
+    MAT["Frozen donor .mat metadata"] --> CONVERT["Project-owned HDRP compatibility converter"]
+    TEX["Frozen referenced PNG closure"] --> CONVERT
+    CONVERT --> SHARED["Shared generated materials + role textures"]
     PART["Existing 512 m project cell grid"] --> PLAN
     ALLOW["32-record safe collider allowlist"] --> PLAN
     PLAN --> GLOBAL["World_Global_Legacy"]
     PLAN --> CELLS["49 World_Cell_X_Z_Legacy scenes"]
+    SHARED --> GLOBAL
+    SHARED --> CELLS
     GLOBAL --> SERVICE["Existing ProductionWorldStreamingService"]
     CELLS --> SERVICE
     BOOT["Bootstrap composition root"] --> SERVICE
@@ -435,6 +440,20 @@ The active donor profile replaces the two rejected custom visual cells without
 deleting their technical fixtures. Automated lifecycle/collision validation
 passes. The user accepted Bootstrap startup, donor-map fidelity, walking to the
 lake, Teimo-area unload/reload and out-of-bounds recovery on 2026-07-16.
-The flat lake and original-game terrain voids remain late-remaster debt;
-dedicated vehicle/bridge traversal remains useful 06B3 coverage. The 06B2 gate
-is human-accepted and 06B3 may follow after a focused commit.
+The flat lake and original-game terrain voids remain late-remaster debt.
+
+The v5.1 presentation path keeps donor shader/runtime systems outside the new
+runtime. `MSC.Editor.WorldBaseline` reads frozen material metadata and referenced
+images, generates shared HDRP Lit/Unlit compatibility assets below the ignored
+RuntimeBaseline boundary and records source hashes in committed manifests.
+`MSC.LegacyImport.Runtime` switches `LegacyTextured` and `LegacyDiagnostic`
+through `Renderer.sharedMaterials`; it does not create material instances or
+become gameplay authority. The earlier bounded geometry/traversal evidence and
+the v5.1 representative-area textured review, including corrected water, are
+human-accepted as of 2026-07-16. Legacy material, terrain-banding and tree-wall
+artifacts remain accepted temporary debt. On 2026-07-16 the user walked the
+bridges and moved the character across cell boundaries without observed
+traversal, collision, seam, duplicate, popping or load/unload issues. The
+bridge/cell-boundary gate is `PASS / HumanAccepted`; dedicated vehicle driving
+was not repeated, while automated high-speed preload validation passed. The
+06B3 entry gate is `GO`; 06B3 itself has not started.

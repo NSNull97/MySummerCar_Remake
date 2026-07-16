@@ -39,6 +39,8 @@ namespace MSC.Editor.WorldBaseline
             AssertEntryGate();
             DonorWorldCellizationPlan plan =
                 DonorWorldCellizationPlan.Load();
+            DonorWorldMaterialTexturePlan presentationPlan =
+                DonorWorldMaterialTexturePlan.Load();
             SceneSetup[] previousSetup =
                 EditorSceneManager.GetSceneManagerSetup();
             bool restoreSetup =
@@ -46,9 +48,15 @@ namespace MSC.Editor.WorldBaseline
             try
             {
                 EnsureFolders();
+                DonorWorldMaterialTextureAssets presentation =
+                    DonorWorldMaterialTexturePipeline.Build(
+                        presentationPlan);
                 IReadOnlyDictionary<string, Mesh> collisionMeshes =
                     SynchronizeCollisionMeshes(plan.SafeColliders);
-                GenerateStreamingScenes(plan, collisionMeshes);
+                GenerateStreamingScenes(
+                    plan,
+                    collisionMeshes,
+                    presentation);
 
                 ProductionWorldStreamingBuilder.Build();
                 WorldGameplayCellCatalog gameplayCatalog =
@@ -57,7 +65,7 @@ namespace MSC.Editor.WorldBaseline
                 ProductionWorldStreamingManifest activeManifest =
                     CreateOrUpdateActiveManifest(plan, gameplayCatalog);
                 WireActiveBootstrap(activeManifest);
-                WriteOwnershipExports(plan);
+                WriteOwnershipExports(plan, presentationPlan);
 
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh(
@@ -103,7 +111,9 @@ namespace MSC.Editor.WorldBaseline
             AssertEntryGate();
             DonorWorldCellizationPlan plan =
                 DonorWorldCellizationPlan.Load();
-            WriteOwnershipExports(plan);
+            DonorWorldMaterialTexturePlan presentationPlan =
+                DonorWorldMaterialTexturePlan.Load();
+            WriteOwnershipExports(plan, presentationPlan);
             AssetDatabase.Refresh(
                 ImportAssetOptions.ForceSynchronousImport |
                 ImportAssetOptions.ForceUpdate);
@@ -217,7 +227,8 @@ namespace MSC.Editor.WorldBaseline
 
         private static void GenerateStreamingScenes(
             DonorWorldCellizationPlan plan,
-            IReadOnlyDictionary<string, Mesh> collisionMeshes)
+            IReadOnlyDictionary<string, Mesh> collisionMeshes,
+            DonorWorldMaterialTextureAssets presentation)
         {
             var expectedScenes = new HashSet<string>(
                 StringComparer.Ordinal)
@@ -242,7 +253,8 @@ namespace MSC.Editor.WorldBaseline
                 "global",
                 WorldBaseline06B2Paths.GlobalScene,
                 collisionMeshes,
-                staticBatchSubsets);
+                staticBatchSubsets,
+                presentation);
             foreach (string cellId in plan.CellIds)
             {
                 GenerateOwnerScene(
@@ -250,7 +262,8 @@ namespace MSC.Editor.WorldBaseline
                     cellId,
                     WorldBaseline06B2Paths.CellScene(cellId),
                     collisionMeshes,
-                    staticBatchSubsets);
+                    staticBatchSubsets,
+                    presentation);
             }
         }
 
@@ -259,7 +272,8 @@ namespace MSC.Editor.WorldBaseline
             string ownerId,
             string scenePath,
             IReadOnlyDictionary<string, Mesh> collisionMeshes,
-            IReadOnlyDictionary<long, int[]> staticBatchSubsets)
+            IReadOnlyDictionary<long, int[]> staticBatchSubsets,
+            DonorWorldMaterialTextureAssets presentation)
         {
             IReadOnlyList<DonorWorldCellizationAssignment> assignments =
                 plan.GetOwnerEntries(ownerId);
@@ -339,11 +353,11 @@ namespace MSC.Editor.WorldBaseline
                     entity.AddComponent<MeshFilter>().sharedMesh = mesh;
                     MeshRenderer renderer =
                         entity.AddComponent<MeshRenderer>();
-                    Material material =
+                    Material diagnosticMaterial =
                         AssetDatabase.LoadAssetAtPath<Material>(
                             WorldBaselinePaths.CategoryMaterial(
                                 entry.Placement.Category));
-                    if (material == null)
+                    if (diagnosticMaterial == null)
                     {
                         throw new FileNotFoundException(
                             "06B1 category material is missing.",
@@ -352,9 +366,34 @@ namespace MSC.Editor.WorldBaseline
                                     entry.Placement.Category)));
                     }
 
-                    renderer.sharedMaterials = Enumerable.Repeat(
-                        material,
-                        Mathf.Max(1, mesh.subMeshCount)).ToArray();
+                    string[] sourceMaterialSlots =
+                        presentation.ResolveSourceMaterialSlots(
+                            entry,
+                            mesh.subMeshCount);
+                    Material[] texturedMaterials =
+                        presentation.ResolveTexturedMaterials(
+                            sourceMaterialSlots);
+                    Material[] diagnosticMaterials =
+                        Enumerable.Repeat(
+                                diagnosticMaterial,
+                                sourceMaterialSlots.Length)
+                            .ToArray();
+                    renderer.sharedMaterials = texturedMaterials;
+                    var binding = entity.AddComponent<
+                        DonorWorldLegacyMaterialBinding>();
+                    binding.Configure(
+                        renderer,
+                        sourceMaterialSlots,
+                        texturedMaterials,
+                        diagnosticMaterials);
+                    if (!binding.Apply(
+                            DonorWorldLegacyPresentationMode
+                                .LegacyTextured))
+                    {
+                        throw new InvalidOperationException(
+                            "Could not apply LegacyTextured materials for " +
+                            entry.Placement.StableId);
+                    }
                     renderer.shadowCastingMode =
                         ShadowCastingMode.Off;
                     renderer.receiveShadows = false;
@@ -712,6 +751,21 @@ namespace MSC.Editor.WorldBaseline
                     "process-lifetime object.");
             }
 
+            DonorWorldLegacyPresentationController[] controllers =
+                root.GetComponents<
+                    DonorWorldLegacyPresentationController>();
+            if (controllers.Length > 1)
+            {
+                throw new InvalidOperationException(
+                    "Active Bootstrap contains duplicate donor-world " +
+                    "presentation controllers.");
+            }
+            DonorWorldLegacyPresentationController presentationController =
+                controllers.Length == 1
+                    ? controllers[0]
+                    : root.gameObject.AddComponent<
+                        DonorWorldLegacyPresentationController>();
+
             service.ConfigureForAuthoring(manifest);
             installer.ConfigureForAuthoring(
                 root,
@@ -721,6 +775,7 @@ namespace MSC.Editor.WorldBaseline
                 ProductionWorldStreamingBuilder.PlayerSpawnRotation);
             EditorUtility.SetDirty(service);
             EditorUtility.SetDirty(installer);
+            EditorUtility.SetDirty(presentationController);
             EditorSceneManager.MarkSceneDirty(scene);
             if (!EditorSceneManager.SaveScene(
                     scene,
@@ -732,20 +787,25 @@ namespace MSC.Editor.WorldBaseline
         }
 
         private static void WriteOwnershipExports(
-            DonorWorldCellizationPlan plan)
+            DonorWorldCellizationPlan plan,
+            DonorWorldMaterialTexturePlan presentation)
         {
             Dictionary<string, string> colliderByEntity =
                 plan.SafeColliders.ToDictionary(
                     collider => collider.EntityStableId,
                     collider => collider.ColliderStableId,
                     StringComparer.Ordinal);
+            IReadOnlyDictionary<long, int[]> staticBatchSubsets =
+                WorldStaticBatchSubsetTable.ParseCommittedTable();
             var manifest = new StringBuilder();
             manifest.AppendLine(
                 "LegacyWorldObjectId,ReplacementKey,SourceObjectId," +
                 "SourceHierarchyPath,SemanticCategory,SourceCellId," +
                 "AssignedOwner,OwnershipReason,HasRenderer," +
                 "EffectiveActive,ColliderStableId,Classification," +
-                "SourceRevisionId");
+                "SourceRevisionId,SourceMaterialGuids," +
+                "LegacyTexturedMaterialPaths," +
+                "LegacyDiagnosticMaterialPath,PresentationStatus");
             foreach (DonorWorldCellizationAssignment assignment in
                      plan.Assignments)
             {
@@ -754,6 +814,22 @@ namespace MSC.Editor.WorldBaseline
                 colliderByEntity.TryGetValue(
                     entry.Placement.StableId,
                     out string colliderId);
+                string[] effectiveMaterialSlots;
+                if (entry.IncludeRenderer)
+                {
+                    Mesh mesh = LoadSanitizedRenderMesh(
+                        entry,
+                        staticBatchSubsets);
+                    effectiveMaterialSlots =
+                        DonorWorldMaterialTexturePlan
+                            .ResolveSourceMaterialSlots(
+                                entry,
+                                mesh.subMeshCount);
+                }
+                else
+                {
+                    effectiveMaterialSlots = Array.Empty<string>();
+                }
                 AppendCsvRow(
                     manifest,
                     entry.Placement.StableId,
@@ -769,7 +845,31 @@ namespace MSC.Editor.WorldBaseline
                     entry.EffectiveActive ? "1" : "0",
                     colliderId ?? string.Empty,
                     "TemporaryDirectImport",
-                    WorldBaselinePaths.SourceRevisionId);
+                    WorldBaselinePaths.SourceRevisionId,
+                    string.Join(";", effectiveMaterialSlots),
+                    entry.IncludeRenderer
+                        ? string.Join(
+                            ";",
+                            effectiveMaterialSlots.Select(
+                                materialGuid =>
+                                    string.Equals(
+                                        materialGuid,
+                                        DonorWorldMaterialTexturePlan
+                                            .BuiltInFallbackGuid,
+                                        StringComparison.Ordinal)
+                                        ? WorldBaselinePaths
+                                            .UnsupportedMaterial
+                                        : WorldBaselinePaths
+                                            .TexturedMaterial(
+                                                materialGuid)))
+                        : string.Empty,
+                    entry.IncludeRenderer
+                        ? WorldBaselinePaths.CategoryMaterial(
+                            entry.Placement.Category)
+                        : string.Empty,
+                    entry.IncludeRenderer
+                        ? "LegacyTexturedActive;LegacyDiagnosticAvailable"
+                        : "MetadataOnly");
             }
 
             WriteProjectText(
@@ -779,7 +879,8 @@ namespace MSC.Editor.WorldBaseline
             var matrix = new StringBuilder();
             matrix.AppendLine(
                 "OwnershipClass,Rule,EntityCount,RendererCount," +
-                "ColliderCount,Reason,FutureAction");
+                "ColliderCount,Reason,FutureAction," +
+                "PresentationAssets,PresentationPolicy");
             foreach (IGrouping<string, DonorWorldCellizationAssignment> group
                      in plan.Assignments
                          .GroupBy(
@@ -814,7 +915,17 @@ namespace MSC.Editor.WorldBaseline
                         ? "Keep global until a seam-safe production " +
                           "replacement tool is validated."
                         : "Replace cell-by-cell through the matching " +
-                          "ReplacementKey.");
+                          "ReplacementKey.",
+                    presentation.Materials.Count.ToString(
+                        CultureInfo.InvariantCulture) +
+                    " resolved HDRP materials + 1 reviewed fallback; " +
+                    presentation.Textures.Values.Count(texture =>
+                        texture.IsImported).ToString(
+                            CultureInfo.InvariantCulture) +
+                    " texture role variants",
+                    "Shared source-guid assets; LegacyTextured active; " +
+                    "LegacyDiagnostic available; donor shader/runtime " +
+                    "systems excluded.");
             }
 
             WriteProjectText(

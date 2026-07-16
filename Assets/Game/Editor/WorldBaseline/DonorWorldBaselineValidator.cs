@@ -615,11 +615,21 @@ namespace MSC.Editor.WorldBaseline
                 }
 
                 string extension = Path.GetExtension(file);
-                if (!allowedExtensions.Contains(extension))
+                string projectRelativePath =
+                    ToProjectRelativePath(file);
+                bool isPresentationTexture =
+                    projectRelativePath.StartsWith(
+                        WorldBaselinePaths.TextureRoot + "/",
+                        StringComparison.Ordinal) &&
+                    extension.Equals(
+                        ".png",
+                        StringComparison.OrdinalIgnoreCase);
+                if (!allowedExtensions.Contains(extension) &&
+                    !isPresentationTexture)
                 {
                     result.Errors.Add(
                         "Forbidden file type inside RuntimeBaseline: " +
-                        ToProjectRelativePath(file));
+                        projectRelativePath);
                 }
             }
 
@@ -649,6 +659,12 @@ namespace MSC.Editor.WorldBaseline
                     absoluteRoot, "*", SearchOption.AllDirectories)
                 .Where(file => !ToProjectRelativePath(file).StartsWith(
                     WorldBaseline06B2Paths.StreamingRoot + "/",
+                    StringComparison.Ordinal))
+                .Where(file => !ToProjectRelativePath(file).StartsWith(
+                    WorldBaselinePaths.TexturedMaterialRoot + "/",
+                    StringComparison.Ordinal))
+                .Where(file => !ToProjectRelativePath(file).StartsWith(
+                    WorldBaselinePaths.TextureRoot + "/",
                     StringComparison.Ordinal))
                 .Where(file =>
                 {

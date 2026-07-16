@@ -13,6 +13,11 @@ namespace MSC.Editor.WorldBaseline
         public const string SourceMeshRoot = MeshRoot + "/Source";
         public const string DerivedMeshRoot = MeshRoot + "/Derived";
         public const string MaterialRoot = WorldRoot + "/Materials";
+        public const string TexturedMaterialRoot =
+            MaterialRoot + "/LegacyTextured";
+        public const string TextureRoot = WorldRoot + "/Textures";
+        public const string UnsupportedMaterial =
+            TexturedMaterialRoot + "/M06B2_UnsupportedSource.mat";
         public const string CanonicalScene =
             SceneRoot + "/World_DonorBaseline_Canonical.unity";
         public const string SourceManifest =
@@ -36,6 +41,16 @@ namespace MSC.Editor.WorldBaseline
                 : category;
             return MaterialRoot + "/" + fileName + ".mat";
         }
+
+        public static string TexturedMaterial(string sourceMaterialGuid) =>
+            TexturedMaterialRoot + "/M06B2_" +
+            sourceMaterialGuid + ".mat";
+
+        public static string ConvertedTexture(
+            string sourceTextureGuid,
+            string role) =>
+            TextureRoot + "/M06B2_" + sourceTextureGuid + "_" +
+            role.ToLowerInvariant() + ".png";
 
         public static string ToAbsoluteProjectPath(string path) =>
             WorldTransferPaths.ToAbsoluteProjectPath(path);

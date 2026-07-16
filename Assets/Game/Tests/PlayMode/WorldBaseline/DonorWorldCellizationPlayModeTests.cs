@@ -402,6 +402,111 @@ namespace MSC.Tests.PlayMode.WorldBaseline
         }
 
         [UnityTest]
+        public IEnumerator PresentationModes_UseSharedAssetsAndReloadWithoutInstanceGrowth()
+        {
+            RuntimeSession session = null;
+            yield return StartSession(value => session = value);
+            DonorWorldLegacyPresentationController controller =
+                Object.FindObjectsByType<
+                        DonorWorldLegacyPresentationController>(
+                        FindObjectsInactive.Include,
+                        FindObjectsSortMode.None)
+                    .Single();
+            DonorWorldLegacyMaterialBinding[] bindings =
+                Object.FindObjectsByType<
+                    DonorWorldLegacyMaterialBinding>(
+                    FindObjectsInactive.Include,
+                    FindObjectsSortMode.None);
+
+            Assert.That(bindings, Is.Not.Empty);
+            Assert.That(
+                bindings.All(binding => binding.IsConfigured),
+                Is.True);
+            Assert.That(
+                controller.Mode,
+                Is.EqualTo(
+                    DonorWorldLegacyPresentationMode.LegacyTextured));
+            AssertBindingsUseMode(
+                bindings,
+                DonorWorldLegacyPresentationMode.LegacyTextured);
+
+            controller.SetMode(
+                DonorWorldLegacyPresentationMode.LegacyDiagnostic);
+            Assert.That(
+                controller.LastRejectedBindingCount,
+                Is.Zero);
+            AssertBindingsUseMode(
+                bindings,
+                DonorWorldLegacyPresentationMode.LegacyDiagnostic);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                controller.SetMode(
+                    (DonorWorldLegacyPresentationMode)999));
+            Assert.That(
+                controller.Mode,
+                Is.EqualTo(
+                    DonorWorldLegacyPresentationMode.LegacyDiagnostic));
+
+            HashSet<int> materialIdsBefore =
+                CaptureGeneratedAssetIds<Material>();
+            HashSet<int> textureIdsBefore =
+                CaptureGeneratedAssetIds<Texture>();
+            Assert.That(materialIdsBefore, Is.Not.Empty);
+            Assert.That(textureIdsBefore, Is.Not.Empty);
+
+            Assert.That(
+                session.Streaming.Manifest.TryGetCell(
+                    "cell_0_-3",
+                    out ProductionWorldCellScene homeCell),
+                Is.True);
+            Scene homeScene =
+                FindLoadedScene(homeCell.ScenePath);
+            AsyncOperation unload =
+                SceneManager.UnloadSceneAsync(homeScene);
+            Assert.That(unload, Is.Not.Null);
+            yield return unload;
+            AsyncOperation reload =
+                SceneManager.LoadSceneAsync(
+                    homeCell.BuildIndex,
+                    LoadSceneMode.Additive);
+            Assert.That(reload, Is.Not.Null);
+            yield return reload;
+            yield return null;
+
+            DonorWorldLegacyMaterialBinding[] reloadedBindings =
+                GetSceneComponents<DonorWorldLegacyMaterialBinding>(
+                    FindLoadedScene(homeCell.ScenePath));
+            Assert.That(reloadedBindings, Is.Not.Empty);
+            Assert.That(
+                controller.Mode,
+                Is.EqualTo(
+                    DonorWorldLegacyPresentationMode.LegacyDiagnostic));
+            Assert.That(
+                controller.LastRejectedBindingCount,
+                Is.Zero);
+            AssertBindingsUseMode(
+                reloadedBindings,
+                DonorWorldLegacyPresentationMode.LegacyDiagnostic);
+            Assert.That(
+                CaptureGeneratedAssetIds<Material>(),
+                Is.EqualTo(materialIdsBefore));
+            Assert.That(
+                CaptureGeneratedAssetIds<Texture>(),
+                Is.EqualTo(textureIdsBefore));
+            Assert.That(
+                Resources.FindObjectsOfTypeAll<Material>()
+                    .Where(material =>
+                        material.name.StartsWith(
+                            "M06B2_",
+                            StringComparison.Ordinal))
+                    .Any(material =>
+                        material.name.EndsWith(
+                            " (Instance)",
+                            StringComparison.Ordinal)),
+                Is.False);
+        }
+
+        [UnityTest]
         public IEnumerator OutOfBoundsRecovery_ReturnsSpawnedPlayerToConfiguredSafeTransform()
         {
             RuntimeSession session = null;
@@ -635,6 +740,33 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                 registry.gameObject.GetInstanceID(),
                 Is.EqualTo(expectedRegistryInstanceId));
         }
+
+        private static void AssertBindingsUseMode(
+            IEnumerable<DonorWorldLegacyMaterialBinding> bindings,
+            DonorWorldLegacyPresentationMode mode)
+        {
+            foreach (DonorWorldLegacyMaterialBinding binding in bindings)
+            {
+                IReadOnlyList<Material> expected =
+                    mode ==
+                    DonorWorldLegacyPresentationMode.LegacyTextured
+                        ? binding.TexturedMaterials
+                        : binding.DiagnosticMaterials;
+                Assert.That(
+                    binding.TargetRenderer.sharedMaterials,
+                    Is.EqualTo(expected.ToArray()));
+            }
+        }
+
+        private static HashSet<int> CaptureGeneratedAssetIds<T>()
+            where T : Object =>
+            Resources.FindObjectsOfTypeAll<T>()
+                .Where(asset =>
+                    asset.name.StartsWith(
+                        "M06B2_",
+                        StringComparison.Ordinal))
+                .Select(asset => asset.GetInstanceID())
+                .ToHashSet();
 
         private static bool TryRaycastUpwardFacingTriangle(
             MeshCollider collider,

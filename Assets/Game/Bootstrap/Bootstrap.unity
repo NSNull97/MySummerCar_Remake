@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 161771366}
   - component: {fileID: 161771369}
   - component: {fileID: 161771368}
+  - component: {fileID: 161771370}
   m_Layer: 0
   m_Name: Game Composition Root
   m_TagString: Untagged
@@ -197,6 +198,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: MSC.World.Runtime::MSC.World.Streaming.ProductionWorldStreamingService
   manifest: {fileID: 11400000, guid: e17dab08902e82c4fb7b378f8fbc4c1c, type: 2}
   focus: {fileID: 0}
+--- !u!114 &161771370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161771365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72c7fe7cac5c4bbbb45e28b1a117ec6f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.LegacyImport.Runtime::MSC.LegacyImport.DonorWorldLegacyPresentationController
+  mode: 0
 --- !u!1 &492949555
 GameObject:
   m_ObjectHideFlags: 0

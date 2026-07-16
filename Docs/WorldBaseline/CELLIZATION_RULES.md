@@ -4,7 +4,7 @@
 
 Milestone: `06B2_DONOR_MAP_STREAMING_CELLIZATION_AND_ACTIVE_PROFILE`
 
-Generator: `DonorWorldCellizationBuilder 1.0.0-06B2`
+Generator: `DonorWorldCellizationBuilder 1.1.0-06B2-v5.1.5`
 
 Source revision: `msc-world-baseline-04a1.1-c3f2f337`
 
@@ -44,12 +44,13 @@ Cellization не:
 | Frozen donor `GAME.unity` | `c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4` |
 | Gameplay anchors CSV | `4fb51c76ee094872de6d1158bbfeb1e72676668e7cef53cd8fcd4cc1964c65a` |
 | Safe collider allowlist CSV | `eb62f26d6b6d9f377e2c9f14c335b163dc8c1246b5aee1f6f81dc4ebebb4ad47` |
-| Ownership matrix CSV | `cbe7d5c89ee73b2925f999d9fd2a6dd83968af48bc75e53d28146185b035cc50` |
-| Object-to-cell manifest CSV | `3e7cdf966b3b83b920f0d1ee4fb3dc257b75e3cc93542de6c76cf601ce33900d` |
+| Ownership matrix CSV | `9f83de8770a966ef7cc28ae9be71f00e6668883b9c6e5e2498adf92b8fc93546` |
+| Object-to-cell manifest CSV | `794b68c9d86a083343e08452d38ef621bc2c989c433810e7de17429f354cfcb4` |
+| Material/texture manifest CSV | `cfbce4faf14eac19658cbad7117b9a794de3009a664f438d3faa28a80ecc4192` |
 
 Итоговый ownership fingerprint:
 
-`0a9de0beb45d83d6983153a48d0eb1eb93bb51fdfcc63baa629425f2777b13f3`
+`1abf88e8047c2446e4ecdc1bdc894738171fac0f4ac9651be75470e985bbf28b`
 
 Builder сортирует входы и generated records по стабильным project-owned IDs.
 Повторный dry-run/generation обязан воспроизводить тот же fingerprint,
@@ -186,10 +187,63 @@ Public/distributable build с donor RuntimeBaseline блокируется pre-b
 
 ## 9. Известный технический долг
 
-- Temporary diagnostic materials не являются final HDRP materials.
+- Temporary HDRP compatibility materials не являются final production materials.
 - Крупные static-batch aggregates остаются global и увеличивают resident memory.
 - Safe collider allowlist намеренно узкий.
 - Donor terrain voids, sprite forests, flat proxy art и tree-wall boundaries не
   исправляются в 06B2.
+- Пользователь принял странности legacy textures, низкое разрешение/полосатость
+  terrain и tree-wall artifacts как временный visual debt текущего baseline.
+  Это не означает приёмку данных материалов и текстур как production art.
 - Physics сообщает предупреждения о шести legacy mesh triangles крупнее 500 m;
   это recorded legacy geometry debt, а не новая ошибка cellization.
+
+## 10. Presentation contract v5.1
+
+Active donor profile по умолчанию использует `LegacyTextured`.
+`LegacyDiagnostic` остаётся отдельным режимом проверки, а rejected prototype
+visuals остаются `PrototypeHidden`.
+
+- 2 605 renderers сохраняют 2 744 ordered material slots.
+- 292 donor material definitions преобразуются в общие project-owned
+  `HDRP/Lit` или `HDRP/Unlit` compatibility materials.
+- Два renderer-а с built-in material `10302` используют один явный orange
+  reviewed fallback.
+- 265 source images образуют 269 conversion records: 268 imported
+  role-specific texture variants и один donor cubemap, исключённый, поскольку
+  sky/reflection/weather ownership не входит в 06B2.
+- Sharing contract для source+role variants: `384 -> 268`, что исключает 116
+  дублирующих копий.
+- Восемь detail-normal variants детерминированно упакованы в HDRP Detail Map
+  как `R=.5, G=Y, B=.5, A=X`; donor detail UV и strength сохранены.
+- Detail Map назначен 22 материалам: 20 detail-only и двум вместе с primary
+  normal.
+- Водные материалы сохраняют donor `_BaseColor.a`: `Water4Adv_Lake` использует
+  `0.2901961`, а `Water4Simple` — `0.5058824`.
+- Shore-foam texture исключена как full-surface base map: этот donor shader
+  input не является цветовой текстурой всей поверхности озера.
+- Cells используют общие material/texture assets. Runtime применяет только
+  `Renderer.sharedMaterials`; material instances не создаются.
+- Donor `.shader` files используются только как read-only classification
+  evidence и не копируются, не компилируются и не входят в runtime.
+- Material/texture presentation fingerprint:
+  `e337f9d1b5a0344473bd0f096cdb9e0dbf8da321ecb428ebc17da4f7dd8831fd`.
+
+Повторные генерации подтвердили стабильные material, texture, manifest и
+object-to-cell fingerprints. Unity YAML scene serialization не используется
+как semantic identity: authority остаётся у stable IDs, source hashes,
+ownership/presentation fingerprints и валидатора содержимого.
+
+`M06B2V51_PresentationBuild12_WaterFix.log`,
+`M06B2V51_CellizationValidator09_WaterFix.log` и focused EditMode
+`M06B2V51_EditMode05_WaterFix.xml` (`7/7`, `65.344 s`), PlayMode
+`M06B2V51_PlayMode06_WaterFix.xml` (`6/6`, `7.4557305 s`) и Performance PlayMode
+`M06B2V51_PerformancePlayMode06_WaterFix.xml` (`1/1`, `2.5581146 s`) прошли. SHA-256
+итогового performance capture:
+`60868e5862413b59df0adad2dee998617145b96de2306494a7bbd6e60e3ba271`.
+Короткая ручная перепроверка исправленной воды принята пользователем
+2026-07-16: `PASS / HumanAccepted`. В тот же день пользователь прошёл по мостам
+и переносил персонажа между ячейками без обнаруженных traversal, collision,
+seam, duplicate, popping или load/unload проблем. Bridge/cell-boundary
+completion check: `PASS / HumanAccepted`; entry gate 06B3 имеет статус `GO`,
+сам 06B3 не начат.

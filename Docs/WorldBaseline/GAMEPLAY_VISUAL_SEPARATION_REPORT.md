@@ -101,3 +101,20 @@ names или hierarchy paths.
 - Legacy visual metadata остаётся `TemporaryDirectImport`.
 - Production replacement art ещё не создано; проверяется только способность
   отключить matching legacy presentation через стабильный key.
+
+## 7. Presentation binding v5.1
+
+Каждый generated legacy renderer получает
+`DonorWorldLegacyMaterialBinding`, который хранит ordered source material GUIDs,
+общие textured materials и общие diagnostic materials.
+
+`DonorWorldLegacyPresentationController` существует только на process-lifetime
+Bootstrap composition root, отслеживает global/additive scene loads и повторно
+применяет текущий режим даже после восстановления global scene.
+Переключение `LegacyTextured` / `LegacyDiagnostic` выполняется через
+`Renderer.sharedMaterials`, без `Renderer.material`, `new Material` или
+per-frame update.
+
+Presentation state не является gameplay authority. Gameplay anchors,
+replacement keys, saves и streaming ownership не зависят от donor material
+name, texture name, hierarchy path или renderer instance ID.

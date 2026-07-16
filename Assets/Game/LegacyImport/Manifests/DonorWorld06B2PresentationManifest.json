@@ -1,0 +1,19 @@
+{
+    "schemaVersion": 1,
+    "generatorVersion": "06B2-v5.1.5",
+    "sourceRevisionId": "msc-world-baseline-04a1.1-c3f2f337",
+    "sourceSceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4",
+    "rendererCount": 2605,
+    "declaredMaterialSlotCount": 2744,
+    "resolvedMaterialCount": 292,
+    "builtInFallbackRendererCount": 2,
+    "sourceTextureCount": 265,
+    "importedTextureVariantCount": 268,
+    "excludedTextureVariantCount": 1,
+    "presentationFingerprintSha256": "e337f9d1b5a0344473bd0f096cdb9e0dbf8da321ecb428ebc17da4f7dd8831fd",
+    "materialTextureManifestSha256": "cfbce4faf14eac19658cbad7117b9a794de3009a664f438d3faa28a80ecc4192",
+    "classification": "TemporaryDirectImport",
+    "activeMode": "LegacyTextured",
+    "diagnosticMode": "LegacyDiagnostic",
+    "prototypeVisualMode": "PrototypeHidden"
+}
