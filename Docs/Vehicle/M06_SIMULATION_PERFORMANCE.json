@@ -1,0 +1,44 @@
+{
+    "schemaVersion": 1,
+    "capturedUtc": "2026-07-15T19:37:34.5972700Z",
+    "unityVersion": "6000.3.11f1",
+    "tuningLabel": "ProvisionalProjectTuning",
+    "simulationMethodology": "Pure VehicleSimulationRoot with preallocated synthetic contact backend; isolates simulation/substep cost.",
+    "backendMethodology": "Actual PrototypeRaycastWheelPhysicsBackend.Sample+Apply in the authored M06 scene; excludes the later Physics.Processing phase.",
+    "telemetryMethodology": "Full fixed-capacity value snapshot equivalent to recorder frame copy; excludes FixedUpdate scheduling, CSV formatting and file IO.",
+    "physicsProcessing": "UnavailableNotMeasured: Physics.Processing was not isolated by this EditMode Stopwatch audit.",
+    "warmupTicks": 512,
+    "measuredTicks": 10000,
+    "substeps": [
+        {
+            "substepCount": 1,
+            "totalMilliseconds": 28.5809,
+            "microsecondsPerTick": 2.8580900000000004,
+            "allocatedBytes": 0
+        },
+        {
+            "substepCount": 2,
+            "totalMilliseconds": 40.9848,
+            "microsecondsPerTick": 4.09848,
+            "allocatedBytes": 0
+        },
+        {
+            "substepCount": 4,
+            "totalMilliseconds": 64.9453,
+            "microsecondsPerTick": 6.49453,
+            "allocatedBytes": 0
+        }
+    ],
+    "backend": {
+        "iterations": 50000,
+        "totalMilliseconds": 385.8285,
+        "microsecondsPerIteration": 7.71657,
+        "allocatedBytes": 0
+    },
+    "telemetryBuffer": {
+        "iterations": 50000,
+        "totalMilliseconds": 12.1982,
+        "microsecondsPerIteration": 0.24396400000000002,
+        "allocatedBytes": 0
+    }
+}

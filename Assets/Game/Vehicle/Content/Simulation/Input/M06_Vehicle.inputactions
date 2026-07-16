@@ -1,0 +1,64 @@
+{
+    "name": "M06_Vehicle",
+    "maps": [
+        {
+            "name": "Vehicle",
+            "id": "cfa56bd0-7349-4cbe-92e4-a1c76b689b8f",
+            "actions": [
+                { "name": "Throttle", "type": "Value", "id": "29de3953-39c3-4528-9da1-5c324cc22c81", "expectedControlType": "Axis", "processors": "Clamp(min=0,max=1)", "interactions": "", "initialStateCheck": true },
+                { "name": "Brake", "type": "Value", "id": "9f849c9f-c33c-4973-8181-c758bf841ea3", "expectedControlType": "Axis", "processors": "Clamp(min=0,max=1)", "interactions": "", "initialStateCheck": true },
+                { "name": "Clutch", "type": "Value", "id": "e0473ac2-e385-437c-9587-4af8dcff791a", "expectedControlType": "Axis", "processors": "Clamp(min=0,max=1)", "interactions": "", "initialStateCheck": true },
+                { "name": "Steering", "type": "Value", "id": "66bfd821-5205-47af-ad3b-578ae1e93ba2", "expectedControlType": "Axis", "processors": "Clamp(min=-1,max=1)", "interactions": "", "initialStateCheck": true },
+                { "name": "Ignition", "type": "Button", "id": "0ded8771-2738-471f-8d69-cfa80d83afa5", "expectedControlType": "Button", "processors": "", "interactions": "Press", "initialStateCheck": false },
+                { "name": "Starter", "type": "Button", "id": "01c1bb31-8d2f-4dfc-94e9-e9c12805483b", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false },
+                { "name": "GearUp", "type": "Button", "id": "1723286a-a28c-4094-a5ff-a02510b4f6e5", "expectedControlType": "Button", "processors": "", "interactions": "Press", "initialStateCheck": false },
+                { "name": "GearDown", "type": "Button", "id": "c87b57c5-4dd2-4220-8a31-22b821a14f4e", "expectedControlType": "Button", "processors": "", "interactions": "Press", "initialStateCheck": false },
+                { "name": "Reset", "type": "Button", "id": "4117332a-b958-4058-924a-167ce2e44bee", "expectedControlType": "Button", "processors": "", "interactions": "Press", "initialStateCheck": false }
+            ],
+            "bindings": [
+                { "name": "", "id": "eac5f56e-9c1a-43fb-a47b-fe51456cdb4b", "path": "<Keyboard>/w", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Throttle", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "e232e352-ce5f-4fc0-83a4-e2372695adcd", "path": "<Keyboard>/upArrow", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Throttle", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "7e36aac7-46ff-4c70-ab54-b51dbe322e56", "path": "<Gamepad>/rightTrigger", "interactions": "", "processors": "", "groups": "Gamepad", "action": "Throttle", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "16b60199-9620-472c-9f5e-242e39fd9ff8", "path": "<Keyboard>/s", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Brake", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "cbbbc136-7a4f-452c-bb89-c58cfc28262b", "path": "<Keyboard>/downArrow", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Brake", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "88616aa7-85aa-4757-811a-619e596745c2", "path": "<Gamepad>/leftTrigger", "interactions": "", "processors": "", "groups": "Gamepad", "action": "Brake", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "e91e6daa-3ec6-4cb6-abe9-8f17a5bb611b", "path": "<Keyboard>/leftShift", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Clutch", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "03b4bd18-017a-42db-b35e-6748b8a1d257", "path": "<Gamepad>/leftShoulder", "interactions": "", "processors": "", "groups": "Gamepad", "action": "Clutch", "isComposite": false, "isPartOfComposite": false },
+                { "name": "Keyboard", "id": "134e49d4-949d-4238-95cf-bead5bbe9fc8", "path": "1DAxis", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Steering", "isComposite": true, "isPartOfComposite": false },
+                { "name": "negative", "id": "2b4f8211-deb2-4f27-bd23-23ab95238cf1", "path": "<Keyboard>/a", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Steering", "isComposite": false, "isPartOfComposite": true },
+                { "name": "positive", "id": "db12261e-10f5-46f8-b003-45076b736483", "path": "<Keyboard>/d", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Steering", "isComposite": false, "isPartOfComposite": true },
+                { "name": "Arrows", "id": "a1bc49d0-c8e9-4ee3-b6cd-4fa909f43fe1", "path": "1DAxis", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Steering", "isComposite": true, "isPartOfComposite": false },
+                { "name": "negative", "id": "c219e42d-9e3d-4282-bcb0-8ac45244f7dd", "path": "<Keyboard>/leftArrow", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Steering", "isComposite": false, "isPartOfComposite": true },
+                { "name": "positive", "id": "43d60047-3e50-4a90-a082-e9b94740c0aa", "path": "<Keyboard>/rightArrow", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Steering", "isComposite": false, "isPartOfComposite": true },
+                { "name": "", "id": "3de6e467-4e03-4267-b9d3-747afad334f2", "path": "<Gamepad>/leftStick/x", "interactions": "", "processors": "", "groups": "Gamepad", "action": "Steering", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "9b1ff1b2-4327-4b5b-88d0-2519d0999d40", "path": "<Keyboard>/i", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Ignition", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "735e5ea3-24c8-4bc4-9280-9f07219e15d4", "path": "<Gamepad>/buttonNorth", "interactions": "", "processors": "", "groups": "Gamepad", "action": "Ignition", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "2b31d232-b182-4fd5-92e7-0692ee6a3a8a", "path": "<Keyboard>/enter", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Starter", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "1829259d-5d3c-4008-825d-4894b386dbe3", "path": "<Gamepad>/buttonSouth", "interactions": "", "processors": "", "groups": "Gamepad", "action": "Starter", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "f895c189-47cd-4892-b705-3bbc66d53b69", "path": "<Keyboard>/e", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "GearUp", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "fb736234-bfe5-4c27-adf2-2820aa767f58", "path": "<Gamepad>/rightShoulder", "interactions": "", "processors": "", "groups": "Gamepad", "action": "GearUp", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "8ccb00c8-714b-4d8d-b5e7-14de7fd5ae08", "path": "<Keyboard>/q", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "GearDown", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "ae983dac-f317-49b1-9191-1b70725771fc", "path": "<Gamepad>/buttonWest", "interactions": "", "processors": "", "groups": "Gamepad", "action": "GearDown", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "5733c22b-a332-4121-97a6-1a220719e23a", "path": "<Keyboard>/backspace", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Reset", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "fe405d62-2d53-4453-ae7a-4d27bee4d8e3", "path": "<Gamepad>/selectButton", "interactions": "", "processors": "", "groups": "Gamepad", "action": "Reset", "isComposite": false, "isPartOfComposite": false }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Keyboard&Mouse",
+            "bindingGroup": "Keyboard&Mouse",
+            "devices": [
+                { "devicePath": "<Keyboard>", "isOptional": false, "isOR": false },
+                { "devicePath": "<Mouse>", "isOptional": true, "isOR": false }
+            ]
+        },
+        {
+            "name": "Gamepad",
+            "bindingGroup": "Gamepad",
+            "devices": [
+                { "devicePath": "<Gamepad>", "isOptional": false, "isOR": false }
+            ]
+        }
+    ]
+}

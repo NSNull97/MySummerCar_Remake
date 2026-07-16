@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e71e08d25a1364ba7c9c5007e00656, type: 3}
+  m_Name: m06_wheel_rl
+  m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartDefinition
+  definitionId: m06.wheel.rl
+  displayName: M06 wheel rear left
+  category: 3
+  massKilograms: 15
+  visualPrefab: {fileID: 5709863667676220222, guid: 2f00ce35a42276446bfddc9afb837cb8, type: 3}
+  compatibilityRules:
+  - mountSocketType: m06.socket.wheel.rl
+    requiredOwnerPartDefinitionId: m06.chassis

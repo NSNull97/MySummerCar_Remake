@@ -1,4 +1,4 @@
-# Donor System Map — through Milestone 05
+# Donor System Map — through Milestone 06
 
 This map describes observed donor ownership/coupling and the intended transfer boundary. It is not a claim that any subsystem has been ported.
 
@@ -82,7 +82,7 @@ flowchart LR
 - Mesh/material/animation/terrain counts and IDs.
 - Vehicle part/mount/fastener graph.
 - Electrical/fluid/needs/save schemas.
-- Audio event-to-clip routing.
+- Complete audio event-to-clip/mixer routing beyond the bounded Satsuma RPM/starter diagnostic mapping.
 - Clean-stock comparison for the modified donor install.
 
 ## Controlled reference boundary implementation
@@ -275,3 +275,37 @@ flowchart LR
 Player and Interaction architecture remain unchanged. Direct additive lifecycle
 tests exercise scene integrity, while the missing production streaming-service
 boundary is kept as a blocker rather than represented by the reference loader.
+
+## Milestone 06 clean-room simulation flow
+
+```mermaid
+flowchart LR
+    DB["Project-owned 04B geometry records"] --> GEO["Derived wheel anchors / wheelbase / tracks"]
+    TUNE["RemakeDesignTarget / ProvisionalProjectTuning"] --> CONFIG["VehicleSimulationConfig"]
+    GEO --> CONFIG
+    ASSEMBLY["Separate M06 logical AssemblyGraph"] --> ADAPTER["Cached prerequisite adapter"]
+    INPUT["Dedicated Input System snapshot"] --> ROOT["VehicleSimulationRoot"]
+    CONFIG --> ROOT
+    ADAPTER --> ROOT
+    BACKEND["IWheelPhysicsBackend sample"] --> ROOT
+    ROOT --> COMMANDS["Averaged wheel commands"]
+    COMMANDS --> PROXY["Project-authored dynamic proxy / PhysX"]
+    PROXY --> BACKEND
+    ROOT --> TELEMETRY["Development overlay / CSV"]
+    ROOT --> AUDIO["Editor-only local Satsuma diagnostic"]
+    FROZEN["Frozen external staging: 7 hash-pinned clips"] -. "TemporaryDirectImport" .-> AUDIO
+    DONOR["Donor executable, assemblies, assets and PlayMaker"] -. "no runtime dependency" .-> ROOT
+    DONOR -. "current install not used" .-> AUDIO
+```
+
+`MSC.Vehicle.Simulation` owns the model and contracts; `MSC.Vehicle.Runtime` owns Unity input, composition, PhysX, reset and presentation, including `VehicleAudioPresenter`; `MSC.Vehicle.Assembly` remains authority for part/mount/fastener state; `MSC.Audio.Runtime` owns `IVehicleAudioBackend`; `MSC.Audio.UnityFallback` owns the Editor-only `UnityAudioBackend`; `MSC.Editor` owns builders and validators.
+
+The powertrain graph exposes generic `LeftDrivenWheel` / `RightDrivenWheel` nodes. Config indices map the single differential pair into the four-wheel array; the current authored asset selects FL/FR (`0/1`), so the prototype is presently FWD, and focused coverage verifies a `2/3` remap. AWD/multiple driven pairs remain future work. The current FWD selection is a project decision for the target vehicle; the missing donor dynamic fixture means its numeric torque, grip and response values remain provisional.
+
+The M06 logical graph is not the dynamic proxy. Assembly state supplies availability only, while physical mass/center of mass remain provisional and uncoupled. The vehicle-owned surface markers on the bounded route do not classify production colliders and cannot close `WORLD-COL-003`.
+
+The first manual drive confirmed the start/shift/stall/RPM loop but exposed about `5 km/h` startup creep and a shaking environment. Runtime ownership did not change: the backend now initializes suspension history without a synthetic first-sample damper impulse, uses gravity-plane speed, bounds passive correction against overshoot and performs level-only startup settling; a detached smoothed camera owns view stabilization. Focused PlayMode passes `4/4`: a six-degree slope is not pinned and a later external `WakeUp()` plus `0.05 m/s` is not re-slept. The user accepted the bounded post-remediation drive/audio recheck on 2026-07-16.
+
+The local audio branch is diagnostic presentation only. It consumes simulation telemetry and engine state at `FixedUpdate` without becoming authoritative; PlayMode asserts `StarterEngaged -> StarterDisengaged -> EngineStarted`. Seven clips remain in frozen external staging with ledgered hashes and classification `TemporaryDirectImport`; the static `GAME.unity` RPM/starter routing evidence is `ReferenceOnly`. Nothing enters Git, production `Assets` or a build. Missing staging remains a silent fallback, the current mod-contaminated/hash-drift donor install is not used, no stop/stall parity clip is claimed, and final audio remains reauthored behind `IAudioBackend`.
+
+Only exact reviewed geometry crosses from the reference database. Donor dynamic fixtures are `Missing`, so every dynamic constant follows the project-authored tuning path. The isolated method/allocation audit passes, but Unity `Physics.Processing` evidence remains unavailable until a later player/Profiler capture. The automated M06 gate passes with focused PlayMode `4/4` and full PlayMode `31/31`; bounded manual acceptance is recorded. M06A has not begun.

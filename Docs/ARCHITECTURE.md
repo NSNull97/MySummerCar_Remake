@@ -65,9 +65,9 @@ Implemented assembly graph under `Assets/Game`:
 MSC.Core.Runtime
 MSC.Interaction.Runtime -> Core
 MSC.Player.Runtime -> Core, Interaction, Input System
-MSC.Vehicle.Simulation -> Core
+MSC.Vehicle.Simulation -> UnityEngine value types only; no project asmdef reference
 MSC.Vehicle.Assembly -> Core, Interaction
-MSC.Vehicle.Runtime -> Core, Interaction, Vehicle.Simulation, Vehicle.Assembly
+MSC.Vehicle.Runtime -> Vehicle.Simulation, Vehicle.Assembly, Input System
 MSC.World.Runtime -> Core
 MSC.World.Streaming -> Core, World.Runtime
 MSC.Weather.Runtime -> Core, World
@@ -80,8 +80,8 @@ MSC.LegacyImport.Editor -> LegacyImport.Runtime, Core [Editor only]
 MSC.Bootstrap.Runtime -> initial service-boundary assemblies
 MSC.Development.Performance -> RenderPipelines.Core [opt-in capture; full implementation only in Editor/development builds]
 MSC.Editor -> runtime modules, LegacyImport.Editor, Development.Performance, HDRP/Core Runtime [Editor only]
-MSC.Tests.EditMode -> Core, Bootstrap, Interaction, Player, World, Editor validation [Editor test]
-MSC.Tests.PlayMode -> Core, Bootstrap, Interaction, Player, Input System [PlayMode test]
+MSC.Tests.EditMode -> Core, Bootstrap, Interaction, Player, Vehicle Runtime/Simulation/Assembly, Save, World, LegacyImport, Editor validation [Editor test]
+MSC.Tests.PlayMode -> Core, Bootstrap, Interaction, Player, Vehicle Runtime/Simulation/Assembly, World, Input System [PlayMode test]
 ```
 
 No runtime assembly may reference an Editor assembly. `AssemblyDefinitionValidator` enforces this rule from the real `.asmdef` files and the EditMode suite covers the validator.
@@ -229,3 +229,17 @@ The frozen 04A1 database remains spatial truth and is not overwritten by scene s
 Three layers are explicit: removable donor/reference metadata, project-authored production assets, and a separate comparison scene. Production prefabs and generated production cells have no dependency on `LegacyImport/ReferenceOnly` or `Imported/DonorGenerated`. The first bounded pass produces only `cell_0_-3`; all other source records stay in the registry with explicit statuses and art-task links.
 
 Player and Vehicle Assembly remain consumers. The pilot reuses M4 player intent and `IContextInteractionTarget`, and is composed into the M05 assembly scene without changing either subsystem's ownership. Generated cell content is updated in place so project-owned scene stable IDs and Unity file IDs remain deterministic across rebuilds.
+
+## Vehicle simulation ownership — Milestone 06
+
+`MSC.Vehicle.Simulation` is the pure fixed-step model boundary. It owns central config/provenance, state/DTOs, input/prerequisite/backend contracts, telemetry, an inspectable single-pair powertrain graph and small simulation nodes. Config indices map generic left/right driven-wheel nodes to two distinct wheels; the authored asset uses FL/FR (`0/1`), so the current prototype is FWD, while AWD remains future work. This FWD selection is a project topology decision for the target vehicle; numeric dynamics remain provisional because the donor dynamic fixture is `Missing`. The assembly has no project reference and cannot access assembly GameObjects, Editor APIs, donor paths or scene content.
+
+`MSC.Vehicle.Runtime` is the Unity adapter layer. `VehicleInputRouter` samples and latches input in `Update`; `VehicleSimulationHost` invokes one root tick from `FixedUpdate`; `PrototypeRaycastWheelPhysicsBackend` implements `IWheelPhysicsBackend` for one dynamic proxy Rigidbody; `VehicleSimulationPresenter` consumes backend visual state in `LateUpdate`. Telemetry overlay/recording is development-only presentation.
+
+Assembly authority remains in `MSC.Vehicle.Assembly`. The M06 adapter converts its separate bounded logical graph into cached prerequisite flags keyed by graph mutation count. The moving proxy is not a hidden replacement for the logical graph, and the logical graph is not assumed to supply validated mass/center of mass. Missing content produces typed prerequisite failures.
+
+The fixed-step relationship is explicit: one backend sample, configurable pure substeps (default four), averaged commands, one backend apply, then finite-state/telemetry update. Numeric tests use tolerances; no cross-platform bitwise PhysX determinism is claimed.
+
+The prototype track's `VehicleSurfaceMetadataAuthoring` is vehicle-owned semantic metadata. It does not alter or validate production collision layers/PhysicMaterials, so `WORLD-COL-003` remains open. All dynamic values remain `RemakeDesignTarget` / `ProvisionalProjectTuning` because reviewed donor dynamic fixtures are `Missing`.
+
+Detailed ownership is recorded in `Docs/Vehicle/SIMULATION_ARCHITECTURE.md` and `Docs/Vehicle/WHEEL_BACKEND.md`.

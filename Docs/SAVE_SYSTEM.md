@@ -90,3 +90,20 @@ Failure policy for the future apply step:
 - invalid snapshot version: route through the save migration pipeline.
 
 Milestone 4 intentionally does not implement the save root, storage backend, ID registry or load application.
+
+## Milestone 06 vehicle-simulation snapshot boundary
+
+`MSC.Vehicle.Simulation` now owns `VehicleSimulationStateDto` schema version `1`. `VehicleSimulationState.CaptureDto()` copies the current engine, clutch, gearbox, differential, vehicle, electrical, fluid, thermal and four-wheel state. `TryRestoreDto()` rejects a wrong schema, wrong wheel count, invalid enum/gear, negative bounded quantities and non-finite numeric data before mutating the state.
+
+This is a simulation-domain fixture, not a complete vehicle save implementation:
+
+- it does not write a file or save slot;
+- it is not yet wrapped by a stable vehicle entity record in `SaveDocument`;
+- it does not include the proxy Rigidbody world pose/velocity;
+- it does not merge with `VehicleAssemblySaveData`;
+- it has no migration beyond schema `1`;
+- it does not import donor saves.
+
+A future `SaveSnapshotBuilder` must capture assembly and simulation records together under one project-owned stable vehicle ID. Load order must validate IDs and DTO versions, restore assembly first, rebuild the assembly-to-physics snapshot, restore simulation state, then explicitly restore physical pose. Failure must leave the original save intact and report which boundary failed.
+
+The M06 schema-1 JSON round-trip test passes in the fresh focused EditMode suite (`18/18 PASS`). This validates the bounded domain DTO fixture only; it does not close the save-root, storage, stable-vehicle resolution or migration work listed above. See `Docs/Vehicle/SIMULATION_TEST_MATRIX.md`.

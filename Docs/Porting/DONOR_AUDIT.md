@@ -1,8 +1,8 @@
-# Donor Audit — Milestone 0 baseline through Milestone 05
+# Donor Audit — Milestone 0 baseline through Milestone 06
 
-Audit dates: 2026-07-13 baseline; 2026-07-14 Milestones 3–04A1 updates
+Audit dates: 2026-07-13 baseline; 2026-07-14 Milestones 3–05A updates; 2026-07-15 Milestones 05B–06 updates; 2026-07-16 bounded M06 diagnostic-audio addendum
 
-Scope: read-only filesystem, binary-header, log, file-hash, reflection-only managed metadata inspection, and audited use of one previously staged garage measurement
+Scope: read-only filesystem, binary-header, log, file-hash, reflection-only managed metadata inspection, audited use of previously staged references, and a user-authorized local-only Satsuma diagnostic-audio mapping from frozen external staging
 
 Donor root: `D:\SteamLibrary\steamapps\common\My Summer Car`
 
@@ -122,7 +122,7 @@ No decompiled source was exported and no donor assembly was compiled.
 
 ## Audio, animation, world, and UI indicators
 
-- Audio: `MasterAudio`, `EventSounds`, `SoundController`, playlists, and shared-assets sound directories indicate a custom Unity Audio/Master Audio-style stack. Final audio remains reauthored behind `IAudioBackend`.
+- Audio: `MasterAudio`, `EventSounds`, `SoundController`, playlists, and shared-assets sound directories indicate a custom Unity Audio/Master Audio-style stack. A bounded frozen-staging inspection later identified seven Satsuma prototype clips and static RPM/starter routing evidence; it did not establish a complete event/mixer graph. Final audio remains reauthored behind `IAudioBackend`.
 - Animation: `HOTween`, iTween types, `SimpleIKSolver`, `IKLimb_BrunoFerreira`, and PlayMaker animation actions are present. Compatibility and authorship remain unknown.
 - World/traffic: SWS spline/bezier types are present. Actual road and traffic spline instances are serialized in scene data and not yet inventoried.
 - UI/input: `SettingsMenu`, legacy GUI actions, `cInput`, mouse-look components, and many PlayMaker GUI/input actions are present. This is a reimplementation target.
@@ -332,3 +332,45 @@ The current donor install was read only to recheck hashes. Its reinstalled
 `sharedassets3.assets` and `.resource` still differ from frozen 04A1 provenance;
 historical records were not rewritten. No donor file was modified, deleted or used
 as a runtime dependency.
+
+## Milestone 06 vehicle-simulation donor-use audit
+
+The base M06 implementation did not read from, write to or modify the donor installation. It consumed only project-owned 04B reference records and existing audit documentation. No donor executable, Unity assembly, PlayMaker graph/runtime, mesh, texture or decompiled method is reachable from the simulation prototype or build.
+
+The only donor-linked geometry uses transfer classification `DimensionalReference`; the calculated dimensions use M06 validation level `DerivedReference`:
+
+- four reviewed wheel-root anchors;
+- derived wheelbase `2.334 m`;
+- derived front/rear tracks `1.2600002 / 1.2060003 m`.
+
+Interpretation remains constrained:
+
+- serialized root `Rigidbody.mass = 389 kg` is not curb/assembled mass and is not used as the M06 proxy mass;
+- `datsun_body` AABB is body-mesh evidence only;
+- candidate `tire_stock` radius `0.272667 m` remains `NeedsReview`/plausibility evidence because fitted-wheel identity is unproven.
+
+All reviewed donor dynamic fixtures remain `Missing`: torque curve, ratios/final drive, clutch, steering, suspension, brakes, tire/surface forces, total mass/center of mass, battery/fluids/thermal behavior and acceleration/handling. M06 therefore labels every dynamic value `RemakeDesignTarget` / `ProvisionalProjectTuning`; none is claimed as `MeasuredDonorReference` or `ObservedDonorReference`.
+
+The logical prerequisite fixture, pure simulation, raycast backend, surface metadata, 100 m track, telemetry and Editor tools are clean-room project implementations. The route is a `BlockoutSource`, not world-layout transfer or parity. `WORLD-COL-003` remains open. No simulation implementation is classified `CodePorted` or `ProductionReady`.
+
+The strict validator passed on 2026-07-15 with marker `M06_VEHICLE_SIMULATION_VALIDATION_OK` after checking the config and scene dependency graphs for `LegacyImport/ReferenceOnly`, `Imported/DonorGenerated`, donor assemblies and PlayMaker. Builder, focused suites and calibration also passed; calibration still reports `referenceDynamicFixture=Missing` and `provisionalOnly=true`. After the first manual run exposed startup creep and camera shake, bounded stability remediation passed focused PlayMode `4/4`, including level rest, six-degree incline freedom and a later external wake/impulse. The user accepted the post-remediation basic-prototype drive/audio recheck on 2026-07-16; this does not promote any donor-derived item or donor fixture.
+
+### M06 user-authorized local diagnostic audio
+
+The user authorized original Satsuma sounds only to make the prototype state easier to assess by ear. The inspected source is the frozen external export at `raw/world/milestone-04a1/assetripper-unity-project/ExportedProject/Assets/AudioClip` under donor staging, produced by AssetRipper `1.3.14` with `Default` importer settings. The current installed donor remains mod-contaminated and has audited container hash drift; it is not the runtime/file source for this diagnostic and was not modified.
+
+The bounded mapping is:
+
+| Role | File | SHA-256 |
+|---|---|---|
+| Low/idle RPM | `850_idle5.ogg` | `41296478D8828AF8E7840FE66F9FE2C9A0F05D78127B2BFB20ED35C403894CF9` |
+| Mid RPM | `850_mid3.ogg` | `EF0F7E94F7FB08B1D8F1EA16AEE7BDDE5A27F54FB12FB6357A26DB11493F1FA5` |
+| High RPM | `850_mid13.ogg` | `464DA9DBCE2219040522A18B481B4E5C1C285303152F56975D167E5F54044480` |
+| Starter event 1 | `motor_start_1.ogg` | `5F9EEB889C660E7AE1F08F9474951ECB3938878AE2A5C13038952A6DDD5892AE` |
+| Starter event 2 | `motor_start_2.ogg` | `854EA1EECC2E9DBFC37674CA0968F3FFACE2F75AE8B85A73F06C40FD1198F5AB` |
+| Starter event 3 | `motor_start_3.ogg` | `9D9ABE53A8C253E8C571FE1E99B8B34509B2944D6428FBFCA8412413FE551CD2` |
+| Starter whine | `starter_whine.ogg` | `215329D05D5C5C1BE5F0AE1B831AA20E01A02DD0418856C56808DE52CD310CE3` |
+
+Static `GAME.unity` (frozen export SHA-256 `C3F2F3373CCAD4FCBE104840FCB83E364F55438070E808D11EBE4996BC0476C4`) `AudioEngineSatsuma` references confirm the three RPM-layer roles, and `MasterAudio/Starting` confirms the starter roles. That inspected routing metadata is `ReferenceOnly`; the seven external clips used by the local Editor prototype are `TemporaryDirectImport`. They stay outside Git, tracked `Assets`, player builds and production dependencies. No Satsuma-specific shutdown/stall clip has been proven, so loop fade-out is an explicit diagnostic approximation. No complete mixer, load response, interior/exterior behavior or donor audio parity is claimed; final clips and mix remain reauthored or properly licensed.
+
+The project-owned bridge is clean-room `Reimplemented` code: `VehicleAudioContracts.cs` defines `IVehicleAudioBackend`, `VehicleAudioPresenter.cs` consumes simulation telemetry at `FixedUpdate`, and `UnityAudioBackend.cs` performs Editor-only hash/load/mix work. Builder `1.1.0` creates `M06_LocalDiagnosticVehicleAudio`; the strict validator requires the scene to have no serialized `AudioSource`/`AudioClip` dependency. Fresh focused EditMode passes `18/18`, focused PlayMode passes `4/4`, full EditMode is `157/160` in `44.4875523 s` with exactly the same three unrelated baselines, and full PlayMode passes `31/31`; each M06 PlayMode case emits `M06_LOCAL_DIAGNOSTIC_AUDIO_READY clips=7 source=ExternalDonorStaging hashes=Verified` with configured staging. Missing staging remains a silent fallback rather than a simulation-test failure, and starter event ordering is asserted. Thus the local diagnostic can be removed or unavailable without changing simulation authority or build viability.

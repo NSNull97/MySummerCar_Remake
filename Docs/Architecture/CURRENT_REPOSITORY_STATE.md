@@ -1,6 +1,6 @@
-# Current Repository State — Milestone 05 complete
+# Current Repository State — Milestone 06 automated gate passed
 
-Captured: 2026-07-14
+Captured: 2026-07-16
 
 Open workspace: `E:\GAYmDev_Studio\MySummerCar_Remake`
 
@@ -10,10 +10,10 @@ Open workspace: `E:\GAYmDev_Studio\MySummerCar_Remake`
 |---|---|
 | Unity | `6000.3.11f1 (3000ef702840)` |
 | Render pipeline | HDRP `17.3.0`, Linear color space |
-| Input | Input System `1.19.0`; project-authored M4 action map |
-| Build scenes | Bootstrap first, M4 PlayerInteractionPrototype second, M05 VehicleAssemblyPrototype third, M3 GarageArtPrototype fourth, existing Outdoors fifth |
+| Input | Input System `1.19.0`; project-authored M4 player map and dedicated M06 `Vehicle` map |
+| Build scenes | Current settings keep Bootstrap `0`, production cells `6/8`, and append `VehicleSimulationPrototype` at enabled/array index `9` |
 | Runtime boundary | Independent Unity 6 runtime; no donor executable/assemblies/assets required |
-| Tests | M05 focused EditMode `22/22`, focused PlayMode `8/8`, full PlayMode `17/17`; full EditMode `102/103` with the known unrelated 04A1 donor-hash drift; foundation, donor, M3, M4 and M05 validators pass |
+| Tests | M06 focused EditMode `18/18` and PlayMode `4/4` PASS; full PlayMode `31/31` PASS; full EditMode `157/160` with every M06 test passing and exactly the retained two M3 lighting plus one 04A1 donor-hash-drift failures |
 
 ## Milestone 4 runtime state
 
@@ -84,8 +84,6 @@ Post-M05 scale correction makes installation preserve a part's world scale even 
 
 The reproducible scene `Assets/Game/Vehicle/Content/Assembly/Scenes/VehicleAssemblyPrototype.unity` contains 15 clean project-authored prototype parts, 14 mount points and the M4 player prefab. The rear-left drum consumes the `04B.4` behavioral fixture without donor runtime dependencies. Static validation, 22 focused EditMode tests and 8 focused PlayMode tests pass; the 10 000-query performance audit records 0 managed allocations and 0 graph mutations.
 
-## Next boundary
-
 ## Milestone 05A bounded world-remaster state
 
 The production layer now has a full 13,509-record replacement registry, 51 discovered zone/status groups, 263 grouped manual-art tasks and a deterministic pilot production cell for `cell_0_-3`. The pilot contains project-authored terrain/road/ditch, home and garage shells, a representative interior, six moving hinges, props/infrastructure and 64 LOD spruce instances. It is integrated with the existing M4 player and M05 assembly scene.
@@ -95,3 +93,25 @@ Coverage is deliberately narrow: 24 direct bindings globally (0.178%) and 24/671
 The next recommended milestone is exactly `Prompts/05A_CONTINUE_NEXT_WORLD_ZONE.md`, after manual acceptance of the pilot. Final terrain/road measurements, hero modelling, authored textures, map-scale vegetation/water/infrastructure, HLOD and standalone GPU profiling remain explicit work.
 
 The freshly reinstalled donor installation has different `sharedassets3.assets` / `.resource` hashes from the frozen 04A1 extraction provenance. The 04A1 records were intentionally not rewritten; current full EditMode regression therefore has one expected world-transfer provenance mismatch until a separate audited extraction/reconciliation is performed.
+
+## Milestone 05B.1 gate state
+
+Bounded remediation achieved `PilotGate`. Bootstrap owns a production streaming installer for exactly `cell_0_-3` and `cell_0_-2`, retaining build indices `6/8`. Fresh evidence covers two lifecycle cycles, a real M4 `CharacterController` traversal and four bounded 1920x1080 performance locations. It does not establish a production road-driving route, streaming-boundary vehicle behavior, production surface-material policy or an isolated physics CPU counter.
+
+## Milestone 06 simulation state
+
+`MSC.Vehicle.Simulation` owns a separated fixed-step model with central config/provenance, state/DTO, input/backend/prerequisite contracts, telemetry, an explicit single-pair powertrain graph and small subsystem nodes. Config indices map generic left/right driven-wheel nodes to two distinct wheels; the authored config uses FL/FR (`0/1`), so the current prototype is FWD, while AWD remains future work. This FWD selection is a project topology decision for the target vehicle; numeric dynamics remain provisional because the donor dynamic fixture is `Missing`. `MSC.Vehicle.Runtime` owns the fixed-step host, cached assembly adapter, input router, simple raycast/PhysX backend, reset, presentation, development telemetry and a presentation-only vehicle-audio bridge.
+
+The bounded M06 logical assembly fixture has 12 representative parts and is separate from the moving graybox Rigidbody. This makes installed/secured prerequisites explicit without claiming that placeholder logical masses already determine proxy mass or center of mass.
+
+Reviewed geometry is limited to the four exact derived wheel anchors, `2.334 m` wheelbase and `1.2600002 / 1.2060003 m` tracks. Donor root `389 kg` is not curb/assembled mass. Candidate `0.272667 m` radius remains `NeedsReview`/plausibility only. All donor dynamic fixtures are `Missing`; all current dynamics remain `RemakeDesignTarget` / `ProvisionalProjectTuning`.
+
+The first manual drive confirmed start/run, shifting, stall and RPM behavior but exposed startup creep near `5 km/h` and visible view shake. The bounded remediation now initializes suspension history without a synthetic damper impulse, reports gravity-plane speed, prevents passive tire force from overshooting through zero, settles only a level startup/reset pose and uses a detached smoothed chase camera. Final focused PlayMode is `4/4 PASS`: a six-degree slope remains free to roll, and a later external `WakeUp()` plus `0.05 m/s` velocity is not re-slept. The user accepted the post-remediation drive/audio recheck for the bounded basic prototype on 2026-07-16.
+
+The 100 m paved/gravel/dirt/grass route is an isolated graybox test fixture, not world parity. The refreshed isolated performance audit records `2.85809 / 4.09848 / 6.49453 us` per pure tick at `1/2/4` substeps, `7.71657 us` per backend iteration, `0.243964 us` per telemetry iteration and zero measured allocations. Production issue `WORLD-COL-003` and an isolated Unity `Physics.Processing` measurement remain open.
+
+The local Editor prototype can optionally load seven hash-pinned Satsuma diagnostic clips from frozen external staging through the typed `IVehicleAudioBackend` boundary. `VehicleAudioPresenter` samples transitions at `FixedUpdate`; PlayMode asserts `StarterEngaged -> StarterDisengaged -> EngineStarted`. No clip, absolute path or serialized `AudioSource` is stored in the scene or repository; player builds and simulation remain independent. Missing local staging remains a silent fallback rather than a simulation-test failure. This is `TemporaryDirectImport`/`ReferenceOnly` perceptual feedback, not production audio or parity.
+
+## Next boundary
+
+The M06 gate is PASS: builder, strict validator, calibration, focused EditMode `18/18`, focused PlayMode `4/4`, full PlayMode `31/31`, the isolated performance audit and bounded user acceptance pass; all M06 tests pass inside the fresh `157/160` full EditMode run (`44.4875523 s`), whose three failures are known unrelated baselines. The next and only next milestone is `Prompts/06A_PHYSICS_VALIDATION.md`; M06A has not begun.

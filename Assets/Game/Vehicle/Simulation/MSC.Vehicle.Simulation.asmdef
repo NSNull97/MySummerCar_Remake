@@ -1,7 +1,7 @@
 {
   "name": "MSC.Vehicle.Simulation",
   "rootNamespace": "MSC.Vehicle.Simulation",
-  "references": ["MSC.Core.Runtime"],
+  "references": [],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

@@ -1,0 +1,124 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e432685bc7171c49b418aed1e53fbc8, type: 3}
+  m_Name: M06_VehicleSimulationConfig
+  m_EditorClassIdentifier: MSC.Vehicle.Simulation::MSC.Vehicle.Simulation.VehicleSimulationConfig
+  configurationId: m06.prototype.satsuma
+  substepCount: 4
+  leftDrivenWheelIndex: 0
+  rightDrivenWheelIndex: 1
+  engine:
+    inertiaKilogramSquareMeters: 0.24
+    idleTargetRpm: 900
+    startThresholdRpm: 450
+    stallRpm: 500
+    redlineRpm: 7000
+    maximumRpm: 7400
+    baseFrictionNewtonMeters: 8
+    viscousFrictionNewtonMetersPerRadian: 0.02
+    engineBrakingNewtonMeters: 18
+    throttleResponsePerSecond: 5
+    starterTorqueNewtonMeters: 65
+    starterMaximumRpm: 650
+    stallDelaySeconds: 0.28
+    torqueCurve:
+    - rpm: 0
+      torqueNewtonMeters: 0
+    - rpm: 700
+      torqueNewtonMeters: 68
+    - rpm: 1800
+      torqueNewtonMeters: 96
+    - rpm: 3500
+      torqueNewtonMeters: 108
+    - rpm: 5200
+      torqueNewtonMeters: 92
+    - rpm: 7000
+      torqueNewtonMeters: 0
+  clutch:
+    maximumTorqueNewtonMeters: 220
+    slipStiffness: 7.5
+    engagementExponent: 1.6
+  gearbox:
+    reverseRatio: -3.25
+    forwardRatios:
+    - 3.5
+    - 2.05
+    - 1.36
+    - 1
+    - 0.82
+    finalDriveRatio: 3.9
+    efficiency: 0.9
+  dynamics:
+    provisionalMassKilograms: 650
+    wheelRadiusMeters: 0.272667
+    wheelInertiaKilogramSquareMeters: 1.15
+    maximumBrakeTorqueNewtonMeters: 1800
+    maximumHandbrakeTorqueNewtonMeters: 850
+    maximumSteeringAngleDegrees: 30
+    highSpeedSteeringAngleDegrees: 12
+    steeringFadeSpeedMetersPerSecond: 25
+    suspensionRestLengthMeters: 0.32
+    suspensionTravelMeters: 0.18
+    springRateNewtonPerMeter: 28000
+    damperRateNewtonSecondsPerMeter: 3500
+    longitudinalStiffness: 7000
+    lateralStiffness: 6200
+    rollingResistanceCoefficient: 0.015
+  supportSystems:
+    nominalBatteryVoltage: 12.6
+    minimumCrankVoltage: 9.5
+    starterDrainVoltsPerSecond: 0.16
+    alternatorChargeVoltsPerSecond: 0.04
+    initialFuelLiters: 15
+    minimumFuelLiters: 0.05
+    initialOilLiters: 3.5
+    minimumOilLiters: 1
+    initialCoolantLiters: 5
+    minimumCoolantLiters: 1
+    idleFuelLitersPerSecond: 0.00035
+    fullLoadFuelLitersPerSecond: 0.0025
+    ambientTemperatureCelsius: 20
+    operatingTemperatureCelsius: 88
+    heatingRatePerSecond: 0.035
+    coolingRatePerSecond: 0.012
+  surfaceResponses:
+  - surfaceType: 0
+    frictionMultiplier: 0.7
+    rollingResistanceMultiplier: 1.35
+  - surfaceType: 1
+    frictionMultiplier: 1
+    rollingResistanceMultiplier: 1
+  - surfaceType: 2
+    frictionMultiplier: 0.72
+    rollingResistanceMultiplier: 1.45
+  - surfaceType: 3
+    frictionMultiplier: 0.62
+    rollingResistanceMultiplier: 1.75
+  - surfaceType: 4
+    frictionMultiplier: 0.48
+    rollingResistanceMultiplier: 2.1
+  - surfaceType: 5
+    frictionMultiplier: 0.35
+    rollingResistanceMultiplier: 2.8
+  dynamicTuning:
+    classification: 4
+    label: ProvisionalProjectTuning
+    source: ProjectAuthored/Milestone06
+    notes: Front-driven topology is a project-owned target-vehicle choice; powertrain,
+      tire, suspension, brake, electrical, fluid and thermal values are provisional
+      because 04B.4 dynamic fixtures are Missing.
+  geometryReference:
+    classification: 2
+    label: 04B.4VehicleWheelAnchors
+    source: ReferenceCaptureDatabase/vehicle-body-wheel-geometry-v1
+    notes: Wheelbase/tracks derive from reviewed wheel roots; candidate tire radius
+      remains NeedsReview and is used only as a plausibility target.

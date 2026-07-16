@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cc27dd07836cdd49913c73ff5ad6e07, type: 3}
+  m_Name: m06_mount_gearbox
+  m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointDefinition
+  definitionId: m06.mount.gearbox
+  displayName: 'M06 logical mount: M06 gearbox'
+  socketType: m06.socket.gearbox
+  ownerPartDefinitionId: m06.clutch
+  acceptedPartDefinitionIds:
+  - m06.gearbox
+  constraint:
+    positionToleranceMeters: 0.01
+    angularToleranceDegrees: 1
+    previewDistanceMeters: 0.1
+    obstructionRadiusMeters: 0
+  referenceCandidateRadiusMeters: 0
+  fasteners:
+  - {fileID: 11400000, guid: a4a53e8fe6f15b44a979b9421af1a1e1, type: 2}

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e71e08d25a1364ba7c9c5007e00656, type: 3}
+  m_Name: m06_fuel_tank
+  m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartDefinition
+  definitionId: m06.fuel_tank
+  displayName: M06 fuel tank
+  category: 0
+  massKilograms: 28
+  visualPrefab: {fileID: 3834913474502535648, guid: da067763b6a36cf4bad35c996d903af1, type: 3}
+  compatibilityRules:
+  - mountSocketType: m06.socket.fuel_tank
+    requiredOwnerPartDefinitionId: m06.chassis

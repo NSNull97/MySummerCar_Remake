@@ -136,3 +136,15 @@ The assembly half of this document is now implemented under `Assets/Game/Vehicle
 Implemented concrete types include `PartDefinition`, `PartInstance`, `PartRuntimeState`, `PartCompatibilityRule`, `MountPointDefinition`, `MountPointAuthoring`, `MountPointRuntime`, `MountConstraint`, `MountPose`, `FastenerDefinition`, `FastenerInstance`, `FastenerState`, `FastenerSize`, `ToolDefinition`, `ToolCompatibilityRule`, `AssemblyDependency`, `AssemblyGraph`, `AssemblyOperation`, `AssemblyOperationResult`, `VehicleAssemblyController`, `VehicleAssemblyQuery`, `VehicleAssemblyValidator` and schema-v1 DTOs.
 
 The current representative asset set contains 15 clean prototype parts and 14 mounts. It supports pickup, deterministic preview, handoff/install, discrete tighten/loosen, blocked removal, detach and save DTO round trip. The detailed contract is maintained in `Docs/Vehicle/ASSEMBLY_ARCHITECTURE.md`.
+
+## Milestone 06 implemented simulation foundation
+
+Milestone 06 implements the simulation half under `Assets/Game/Vehicle/Simulation` and the Unity bridge under `Assets/Game/Vehicle/Runtime`.
+
+The pure model contains `VehicleSimulationRoot`, central `VehicleSimulationConfig`, schema-1 `VehicleSimulationState`, `VehicleInputState`, `VehicleTelemetry`, the explicit `PowertrainGraph`, small engine/starter/clutch/gearbox/differential/brake/steering/suspension/wheel/electrical/fluid/thermal nodes, prerequisite results and `IWheelPhysicsBackend`. The graph exposes generic left/right driven-wheel nodes, while config indices select one distinct pair; the authored asset uses FL/FR (`0/1`), and AWD remains future work.
+
+The runtime layer contains a thin fixed-step host, a cached adapter from a bounded logical `AssemblyGraph`, a dedicated Input System router, one four-wheel raycast/PhysX prototype backend, reset/recovery, wheel presentation and development telemetry. The logical M06 assembly fixture is intentionally separate from the moving graybox Rigidbody; its part masses do not yet build physical mass or center of mass.
+
+Reviewed geometry is limited to four derived wheel anchors, wheelbase `2.334 m` and front/rear tracks `1.2600002 / 1.2060003 m`. Donor root mass `389 kg` is not curb/assembled mass. Candidate wheel radius `0.272667 m` remains `NeedsReview`/plausibility only. All dynamic fixtures are `Missing`, and all prototype dynamics remain `RemakeDesignTarget` / `ProvisionalProjectTuning`.
+
+The bounded paved/gravel/dirt/grass route validates the backend contract only. It is not production-road parity and does not close `WORLD-COL-003`. Full contracts, tuning and validation status are maintained in `Docs/Vehicle/SIMULATION_ARCHITECTURE.md`, `POWERTRAIN_GRAPH.md`, `WHEEL_BACKEND.md`, `SIMULATION_TUNING.md`, `TELEMETRY_GUIDE.md` and `SIMULATION_TEST_MATRIX.md`.

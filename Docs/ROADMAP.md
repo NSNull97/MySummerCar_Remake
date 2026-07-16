@@ -340,3 +340,57 @@ Readiness decision: **NO-GO for `06_VEHICLE_SIMULATION.md`**. The next and only
 next milestone is a bounded **05B.1 PilotGate remediation**: wire production
 streaming through Bootstrap, add a real M4 CharacterController traversal fixture,
 capture current-world performance, and rerun 05B.
+
+This is the historical 05B verdict. It was superseded by the successful bounded
+05B.1 remediation below; the original result remains unchanged for auditability.
+
+## Milestone 05B.1 — PilotGate remediation
+
+Status: **completed on 2026-07-15; `PilotGate` achieved**. See
+`Docs/Milestones/MILESTONE_05B1_REPORT.md`.
+
+Delivered:
+
+- production streaming for the two accepted cells through Bootstrap;
+- fingerprinted two-cycle load/unload/reload evidence;
+- real M4 `CharacterController` traversal over 16 checkpoints / `62.780293 m`;
+- bounded current-world Windows x64 performance evidence at four locations;
+- rerun canonical world validation with 12 closed and 15 open issues.
+
+Exit decision: **GO for `Prompts/06_VEHICLE_SIMULATION.md`**. Production driving
+route parity, streaming-boundary driving, collision material policy
+`WORLD-COL-003` and isolated physics CPU remained open inputs for later vehicle
+validation.
+
+## Milestone 06 — vehicle simulation implementation update
+
+Status: **bounded milestone completed; automated gate passed on 2026-07-15 and
+post-remediation manual drive/audio acceptance was recorded on 2026-07-16**. See `Docs/Milestones/MILESTONE_06_REPORT.md` and
+`Docs/Vehicle/`.
+
+Authored:
+
+- separated pure simulation and Unity runtime assemblies;
+- explicit engine -> clutch -> gearbox -> final drive/open differential -> one
+  configurable driven-wheel pair; the authored config maps it to FL/FR (`0/1`)
+  for current FWD, while AWD remains future work;
+- start/idle/stall/shutdown, clutch, shifts, braking, steering, basic suspension,
+  electrical/fluid/thermal placeholders and typed prerequisites;
+- cached adapter from a separate 12-part logical assembly fixture;
+- replaceable `IWheelPhysicsBackend` plus four-wheel raycast prototype;
+- bounded 100 m paved/gravel/dirt/grass graybox route;
+- development telemetry, Editor tools, 18 EditMode and 4 PlayMode test cases;
+- optional Editor-only, hash-pinned local Satsuma diagnostic audio behind `IVehicleAudioBackend`, with no donor clip in project content or builds.
+
+Reference boundary: exact derived wheel anchors/wheelbase/tracks are used; `389
+kg` is not treated as curb mass; candidate `0.272667 m` radius remains
+`NeedsReview`; donor dynamic fixtures remain `Missing`; all dynamics are
+`RemakeDesignTarget` / `ProvisionalProjectTuning`.
+
+Automated exit gate: PASS for builder, strict validator, calibration, focused
+EditMode `18/18`, focused PlayMode `4/4`, full PlayMode `31/31` and the isolated
+performance audit. Full EditMode is `157/160` in `44.4875523 s`; all M06 tests pass and the three
+failures are the retained two M3 lighting assertions plus one 04A1 donor-hash
+drift. Final stability coverage proves level startup rest without pinning a six-degree incline or re-sleeping a later external wake/impulse. Audio transitions are sampled in `FixedUpdate`, their starter ordering is asserted, and missing local staging remains a silent fallback. The first manual smoke confirmed the core loop and exposed startup creep/view shake; automated remediation passes, and the user accepted the post-remediation drive/audio recheck for the bounded basic prototype on 2026-07-16.
+Automated and manual readiness for `Prompts/06A_PHYSICS_VALIDATION.md` is PASS.
+M06A has not begun.

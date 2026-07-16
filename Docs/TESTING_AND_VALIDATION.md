@@ -321,3 +321,38 @@ Durable evidence:
 - `Docs/WorldValidation/M05B1_M4_CHARACTER_CONTROLLER_TRAVERSAL.json`;
 - `Docs/WorldValidation/M05B1_WORLD_PERFORMANCE_EVIDENCE.json`;
 - `Docs/WorldValidation/WORLD_VALIDATION_RESULT.json`.
+
+## Milestone 06 vehicle-simulation validation
+
+Authored commands under `Tools > MSC Remake > Vehicle Simulation`:
+
+- `Build / Rebuild Prototype`;
+- `Validate Configs`;
+- `Open Powertrain Graph`;
+- `Run Calibration Fixture`;
+- `Spawn/Reset Prototype`;
+- `Start/Stop Telemetry Capture`;
+- `Compare Reference/Tuned Curves`;
+- `Show Missing Prerequisites`;
+- `Run Performance Audit`.
+
+Batch entry points are `VehicleSimulationPrototypeBuilder.RunBatch`, `VehicleSimulationPrototypeValidator.RunBatch`, `VehicleSimulationCalibrationRunner.RunBatch` and `VehicleSimulationPerformanceAudit.RunBatch` in namespace `MSC.Editor.VehicleSimulation`.
+
+Authored focused coverage:
+
+- EditMode filter `MSC.Tests.EditMode.VehicleSimulation`: `18` tests for provenance/config, torque, friction/inertia, starter/start/idle/stall/shutdown, clutch, gearbox, configurable single driven-pair routing (authored FL/FR `0/1` plus test remap to RL/RR `2/3`), `1800 N*m` brake default, differential/steering/suspension, tick/substep contract, shifts, fixed-step tolerance, DTO round trip, telemetry, audio-parameter sanitization, non-finite rejection, allocations and assembly prerequisite failure;
+- PlayMode filter `MSC.Tests.PlayMode.VehicleSimulation`: `4` tests for scene composition/contact/surfaces and level startup rest, failed start then idle with fixed-step audio-event ordering, a six-degree unpowered incline that must remain free to roll, and move/brake/stall/reset finite-body flow. The level-rest case also verifies that a later external `WakeUp()` plus `0.05 m/s` velocity is not re-slept.
+
+The static validator checks the separate 12-part logical assembly fixture, dynamic proxy separation, exact derived wheel anchors, typed surfaces, complete config/input/audio composition, build indices `0/6/8/9`, prohibited dependency absence and zero serialized donor `AudioClip`/`AudioSource` content.
+
+Fresh automated results inspected on 2026-07-15/16 UTC:
+
+- builder and strict validator PASS with `M06_VEHICLE_SIMULATION_BUILD_OK` / `M06_VEHICLE_SIMULATION_VALIDATION_OK`;
+- calibration PASS with `crankTicks=15`, `idleRpm=908.023`, `ProvisionalProjectTuning` and donor dynamic fixture `Missing`;
+- focused EditMode `18/18 PASS` in `0.1090665 s` and focused PlayMode `4/4 PASS` in `10.8416789 s`; the configured local audio path loaded seven clips with verified hashes in all four cases;
+- full EditMode `157/160 PASS` in `44.4875523 s`, with every M06 test passing;
+- the three full-EditMode failures are known unrelated baselines: two M3 neutral-sky assertions against the preserved user-owned `M3_NeutralVolume.asset` and one frozen 04A1 donor-hash drift for `sharedassets3.assets/.resource`;
+- full PlayMode `31/31 PASS`, no failed/skipped tests, duration `49.4868179 s`; the ready marker appears in all four M06 cases;
+- isolated performance audit PASS with `0` allocated bytes in every measured loop; `Physics.Processing` is `UnavailableNotMeasured`.
+
+The first bounded manual drive confirmed the core loop but exposed startup creep and view shake. Automated remediation is covered by focused PlayMode `4/4 PASS`, including level rest, incline freedom and later external wake behavior. `VehicleAudioPresenter` samples in `FixedUpdate`, `StarterEngaged -> StarterDisengaged -> EngineStarted` ordering is asserted, and reset during `Cranking` verifies `VehicleSimulationHost.SimulationReset -> VehicleAudioPresenter -> VehicleAudioEvent.Reset` with immediate backend `StopImmediately`. Missing local staging remains a silent fallback and is not itself a test failure. On 2026-07-16 the user accepted the post-remediation drive/audio recheck for the bounded basic prototype. Exact commands, inspected result paths, performance values and the manual checklist are in `Docs/Vehicle/SIMULATION_TEST_MATRIX.md`. Do not silently waive a future new M06 failure.

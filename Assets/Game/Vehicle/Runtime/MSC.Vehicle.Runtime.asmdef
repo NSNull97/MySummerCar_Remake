@@ -2,10 +2,10 @@
   "name": "MSC.Vehicle.Runtime",
   "rootNamespace": "MSC.Vehicle",
   "references": [
-    "MSC.Core.Runtime",
-    "MSC.Interaction.Runtime",
+    "MSC.Audio.Runtime",
     "MSC.Vehicle.Simulation",
-    "MSC.Vehicle.Assembly"
+    "MSC.Vehicle.Assembly",
+    "Unity.InputSystem"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

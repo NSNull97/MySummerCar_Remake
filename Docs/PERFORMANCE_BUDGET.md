@@ -80,3 +80,34 @@ blocked rather than being reported as fixed.
 The integrated production pilot now provides the first representative Player + World + Assembly content slice. Static Editor audit records 332 renderers, 134 colliders, 64 LOD groups, 158,548 instance-counted mesh triangles and approximately 0.18 MiB of unique mesh data for `WR_HomeYardPilot.prefab`.
 
 These are content counts, not an FPS claim. CPU/GPU frame time, draw calls, VRAM, peak memory, streaming load/unload time and standalone 1920 × 1080 frame pacing remain unmeasured. The 60 FPS target is therefore still a manual performance gate after visual acceptance.
+
+## Milestone 05B.1 bounded world baseline
+
+The accepted Windows x64 Development Player capture on the Ryzen 9 5950X / RTX 4070 SUPER records four 1920 × 1080 HDRP High Fidelity steady-state locations with frame-time p95 `3.620 / 3.863 / 4.003 / 3.803 ms`. This is the last completed pre-M06 frame baseline.
+
+It does not include the M06 vehicle simulation. Resident VRAM, isolated Present cost, `Physics.Processing`, a road-driving-speed location and a continuous production vertical-slice route are unavailable. It must not be subtracted from a later capture to infer vehicle physics cost.
+
+## Milestone 06 simulation budget and audit result
+
+M06 maintains the existing 60 FPS target and adds these gates:
+
+- no managed allocation in the normal warmed simulation tick;
+- one backend sample and one apply per `FixedUpdate`, independent of pure substep count;
+- explicit cost comparison at `1/2/4` substeps;
+- separate direct backend and telemetry snapshot measurements;
+- assembly prerequisite scanning only when `GraphMutationCount` changes;
+- non-allocating wheel raycasts and cached surface-provider lookup.
+
+`Tools > MSC Remake > Vehicle Simulation > Run Performance Audit` refreshed `Docs/Vehicle/M06_SIMULATION_PERFORMANCE.json` at `2026-07-15T19:37:34.5972700Z`. It used 512 warmup ticks, 10,000 measured pure-simulation ticks and 50,000 backend/telemetry iterations:
+
+| Scope | Cost | Allocated bytes |
+|---|---:|---:|
+| Pure root, 1 substep | `2.85809 us/tick` | `0` |
+| Pure root, 2 substeps | `4.09848 us/tick` | `0` |
+| Pure root, 4 substeps | `6.49453 us/tick` | `0` |
+| Prototype backend `Sample + Apply` | `7.71657 us/iteration` | `0` |
+| Telemetry buffer copy | `0.243964 us/iteration` | `0` |
+
+The isolated audit passes its no-allocation and bounded-method evidence scope. It times direct methods with `Stopwatch` and cannot isolate Unity's later `Physics.Processing` phase, which is recorded as `UnavailableNotMeasured`. Physics CPU therefore remains unavailable until a later player/Profiler capture, and this is not a standalone M06 60 FPS claim.
+
+The bounded graybox track is not a production route. M06A must add player/build/hardware/config provenance, telemetry off/on comparison, proper physics counters and representative production-world driving/streaming scenarios without changing the world or camera to hide cost.
