@@ -393,4 +393,35 @@ performance audit. Full EditMode is `157/160` in `44.4875523 s`; all M06 tests p
 failures are the retained two M3 lighting assertions plus one 04A1 donor-hash
 drift. Final stability coverage proves level startup rest without pinning a six-degree incline or re-sleeping a later external wake/impulse. Audio transitions are sampled in `FixedUpdate`, their starter ordering is asserted, and missing local staging remains a silent fallback. The first manual smoke confirmed the core loop and exposed startup creep/view shake; automated remediation passes, and the user accepted the post-remediation drive/audio recheck for the bounded basic prototype on 2026-07-16.
 Automated and manual readiness for `Prompts/06A_PHYSICS_VALIDATION.md` is PASS.
-M06A has not begun.
+
+## Milestone 06A — physics validation
+
+Status: **automated gate passed and user accepted the bounded prototype baseline
+on 2026-07-16; `Accepted / HumanAccepted`**.
+
+Delivered:
+
+- reproducible validation profile, isolated course, strict builder/validator and
+  bounded production-world fixture;
+- focused EditMode **7/7 PASS** and focused PlayMode **8/8 PASS**;
+- durable schema-v4 PhysX evidence plus seven per-fixture telemetry CSV files;
+- pure-performance evidence at `1/2/4` substeps:
+  `2.571855 / 3.55201 / 5.962805 us/tick`, telemetry `6.04886 us/tick` and
+  scripted validation `6.95269 us/tick`, with zero measured allocations;
+- real-backend stationary PhysX window with blocking `Physics.Simulate` means
+  `0.024990 / 0.023025 ms`, combined means `0.038737 / 0.036251 ms` and zero
+  allocations for telemetry consumer off/on;
+- production telemetry after a 50-frame warmup: mean root + backend
+  `0.038197 ms`, linear p95 `0.0461 ms`, maximum `0.0629 ms`;
+- bounded production route of `12.255066 m` to `z=-1024` with four wheel
+  contacts, followed by a next-cell-only contact probe at `z=-970`.
+
+The two production pilot cells remain `Rejected` / `NeedsRework` for donor
+visual and spatial parity. They are accepted here only as technical
+collision/streaming fixtures. The `Physics.Processing` marker was unavailable
+in batch mode despite the blocking `Physics.Simulate` wall-clock measurement;
+GPU timing and a Windows player 60 FPS acceptance capture remain unavailable
+and must not be inferred from the passing Editor evidence.
+
+Gate decision: **automated PASS; human acceptance recorded**. The next and only
+next milestone is `Prompts/06B_PRODUCTION_WORLD_CELL_FIDELITY_GATE.md`.

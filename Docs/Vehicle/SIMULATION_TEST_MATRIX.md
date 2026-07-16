@@ -1,4 +1,4 @@
-# Milestone 06 Simulation Test Matrix
+# Milestone 06 / 06A Simulation Test Matrix
 
 ## Execution status
 
@@ -225,4 +225,78 @@ The automated M06 gate passes:
 - calibration and isolated performance audit pass;
 - no measured managed allocation appears in the audited loops.
 
-The first bounded manual drive established a partial pass and generated two concrete defects; both now have expanded automated remediation coverage and focused PlayMode is `4/4 PASS`. The post-remediation start/move/steer/brake/stall/reset and local-audio recheck was accepted by the user on 2026-07-16. Automated and manual readiness for M06A is PASS. M06A has not begun.
+The first bounded manual drive established a partial pass and generated two concrete defects; both now have expanded automated remediation coverage and focused PlayMode is `4/4 PASS`. The post-remediation start/move/steer/brake/stall/reset and local-audio recheck was accepted by the user on 2026-07-16. Automated and manual readiness for M06A is PASS.
+
+## Milestone 06A execution status
+
+Fresh Unity `6000.3.11f1` evidence from 2026-07-16:
+
+- M06A builder: PASS, revision `1.2.0`, `11` fixtures, `50` metrics;
+- M06A strict validator: PASS;
+- focused EditMode:
+  `VehiclePhysicsValidationEditModeTests`, **7/7 PASS**;
+- focused PlayMode:
+  `VehiclePhysicsValidationPlayModeTests`, **8/8 PASS**;
+- PhysX evidence: PASS;
+- evidence export: PASS, including seven telemetry CSV files;
+- pure performance audit: PASS with zero measured allocations.
+
+### Focused EditMode inventory
+
+| Test | Requirement | Status |
+|---|---|---|
+| `CalibrationProfile_EditorJsonRoundTripPreservesValidContracts` | Profile schema and round trip | `PASS` |
+| `Comparator_HandlesRepeatedToleranceUnknownTargetsAndInvalidSamples` | Tolerances, repeated trials and unknown targets | `PASS` |
+| `CalibrationRun_FailedTrialCannotResolveAsPassedWithoutMetricRows` | Honest failed-run resolution | `PASS` |
+| `Config_RpmSpeedMassComSuspensionAndSurfaceRelationsRemainFinite` | Central config and finite relations | `PASS` |
+| `ValidationScene_HasTypedCompleteRouteAndGarageFixture` | Complete typed validation route | `PASS` |
+| `ProductionHomePrefabs_ExposeExplicitVehicleSurfaceMetadata` | Bounded production surface metadata | `PASS` |
+| `ProductionStreamingManifest_ContainsContiguousBoundedCells` | Two-cell streaming fixture | `PASS` |
+
+### Focused PlayMode inventory
+
+| Test | Requirement | Status |
+|---|---|---|
+| `StartIdleLaunchAndBraking_ThreeTrialsRemainFiniteAndRepeatable` | Repeated start, idle, launch and brake | `PASS` |
+| `SurfaceContactsAndConfiguredResponseOrdering_AreExplicitAndFinite` | Four typed surfaces and finite contacts | `PASS` |
+| `Coastdown_ThreeNeutralTrialsLoseSpeedAndRemainFinite` | Repeated neutral coast-down | `PASS` |
+| `RuntimeSteeringSlalomStep_ProducesBoundedYawAndLateralResponse` | Steering signs, yaw and lateral response | `PASS` |
+| `RuntimeSuspensionBump_ProducesCompressionAndFiniteRecovery` | Bump compression and recovery | `PASS` |
+| `RuntimeHillStart_SixDegreeBrakeHoldAndLaunchRemainStable` | Six-degree brake hold and launch | `PASS` |
+| `ProductionWorld_GarageExitMaintainsFiniteContactsAndLoadsNextCell` | Garage exit and bounded streaming transition | `PASS` |
+| `ScriptedPhysXPerformance_UsesRealBackendAndManualPhysicsSteps` | Real backend plus blocking manual `Physics.Simulate` performance window | `PASS` |
+
+The production fixture travels `12.255066 m` to `z=-1024` with four wheel
+contacts; the next-cell-only probe at `z=-970` also reports four contacts. Both
+pilot cells remain `Rejected` / `NeedsRework` for donor visual/spatial parity,
+so this result is collision/streaming evidence rather than a fidelity pass.
+
+### M06A performance and evidence
+
+| Scope | Cost | Allocated bytes |
+|---|---:|---:|
+| Pure root, 1 substep | `2.571855 us/tick` | `0` |
+| Pure root, 2 substeps | `3.55201 us/tick` | `0` |
+| Pure root, 4 substeps | `5.962805 us/tick` | `0` |
+| Root + telemetry snapshot | `6.04886 us/tick` | `0` |
+| Scripted validation | `6.95269 us/tick` | `0` |
+| Real backend + `Physics.Simulate`, telemetry consumer off | `0.038737 ms/tick` combined; `0.024990 ms/tick` physics | `0` |
+| Real backend + `Physics.Simulate`, telemetry consumer on | `0.036251 ms/tick` combined; `0.023025 ms/tick` physics | `0` |
+
+Production telemetry after a 50-frame warmup records mean root + backend
+`0.038197 ms`, linear p95 `0.0461 ms` and maximum `0.0629 ms`.
+
+Durable evidence is under `Docs/VehicleValidation/`, including
+schema-v4 `M06A_PHYSX_RUN_EVIDENCE.json`,
+`M06A_PHYSICS_VALIDATION_PERFORMANCE.json`, four summary CSV files and seven
+fixture telemetry CSV files.
+
+### M06A gate interpretation
+
+Automated status: **PASS**. User acceptance status:
+`Accepted / HumanAccepted` on 2026-07-16 for the bounded prototype baseline.
+
+The `Physics.Processing` marker was unavailable in batch mode despite the
+blocking `Physics.Simulate` wall-clock measurement. GPU timing and a
+Windows-player 60 FPS acceptance capture remain unavailable. The next and only
+next milestone is `Prompts/06B_PRODUCTION_WORLD_CELL_FIDELITY_GATE.md`.

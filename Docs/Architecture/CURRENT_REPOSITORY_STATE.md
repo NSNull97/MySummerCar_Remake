@@ -1,4 +1,4 @@
-# Current Repository State — Milestone 06 automated gate passed
+# Current Repository State — Milestone 06A automated gate passed
 
 Captured: 2026-07-16
 
@@ -13,7 +13,7 @@ Open workspace: `E:\GAYmDev_Studio\MySummerCar_Remake`
 | Input | Input System `1.19.0`; project-authored M4 player map and dedicated M06 `Vehicle` map |
 | Build scenes | Current settings keep Bootstrap `0`, production cells `6/8`, and append `VehicleSimulationPrototype` at enabled/array index `9` |
 | Runtime boundary | Independent Unity 6 runtime; no donor executable/assemblies/assets required |
-| Tests | M06 focused EditMode `18/18` and PlayMode `4/4` PASS; full PlayMode `31/31` PASS; full EditMode `157/160` with every M06 test passing and exactly the retained two M3 lighting plus one 04A1 donor-hash-drift failures |
+| Tests | M06A focused EditMode `7/7` and focused PlayMode `8/8` PASS; the preceding M06 focused EditMode `18/18`, focused PlayMode `4/4` and full PlayMode `31/31` also remain passing |
 
 ## Milestone 4 runtime state
 
@@ -56,7 +56,10 @@ M4 used no donor data and made no donor filesystem changes. The existing donor a
 - Save snapshot capture exists, but storage/load/resolution/migration are not implemented.
 - A manual Game View feel/collision review remains necessary.
 - The original working tree remains intentionally dirty with pre-existing Unity/settings/prompt-pack changes; no automatic discard, stash or mixed commit was performed.
-- A representative integrated player + world GPU/memory/physics performance capture does not yet exist; creating that slice belongs to the bounded integration milestone rather than this fix task.
+- Bounded production-world telemetry and a stationary blocking
+  `Physics.Simulate` wall-clock window now exist, but a Windows player capture
+  with an available physics profiler marker, GPU timing, memory and an accepted
+  60 FPS result still does not.
 
 ## Milestone 04A world-layout pilot state
 
@@ -86,9 +89,13 @@ The reproducible scene `Assets/Game/Vehicle/Content/Assembly/Scenes/VehicleAssem
 
 ## Milestone 05A bounded world-remaster state
 
-The production layer now has a full 13,509-record replacement registry, 51 discovered zone/status groups, 263 grouped manual-art tasks and a deterministic pilot production cell for `cell_0_-3`. The pilot contains project-authored terrain/road/ditch, home and garage shells, a representative interior, six moving hinges, props/infrastructure and 64 LOD spruce instances. It is integrated with the existing M4 player and M05 assembly scene.
+The production layer now has a full 13,509-record replacement registry, 51 discovered zone/status groups, 263 grouped manual-art tasks and deterministic pilot production cells for `cell_0_-3` and `cell_0_-2`. The home pilot contains project-authored terrain/road/ditch, home and garage shells, a representative interior, six moving hinges, props/infrastructure and 64 LOD spruce instances. It is integrated with the existing M4 player and M05 assembly scene.
 
-Coverage is deliberately narrow: 24 direct bindings globally (0.178%) and 24/671 in the pilot source cell (3.577%). Four records are `ProductionCandidate`, twenty are `FirstPass`, none is `Approved`/`Verified`, and the other 13,485 records remain `Unassigned` with explicit backlog links. Production dependencies are donor-binary independent and the two-run production-cell SHA-256 is stable.
+Coverage is deliberately narrow and neither production cell has donor-parity
+acceptance. Historical registry rows still describe bounded generated
+candidates, while the current fidelity decision for both cells is `Rejected` /
+`NeedsRework`; neither may be presented as `Approved` or `Verified`.
+Production dependencies remain donor-binary independent.
 
 The next recommended milestone is exactly `Prompts/05A_CONTINUE_NEXT_WORLD_ZONE.md`, after manual acceptance of the pilot. Final terrain/road measurements, hero modelling, authored textures, map-scale vegetation/water/infrastructure, HLOD and standalone GPU profiling remain explicit work.
 
@@ -112,6 +119,44 @@ The 100 m paved/gravel/dirt/grass route is an isolated graybox test fixture, not
 
 The local Editor prototype can optionally load seven hash-pinned Satsuma diagnostic clips from frozen external staging through the typed `IVehicleAudioBackend` boundary. `VehicleAudioPresenter` samples transitions at `FixedUpdate`; PlayMode asserts `StarterEngaged -> StarterDisengaged -> EngineStarted`. No clip, absolute path or serialized `AudioSource` is stored in the scene or repository; player builds and simulation remain independent. Missing local staging remains a silent fallback rather than a simulation-test failure. This is `TemporaryDirectImport`/`ReferenceOnly` perceptual feedback, not production audio or parity.
 
+## Milestone 06A physics-validation state
+
+`MSC.Vehicle.Simulation` now also owns the validation profile/comparison
+contracts, while `MSC.Vehicle.Runtime` owns the scripted validation rig and
+per-tick telemetry capture. `MSC.Editor` owns the M06A course/profile builder,
+strict validator, dashboard, performance audit and evidence exporter. The
+development-only scene is
+`Assets/Game/Vehicle/Content/Validation/Scenes/VehiclePhysicsValidation.unity`;
+it is not a production build scene.
+
+The builder and strict validator pass. Focused EditMode is **7/7 PASS** and
+focused PlayMode is **8/8 PASS**. The PlayMode suite covers repeated
+start/idle/launch/braking, coast-down, steering, suspension bump, hill start,
+typed surfaces, the bounded production-world transition and a real-backend
+manual `Physics.Simulate` performance window. Durable outputs include schema-v4
+`Docs/VehicleValidation/M06A_PHYSX_RUN_EVIDENCE.json` and seven CSV telemetry
+captures under `Docs/VehicleValidation/Telemetry/`.
+
+The pure managed audit records `2.571855 / 3.55201 / 5.962805 us/tick` at
+`1/2/4` substeps, `6.04886 us/tick` with telemetry and `6.95269 us/tick` for
+scripted validation, with zero measured allocations. Production telemetry
+after a 50-frame warmup records mean root + backend `0.038197 ms`, linear p95
+`0.0461 ms` and maximum `0.0629 ms`. The stationary real-backend window records
+combined means `0.038737 / 0.036251 ms` and blocking `Physics.Simulate` means
+`0.024990 / 0.023025 ms` with telemetry consumer off/on, zero allocations,
+four contacts and no invalid states.
+
+The technical production route advances `12.255066 m` to the streaming
+boundary at `z=-1024` with four wheel contacts; an isolated next-cell contact
+probe at `z=-970` also retains four contacts. This proves the bounded
+collision/streaming fixture only. Both production cells remain `Rejected` /
+`NeedsRework` for donor visual and spatial parity.
+
 ## Next boundary
 
-The M06 gate is PASS: builder, strict validator, calibration, focused EditMode `18/18`, focused PlayMode `4/4`, full PlayMode `31/31`, the isolated performance audit and bounded user acceptance pass; all M06 tests pass inside the fresh `157/160` full EditMode run (`44.4875523 s`), whose three failures are known unrelated baselines. The next and only next milestone is `Prompts/06A_PHYSICS_VALIDATION.md`; M06A has not begun.
+The M06A automated gate is PASS and the user accepted its bounded prototype
+baseline on 2026-07-16; status is `Accepted / HumanAccepted`. The `Physics.Processing`
+ProfilerRecorder was unavailable even though blocking `Physics.Simulate`
+wall-clock was measured; GPU timing and Windows-player 60 FPS acceptance remain
+a manual evidence gap. The next and only next milestone is
+`Prompts/06B_PRODUCTION_WORLD_CELL_FIDELITY_GATE.md`.

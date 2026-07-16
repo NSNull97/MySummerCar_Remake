@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: 615645f7ce4d6ee6836547a00c3dedb9
 --- !u!1 &3698452204448839643
@@ -274,6 +274,7 @@ GameObject:
   - component: {fileID: 4327479854276486433}
   - component: {fileID: 8455614081851019794}
   - component: {fileID: 7249305625226343057}
+  - component: {fileID: 2699551878026246836}
   m_Layer: 0
   m_Name: ShoreApproach
   m_TagString: Untagged
@@ -374,6 +375,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2699551878026246836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6598954782658126357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4f9345cdff4f19af711f3e72acafea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MSC.Vehicle.Runtime::MSC.Vehicle.VehicleSurfaceMetadataAuthoring
+  surfaceType: 4
 --- !u!1 &7029931902999294433
 GameObject:
   m_ObjectHideFlags: 0
@@ -416,7 +430,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: 2d9650c25f6324b6367493f48c56c908
 --- !u!1 &8445651279394447969
@@ -431,6 +445,7 @@ GameObject:
   - component: {fileID: 1066159297383488425}
   - component: {fileID: 2318514179957894230}
   - component: {fileID: 545628886576573788}
+  - component: {fileID: 4690942818044077928}
   m_Layer: 0
   m_Name: FootpathToPier
   m_TagString: Untagged
@@ -531,3 +546,16 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4690942818044077928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8445651279394447969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4f9345cdff4f19af711f3e72acafea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MSC.Vehicle.Runtime::MSC.Vehicle.VehicleSurfaceMetadataAuthoring
+  surfaceType: 2

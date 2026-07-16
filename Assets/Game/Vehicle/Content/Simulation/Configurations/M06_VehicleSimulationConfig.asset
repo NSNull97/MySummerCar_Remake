@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e432685bc7171c49b418aed1e53fbc8, type: 3}
   m_Name: M06_VehicleSimulationConfig
   m_EditorClassIdentifier: MSC.Vehicle.Simulation::MSC.Vehicle.Simulation.VehicleSimulationConfig
+  tuningSchemaVersion: 2
   configurationId: m06.prototype.satsuma
   substepCount: 4
   leftDrivenWheelIndex: 0
@@ -59,6 +60,11 @@ MonoBehaviour:
     efficiency: 0.9
   dynamics:
     provisionalMassKilograms: 650
+    centerOfMassMeters: {x: 0, y: 0.2, z: 0}
+    chassisColliderCenterMeters: {x: 0, y: 0.2, z: 0}
+    chassisColliderSizeMeters: {x: 1.35, y: 0.42, z: 3.15}
+    chassisLinearDamping: 0.015
+    chassisAngularDamping: 0.15
     wheelRadiusMeters: 0.272667
     wheelInertiaKilogramSquareMeters: 1.15
     maximumBrakeTorqueNewtonMeters: 1800

@@ -110,4 +110,42 @@ M06 maintains the existing 60 FPS target and adds these gates:
 
 The isolated audit passes its no-allocation and bounded-method evidence scope. It times direct methods with `Stopwatch` and cannot isolate Unity's later `Physics.Processing` phase, which is recorded as `UnavailableNotMeasured`. Physics CPU therefore remains unavailable until a later player/Profiler capture, and this is not a standalone M06 60 FPS claim.
 
-The bounded graybox track is not a production route. M06A must add player/build/hardware/config provenance, telemetry off/on comparison, proper physics counters and representative production-world driving/streaming scenarios without changing the world or camera to hide cost.
+The bounded M06 graybox track was not a production route. M06A has now added
+repeatable config/profile provenance, telemetry off/on comparison and a
+bounded production-world driving/streaming fixture. It still does not provide
+isolated `Physics.Processing`, GPU timing or a Windows-player 60 FPS
+acceptance capture.
+
+## Milestone 06A physics-validation budget result
+
+`Docs/VehicleValidation/M06A_PHYSICS_VALIDATION_PERFORMANCE.json` records a
+fresh Unity `6000.3.11f1` pure managed audit with 512 warmup ticks, 20,000
+measured ticks and zero measured allocations:
+
+| Scope | Cost | Allocated bytes |
+|---|---:|---:|
+| Pure root, 1 substep | `2.571855 us/tick` | `0` |
+| Pure root, 2 substeps | `3.55201 us/tick` | `0` |
+| Pure root, 4 substeps | `5.962805 us/tick` | `0` |
+| Root + telemetry snapshot | `6.04886 us/tick` | `0` |
+| Scripted validation | `6.95269 us/tick` | `0` |
+| Real backend + blocking `Physics.Simulate`, telemetry off | `0.038737 ms/tick` combined; `0.024990 ms/tick` physics | `0` |
+| Real backend + blocking `Physics.Simulate`, telemetry on | `0.036251 ms/tick` combined; `0.023025 ms/tick` physics | `0` |
+
+The focused production-world telemetry, after a 50-frame warmup, records:
+
+| Scope | Mean | p95 | Maximum |
+|---|---:|---:|---:|
+| Root + backend | `0.038197 ms` | `0.0461 ms` (linear) | `0.0629 ms` |
+
+The production fixture traveled `12.255066 m` to `z=-1024` with four wheel
+contacts and completed a next-cell-only contact probe at `z=-970`. Both cells
+remain `Rejected` / `NeedsRework` for donor fidelity; the capture is valid only
+as bounded technical integration evidence.
+
+Automated performance sanity checks pass, and the user accepted the bounded
+prototype baseline on 2026-07-16 (`Accepted / HumanAccepted`). The blocking
+`Physics.Simulate` wall-clock is measured for a stationary bounded window, but
+the `Physics.Processing` marker, GPU frame time, player frame pacing and the
+60 FPS production acceptance gate are still unavailable and must be captured
+manually. Only Milestone 06B may follow.

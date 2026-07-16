@@ -1,10 +1,15 @@
-# Vehicle Simulation Architecture — Milestone 06
+# Vehicle Simulation Architecture — through Milestone 06A
 
 ## Scope and status
 
 Milestone 06 introduces a bounded, clean-room vehicle-simulation foundation. It is a prototype for start, idle, stall, clutch, gearbox, a configurable single driven-wheel pair, steering, braking, suspension contact, support-system prerequisites and telemetry. The current authored config maps that pair to FL/FR, so the prototype is FWD. It is not final vehicle realism or donor-calibrated behavior.
 
-Fresh automated Unity validation passes; the bounded manual drive smoke test remains `Pending user execution`. Exact evidence and the distinction between automated and manual gates are recorded in `SIMULATION_TEST_MATRIX.md` and `MILESTONE_06_REPORT.md`.
+The M06 automated and bounded manual prototype gates pass. M06A adds a
+repeatable validation/evidence layer without replacing the simulation
+architecture. Its automated gate passes and its current status is
+`Accepted / HumanAccepted` after user confirmation on 2026-07-16. Exact evidence and gate
+boundaries are recorded in `SIMULATION_TEST_MATRIX.md`,
+`Docs/VehicleValidation/` and the milestone reports.
 
 ## Assembly boundaries
 
@@ -93,7 +98,11 @@ The logical fixture and the moving physics proxy are deliberately separate:
 - logical part masses and transforms do not automatically build the current Rigidbody mass or center of mass;
 - no logical `PartInstance.Body` points at the proxy chassis.
 
-This separation is temporary but explicit. Milestone 06A must define the validated bridge from installed parts to physical mass/center-of-mass state instead of assuming the two graphs are already equivalent.
+This separation is temporary but explicit. Milestone 06A makes proxy mass,
+center of mass, collider envelope and damping explicit in the central config
+and records the logical assembly masses as excluded from physical calibration.
+It does not fabricate a part-weighted bridge: logical assembly state and proxy
+mass remain separate until validated part-mass inputs exist.
 
 ## Prerequisite results
 
@@ -111,7 +120,60 @@ This is a domain serialization fixture only. It does not write a save slot, reso
 
 `VehicleTelemetry` is updated after each fixed tick and contains simulation/backend timings plus powertrain and wheel state. `VehicleSimulationHost` wraps the tick with profiler marker `MSC.Vehicle.Simulation.FixedTick`.
 
-The development performance audit can measure isolated pure simulation, direct backend method cost and telemetry-buffer copy cost. It explicitly cannot isolate Unity `Physics.Processing`; physics CPU remains unavailable until a later profiler/player capture.
+The M06A validation recorder writes fixed-step telemetry for seven fixtures.
+Its production route capture exposes root, backend and total tick timings after
+a 50-frame warmup. The separate pure audit measures `1/2/4` substeps,
+telemetry snapshot and scripted-input overhead with allocation checks. An
+additional PlayMode contour drives the real backend and performs blocking
+manual `Physics.Simulate` steps with allocation/contact checks. The
+`Physics.Processing` marker itself was unavailable; a profiler/player capture
+is still required for a production frame-budget decision.
+
+## Milestone 06A validation composition
+
+```text
+VehicleCalibrationProfile
+    |---- central VehicleSimulationConfig fingerprint
+    |---- fixture and metric contracts
+    |---- explicit reference/provisional/unknown classifications
+    |
+VehiclePhysicsValidationRig
+    |---- ScriptedVehicleInputSource
+    |---- existing VehicleSimulationHost
+    |---- existing IWheelPhysicsBackend
+    |---- fixed-step telemetry recorder
+    |
+    +---- isolated validation course
+    +---- bounded Bootstrap production-world fixture
+
+Editor builder / validator / dashboard / exporter
+    +---- JSON evidence
+    +---- summary CSV files
+    +---- seven fixture telemetry CSV files
+    +---- stationary real-backend PhysX performance window
+```
+
+The development-only validation scene is
+`Assets/Game/Vehicle/Content/Validation/Scenes/VehiclePhysicsValidation.unity`
+and is excluded from production Build Settings. The production-world fixture
+uses the existing Bootstrap streamer and two bounded cells; it does not create
+a parallel streaming architecture.
+
+The production route reaches `z=-1024` after `12.255066 m` with four wheel
+contacts. A next-cell-only probe at `z=-970` verifies four contacts against the
+second cell. These two cells remain `Rejected` / `NeedsRework` for donor visual
+and spatial parity, so the fixture proves only bounded collision/streaming
+integration.
+
+The passing pure managed audit records
+`2.571855 / 3.55201 / 5.962805 us/tick` at `1/2/4` substeps,
+`6.04886 us/tick` with telemetry and `6.95269 us/tick` for scripted
+validation, with zero measured allocations. Production telemetry after warmup
+records mean root + backend `0.038197 ms`, linear p95 `0.0461 ms` and maximum
+`0.0629 ms`. The stationary real-backend contour records blocking
+`Physics.Simulate` means `0.024990 / 0.023025 ms` and combined means
+`0.038737 / 0.036251 ms` with telemetry consumer off/on, zero allocations,
+four contacts and no invalid states.
 
 ## Failure policy
 
@@ -130,6 +192,12 @@ The development performance audit can measure isolated pure simulation, direct b
 - Damage, wear, complete fluid/electrical networks, advanced tire forces, anti-roll, Ackermann steering and limited-slip behavior are not implemented.
 - The 100 m graybox surface track is a bounded M06 fixture, not production-world road parity.
 - Production surface/layer/PhysicMaterial policy issue `WORLD-COL-003` remains open.
+- Both bounded production cells remain `Rejected` / `NeedsRework` for donor
+  visual and spatial fidelity.
+- The `Physics.Processing` marker, GPU timing and Windows-player 60 FPS
+  acceptance remain unavailable; the measured blocking `Physics.Simulate`
+  window is stationary bounded evidence only.
 - Save, audio, weather and final presentation integration are intentionally outside M06.
 
-The only next validation milestone after a successful M06 gate is `Prompts/06A_PHYSICS_VALIDATION.md`.
+The M06A automated gate is PASS and human acceptance is recorded. The next and
+only next milestone is `Prompts/06B_PRODUCTION_WORLD_CELL_FIDELITY_GATE.md`.

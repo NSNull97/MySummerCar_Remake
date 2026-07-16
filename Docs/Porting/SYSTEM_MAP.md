@@ -1,4 +1,4 @@
-# Donor System Map — through Milestone 06
+# Donor System Map — through Milestone 06A
 
 This map describes observed donor ownership/coupling and the intended transfer boundary. It is not a claim that any subsystem has been ported.
 
@@ -308,4 +308,50 @@ The first manual drive confirmed the start/shift/stall/RPM loop but exposed abou
 
 The local audio branch is diagnostic presentation only. It consumes simulation telemetry and engine state at `FixedUpdate` without becoming authoritative; PlayMode asserts `StarterEngaged -> StarterDisengaged -> EngineStarted`. Seven clips remain in frozen external staging with ledgered hashes and classification `TemporaryDirectImport`; the static `GAME.unity` RPM/starter routing evidence is `ReferenceOnly`. Nothing enters Git, production `Assets` or a build. Missing staging remains a silent fallback, the current mod-contaminated/hash-drift donor install is not used, no stop/stall parity clip is claimed, and final audio remains reauthored behind `IAudioBackend`.
 
-Only exact reviewed geometry crosses from the reference database. Donor dynamic fixtures are `Missing`, so every dynamic constant follows the project-authored tuning path. The isolated method/allocation audit passes, but Unity `Physics.Processing` evidence remains unavailable until a later player/Profiler capture. The automated M06 gate passes with focused PlayMode `4/4` and full PlayMode `31/31`; bounded manual acceptance is recorded. M06A has not begun.
+Only exact reviewed geometry crosses from the reference database. Donor dynamic
+fixtures are `Missing`, so every dynamic constant follows the project-authored
+tuning path. The automated M06 gate passes with focused PlayMode `4/4` and full
+PlayMode `31/31`; bounded manual acceptance is recorded.
+
+## Milestone 06A validation and evidence flow
+
+```mermaid
+flowchart LR
+    CONFIG["Central vehicle config"] --> PROFILE["M06A calibration profile"]
+    REFS["Reviewed geometry / unknown dynamic targets"] --> PROFILE
+    PROFILE --> COURSE["Development-only validation course"]
+    PROFILE --> PURE["Pure comparator + performance audit"]
+    COURSE --> PHYSX["7 focused PhysX PlayMode fixtures"]
+    CELLS["Production cells 0_-3 / 0_-2"] --> WORLD["Bounded world transition fixture"]
+    WORLD --> PHYSX
+    PURE --> EVIDENCE["JSON + summary CSV evidence"]
+    PHYSX --> EVIDENCE
+    PHYSX --> TELEMETRY["7 telemetry CSV files"]
+    DONOR["Donor runtime/assets"] -. "no runtime dependency" .-> PHYSX
+```
+
+`MSC.Vehicle.Simulation` owns the validation contracts and tolerance-based
+comparison model. `MSC.Vehicle.Runtime` owns the scripted rig and telemetry.
+`MSC.Editor` owns the builder, strict validator, dashboard, pure performance
+audit and evidence export. The validation scene stays outside production Build
+Settings.
+
+Builder/validator, focused EditMode `7/7` and focused PlayMode `8/8` pass.
+The bounded production run reaches `z=-1024` after `12.255066 m` with four
+contacts, and the next-cell-only probe at `z=-970` also retains four contacts.
+This is technical collision/streaming evidence only: both pilot cells remain
+`Rejected` / `NeedsRework` for donor visual and spatial parity.
+
+The pure managed audit reports `2.571855 / 3.55201 / 5.962805 us/tick` at
+`1/2/4` substeps, telemetry `6.04886 us/tick`, scripted validation
+`6.95269 us/tick` and zero measured allocations. Production telemetry after a
+50-frame warmup reports mean root + backend `0.038197 ms`, linear p95 `0.0461 ms` and
+maximum `0.0629 ms`. Schema-v4 PhysX evidence also records blocking
+`Physics.Simulate` means `0.024990 / 0.023025 ms`, combined means
+`0.038737 / 0.036251 ms` and zero allocations with telemetry consumer off/on.
+The `Physics.Processing` marker, GPU timing and player 60 FPS acceptance remain
+unavailable.
+
+M06A is `Accepted / HumanAccepted` as a bounded prototype baseline on
+2026-07-16. Only `Prompts/06B_PRODUCTION_WORLD_CELL_FIDELITY_GATE.md` may
+follow.

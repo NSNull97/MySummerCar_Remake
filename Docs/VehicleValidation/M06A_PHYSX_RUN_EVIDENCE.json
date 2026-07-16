@@ -1,0 +1,296 @@
+{
+    "schemaVersion": 4,
+    "validatorId": "m06a-physx-run-evidence.v4",
+    "passed": true,
+    "capturedUtc": "2026-07-16T08:46:49.1140012Z",
+    "unityVersion": "6000.3.11f1",
+    "operatingSystem": "Windows 10  (10.0.19045) 64bit",
+    "processorType": "AMD Ryzen 9 5950X 16-Core Processor ",
+    "graphicsDeviceName": "Null Device",
+    "fixedDeltaSeconds": 0.019999992102384568,
+    "repeatTrialCount": 3,
+    "vehicleConfigurationId": "m06.prototype.satsuma",
+    "tuningSchemaVersion": 2,
+    "configJsonHash": "aef92b83ec953bb914eff04b8a4d3d13",
+    "profileRevision": "1.2.0",
+    "profileFingerprint": "495953e5e401548e09a4bfddac438633",
+    "trials": [
+        {
+            "trialIndex": 1,
+            "startFrames": 15,
+            "startSeconds": 0.2999998927116394,
+            "idleAverageRpm": 902.531005859375,
+            "idleMaximumDeviationRpm": 11.26776123046875,
+            "launchPeakSpeedMetersPerSecond": 1.012280821800232,
+            "launchDistanceMeters": 0.44461822509765627,
+            "brakingInitialSpeedMetersPerSecond": 1.012280821800232,
+            "brakingFinalSpeedMetersPerSecond": 0.15563051402568818,
+            "brakingDistanceMeters": 0.05416979640722275,
+            "brakingFrames": 7,
+            "brakingSeconds": 0.13999994099140168,
+            "maximumBrakingSpeedIncreaseMetersPerSecond": 0.0,
+            "minimumBrakingContactWheelCount": 4,
+            "finalContactWheelCount": 4
+        },
+        {
+            "trialIndex": 2,
+            "startFrames": 15,
+            "startSeconds": 0.2999998927116394,
+            "idleAverageRpm": 902.531005859375,
+            "idleMaximumDeviationRpm": 11.26776123046875,
+            "launchPeakSpeedMetersPerSecond": 1.012280821800232,
+            "launchDistanceMeters": 0.44461822509765627,
+            "brakingInitialSpeedMetersPerSecond": 1.012280821800232,
+            "brakingFinalSpeedMetersPerSecond": 0.15563051402568818,
+            "brakingDistanceMeters": 0.05416979640722275,
+            "brakingFrames": 7,
+            "brakingSeconds": 0.13999994099140168,
+            "maximumBrakingSpeedIncreaseMetersPerSecond": 0.0,
+            "minimumBrakingContactWheelCount": 4,
+            "finalContactWheelCount": 4
+        },
+        {
+            "trialIndex": 3,
+            "startFrames": 15,
+            "startSeconds": 0.2999998927116394,
+            "idleAverageRpm": 902.531005859375,
+            "idleMaximumDeviationRpm": 11.26776123046875,
+            "launchPeakSpeedMetersPerSecond": 1.012280821800232,
+            "launchDistanceMeters": 0.44461822509765627,
+            "brakingInitialSpeedMetersPerSecond": 1.012280821800232,
+            "brakingFinalSpeedMetersPerSecond": 0.15563051402568818,
+            "brakingDistanceMeters": 0.05416979640722275,
+            "brakingFrames": 7,
+            "brakingSeconds": 0.13999994099140168,
+            "maximumBrakingSpeedIncreaseMetersPerSecond": 0.0,
+            "minimumBrakingContactWheelCount": 4,
+            "finalContactWheelCount": 4
+        }
+    ],
+    "surfaces": [
+        {
+            "surface": "Paved",
+            "contactWheelCount": 4,
+            "averageCompression01": 0.31629467010498049,
+            "frictionMultiplier": 1.0,
+            "rollingResistanceMultiplier": 1.0,
+            "coastdownInitialSpeedMetersPerSecond": 3.0,
+            "coastdownFinalSpeedMetersPerSecond": 2.6797537803649904,
+            "coastdownLossMetersPerSecond": 0.32024621963500979
+        },
+        {
+            "surface": "Gravel",
+            "contactWheelCount": 4,
+            "averageCompression01": 0.31629467010498049,
+            "frictionMultiplier": 0.7200000286102295,
+            "rollingResistanceMultiplier": 1.4500000476837159,
+            "coastdownInitialSpeedMetersPerSecond": 3.0,
+            "coastdownFinalSpeedMetersPerSecond": 2.6787095069885256,
+            "coastdownLossMetersPerSecond": 0.3212904930114746
+        },
+        {
+            "surface": "Dirt",
+            "contactWheelCount": 4,
+            "averageCompression01": 0.31629467010498049,
+            "frictionMultiplier": 0.6200000047683716,
+            "rollingResistanceMultiplier": 1.75,
+            "coastdownInitialSpeedMetersPerSecond": 3.0,
+            "coastdownFinalSpeedMetersPerSecond": 2.6802566051483156,
+            "coastdownLossMetersPerSecond": 0.31974339485168459
+        },
+        {
+            "surface": "Grass",
+            "contactWheelCount": 4,
+            "averageCompression01": 0.31629467010498049,
+            "frictionMultiplier": 0.47999998927116396,
+            "rollingResistanceMultiplier": 2.0999999046325685,
+            "coastdownInitialSpeedMetersPerSecond": 3.0,
+            "coastdownFinalSpeedMetersPerSecond": 2.686229705810547,
+            "coastdownLossMetersPerSecond": 0.3137702941894531
+        }
+    ],
+    "coastdownTrials": [
+        {
+            "trialIndex": 1,
+            "initialSpeedMetersPerSecond": 1.0225300788879395,
+            "maximumSpeedMetersPerSecond": 1.0354777574539185,
+            "finalSpeedMetersPerSecond": 0.8833781480789185,
+            "speedLossMetersPerSecond": 0.139151930809021,
+            "coastFrames": 150,
+            "coastSeconds": 2.9999988079071047,
+            "finalContactWheelCount": 4
+        },
+        {
+            "trialIndex": 2,
+            "initialSpeedMetersPerSecond": 1.0225300788879395,
+            "maximumSpeedMetersPerSecond": 1.0354777574539185,
+            "finalSpeedMetersPerSecond": 0.8833781480789185,
+            "speedLossMetersPerSecond": 0.139151930809021,
+            "coastFrames": 150,
+            "coastSeconds": 2.9999988079071047,
+            "finalContactWheelCount": 4
+        },
+        {
+            "trialIndex": 3,
+            "initialSpeedMetersPerSecond": 1.0225300788879395,
+            "maximumSpeedMetersPerSecond": 1.0354777574539185,
+            "finalSpeedMetersPerSecond": 0.8833781480789185,
+            "speedLossMetersPerSecond": 0.139151930809021,
+            "coastFrames": 150,
+            "coastSeconds": 2.9999988079071047,
+            "finalContactWheelCount": 4
+        }
+    ],
+    "steering": {
+        "initialSpeedMetersPerSecond": 1.0006519556045533,
+        "finalSpeedMetersPerSecond": 3.257211685180664,
+        "peakSpeedMetersPerSecond": 3.2862915992736818,
+        "maximumPositiveSteeringAngleDegrees": 16.103742599487306,
+        "minimumNegativeSteeringAngleDegrees": -15.272635459899903,
+        "maximumAbsoluteYawDegrees": 38.03689193725586,
+        "firstStepEndYawDegrees": 36.970035552978519,
+        "maximumReverseStepYawDeltaDegrees": 46.806488037109378,
+        "maximumLateralDisplacementMeters": 3.2537548542022707,
+        "maximumAbsoluteLateralSlip": 0.8204618096351624,
+        "forwardProgressMeters": 10.473071098327637,
+        "peakAngularSpeedRadiansPerSecond": 0.8788118362426758,
+        "peakVerticalSpeedMetersPerSecond": 0.025463271886110307,
+        "minimumContactWheelCount": 4,
+        "maximumZeroContactStreakFrames": 0,
+        "totalStepFrames": 200
+    },
+    "bump": {
+        "bumpHeightMeters": 0.07999999821186066,
+        "baselineAverageCompression01": 0.31629467010498049,
+        "peakCompression01": 0.8301835656166077,
+        "peakVerticalSpeedMetersPerSecond": 0.0,
+        "recoveredAverageCompression01": 0.31629467010498049,
+        "maximumRecoveryVerticalSpeedMetersPerSecond": 0.0,
+        "minimumBumpContactWheelCount": 4,
+        "recoveredContactWheelCount": 4
+    },
+    "hill": {
+        "slopeDegrees": 6.0,
+        "holdDriftMeters": 0.051793865859508517,
+        "uphillProgressMeters": 3.0369479656219484,
+        "minimumContactWheelCount": 4
+    },
+    "telemetryFiles": [
+        "Docs/VehicleValidation/Telemetry/start-idle-acceleration-braking.csv",
+        "Docs/VehicleValidation/Telemetry/surface-comparison.csv",
+        "Docs/VehicleValidation/Telemetry/coastdown.csv",
+        "Docs/VehicleValidation/Telemetry/steering-slalom.csv",
+        "Docs/VehicleValidation/Telemetry/suspension-bump.csv",
+        "Docs/VehicleValidation/Telemetry/hill-start.csv",
+        "Docs/VehicleValidation/Telemetry/production-world-transition.csv"
+    ],
+    "productionWorld": {
+        "startX": 153.4949951171875,
+        "startY": 1.665734052658081,
+        "startZ": -1036.22998046875,
+        "startRotationX": 0.0,
+        "startRotationY": 0.0,
+        "startRotationZ": 0.0,
+        "startRotationW": 1.0,
+        "startContactWheelCount": 4,
+        "engineStartFrames": 15,
+        "routeFrames": 302,
+        "reachedZ": -1023.9749145507813,
+        "horizontalProgressMeters": 12.25506591796875,
+        "peakSpeedMetersPerSecond": 2.48905348777771,
+        "maximumLateralDeviationMeters": 0.2136383056640625,
+        "minimumContactWheelCount": 4,
+        "maximumZeroContactStreakFrames": 0,
+        "postStreamingContactWheelCount": 4,
+        "postStreamingVerticalDeltaMeters": 0.0002313852310180664,
+        "minimumStreamingContactWheelCount": 4,
+        "maximumStreamingVerticalDeltaMeters": 0.0,
+        "nextCellOnlyMinimumContactWheelCount": 4,
+        "nextCellOnlyMaximumVerticalDeltaMeters": 0.0002313852310180664,
+        "nextCellContactProbeZ": -970.0,
+        "nextCellInitiallyLoaded": false,
+        "automaticStreamingObserved": true,
+        "sawPavedSurface": true,
+        "sawGravelSurface": true,
+        "sawNextCellGrassSurface": true,
+        "pilotCellLoaded": true,
+        "nextCellLoaded": true,
+        "garageDoorsOpen": true,
+        "drivewayGatesOpen": true,
+        "playerDisabled": true
+    },
+    "scriptedPhysxPerformance": {
+        "passed": true,
+        "warmupTicksPerTrial": 128,
+        "measuredTicksPerTrial": 800,
+        "trialCount": 3,
+        "fixedDeltaSeconds": 0.019999992102384568,
+        "substeps": 4,
+        "rows": [
+            {
+                "metricId": "physx.scripted.telemetry_consumer_off",
+                "telemetryConsumerEnabled": false,
+                "measuredTicks": 2400,
+                "simulatedSeconds": 47.99998092651367,
+                "rootTickMilliseconds": {
+                    "mean": 0.013691416666667142,
+                    "p95": 0.0171,
+                    "maximum": 0.0569
+                },
+                "physicsSimulateMilliseconds": {
+                    "mean": 0.024990041666666655,
+                    "p95": 0.0364,
+                    "maximum": 0.1514
+                },
+                "combinedMilliseconds": {
+                    "mean": 0.03873712500000004,
+                    "p95": 0.0534,
+                    "maximum": 0.2084
+                },
+                "allocatedBytes": 0,
+                "allocatedBytesPerTick": 0.0,
+                "minimumContactWheelCount": 4,
+                "maximumSpeedMetersPerSecond": 0.0,
+                "invalidStateCount": 0,
+                "physicsProcessingAvailable": false,
+                "physicsProcessingSampleCount": 0,
+                "physicsProcessingMeanMilliseconds": 0.0,
+                "physicsProcessingPeakMilliseconds": 0.0,
+                "passedSanityCheck": true,
+                "scope": "PlayMode batch; real PrototypeRaycastWheelPhysicsBackend; manual root Tick plus blocking Physics.Simulate on the default physics scene."
+            },
+            {
+                "metricId": "physx.scripted.telemetry_consumer_on",
+                "telemetryConsumerEnabled": true,
+                "measuredTicks": 2400,
+                "simulatedSeconds": 47.99998092651367,
+                "rootTickMilliseconds": {
+                    "mean": 0.013175208333334006,
+                    "p95": 0.0135,
+                    "maximum": 0.0666
+                },
+                "physicsSimulateMilliseconds": {
+                    "mean": 0.023024583333333134,
+                    "p95": 0.0291,
+                    "maximum": 0.1349
+                },
+                "combinedMilliseconds": {
+                    "mean": 0.036251458333333198,
+                    "p95": 0.0432,
+                    "maximum": 0.1826
+                },
+                "allocatedBytes": 0,
+                "allocatedBytesPerTick": 0.0,
+                "minimumContactWheelCount": 4,
+                "maximumSpeedMetersPerSecond": 0.0,
+                "invalidStateCount": 0,
+                "physicsProcessingAvailable": false,
+                "physicsProcessingSampleCount": 0,
+                "physicsProcessingMeanMilliseconds": 0.0,
+                "physicsProcessingPeakMilliseconds": 0.0,
+                "passedSanityCheck": true,
+                "scope": "PlayMode batch; real PrototypeRaycastWheelPhysicsBackend; manual root Tick plus blocking Physics.Simulate on the default physics scene."
+            }
+        ]
+    }
+}

@@ -125,13 +125,24 @@ namespace MSC.Editor.VehicleSimulation
 
         private static VehicleSimulationConfig BuildConfig()
         {
-            VehicleSimulationConfig config =
-                VehicleSimulationEditorUtility.LoadOrCreate<VehicleSimulationConfig>(
+            VehicleSimulationConfig config = AssetDatabase.LoadAssetAtPath<VehicleSimulationConfig>(
+                VehicleSimulationPrototypePaths.PrototypeConfig);
+            if (config == null)
+            {
+                config = VehicleSimulationEditorUtility.LoadOrCreate<VehicleSimulationConfig>(
                     VehicleSimulationPrototypePaths.PrototypeConfig);
-            config.ApplyProvisionalPrototypeDefaults();
+                config.ApplyProvisionalPrototypeDefaults();
+            }
+            else
+            {
+                config.MigrateLegacyCompositionTuning();
+            }
+
             if (!config.Validate(out string failure))
             {
-                throw new InvalidOperationException("M06 default config is invalid: " + failure);
+                throw new InvalidOperationException(
+                    "M06 config is invalid. Use an explicit tuning migration/reset instead of " +
+                    "silently replacing calibration values: " + failure);
             }
 
             EditorUtility.SetDirty(config);
@@ -153,21 +164,23 @@ namespace MSC.Editor.VehicleSimulation
 
             Rigidbody chassis = proxy.AddComponent<Rigidbody>();
             chassis.mass = config.Dynamics.ProvisionalMassKilograms;
+            chassis.centerOfMass = config.Dynamics.CenterOfMassMeters;
             chassis.interpolation = RigidbodyInterpolation.Interpolate;
             chassis.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            chassis.linearDamping = 0.015f;
-            chassis.angularDamping = 0.15f;
+            chassis.linearDamping = config.Dynamics.ChassisLinearDamping;
+            chassis.angularDamping = config.Dynamics.ChassisAngularDamping;
             BoxCollider chassisCollider = proxy.AddComponent<BoxCollider>();
-            chassisCollider.center = new Vector3(0f, 0.2f, 0f);
-            chassisCollider.size = new Vector3(1.35f, 0.42f, 3.15f);
+            chassisCollider.center = config.Dynamics.ChassisColliderCenterMeters;
+            chassisCollider.size = config.Dynamics.ChassisColliderSizeMeters;
 
             Material bodyMaterial = BuildMaterial("M06_ProxyBody", new Color(0.5f, 0.12f, 0.08f));
             Material tireMaterial = BuildMaterial("M06_ProxyTire", new Color(0.035f, 0.04f, 0.045f));
             GameObject body = GameObject.CreatePrimitive(PrimitiveType.Cube);
             body.name = "ProxyBodyVisual";
             body.transform.SetParent(proxy.transform, false);
-            body.transform.localPosition = new Vector3(0f, 0.2f, 0f);
-            body.transform.localScale = new Vector3(1.32f, 0.38f, 3.1f);
+            body.transform.localPosition = config.Dynamics.ChassisColliderCenterMeters;
+            body.transform.localScale = config.Dynamics.ChassisColliderSizeMeters -
+                                        new Vector3(0.03f, 0.04f, 0.05f);
             body.GetComponent<Renderer>().sharedMaterial = bodyMaterial;
             UnityEngine.Object.DestroyImmediate(body.GetComponent<Collider>());
 

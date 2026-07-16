@@ -218,6 +218,11 @@ namespace MSC.Vehicle.Simulation
     public sealed class VehicleDynamicsConfig
     {
         [SerializeField, Min(100f)] private float provisionalMassKilograms = 650f;
+        [SerializeField] private Vector3 centerOfMassMeters = new Vector3(0f, 0.2f, 0f);
+        [SerializeField] private Vector3 chassisColliderCenterMeters = new Vector3(0f, 0.2f, 0f);
+        [SerializeField] private Vector3 chassisColliderSizeMeters = new Vector3(1.35f, 0.42f, 3.15f);
+        [SerializeField, Min(0f)] private float chassisLinearDamping = 0.015f;
+        [SerializeField, Min(0f)] private float chassisAngularDamping = 0.15f;
         [SerializeField, Min(0.05f)] private float wheelRadiusMeters = 0.272667f;
         [SerializeField, Min(0.01f)] private float wheelInertiaKilogramSquareMeters = 1.15f;
         [SerializeField, Min(0f)] private float maximumBrakeTorqueNewtonMeters = 1800f;
@@ -234,6 +239,11 @@ namespace MSC.Vehicle.Simulation
         [SerializeField, Min(0f)] private float rollingResistanceCoefficient = 0.015f;
 
         public float ProvisionalMassKilograms => provisionalMassKilograms;
+        public Vector3 CenterOfMassMeters => centerOfMassMeters;
+        public Vector3 ChassisColliderCenterMeters => chassisColliderCenterMeters;
+        public Vector3 ChassisColliderSizeMeters => chassisColliderSizeMeters;
+        public float ChassisLinearDamping => chassisLinearDamping;
+        public float ChassisAngularDamping => chassisAngularDamping;
         public float WheelRadiusMeters => wheelRadiusMeters;
         public float WheelInertiaKilogramSquareMeters => wheelInertiaKilogramSquareMeters;
         public float MaximumBrakeTorqueNewtonMeters => maximumBrakeTorqueNewtonMeters;
@@ -252,6 +262,11 @@ namespace MSC.Vehicle.Simulation
         public void ApplyPrototypeDefaults()
         {
             provisionalMassKilograms = 650f;
+            centerOfMassMeters = new Vector3(0f, 0.2f, 0f);
+            chassisColliderCenterMeters = new Vector3(0f, 0.2f, 0f);
+            chassisColliderSizeMeters = new Vector3(1.35f, 0.42f, 3.15f);
+            chassisLinearDamping = 0.015f;
+            chassisAngularDamping = 0.15f;
             wheelRadiusMeters = 0.272667f;
             wheelInertiaKilogramSquareMeters = 1.15f;
             maximumBrakeTorqueNewtonMeters = 1800f;
@@ -266,6 +281,15 @@ namespace MSC.Vehicle.Simulation
             longitudinalStiffness = 7000f;
             lateralStiffness = 6200f;
             rollingResistanceCoefficient = 0.015f;
+        }
+
+        public void ApplyM06ACompositionDefaults()
+        {
+            centerOfMassMeters = new Vector3(0f, 0.2f, 0f);
+            chassisColliderCenterMeters = new Vector3(0f, 0.2f, 0f);
+            chassisColliderSizeMeters = new Vector3(1.35f, 0.42f, 3.15f);
+            chassisLinearDamping = 0.015f;
+            chassisAngularDamping = 0.15f;
         }
     }
 
@@ -353,7 +377,9 @@ namespace MSC.Vehicle.Simulation
     public sealed class VehicleSimulationConfig : ScriptableObject
     {
         public const string PrototypeTuningLabel = "ProvisionalProjectTuning";
+        public const int CurrentTuningSchemaVersion = 2;
 
+        [SerializeField] private int tuningSchemaVersion;
         [SerializeField] private string configurationId = "m06.prototype.satsuma";
         [SerializeField, Range(1, 8)] private int substepCount = 4;
         [SerializeField, Range(0, 3)] private int leftDrivenWheelIndex;
@@ -368,6 +394,7 @@ namespace MSC.Vehicle.Simulation
         [SerializeField] private VehicleTuningProvenance geometryReference = new VehicleTuningProvenance();
 
         public string ConfigurationId => configurationId;
+        public int TuningSchemaVersion => tuningSchemaVersion;
         public int SubstepCount => substepCount;
         public int WheelCount => 4;
         public int LeftDrivenWheelIndex => leftDrivenWheelIndex;
@@ -408,6 +435,7 @@ namespace MSC.Vehicle.Simulation
 
         public void ApplyProvisionalPrototypeDefaults()
         {
+            tuningSchemaVersion = CurrentTuningSchemaVersion;
             configurationId = "m06.prototype.satsuma";
             substepCount = 4;
             leftDrivenWheelIndex = 0;
@@ -445,6 +473,19 @@ namespace MSC.Vehicle.Simulation
                 "Wheelbase/tracks derive from reviewed wheel roots; candidate tire radius remains NeedsReview and is used only as a plausibility target.");
         }
 
+        public bool MigrateLegacyCompositionTuning()
+        {
+            if (tuningSchemaVersion >= CurrentTuningSchemaVersion)
+            {
+                return false;
+            }
+
+            dynamics ??= new VehicleDynamicsConfig();
+            dynamics.ApplyM06ACompositionDefaults();
+            tuningSchemaVersion = CurrentTuningSchemaVersion;
+            return true;
+        }
+
         public void SetSubstepCountForTesting(int count)
         {
             substepCount = Mathf.Clamp(count, 1, 8);
@@ -461,6 +502,12 @@ namespace MSC.Vehicle.Simulation
             if (string.IsNullOrWhiteSpace(configurationId))
             {
                 failure = "Configuration ID is empty.";
+                return false;
+            }
+
+            if (tuningSchemaVersion != CurrentTuningSchemaVersion)
+            {
+                failure = $"Simulation tuning schema must be {CurrentTuningSchemaVersion}, found {tuningSchemaVersion}.";
                 return false;
             }
 
@@ -496,6 +543,17 @@ namespace MSC.Vehicle.Simulation
                     gearbox.FinalDriveRatio,
                     gearbox.Efficiency,
                     dynamics.ProvisionalMassKilograms,
+                    dynamics.CenterOfMassMeters.x,
+                    dynamics.CenterOfMassMeters.y,
+                    dynamics.CenterOfMassMeters.z,
+                    dynamics.ChassisColliderCenterMeters.x,
+                    dynamics.ChassisColliderCenterMeters.y,
+                    dynamics.ChassisColliderCenterMeters.z,
+                    dynamics.ChassisColliderSizeMeters.x,
+                    dynamics.ChassisColliderSizeMeters.y,
+                    dynamics.ChassisColliderSizeMeters.z,
+                    dynamics.ChassisLinearDamping,
+                    dynamics.ChassisAngularDamping,
                     dynamics.WheelRadiusMeters,
                     dynamics.WheelInertiaKilogramSquareMeters,
                     dynamics.MaximumBrakeTorqueNewtonMeters,
@@ -556,6 +614,11 @@ namespace MSC.Vehicle.Simulation
                 gearbox.FinalDriveRatio <= 0f ||
                 gearbox.Efficiency <= 0f || gearbox.Efficiency > 1f ||
                 dynamics.ProvisionalMassKilograms <= 0f ||
+                dynamics.ChassisColliderSizeMeters.x <= 0f ||
+                dynamics.ChassisColliderSizeMeters.y <= 0f ||
+                dynamics.ChassisColliderSizeMeters.z <= 0f ||
+                dynamics.ChassisLinearDamping < 0f ||
+                dynamics.ChassisAngularDamping < 0f ||
                 dynamics.WheelRadiusMeters <= 0f ||
                 dynamics.WheelInertiaKilogramSquareMeters <= 0f ||
                 dynamics.MaximumBrakeTorqueNewtonMeters < 0f ||

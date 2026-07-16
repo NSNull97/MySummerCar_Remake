@@ -1,0 +1,3567 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63f1608e3530786479b51582c9aa8773, type: 3}
+  m_Name: M06A_VehicleCalibrationProfile
+  m_EditorClassIdentifier: MSC.Vehicle.Simulation::MSC.Vehicle.Simulation.VehicleCalibrationProfile
+  schemaVersion: 1
+  profileId: m06a.satsuma.physics-validation
+  displayName: M06A Satsuma Physics Validation
+  revision: 1.2.0
+  vehicleConfiguration: {fileID: 11400000, guid: 6cd2f307cfe1ac2449cae781607f19c5, type: 2}
+  fixtures:
+  - fixtureId: static-geometry-mass
+    displayName: Static geometry and mass snapshot
+    kind: 0
+    status: 0
+    warmupSeconds: 0.5
+    durationSeconds: 0.1
+    trialCount: 1
+    repeatedRunTolerance01: 0.15
+    environment:
+      vehicleConfigurationId: m06.prototype.satsuma
+      vehicleConfigurationRevision: tuning-schema-2
+      sceneOrRouteId: profile/config-snapshot
+      mass:
+        bodyMassKilograms: 650
+        installedPartsMassKilograms: 0
+        fluidsMassKilograms: 0
+        payloadMassKilograms: 0
+        totalMassKilograms: 650
+        centerOfMassLocalMeters: {x: 0, y: 0.2, z: 0}
+        installedParts:
+        - stablePartId: bffcb08e6024b0af3ff9d5b19fb3f401
+          partDefinitionId: m06.chassis
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 620
+        - stablePartId: a114e5f3bb8e5b879c6ac16f8e64aedd
+          partDefinitionId: m06.engine
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 92
+        - stablePartId: f77e80d19cd4bfd0de50e980c460723c
+          partDefinitionId: m06.starter
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 4.2
+        - stablePartId: 0a85cba87dede63bafa0e11c3013f268
+          partDefinitionId: m06.battery
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 11.5
+        - stablePartId: 0cd462c331a34545c250e4ac047479d2
+          partDefinitionId: m06.fuel_tank
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 28
+        - stablePartId: 1b3b9aad69d80868f9a4a02e6b59580c
+          partDefinitionId: m06.clutch
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 7
+        - stablePartId: 1a259794a6156117e3eb00a654ec7579
+          partDefinitionId: m06.gearbox
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 31
+        - stablePartId: 5365ab204158ff5023a81c580d5caa8a
+          partDefinitionId: m06.differential
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 18
+        - stablePartId: e472ef787774b3805b27c9d6d9a9c44c
+          partDefinitionId: m06.wheel.fl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 1def9251e95b623b183dac298ef9d077
+          partDefinitionId: m06.wheel.fr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4cb16a70df4c2ee7b93036c6af6bca09
+          partDefinitionId: m06.wheel.rl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4d4738268efb51ef7f64d20869479f2e
+          partDefinitionId: m06.wheel.rr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+      tires:
+      - wheelId: m06.wheel.fl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.fr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      surface:
+        surfaceType: 1
+        surfaceConfigurationId: m06.surface.paved.provisional
+        frictionMultiplier: 1
+        rollingResistanceMultiplier: 1
+      weather:
+        weatherStateId: m06a.clear-dry-weather-not-implemented
+        wetness01: 0
+        ambientTemperatureCelsius: 20
+        windMetersPerSecond: 0
+      load:
+        fuelLiters: 15
+        oilLiters: 3.5
+        coolantLiters: 5
+        driverMassKilograms: 0
+        cargoMassKilograms: 0
+      input:
+        source: 1
+        deviceOrScriptId: MSC.Tests.PlayMode.VehicleSimulation.VehiclePhysicsValidationPlayModeTests/static-geometry-mass/adaptive-v1
+        scriptedFrames:
+        - timeSeconds: 0
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 0
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 0
+      runtime:
+        fixedTimestepSeconds: 0.019999992
+        simulationSubsteps: 4
+        unityVersion: 6000.3.11f1
+        physXVersion: Unity 6000.3 built-in PhysX; native patch not exposed by public
+          API
+        executionMode: 2
+        operatingSystem: Windows 10  (10.0.19045) 64bit
+        processor: 'AMD Ryzen 9 5950X 16-Core Processor '
+        graphicsDevice: NVIDIA GeForce RTX 4070 SUPER
+        randomSeed: 0
+        usesSeed: 0
+    metricIds:
+    - mass.proxy_total_kg
+    - mass.logical_parts_sum_kg
+    - mass.center_of_mass_x_m
+    - mass.center_of_mass_y_m
+    - mass.center_of_mass_z_m
+    - geometry.wheelbase_m
+    - geometry.front_track_m
+    - geometry.rear_track_m
+    - geometry.wheel_radius_m
+    - geometry.ride_height_m
+    - geometry.ground_clearance_m
+    - suspension.rest_length_config_m
+    - suspension.travel_config_m
+    - geometry.steering_lock_config_deg
+    blockedReason: 
+    notes: Scripted fixture executed by the named PlayMode test method. Serialized
+      frames record nominal phases; adaptive stop/speed conditions are authoritative
+      in test code. PhysX variance is evaluated with tolerances, not bitwise equality.
+  - fixtureId: start-idle
+    displayName: Start and idle
+    kind: 1
+    status: 0
+    warmupSeconds: 0.5
+    durationSeconds: 6
+    trialCount: 3
+    repeatedRunTolerance01: 0.15
+    environment:
+      vehicleConfigurationId: m06.prototype.satsuma
+      vehicleConfigurationRevision: tuning-schema-2
+      sceneOrRouteId: VehicleSimulationPrototype/runtime-paved-flat
+      mass:
+        bodyMassKilograms: 650
+        installedPartsMassKilograms: 0
+        fluidsMassKilograms: 0
+        payloadMassKilograms: 0
+        totalMassKilograms: 650
+        centerOfMassLocalMeters: {x: 0, y: 0.2, z: 0}
+        installedParts:
+        - stablePartId: bffcb08e6024b0af3ff9d5b19fb3f401
+          partDefinitionId: m06.chassis
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 620
+        - stablePartId: a114e5f3bb8e5b879c6ac16f8e64aedd
+          partDefinitionId: m06.engine
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 92
+        - stablePartId: f77e80d19cd4bfd0de50e980c460723c
+          partDefinitionId: m06.starter
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 4.2
+        - stablePartId: 0a85cba87dede63bafa0e11c3013f268
+          partDefinitionId: m06.battery
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 11.5
+        - stablePartId: 0cd462c331a34545c250e4ac047479d2
+          partDefinitionId: m06.fuel_tank
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 28
+        - stablePartId: 1b3b9aad69d80868f9a4a02e6b59580c
+          partDefinitionId: m06.clutch
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 7
+        - stablePartId: 1a259794a6156117e3eb00a654ec7579
+          partDefinitionId: m06.gearbox
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 31
+        - stablePartId: 5365ab204158ff5023a81c580d5caa8a
+          partDefinitionId: m06.differential
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 18
+        - stablePartId: e472ef787774b3805b27c9d6d9a9c44c
+          partDefinitionId: m06.wheel.fl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 1def9251e95b623b183dac298ef9d077
+          partDefinitionId: m06.wheel.fr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4cb16a70df4c2ee7b93036c6af6bca09
+          partDefinitionId: m06.wheel.rl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4d4738268efb51ef7f64d20869479f2e
+          partDefinitionId: m06.wheel.rr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+      tires:
+      - wheelId: m06.wheel.fl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.fr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      surface:
+        surfaceType: 1
+        surfaceConfigurationId: m06.surface.paved.provisional
+        frictionMultiplier: 1
+        rollingResistanceMultiplier: 1
+      weather:
+        weatherStateId: m06a.clear-dry-weather-not-implemented
+        wetness01: 0
+        ambientTemperatureCelsius: 20
+        windMetersPerSecond: 0
+      load:
+        fuelLiters: 15
+        oilLiters: 3.5
+        coolantLiters: 5
+        driverMassKilograms: 0
+        cargoMassKilograms: 0
+      input:
+        source: 1
+        deviceOrScriptId: MSC.Tests.PlayMode.VehicleSimulation.VehiclePhysicsValidationPlayModeTests/start-idle/adaptive-v1
+        scriptedFrames:
+        - timeSeconds: 0
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 1
+          gearChangeRequested: 0
+          requestedGear: 0
+        - timeSeconds: 1
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 0
+        - timeSeconds: 6
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 0
+      runtime:
+        fixedTimestepSeconds: 0.019999992
+        simulationSubsteps: 4
+        unityVersion: 6000.3.11f1
+        physXVersion: Unity 6000.3 built-in PhysX; native patch not exposed by public
+          API
+        executionMode: 2
+        operatingSystem: Windows 10  (10.0.19045) 64bit
+        processor: 'AMD Ryzen 9 5950X 16-Core Processor '
+        graphicsDevice: NVIDIA GeForce RTX 4070 SUPER
+        randomSeed: 0
+        usesSeed: 0
+    metricIds:
+    - engine.starter_time_s
+    - engine.idle_rpm
+    - engine.idle_max_deviation_rpm
+    - numeric.finite_state
+    blockedReason: 
+    notes: Scripted fixture executed by the named PlayMode test method. Serialized
+      frames record nominal phases; adaptive stop/speed conditions are authoritative
+      in test code. PhysX variance is evaluated with tolerances, not bitwise equality.
+  - fixtureId: acceleration
+    displayName: Bounded launch and acceleration
+    kind: 2
+    status: 0
+    warmupSeconds: 0.5
+    durationSeconds: 8
+    trialCount: 3
+    repeatedRunTolerance01: 0.15
+    environment:
+      vehicleConfigurationId: m06.prototype.satsuma
+      vehicleConfigurationRevision: tuning-schema-2
+      sceneOrRouteId: VehicleSimulationPrototype/runtime-paved-flat
+      mass:
+        bodyMassKilograms: 650
+        installedPartsMassKilograms: 0
+        fluidsMassKilograms: 0
+        payloadMassKilograms: 0
+        totalMassKilograms: 650
+        centerOfMassLocalMeters: {x: 0, y: 0.2, z: 0}
+        installedParts:
+        - stablePartId: bffcb08e6024b0af3ff9d5b19fb3f401
+          partDefinitionId: m06.chassis
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 620
+        - stablePartId: a114e5f3bb8e5b879c6ac16f8e64aedd
+          partDefinitionId: m06.engine
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 92
+        - stablePartId: f77e80d19cd4bfd0de50e980c460723c
+          partDefinitionId: m06.starter
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 4.2
+        - stablePartId: 0a85cba87dede63bafa0e11c3013f268
+          partDefinitionId: m06.battery
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 11.5
+        - stablePartId: 0cd462c331a34545c250e4ac047479d2
+          partDefinitionId: m06.fuel_tank
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 28
+        - stablePartId: 1b3b9aad69d80868f9a4a02e6b59580c
+          partDefinitionId: m06.clutch
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 7
+        - stablePartId: 1a259794a6156117e3eb00a654ec7579
+          partDefinitionId: m06.gearbox
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 31
+        - stablePartId: 5365ab204158ff5023a81c580d5caa8a
+          partDefinitionId: m06.differential
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 18
+        - stablePartId: e472ef787774b3805b27c9d6d9a9c44c
+          partDefinitionId: m06.wheel.fl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 1def9251e95b623b183dac298ef9d077
+          partDefinitionId: m06.wheel.fr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4cb16a70df4c2ee7b93036c6af6bca09
+          partDefinitionId: m06.wheel.rl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4d4738268efb51ef7f64d20869479f2e
+          partDefinitionId: m06.wheel.rr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+      tires:
+      - wheelId: m06.wheel.fl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.fr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      surface:
+        surfaceType: 1
+        surfaceConfigurationId: m06.surface.paved.provisional
+        frictionMultiplier: 1
+        rollingResistanceMultiplier: 1
+      weather:
+        weatherStateId: m06a.clear-dry-weather-not-implemented
+        wetness01: 0
+        ambientTemperatureCelsius: 20
+        windMetersPerSecond: 0
+      load:
+        fuelLiters: 15
+        oilLiters: 3.5
+        coolantLiters: 5
+        driverMassKilograms: 0
+        cargoMassKilograms: 0
+      input:
+        source: 1
+        deviceOrScriptId: MSC.Tests.PlayMode.VehicleSimulation.VehiclePhysicsValidationPlayModeTests/acceleration/adaptive-v1
+        scriptedFrames:
+        - timeSeconds: 0
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 1
+          gearChangeRequested: 0
+          requestedGear: 0
+        - timeSeconds: 1
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 1
+          requestedGear: 1
+        - timeSeconds: 2
+          throttle01: 0.85
+          clutchPedal01: 0.7
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+        - timeSeconds: 8
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: -0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+      runtime:
+        fixedTimestepSeconds: 0.019999992
+        simulationSubsteps: 4
+        unityVersion: 6000.3.11f1
+        physXVersion: Unity 6000.3 built-in PhysX; native patch not exposed by public
+          API
+        executionMode: 2
+        operatingSystem: Windows 10  (10.0.19045) 64bit
+        processor: 'AMD Ryzen 9 5950X 16-Core Processor '
+        graphicsDevice: NVIDIA GeForce RTX 4070 SUPER
+        randomSeed: 0
+        usesSeed: 0
+    metricIds:
+    - longitudinal.launch_peak_speed_m_s
+    - longitudinal.launch_distance_m
+    - numeric.finite_state
+    blockedReason: 
+    notes: Scripted fixture executed by the named PlayMode test method. Serialized
+      frames record nominal phases; adaptive stop/speed conditions are authoritative
+      in test code. PhysX variance is evaluated with tolerances, not bitwise equality.
+  - fixtureId: braking
+    displayName: Bounded service braking
+    kind: 3
+    status: 0
+    warmupSeconds: 0.5
+    durationSeconds: 10
+    trialCount: 3
+    repeatedRunTolerance01: 0.15
+    environment:
+      vehicleConfigurationId: m06.prototype.satsuma
+      vehicleConfigurationRevision: tuning-schema-2
+      sceneOrRouteId: VehicleSimulationPrototype/runtime-paved-flat
+      mass:
+        bodyMassKilograms: 650
+        installedPartsMassKilograms: 0
+        fluidsMassKilograms: 0
+        payloadMassKilograms: 0
+        totalMassKilograms: 650
+        centerOfMassLocalMeters: {x: 0, y: 0.2, z: 0}
+        installedParts:
+        - stablePartId: bffcb08e6024b0af3ff9d5b19fb3f401
+          partDefinitionId: m06.chassis
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 620
+        - stablePartId: a114e5f3bb8e5b879c6ac16f8e64aedd
+          partDefinitionId: m06.engine
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 92
+        - stablePartId: f77e80d19cd4bfd0de50e980c460723c
+          partDefinitionId: m06.starter
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 4.2
+        - stablePartId: 0a85cba87dede63bafa0e11c3013f268
+          partDefinitionId: m06.battery
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 11.5
+        - stablePartId: 0cd462c331a34545c250e4ac047479d2
+          partDefinitionId: m06.fuel_tank
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 28
+        - stablePartId: 1b3b9aad69d80868f9a4a02e6b59580c
+          partDefinitionId: m06.clutch
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 7
+        - stablePartId: 1a259794a6156117e3eb00a654ec7579
+          partDefinitionId: m06.gearbox
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 31
+        - stablePartId: 5365ab204158ff5023a81c580d5caa8a
+          partDefinitionId: m06.differential
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 18
+        - stablePartId: e472ef787774b3805b27c9d6d9a9c44c
+          partDefinitionId: m06.wheel.fl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 1def9251e95b623b183dac298ef9d077
+          partDefinitionId: m06.wheel.fr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4cb16a70df4c2ee7b93036c6af6bca09
+          partDefinitionId: m06.wheel.rl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4d4738268efb51ef7f64d20869479f2e
+          partDefinitionId: m06.wheel.rr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+      tires:
+      - wheelId: m06.wheel.fl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.fr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      surface:
+        surfaceType: 1
+        surfaceConfigurationId: m06.surface.paved.provisional
+        frictionMultiplier: 1
+        rollingResistanceMultiplier: 1
+      weather:
+        weatherStateId: m06a.clear-dry-weather-not-implemented
+        wetness01: 0
+        ambientTemperatureCelsius: 20
+        windMetersPerSecond: 0
+      load:
+        fuelLiters: 15
+        oilLiters: 3.5
+        coolantLiters: 5
+        driverMassKilograms: 0
+        cargoMassKilograms: 0
+      input:
+        source: 1
+        deviceOrScriptId: MSC.Tests.PlayMode.VehicleSimulation.VehiclePhysicsValidationPlayModeTests/braking/adaptive-v1
+        scriptedFrames:
+        - timeSeconds: 0
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 1
+          gearChangeRequested: 0
+          requestedGear: 0
+        - timeSeconds: 1
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 1
+          requestedGear: 1
+        - timeSeconds: 2
+          throttle01: 0.85
+          clutchPedal01: 0.7
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+        - timeSeconds: 6
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 1
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+        - timeSeconds: 10
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 1
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+      runtime:
+        fixedTimestepSeconds: 0.019999992
+        simulationSubsteps: 4
+        unityVersion: 6000.3.11f1
+        physXVersion: Unity 6000.3 built-in PhysX; native patch not exposed by public
+          API
+        executionMode: 2
+        operatingSystem: Windows 10  (10.0.19045) 64bit
+        processor: 'AMD Ryzen 9 5950X 16-Core Processor '
+        graphicsDevice: NVIDIA GeForce RTX 4070 SUPER
+        randomSeed: 0
+        usesSeed: 0
+    metricIds:
+    - longitudinal.braking_final_speed_ratio
+    - longitudinal.braking_distance_m
+    - longitudinal.braking_max_speed_increase_m_s
+    - contact.minimum_wheel_count
+    - numeric.finite_state
+    blockedReason: 
+    notes: Scripted fixture executed by the named PlayMode test method. Serialized
+      frames record nominal phases; adaptive stop/speed conditions are authoritative
+      in test code. PhysX variance is evaluated with tolerances, not bitwise equality.
+  - fixtureId: coastdown
+    displayName: Coast-down trend
+    kind: 4
+    status: 0
+    warmupSeconds: 0.5
+    durationSeconds: 12
+    trialCount: 3
+    repeatedRunTolerance01: 0.15
+    environment:
+      vehicleConfigurationId: m06.prototype.satsuma
+      vehicleConfigurationRevision: tuning-schema-2
+      sceneOrRouteId: VehicleSimulationPrototype/runtime-paved-flat
+      mass:
+        bodyMassKilograms: 650
+        installedPartsMassKilograms: 0
+        fluidsMassKilograms: 0
+        payloadMassKilograms: 0
+        totalMassKilograms: 650
+        centerOfMassLocalMeters: {x: 0, y: 0.2, z: 0}
+        installedParts:
+        - stablePartId: bffcb08e6024b0af3ff9d5b19fb3f401
+          partDefinitionId: m06.chassis
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 620
+        - stablePartId: a114e5f3bb8e5b879c6ac16f8e64aedd
+          partDefinitionId: m06.engine
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 92
+        - stablePartId: f77e80d19cd4bfd0de50e980c460723c
+          partDefinitionId: m06.starter
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 4.2
+        - stablePartId: 0a85cba87dede63bafa0e11c3013f268
+          partDefinitionId: m06.battery
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 11.5
+        - stablePartId: 0cd462c331a34545c250e4ac047479d2
+          partDefinitionId: m06.fuel_tank
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 28
+        - stablePartId: 1b3b9aad69d80868f9a4a02e6b59580c
+          partDefinitionId: m06.clutch
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 7
+        - stablePartId: 1a259794a6156117e3eb00a654ec7579
+          partDefinitionId: m06.gearbox
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 31
+        - stablePartId: 5365ab204158ff5023a81c580d5caa8a
+          partDefinitionId: m06.differential
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 18
+        - stablePartId: e472ef787774b3805b27c9d6d9a9c44c
+          partDefinitionId: m06.wheel.fl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 1def9251e95b623b183dac298ef9d077
+          partDefinitionId: m06.wheel.fr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4cb16a70df4c2ee7b93036c6af6bca09
+          partDefinitionId: m06.wheel.rl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4d4738268efb51ef7f64d20869479f2e
+          partDefinitionId: m06.wheel.rr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+      tires:
+      - wheelId: m06.wheel.fl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.fr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      surface:
+        surfaceType: 1
+        surfaceConfigurationId: m06.surface.paved.provisional
+        frictionMultiplier: 1
+        rollingResistanceMultiplier: 1
+      weather:
+        weatherStateId: m06a.clear-dry-weather-not-implemented
+        wetness01: 0
+        ambientTemperatureCelsius: 20
+        windMetersPerSecond: 0
+      load:
+        fuelLiters: 15
+        oilLiters: 3.5
+        coolantLiters: 5
+        driverMassKilograms: 0
+        cargoMassKilograms: 0
+      input:
+        source: 1
+        deviceOrScriptId: MSC.Tests.PlayMode.VehicleSimulation.VehiclePhysicsValidationPlayModeTests/coastdown/adaptive-v1
+        scriptedFrames:
+        - timeSeconds: 0
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 1
+          gearChangeRequested: 0
+          requestedGear: 0
+        - timeSeconds: 1
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 1
+          requestedGear: 1
+        - timeSeconds: 2
+          throttle01: 0.8
+          clutchPedal01: 0.7
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+        - timeSeconds: 6
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 1
+          requestedGear: 0
+        - timeSeconds: 12
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 0
+      runtime:
+        fixedTimestepSeconds: 0.019999992
+        simulationSubsteps: 4
+        unityVersion: 6000.3.11f1
+        physXVersion: Unity 6000.3 built-in PhysX; native patch not exposed by public
+          API
+        executionMode: 2
+        operatingSystem: Windows 10  (10.0.19045) 64bit
+        processor: 'AMD Ryzen 9 5950X 16-Core Processor '
+        graphicsDevice: NVIDIA GeForce RTX 4070 SUPER
+        randomSeed: 0
+        usesSeed: 0
+    metricIds:
+    - longitudinal.coastdown_speed_loss_m_s
+    - longitudinal.coastdown_max_speed_increase_m_s
+    - numeric.finite_state
+    blockedReason: 
+    notes: Scripted fixture executed by the named PlayMode test method. Serialized
+      frames record nominal phases; adaptive stop/speed conditions are authoritative
+      in test code. PhysX variance is evaluated with tolerances, not bitwise equality.
+  - fixtureId: steering-slalom
+    displayName: Steering step and slalom
+    kind: 6
+    status: 0
+    warmupSeconds: 0.5
+    durationSeconds: 12
+    trialCount: 1
+    repeatedRunTolerance01: 0.15
+    environment:
+      vehicleConfigurationId: m06.prototype.satsuma
+      vehicleConfigurationRevision: tuning-schema-2
+      sceneOrRouteId: VehicleSimulationPrototype/runtime-paved-steering-step
+      mass:
+        bodyMassKilograms: 650
+        installedPartsMassKilograms: 0
+        fluidsMassKilograms: 0
+        payloadMassKilograms: 0
+        totalMassKilograms: 650
+        centerOfMassLocalMeters: {x: 0, y: 0.2, z: 0}
+        installedParts:
+        - stablePartId: bffcb08e6024b0af3ff9d5b19fb3f401
+          partDefinitionId: m06.chassis
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 620
+        - stablePartId: a114e5f3bb8e5b879c6ac16f8e64aedd
+          partDefinitionId: m06.engine
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 92
+        - stablePartId: f77e80d19cd4bfd0de50e980c460723c
+          partDefinitionId: m06.starter
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 4.2
+        - stablePartId: 0a85cba87dede63bafa0e11c3013f268
+          partDefinitionId: m06.battery
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 11.5
+        - stablePartId: 0cd462c331a34545c250e4ac047479d2
+          partDefinitionId: m06.fuel_tank
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 28
+        - stablePartId: 1b3b9aad69d80868f9a4a02e6b59580c
+          partDefinitionId: m06.clutch
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 7
+        - stablePartId: 1a259794a6156117e3eb00a654ec7579
+          partDefinitionId: m06.gearbox
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 31
+        - stablePartId: 5365ab204158ff5023a81c580d5caa8a
+          partDefinitionId: m06.differential
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 18
+        - stablePartId: e472ef787774b3805b27c9d6d9a9c44c
+          partDefinitionId: m06.wheel.fl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 1def9251e95b623b183dac298ef9d077
+          partDefinitionId: m06.wheel.fr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4cb16a70df4c2ee7b93036c6af6bca09
+          partDefinitionId: m06.wheel.rl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4d4738268efb51ef7f64d20869479f2e
+          partDefinitionId: m06.wheel.rr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+      tires:
+      - wheelId: m06.wheel.fl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.fr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      surface:
+        surfaceType: 1
+        surfaceConfigurationId: m06.surface.paved.provisional
+        frictionMultiplier: 1
+        rollingResistanceMultiplier: 1
+      weather:
+        weatherStateId: m06a.clear-dry-weather-not-implemented
+        wetness01: 0
+        ambientTemperatureCelsius: 20
+        windMetersPerSecond: 0
+      load:
+        fuelLiters: 15
+        oilLiters: 3.5
+        coolantLiters: 5
+        driverMassKilograms: 0
+        cargoMassKilograms: 0
+      input:
+        source: 1
+        deviceOrScriptId: MSC.Tests.PlayMode.VehicleSimulation.VehiclePhysicsValidationPlayModeTests/steering-slalom/adaptive-v1
+        scriptedFrames:
+        - timeSeconds: 0
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 1
+          gearChangeRequested: 0
+          requestedGear: 0
+        - timeSeconds: 1
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 1
+          requestedGear: 1
+        - timeSeconds: 2
+          throttle01: 0.85
+          clutchPedal01: 0.7
+          brake01: 0
+          steeringMinusOneToOne: 0.55
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+        - timeSeconds: 8
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: -0.55
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+      runtime:
+        fixedTimestepSeconds: 0.019999992
+        simulationSubsteps: 4
+        unityVersion: 6000.3.11f1
+        physXVersion: Unity 6000.3 built-in PhysX; native patch not exposed by public
+          API
+        executionMode: 2
+        operatingSystem: Windows 10  (10.0.19045) 64bit
+        processor: 'AMD Ryzen 9 5950X 16-Core Processor '
+        graphicsDevice: NVIDIA GeForce RTX 4070 SUPER
+        randomSeed: 0
+        usesSeed: 0
+    metricIds:
+    - lateral.steering_angle_deg
+    - lateral.turning_radius_estimate_m
+    - lateral.maximum_slip
+    - numeric.finite_state
+    blockedReason: 
+    notes: Scripted fixture executed by the named PlayMode test method. Serialized
+      frames record nominal phases; adaptive stop/speed conditions are authoritative
+      in test code. PhysX variance is evaluated with tolerances, not bitwise equality.
+  - fixtureId: suspension-bump
+    displayName: Suspension bump and recovery
+    kind: 7
+    status: 0
+    warmupSeconds: 0.5
+    durationSeconds: 8
+    trialCount: 1
+    repeatedRunTolerance01: 0.15
+    environment:
+      vehicleConfigurationId: m06.prototype.satsuma
+      vehicleConfigurationRevision: tuning-schema-2
+      sceneOrRouteId: VehicleSimulationPrototype/runtime-paved-80mm-bump
+      mass:
+        bodyMassKilograms: 650
+        installedPartsMassKilograms: 0
+        fluidsMassKilograms: 0
+        payloadMassKilograms: 0
+        totalMassKilograms: 650
+        centerOfMassLocalMeters: {x: 0, y: 0.2, z: 0}
+        installedParts:
+        - stablePartId: bffcb08e6024b0af3ff9d5b19fb3f401
+          partDefinitionId: m06.chassis
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 620
+        - stablePartId: a114e5f3bb8e5b879c6ac16f8e64aedd
+          partDefinitionId: m06.engine
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 92
+        - stablePartId: f77e80d19cd4bfd0de50e980c460723c
+          partDefinitionId: m06.starter
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 4.2
+        - stablePartId: 0a85cba87dede63bafa0e11c3013f268
+          partDefinitionId: m06.battery
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 11.5
+        - stablePartId: 0cd462c331a34545c250e4ac047479d2
+          partDefinitionId: m06.fuel_tank
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 28
+        - stablePartId: 1b3b9aad69d80868f9a4a02e6b59580c
+          partDefinitionId: m06.clutch
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 7
+        - stablePartId: 1a259794a6156117e3eb00a654ec7579
+          partDefinitionId: m06.gearbox
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 31
+        - stablePartId: 5365ab204158ff5023a81c580d5caa8a
+          partDefinitionId: m06.differential
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 18
+        - stablePartId: e472ef787774b3805b27c9d6d9a9c44c
+          partDefinitionId: m06.wheel.fl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 1def9251e95b623b183dac298ef9d077
+          partDefinitionId: m06.wheel.fr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4cb16a70df4c2ee7b93036c6af6bca09
+          partDefinitionId: m06.wheel.rl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4d4738268efb51ef7f64d20869479f2e
+          partDefinitionId: m06.wheel.rr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+      tires:
+      - wheelId: m06.wheel.fl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.fr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      surface:
+        surfaceType: 1
+        surfaceConfigurationId: m06.surface.paved.provisional
+        frictionMultiplier: 1
+        rollingResistanceMultiplier: 1
+      weather:
+        weatherStateId: m06a.clear-dry-weather-not-implemented
+        wetness01: 0
+        ambientTemperatureCelsius: 20
+        windMetersPerSecond: 0
+      load:
+        fuelLiters: 15
+        oilLiters: 3.5
+        coolantLiters: 5
+        driverMassKilograms: 0
+        cargoMassKilograms: 0
+      input:
+        source: 1
+        deviceOrScriptId: MSC.Tests.PlayMode.VehicleSimulation.VehiclePhysicsValidationPlayModeTests/suspension-bump/adaptive-v1
+        scriptedFrames:
+        - timeSeconds: 0
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 1
+          gearChangeRequested: 0
+          requestedGear: 0
+        - timeSeconds: 1
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 1
+          requestedGear: 1
+        - timeSeconds: 2
+          throttle01: 0.85
+          clutchPedal01: 0.7
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+        - timeSeconds: 8
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: -0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+      runtime:
+        fixedTimestepSeconds: 0.019999992
+        simulationSubsteps: 4
+        unityVersion: 6000.3.11f1
+        physXVersion: Unity 6000.3 built-in PhysX; native patch not exposed by public
+          API
+        executionMode: 2
+        operatingSystem: Windows 10  (10.0.19045) 64bit
+        processor: 'AMD Ryzen 9 5950X 16-Core Processor '
+        graphicsDevice: NVIDIA GeForce RTX 4070 SUPER
+        randomSeed: 0
+        usesSeed: 0
+    metricIds:
+    - suspension.bump_peak_delta_01
+    - suspension.recovery_delta_01
+    - contact.minimum_wheel_count
+    - numeric.finite_state
+    blockedReason: 
+    notes: Scripted fixture executed by the named PlayMode test method. Serialized
+      frames record nominal phases; adaptive stop/speed conditions are authoritative
+      in test code. PhysX variance is evaluated with tolerances, not bitwise equality.
+  - fixtureId: surface-comparison
+    displayName: Paved gravel dirt grass comparison
+    kind: 8
+    status: 0
+    warmupSeconds: 0.5
+    durationSeconds: 8
+    trialCount: 1
+    repeatedRunTolerance01: 0.15
+    environment:
+      vehicleConfigurationId: m06.prototype.satsuma
+      vehicleConfigurationRevision: tuning-schema-2
+      sceneOrRouteId: VehicleSimulationPrototype/runtime-Paved-Gravel-Dirt-Grass-primitives
+      mass:
+        bodyMassKilograms: 650
+        installedPartsMassKilograms: 0
+        fluidsMassKilograms: 0
+        payloadMassKilograms: 0
+        totalMassKilograms: 650
+        centerOfMassLocalMeters: {x: 0, y: 0.2, z: 0}
+        installedParts:
+        - stablePartId: bffcb08e6024b0af3ff9d5b19fb3f401
+          partDefinitionId: m06.chassis
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 620
+        - stablePartId: a114e5f3bb8e5b879c6ac16f8e64aedd
+          partDefinitionId: m06.engine
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 92
+        - stablePartId: f77e80d19cd4bfd0de50e980c460723c
+          partDefinitionId: m06.starter
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 4.2
+        - stablePartId: 0a85cba87dede63bafa0e11c3013f268
+          partDefinitionId: m06.battery
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 11.5
+        - stablePartId: 0cd462c331a34545c250e4ac047479d2
+          partDefinitionId: m06.fuel_tank
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 28
+        - stablePartId: 1b3b9aad69d80868f9a4a02e6b59580c
+          partDefinitionId: m06.clutch
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 7
+        - stablePartId: 1a259794a6156117e3eb00a654ec7579
+          partDefinitionId: m06.gearbox
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 31
+        - stablePartId: 5365ab204158ff5023a81c580d5caa8a
+          partDefinitionId: m06.differential
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 18
+        - stablePartId: e472ef787774b3805b27c9d6d9a9c44c
+          partDefinitionId: m06.wheel.fl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 1def9251e95b623b183dac298ef9d077
+          partDefinitionId: m06.wheel.fr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4cb16a70df4c2ee7b93036c6af6bca09
+          partDefinitionId: m06.wheel.rl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4d4738268efb51ef7f64d20869479f2e
+          partDefinitionId: m06.wheel.rr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+      tires:
+      - wheelId: m06.wheel.fl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.fr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      surface:
+        surfaceType: 1
+        surfaceConfigurationId: m06a.mixed-explicit-surfaces;primary=Paved;see-route-and-run-evidence
+        frictionMultiplier: 1
+        rollingResistanceMultiplier: 1
+      weather:
+        weatherStateId: m06a.clear-dry-weather-not-implemented
+        wetness01: 0
+        ambientTemperatureCelsius: 20
+        windMetersPerSecond: 0
+      load:
+        fuelLiters: 15
+        oilLiters: 3.5
+        coolantLiters: 5
+        driverMassKilograms: 0
+        cargoMassKilograms: 0
+      input:
+        source: 1
+        deviceOrScriptId: MSC.Tests.PlayMode.VehicleSimulation.VehiclePhysicsValidationPlayModeTests/surface-comparison/adaptive-v1
+        scriptedFrames:
+        - timeSeconds: 0
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 1
+          gearChangeRequested: 0
+          requestedGear: 0
+        - timeSeconds: 1
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 1
+          requestedGear: 1
+        - timeSeconds: 2
+          throttle01: 0.85
+          clutchPedal01: 0.7
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+        - timeSeconds: 8
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: -0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+      runtime:
+        fixedTimestepSeconds: 0.019999992
+        simulationSubsteps: 4
+        unityVersion: 6000.3.11f1
+        physXVersion: Unity 6000.3 built-in PhysX; native patch not exposed by public
+          API
+        executionMode: 2
+        operatingSystem: Windows 10  (10.0.19045) 64bit
+        processor: 'AMD Ryzen 9 5950X 16-Core Processor '
+        graphicsDevice: NVIDIA GeForce RTX 4070 SUPER
+        randomSeed: 0
+        usesSeed: 0
+    metricIds:
+    - surface.lookup_pass
+    - surface.friction_ordering_pass
+    - surface.rolling_resistance_ordering_pass
+    - contact.minimum_wheel_count
+    - numeric.finite_state
+    blockedReason: 
+    notes: Scripted fixture executed by the named PlayMode test method. Serialized
+      frames record nominal phases; adaptive stop/speed conditions are authoritative
+      in test code. PhysX variance is evaluated with tolerances, not bitwise equality.
+  - fixtureId: hill-start
+    displayName: Six-degree hill hold and launch
+    kind: 11
+    status: 0
+    warmupSeconds: 0.5
+    durationSeconds: 10
+    trialCount: 1
+    repeatedRunTolerance01: 0.15
+    environment:
+      vehicleConfigurationId: m06.prototype.satsuma
+      vehicleConfigurationRevision: tuning-schema-2
+      sceneOrRouteId: VehicleSimulationPrototype/runtime-paved-slope-6deg
+      mass:
+        bodyMassKilograms: 650
+        installedPartsMassKilograms: 0
+        fluidsMassKilograms: 0
+        payloadMassKilograms: 0
+        totalMassKilograms: 650
+        centerOfMassLocalMeters: {x: 0, y: 0.2, z: 0}
+        installedParts:
+        - stablePartId: bffcb08e6024b0af3ff9d5b19fb3f401
+          partDefinitionId: m06.chassis
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 620
+        - stablePartId: a114e5f3bb8e5b879c6ac16f8e64aedd
+          partDefinitionId: m06.engine
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 92
+        - stablePartId: f77e80d19cd4bfd0de50e980c460723c
+          partDefinitionId: m06.starter
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 4.2
+        - stablePartId: 0a85cba87dede63bafa0e11c3013f268
+          partDefinitionId: m06.battery
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 11.5
+        - stablePartId: 0cd462c331a34545c250e4ac047479d2
+          partDefinitionId: m06.fuel_tank
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 28
+        - stablePartId: 1b3b9aad69d80868f9a4a02e6b59580c
+          partDefinitionId: m06.clutch
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 7
+        - stablePartId: 1a259794a6156117e3eb00a654ec7579
+          partDefinitionId: m06.gearbox
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 31
+        - stablePartId: 5365ab204158ff5023a81c580d5caa8a
+          partDefinitionId: m06.differential
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 18
+        - stablePartId: e472ef787774b3805b27c9d6d9a9c44c
+          partDefinitionId: m06.wheel.fl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 1def9251e95b623b183dac298ef9d077
+          partDefinitionId: m06.wheel.fr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4cb16a70df4c2ee7b93036c6af6bca09
+          partDefinitionId: m06.wheel.rl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4d4738268efb51ef7f64d20869479f2e
+          partDefinitionId: m06.wheel.rr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+      tires:
+      - wheelId: m06.wheel.fl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.fr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      surface:
+        surfaceType: 1
+        surfaceConfigurationId: m06.surface.paved.provisional
+        frictionMultiplier: 1
+        rollingResistanceMultiplier: 1
+      weather:
+        weatherStateId: m06a.clear-dry-weather-not-implemented
+        wetness01: 0
+        ambientTemperatureCelsius: 20
+        windMetersPerSecond: 0
+      load:
+        fuelLiters: 15
+        oilLiters: 3.5
+        coolantLiters: 5
+        driverMassKilograms: 0
+        cargoMassKilograms: 0
+      input:
+        source: 1
+        deviceOrScriptId: MSC.Tests.PlayMode.VehicleSimulation.VehiclePhysicsValidationPlayModeTests/hill-start/adaptive-v1
+        scriptedFrames:
+        - timeSeconds: 0
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 1
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 1
+          gearChangeRequested: 0
+          requestedGear: 0
+        - timeSeconds: 1
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 1
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 1
+          requestedGear: 1
+        - timeSeconds: 3
+          throttle01: 0.7
+          clutchPedal01: 0.72
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+        - timeSeconds: 10
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 1
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+      runtime:
+        fixedTimestepSeconds: 0.019999992
+        simulationSubsteps: 4
+        unityVersion: 6000.3.11f1
+        physXVersion: Unity 6000.3 built-in PhysX; native patch not exposed by public
+          API
+        executionMode: 2
+        operatingSystem: Windows 10  (10.0.19045) 64bit
+        processor: 'AMD Ryzen 9 5950X 16-Core Processor '
+        graphicsDevice: NVIDIA GeForce RTX 4070 SUPER
+        randomSeed: 0
+        usesSeed: 0
+    metricIds:
+    - longitudinal.hill_hold_drift_m
+    - longitudinal.hill_start_progress_m
+    - contact.minimum_wheel_count
+    - numeric.finite_state
+    blockedReason: 
+    notes: Scripted fixture executed by the named PlayMode test method. Serialized
+      frames record nominal phases; adaptive stop/speed conditions are authoritative
+      in test code. PhysX variance is evaluated with tolerances, not bitwise equality.
+  - fixtureId: garage-clearance
+    displayName: Garage and threshold clearance
+    kind: 9
+    status: 0
+    warmupSeconds: 0.5
+    durationSeconds: 25
+    trialCount: 1
+    repeatedRunTolerance01: 0.15
+    environment:
+      vehicleConfigurationId: m06.prototype.satsuma
+      vehicleConfigurationRevision: tuning-schema-2
+      sceneOrRouteId: Bootstrap+VehicleSimulationPrototype/production-cell_0_-3-garage-driveway
+      mass:
+        bodyMassKilograms: 650
+        installedPartsMassKilograms: 0
+        fluidsMassKilograms: 0
+        payloadMassKilograms: 0
+        totalMassKilograms: 650
+        centerOfMassLocalMeters: {x: 0, y: 0.2, z: 0}
+        installedParts:
+        - stablePartId: bffcb08e6024b0af3ff9d5b19fb3f401
+          partDefinitionId: m06.chassis
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 620
+        - stablePartId: a114e5f3bb8e5b879c6ac16f8e64aedd
+          partDefinitionId: m06.engine
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 92
+        - stablePartId: f77e80d19cd4bfd0de50e980c460723c
+          partDefinitionId: m06.starter
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 4.2
+        - stablePartId: 0a85cba87dede63bafa0e11c3013f268
+          partDefinitionId: m06.battery
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 11.5
+        - stablePartId: 0cd462c331a34545c250e4ac047479d2
+          partDefinitionId: m06.fuel_tank
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 28
+        - stablePartId: 1b3b9aad69d80868f9a4a02e6b59580c
+          partDefinitionId: m06.clutch
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 7
+        - stablePartId: 1a259794a6156117e3eb00a654ec7579
+          partDefinitionId: m06.gearbox
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 31
+        - stablePartId: 5365ab204158ff5023a81c580d5caa8a
+          partDefinitionId: m06.differential
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 18
+        - stablePartId: e472ef787774b3805b27c9d6d9a9c44c
+          partDefinitionId: m06.wheel.fl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 1def9251e95b623b183dac298ef9d077
+          partDefinitionId: m06.wheel.fr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4cb16a70df4c2ee7b93036c6af6bca09
+          partDefinitionId: m06.wheel.rl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4d4738268efb51ef7f64d20869479f2e
+          partDefinitionId: m06.wheel.rr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+      tires:
+      - wheelId: m06.wheel.fl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.fr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      surface:
+        surfaceType: 1
+        surfaceConfigurationId: m06a.mixed-explicit-surfaces;primary=Paved;see-route-and-run-evidence
+        frictionMultiplier: 1
+        rollingResistanceMultiplier: 1
+      weather:
+        weatherStateId: m06a.clear-dry-weather-not-implemented
+        wetness01: 0
+        ambientTemperatureCelsius: 20
+        windMetersPerSecond: 0
+      load:
+        fuelLiters: 15
+        oilLiters: 3.5
+        coolantLiters: 5
+        driverMassKilograms: 0
+        cargoMassKilograms: 0
+      input:
+        source: 1
+        deviceOrScriptId: MSC.Tests.PlayMode.VehicleSimulation.VehiclePhysicsValidationPlayModeTests/garage-clearance/adaptive-v1
+        scriptedFrames:
+        - timeSeconds: 0
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 1
+          gearChangeRequested: 0
+          requestedGear: 0
+        - timeSeconds: 1
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 1
+          requestedGear: 1
+        - timeSeconds: 2
+          throttle01: 0.55
+          clutchPedal01: 0.72
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+        - timeSeconds: 25
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 1
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+      runtime:
+        fixedTimestepSeconds: 0.019999992
+        simulationSubsteps: 4
+        unityVersion: 6000.3.11f1
+        physXVersion: Unity 6000.3 built-in PhysX; native patch not exposed by public
+          API
+        executionMode: 2
+        operatingSystem: Windows 10  (10.0.19045) 64bit
+        processor: 'AMD Ryzen 9 5950X 16-Core Processor '
+        graphicsDevice: NVIDIA GeForce RTX 4070 SUPER
+        randomSeed: 0
+        usesSeed: 0
+    metricIds:
+    - world.garage_width_margin_m
+    - world.garage_height_margin_m
+    - world.threshold_height_m
+    - contact.minimum_wheel_count
+    - numeric.finite_state
+    blockedReason: 
+    notes: Scripted fixture executed by the named PlayMode test method. Serialized
+      frames record nominal phases; adaptive stop/speed conditions are authoritative
+      in test code. PhysX variance is evaluated with tolerances, not bitwise equality.
+  - fixtureId: world-transition
+    displayName: Bounded production streaming boundary
+    kind: 10
+    status: 0
+    warmupSeconds: 0.5
+    durationSeconds: 25
+    trialCount: 1
+    repeatedRunTolerance01: 0.15
+    environment:
+      vehicleConfigurationId: m06.prototype.satsuma
+      vehicleConfigurationRevision: tuning-schema-2
+      sceneOrRouteId: Bootstrap+VehicleSimulationPrototype/production-cell_0_-3_to_0_-2/z_-1024
+      mass:
+        bodyMassKilograms: 650
+        installedPartsMassKilograms: 0
+        fluidsMassKilograms: 0
+        payloadMassKilograms: 0
+        totalMassKilograms: 650
+        centerOfMassLocalMeters: {x: 0, y: 0.2, z: 0}
+        installedParts:
+        - stablePartId: bffcb08e6024b0af3ff9d5b19fb3f401
+          partDefinitionId: m06.chassis
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 620
+        - stablePartId: a114e5f3bb8e5b879c6ac16f8e64aedd
+          partDefinitionId: m06.engine
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 92
+        - stablePartId: f77e80d19cd4bfd0de50e980c460723c
+          partDefinitionId: m06.starter
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 4.2
+        - stablePartId: 0a85cba87dede63bafa0e11c3013f268
+          partDefinitionId: m06.battery
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 11.5
+        - stablePartId: 0cd462c331a34545c250e4ac047479d2
+          partDefinitionId: m06.fuel_tank
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 28
+        - stablePartId: 1b3b9aad69d80868f9a4a02e6b59580c
+          partDefinitionId: m06.clutch
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 7
+        - stablePartId: 1a259794a6156117e3eb00a654ec7579
+          partDefinitionId: m06.gearbox
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 31
+        - stablePartId: 5365ab204158ff5023a81c580d5caa8a
+          partDefinitionId: m06.differential
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 18
+        - stablePartId: e472ef787774b3805b27c9d6d9a9c44c
+          partDefinitionId: m06.wheel.fl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 1def9251e95b623b183dac298ef9d077
+          partDefinitionId: m06.wheel.fr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4cb16a70df4c2ee7b93036c6af6bca09
+          partDefinitionId: m06.wheel.rl
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+        - stablePartId: 4d4738268efb51ef7f64d20869479f2e
+          partDefinitionId: m06.wheel.rr
+          installed: 1
+          includedInPhysicsMass: 0
+          massKilograms: 15
+      tires:
+      - wheelId: m06.wheel.fl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.fr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rl
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      - wheelId: m06.wheel.rr
+        tireConfigurationId: tire_stock_candidate-radius;fitted-identity-unknown
+        radiusMeters: 0.272667
+        pressureKilopascals: 0
+        wear01: 0
+      surface:
+        surfaceType: 1
+        surfaceConfigurationId: m06a.mixed-explicit-surfaces;primary=Paved;see-route-and-run-evidence
+        frictionMultiplier: 1
+        rollingResistanceMultiplier: 1
+      weather:
+        weatherStateId: m06a.clear-dry-weather-not-implemented
+        wetness01: 0
+        ambientTemperatureCelsius: 20
+        windMetersPerSecond: 0
+      load:
+        fuelLiters: 15
+        oilLiters: 3.5
+        coolantLiters: 5
+        driverMassKilograms: 0
+        cargoMassKilograms: 0
+      input:
+        source: 1
+        deviceOrScriptId: MSC.Tests.PlayMode.VehicleSimulation.VehiclePhysicsValidationPlayModeTests/world-transition/adaptive-v1
+        scriptedFrames:
+        - timeSeconds: 0
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 1
+          gearChangeRequested: 0
+          requestedGear: 0
+        - timeSeconds: 1
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 1
+          requestedGear: 1
+        - timeSeconds: 2
+          throttle01: 0.55
+          clutchPedal01: 0.72
+          brake01: 0
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+        - timeSeconds: 25
+          throttle01: 0
+          clutchPedal01: 1
+          brake01: 1
+          steeringMinusOneToOne: 0
+          ignitionOn: 1
+          starterRequested: 0
+          gearChangeRequested: 0
+          requestedGear: 1
+      runtime:
+        fixedTimestepSeconds: 0.019999992
+        simulationSubsteps: 4
+        unityVersion: 6000.3.11f1
+        physXVersion: Unity 6000.3 built-in PhysX; native patch not exposed by public
+          API
+        executionMode: 2
+        operatingSystem: Windows 10  (10.0.19045) 64bit
+        processor: 'AMD Ryzen 9 5950X 16-Core Processor '
+        graphicsDevice: NVIDIA GeForce RTX 4070 SUPER
+        randomSeed: 0
+        usesSeed: 0
+    metricIds:
+    - world.streaming_neighbor_loaded
+    - world.route_progress_m
+    - world.maximum_lateral_deviation_m
+    - world.post_streaming_contact_wheel_count
+    - world.post_streaming_vertical_delta_m
+    - world.streaming_minimum_contact_wheel_count
+    - world.streaming_maximum_vertical_delta_m
+    - world.next_cell_only_minimum_contact_wheel_count
+    - world.next_cell_only_maximum_vertical_delta_m
+    - world.surface_transition_lookup_pass
+    - contact.maximum_zero_contact_streak_frames
+    - numeric.finite_state
+    blockedReason: 
+    notes: Scripted fixture executed by the named PlayMode test method. Serialized
+      frames record nominal phases; adaptive stop/speed conditions are authoritative
+      in test code. PhysX variance is evaluated with tolerances, not bitwise equality.
+  metricDefinitions:
+  - metricId: mass.proxy_total_kg
+    displayName: Physics proxy total mass
+    unit: kg
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.01
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: mass.logical_parts_sum_kg
+    displayName: Logical assembly mass sum (excluded)
+    unit: kg
+    status: 1
+    classification: 4
+    comparisonStatistic: 0
+    direction: 3
+    defaultAbsoluteTolerance: 0.01
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: mass.center_of_mass_x_m
+    displayName: Explicit proxy CoM X
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.001
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: mass.center_of_mass_y_m
+    displayName: Explicit proxy CoM Y
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.001
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: mass.center_of_mass_z_m
+    displayName: Explicit proxy CoM Z
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.001
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: geometry.wheelbase_m
+    displayName: Wheelbase at wheel roots
+    unit: m
+    status: 0
+    classification: 2
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.002
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: geometry.front_track_m
+    displayName: Front track at wheel roots
+    unit: m
+    status: 0
+    classification: 2
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.002
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: geometry.rear_track_m
+    displayName: Rear track at wheel roots
+    unit: m
+    status: 0
+    classification: 2
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.002
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: geometry.wheel_radius_m
+    displayName: Candidate wheel radius
+    unit: m
+    status: 1
+    classification: 3
+    comparisonStatistic: 0
+    direction: 3
+    defaultAbsoluteTolerance: 0.001
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: geometry.ride_height_m
+    displayName: Donor ride height
+    unit: m
+    status: 2
+    classification: 5
+    comparisonStatistic: 0
+    direction: 3
+    defaultAbsoluteTolerance: 0
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: No controlled donor ride-height fixture.
+    notes: No controlled donor ride-height fixture.
+  - metricId: geometry.ground_clearance_m
+    displayName: Donor ground clearance
+    unit: m
+    status: 2
+    classification: 5
+    comparisonStatistic: 0
+    direction: 3
+    defaultAbsoluteTolerance: 0
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: No validated chassis clearance marker.
+    notes: No validated chassis clearance marker.
+  - metricId: suspension.rest_length_config_m
+    displayName: Configured suspension rest length
+    unit: m
+    status: 1
+    classification: 4
+    comparisonStatistic: 0
+    direction: 3
+    defaultAbsoluteTolerance: 0.001
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: suspension.travel_config_m
+    displayName: Configured suspension travel
+    unit: m
+    status: 1
+    classification: 4
+    comparisonStatistic: 0
+    direction: 3
+    defaultAbsoluteTolerance: 0.001
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: geometry.steering_lock_config_deg
+    displayName: Configured steering lock
+    unit: deg
+    status: 1
+    classification: 4
+    comparisonStatistic: 0
+    direction: 3
+    defaultAbsoluteTolerance: 0.1
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: engine.starter_time_s
+    displayName: Starter time
+    unit: s
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.1
+    defaultRelativeTolerance01: 0.15
+    minimumValidSamples: 3
+    enforceRepeatability: 1
+    maximumCoefficientOfVariation: 0.15
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: engine.idle_rpm
+    displayName: Settled idle RPM
+    unit: rpm
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 120
+    defaultRelativeTolerance01: 0.15
+    minimumValidSamples: 3
+    enforceRepeatability: 1
+    maximumCoefficientOfVariation: 0.06
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: engine.idle_max_deviation_rpm
+    displayName: Maximum idle deviation
+    unit: rpm
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 20
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 3
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: numeric.finite_state
+    displayName: Finite simulation state
+    unit: bool
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: longitudinal.launch_peak_speed_m_s
+    displayName: Two-second launch peak speed
+    unit: m/s
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.1
+    defaultRelativeTolerance01: 0.15
+    minimumValidSamples: 3
+    enforceRepeatability: 1
+    maximumCoefficientOfVariation: 0.15
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: longitudinal.launch_distance_m
+    displayName: Two-second launch distance
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.1
+    defaultRelativeTolerance01: 0.15
+    minimumValidSamples: 3
+    enforceRepeatability: 1
+    maximumCoefficientOfVariation: 0.15
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: longitudinal.braking_final_speed_ratio
+    displayName: Final/initial braking speed ratio
+    unit: ratio
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.02
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 3
+    enforceRepeatability: 1
+    maximumCoefficientOfVariation: 0.15
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: longitudinal.braking_distance_m
+    displayName: Bounded service-braking distance
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.25
+    defaultRelativeTolerance01: 0.15
+    minimumValidSamples: 3
+    enforceRepeatability: 1
+    maximumCoefficientOfVariation: 0.2
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: longitudinal.braking_max_speed_increase_m_s
+    displayName: Maximum speed increase while braking
+    unit: m/s
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.02
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 3
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: longitudinal.coastdown_speed_loss_m_s
+    displayName: Coast-down speed loss
+    unit: m/s
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.1
+    defaultRelativeTolerance01: 0.15
+    minimumValidSamples: 3
+    enforceRepeatability: 1
+    maximumCoefficientOfVariation: 0.2
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: longitudinal.coastdown_max_speed_increase_m_s
+    displayName: Coast-down maximum speed increase
+    unit: m/s
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.05
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 3
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: longitudinal.hill_hold_drift_m
+    displayName: Six-degree hill hold drift
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.05
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: longitudinal.hill_start_progress_m
+    displayName: Six-degree uphill launch progress
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.1
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: lateral.steering_angle_deg
+    displayName: Steering angle response
+    unit: deg
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 1
+    defaultRelativeTolerance01: 0.1
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: lateral.turning_radius_estimate_m
+    displayName: Kinematic turning radius estimate
+    unit: m
+    status: 1
+    classification: 4
+    comparisonStatistic: 0
+    direction: 3
+    defaultAbsoluteTolerance: 0.25
+    defaultRelativeTolerance01: 0.1
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: lateral.maximum_slip
+    displayName: Maximum lateral slip
+    unit: ratio
+    status: 1
+    classification: 5
+    comparisonStatistic: 0
+    direction: 3
+    defaultAbsoluteTolerance: 0.1
+    defaultRelativeTolerance01: 0.2
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: suspension.bump_peak_delta_01
+    displayName: Bump compression delta
+    unit: normalized
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.03
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: suspension.recovery_delta_01
+    displayName: Recovered compression delta
+    unit: normalized
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.03
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: surface.lookup_pass
+    displayName: Typed surface lookup
+    unit: bool
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: surface.friction_ordering_pass
+    displayName: Surface friction ordering
+    unit: bool
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: surface.rolling_resistance_ordering_pass
+    displayName: Rolling resistance ordering
+    unit: bool
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: contact.minimum_wheel_count
+    displayName: Minimum contacting wheels
+    unit: count
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: world.garage_width_margin_m
+    displayName: Garage width margin
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.01
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: world.garage_height_margin_m
+    displayName: Garage height margin
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.01
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: world.threshold_height_m
+    displayName: Driveway-to-garage threshold
+    unit: m
+    status: 1
+    classification: 4
+    comparisonStatistic: 0
+    direction: 3
+    defaultAbsoluteTolerance: 0.01
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: world.streaming_neighbor_loaded
+    displayName: Neighbor streaming cell loaded
+    unit: bool
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: world.route_progress_m
+    displayName: Garage route progress
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.1
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: world.maximum_lateral_deviation_m
+    displayName: Garage route lateral deviation
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.1
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: world.post_streaming_contact_wheel_count
+    displayName: Wheel contacts after automatic neighbor load
+    unit: count
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: world.post_streaming_vertical_delta_m
+    displayName: Vertical displacement after automatic neighbor load
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.02
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: world.streaming_minimum_contact_wheel_count
+    displayName: Minimum contacts during automatic neighbor load
+    unit: count
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: world.streaming_maximum_vertical_delta_m
+    displayName: Vertical displacement during automatic neighbor load
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.02
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: world.next_cell_only_minimum_contact_wheel_count
+    displayName: Minimum contacts with only next-cell collision
+    unit: count
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: world.next_cell_only_maximum_vertical_delta_m
+    displayName: Vertical displacement with only next-cell collision
+    unit: m
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0.02
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: world.surface_transition_lookup_pass
+    displayName: Production Paved-to-Gravel surface lookup
+    unit: bool
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  - metricId: contact.maximum_zero_contact_streak_frames
+    displayName: Maximum all-wheel contact loss
+    unit: frames
+    status: 0
+    classification: 4
+    comparisonStatistic: 0
+    direction: 0
+    defaultAbsoluteTolerance: 0
+    defaultRelativeTolerance01: 0
+    minimumValidSamples: 1
+    enforceRepeatability: 0
+    maximumCoefficientOfVariation: 0
+    blockedReason: 
+    notes: M06A metric; classification is authoritative.
+  referenceTargets:
+  - fixtureId: static-geometry-mass
+    metricId: mass.proxy_total_kg
+    classification: 4
+    status: 1
+    mode: 1
+    targetValue: 650
+    minimumValue: 650
+    maximumValue: 650
+    overridesTolerance: 1
+    absoluteTolerance: 0.01
+    relativeTolerance01: 0
+    confidence01: 0.65
+    source: M06 config
+    notes: Proxy mass; not donor assembled mass.
+  - fixtureId: static-geometry-mass
+    metricId: mass.logical_parts_sum_kg
+    classification: 4
+    status: 1
+    mode: 1
+    targetValue: 871.7
+    minimumValue: 871.7
+    maximumValue: 871.7
+    overridesTolerance: 1
+    absoluteTolerance: 0.01
+    relativeTolerance01: 0
+    confidence01: 0.65
+    source: M06 logical AssemblyGraph
+    notes: Excluded from physics calibration.
+  - fixtureId: static-geometry-mass
+    metricId: mass.center_of_mass_x_m
+    classification: 4
+    status: 1
+    mode: 1
+    targetValue: 0
+    minimumValue: 0
+    maximumValue: 0
+    overridesTolerance: 1
+    absoluteTolerance: 0.001
+    relativeTolerance01: 0
+    confidence01: 0.65
+    source: M06A explicit composition config
+    notes: Explicit proxy CoM; donor assembled CoM is Unknown.
+  - fixtureId: static-geometry-mass
+    metricId: mass.center_of_mass_y_m
+    classification: 4
+    status: 1
+    mode: 1
+    targetValue: 0.2
+    minimumValue: 0.2
+    maximumValue: 0.2
+    overridesTolerance: 1
+    absoluteTolerance: 0.001
+    relativeTolerance01: 0
+    confidence01: 0.65
+    source: M06A explicit composition config
+    notes: Same effective collider-derived value as baseline.
+  - fixtureId: static-geometry-mass
+    metricId: mass.center_of_mass_z_m
+    classification: 4
+    status: 1
+    mode: 1
+    targetValue: 0
+    minimumValue: 0
+    maximumValue: 0
+    overridesTolerance: 1
+    absoluteTolerance: 0.001
+    relativeTolerance01: 0
+    confidence01: 0.65
+    source: M06A explicit composition config
+    notes: Explicit proxy CoM; donor assembled CoM is Unknown.
+  - fixtureId: static-geometry-mass
+    metricId: geometry.wheelbase_m
+    classification: 2
+    status: 1
+    mode: 1
+    targetValue: 2.334
+    minimumValue: 2.334
+    maximumValue: 2.334
+    overridesTolerance: 1
+    absoluteTolerance: 0.002
+    relativeTolerance01: 0
+    confidence01: 0.95
+    source: ReferenceCaptureDatabase:a2a2647de4c9f2e05568e98a27d59380
+    notes: Derived from wheel roots.
+  - fixtureId: static-geometry-mass
+    metricId: geometry.front_track_m
+    classification: 2
+    status: 1
+    mode: 1
+    targetValue: 1.2600002
+    minimumValue: 1.2600002
+    maximumValue: 1.2600002
+    overridesTolerance: 1
+    absoluteTolerance: 0.002
+    relativeTolerance01: 0
+    confidence01: 0.95
+    source: ReferenceCaptureDatabase:93b15a1420a962441f82ad53e074ed09
+    notes: At wheel roots.
+  - fixtureId: static-geometry-mass
+    metricId: geometry.rear_track_m
+    classification: 2
+    status: 1
+    mode: 1
+    targetValue: 1.2060003
+    minimumValue: 1.2060003
+    maximumValue: 1.2060003
+    overridesTolerance: 1
+    absoluteTolerance: 0.002
+    relativeTolerance01: 0
+    confidence01: 0.95
+    source: ReferenceCaptureDatabase:98bbe4fc8f0e5702bfbbbf03592d0b28
+    notes: At wheel roots.
+  - fixtureId: static-geometry-mass
+    metricId: geometry.wheel_radius_m
+    classification: 3
+    status: 1
+    mode: 1
+    targetValue: 0.272667
+    minimumValue: 0.272667
+    maximumValue: 0.272667
+    overridesTolerance: 1
+    absoluteTolerance: 0.001
+    relativeTolerance01: 0
+    confidence01: 0.65
+    source: ReferenceCaptureDatabase:f7d49044cec918b66ac64e0099a7781f
+    notes: NeedsReview; fitted identity unknown.
+  - fixtureId: static-geometry-mass
+    metricId: geometry.ride_height_m
+    classification: 5
+    status: 2
+    mode: 0
+    targetValue: 0
+    minimumValue: 0
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0
+    source: 
+    notes: No controlled donor ride-height fixture.
+  - fixtureId: static-geometry-mass
+    metricId: geometry.ground_clearance_m
+    classification: 5
+    status: 2
+    mode: 0
+    targetValue: 0
+    minimumValue: 0
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0
+    source: 
+    notes: No validated chassis clearance marker.
+  - fixtureId: static-geometry-mass
+    metricId: suspension.rest_length_config_m
+    classification: 4
+    status: 1
+    mode: 1
+    targetValue: 0.32
+    minimumValue: 0.32
+    maximumValue: 0.32
+    overridesTolerance: 1
+    absoluteTolerance: 0.001
+    relativeTolerance01: 0
+    confidence01: 0.65
+    source: M06 config
+    notes: Configured ray length component; not donor suspension rest position.
+  - fixtureId: static-geometry-mass
+    metricId: suspension.travel_config_m
+    classification: 4
+    status: 1
+    mode: 1
+    targetValue: 0.18
+    minimumValue: 0.18
+    maximumValue: 0.18
+    overridesTolerance: 1
+    absoluteTolerance: 0.001
+    relativeTolerance01: 0
+    confidence01: 0.65
+    source: M06 config
+    notes: Configured travel; donor travel Missing.
+  - fixtureId: static-geometry-mass
+    metricId: geometry.steering_lock_config_deg
+    classification: 4
+    status: 1
+    mode: 1
+    targetValue: 30
+    minimumValue: 30
+    maximumValue: 30
+    overridesTolerance: 1
+    absoluteTolerance: 0.1
+    relativeTolerance01: 0
+    confidence01: 0.65
+    source: M06 config
+    notes: Donor steering lock Missing.
+  - fixtureId: start-idle
+    metricId: engine.starter_time_s
+    classification: 4
+    status: 1
+    mode: 2
+    targetValue: 0
+    minimumValue: 0.1
+    maximumValue: 1
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.6
+    source: M06A stability target
+    notes: Not donor start-time parity.
+  - fixtureId: start-idle
+    metricId: engine.idle_rpm
+    classification: 4
+    status: 1
+    mode: 1
+    targetValue: 900
+    minimumValue: 900
+    maximumValue: 900
+    overridesTolerance: 1
+    absoluteTolerance: 120
+    relativeTolerance01: 0
+    confidence01: 0.65
+    source: M06 config
+    notes: Donor idle fixture Missing.
+  - fixtureId: start-idle
+    metricId: engine.idle_max_deviation_rpm
+    classification: 4
+    status: 1
+    mode: 3
+    targetValue: 120
+    minimumValue: 0
+    maximumValue: 120
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A stability target
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: start-idle
+    metricId: numeric.finite_state
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A invariant
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: acceleration
+    metricId: longitudinal.launch_peak_speed_m_s
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 0.5
+    minimumValue: 0.5
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06 PlayMode regression gate
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: acceleration
+    metricId: longitudinal.launch_distance_m
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 0.4
+    minimumValue: 0.4
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06 PlayMode regression gate
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: acceleration
+    metricId: numeric.finite_state
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A invariant
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: braking
+    metricId: longitudinal.braking_final_speed_ratio
+    classification: 4
+    status: 1
+    mode: 3
+    targetValue: 0.25
+    minimumValue: 0
+    maximumValue: 0.25
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A braking regression target
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: braking
+    metricId: longitudinal.braking_distance_m
+    classification: 4
+    status: 1
+    mode: 3
+    targetValue: 25
+    minimumValue: 0
+    maximumValue: 25
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A bounded braking route
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: braking
+    metricId: longitudinal.braking_max_speed_increase_m_s
+    classification: 4
+    status: 1
+    mode: 3
+    targetValue: 0.15
+    minimumValue: 0
+    maximumValue: 0.15
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A monotonicity tolerance
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: braking
+    metricId: contact.minimum_wheel_count
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 2
+    minimumValue: 2
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A contact stability target
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: braking
+    metricId: numeric.finite_state
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A invariant
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: coastdown
+    metricId: longitudinal.coastdown_speed_loss_m_s
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 0.02
+    minimumValue: 0.02
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A no-propulsion trend
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: coastdown
+    metricId: longitudinal.coastdown_max_speed_increase_m_s
+    classification: 4
+    status: 1
+    mode: 3
+    targetValue: 0.15
+    minimumValue: 0
+    maximumValue: 0.15
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A coast-down monotonicity tolerance
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: coastdown
+    metricId: numeric.finite_state
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A invariant
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: hill-start
+    metricId: longitudinal.hill_hold_drift_m
+    classification: 4
+    status: 1
+    mode: 3
+    targetValue: 0.25
+    minimumValue: 0
+    maximumValue: 0.25
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A six-degree brake-hold target
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: hill-start
+    metricId: longitudinal.hill_start_progress_m
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 0.5
+    minimumValue: 0.5
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A six-degree uphill launch target
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: hill-start
+    metricId: contact.minimum_wheel_count
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 2
+    minimumValue: 2
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A hill contact stability target
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: hill-start
+    metricId: numeric.finite_state
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A invariant
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: steering-slalom
+    metricId: lateral.steering_angle_deg
+    classification: 4
+    status: 1
+    mode: 2
+    targetValue: 0
+    minimumValue: 1
+    maximumValue: 30
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.6
+    source: M06 steering config
+    notes: Donor steering lock Missing.
+  - fixtureId: steering-slalom
+    metricId: lateral.turning_radius_estimate_m
+    classification: 4
+    status: 1
+    mode: 1
+    targetValue: 4.0429
+    minimumValue: 4.0429
+    maximumValue: 4.0429
+    overridesTolerance: 1
+    absoluteTolerance: 0.25
+    relativeTolerance01: 0
+    confidence01: 0.65
+    source: wheelbase/tan(30deg)
+    notes: Kinematic estimate only.
+  - fixtureId: steering-slalom
+    metricId: lateral.maximum_slip
+    classification: 5
+    status: 2
+    mode: 0
+    targetValue: 0
+    minimumValue: 0
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0
+    source: 
+    notes: No donor lateral-slip target; observed project value is informational.
+  - fixtureId: steering-slalom
+    metricId: numeric.finite_state
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A invariant
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: suspension-bump
+    metricId: suspension.bump_peak_delta_01
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 0.1
+    minimumValue: 0.1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A 80mm bump target
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: suspension-bump
+    metricId: suspension.recovery_delta_01
+    classification: 4
+    status: 1
+    mode: 3
+    targetValue: 0.15
+    minimumValue: 0
+    maximumValue: 0.15
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A recovery target
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: suspension-bump
+    metricId: contact.minimum_wheel_count
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 2
+    minimumValue: 2
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A contact stability target
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: suspension-bump
+    metricId: numeric.finite_state
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A invariant
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: surface-comparison
+    metricId: surface.lookup_pass
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A typed metadata contract
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: surface-comparison
+    metricId: surface.friction_ordering_pass
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06 config ordering
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: surface-comparison
+    metricId: surface.rolling_resistance_ordering_pass
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06 config ordering
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: surface-comparison
+    metricId: contact.minimum_wheel_count
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 2
+    minimumValue: 2
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A contact stability target
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: surface-comparison
+    metricId: numeric.finite_state
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A invariant
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: garage-clearance
+    metricId: world.garage_width_margin_m
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 0.92
+    minimumValue: 0.92
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: 05A representative envelope fixture
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: garage-clearance
+    metricId: world.garage_height_margin_m
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 0.47
+    minimumValue: 0.47
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: 05A representative envelope fixture
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: garage-clearance
+    metricId: world.threshold_height_m
+    classification: 4
+    status: 1
+    mode: 1
+    targetValue: 0.105
+    minimumValue: 0.105
+    maximumValue: 0.105
+    overridesTolerance: 1
+    absoluteTolerance: 0.01
+    relativeTolerance01: 0
+    confidence01: 0.65
+    source: Production cell project measurement
+    notes: Not donor threshold parity.
+  - fixtureId: garage-clearance
+    metricId: contact.minimum_wheel_count
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 2
+    minimumValue: 2
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A bounded route target
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: garage-clearance
+    metricId: numeric.finite_state
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A invariant
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: world-transition
+    metricId: world.streaming_neighbor_loaded
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: Production streaming manifest
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: world-transition
+    metricId: world.route_progress_m
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 12.23
+    minimumValue: 12.23
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: Garage start to z=-1024 boundary
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: world-transition
+    metricId: world.maximum_lateral_deviation_m
+    classification: 4
+    status: 1
+    mode: 3
+    targetValue: 1.1
+    minimumValue: 0
+    maximumValue: 1.1
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: Bounded garage corridor
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: world-transition
+    metricId: world.post_streaming_contact_wheel_count
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 2
+    minimumValue: 2
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A automatic streaming continuity
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: world-transition
+    metricId: world.post_streaming_vertical_delta_m
+    classification: 4
+    status: 1
+    mode: 3
+    targetValue: 0.35
+    minimumValue: 0
+    maximumValue: 0.35
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A automatic streaming continuity
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: world-transition
+    metricId: world.streaming_minimum_contact_wheel_count
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 2
+    minimumValue: 2
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A active-load continuity
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: world-transition
+    metricId: world.streaming_maximum_vertical_delta_m
+    classification: 4
+    status: 1
+    mode: 3
+    targetValue: 0.35
+    minimumValue: 0
+    maximumValue: 0.35
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A active-load continuity
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: world-transition
+    metricId: world.next_cell_only_minimum_contact_wheel_count
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 2
+    minimumValue: 2
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A next-cell collision proof
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: world-transition
+    metricId: world.next_cell_only_maximum_vertical_delta_m
+    classification: 4
+    status: 1
+    mode: 3
+    targetValue: 0.35
+    minimumValue: 0
+    maximumValue: 0.35
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A next-cell collision proof
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: world-transition
+    metricId: world.surface_transition_lookup_pass
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A production semantic-surface lookup
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: world-transition
+    metricId: contact.maximum_zero_contact_streak_frames
+    classification: 4
+    status: 1
+    mode: 3
+    targetValue: 8
+    minimumValue: 0
+    maximumValue: 8
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: Bounded threshold tolerance
+    notes: Project-owned regression/stability target; not donor parity.
+  - fixtureId: world-transition
+    metricId: numeric.finite_state
+    classification: 4
+    status: 1
+    mode: 4
+    targetValue: 1
+    minimumValue: 1
+    maximumValue: 0
+    overridesTolerance: 0
+    absoluteTolerance: 0
+    relativeTolerance01: 0
+    confidence01: 0.7
+    source: M06A invariant
+    notes: Project-owned regression/stability target; not donor parity.
+  notes: All dynamic values remain RemakeDesignTarget/ProvisionalProjectTuning. Logical
+    part masses (871.7 kg) are recorded but excluded from the 650 kg physics proxy.
+    Tire pressure 0 means Unknown/not simulated, not a 0 kPa claim. Candidate radius
+    0.272667 m remains PlausibilityTarget/NeedsReview.

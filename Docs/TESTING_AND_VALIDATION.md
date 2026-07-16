@@ -356,3 +356,71 @@ Fresh automated results inspected on 2026-07-15/16 UTC:
 - isolated performance audit PASS with `0` allocated bytes in every measured loop; `Physics.Processing` is `UnavailableNotMeasured`.
 
 The first bounded manual drive confirmed the core loop but exposed startup creep and view shake. Automated remediation is covered by focused PlayMode `4/4 PASS`, including level rest, incline freedom and later external wake behavior. `VehicleAudioPresenter` samples in `FixedUpdate`, `StarterEngaged -> StarterDisengaged -> EngineStarted` ordering is asserted, and reset during `Cranking` verifies `VehicleSimulationHost.SimulationReset -> VehicleAudioPresenter -> VehicleAudioEvent.Reset` with immediate backend `StopImmediately`. Missing local staging remains a silent fallback and is not itself a test failure. On 2026-07-16 the user accepted the post-remediation drive/audio recheck for the bounded basic prototype. Exact commands, inspected result paths, performance values and the manual checklist are in `Docs/Vehicle/SIMULATION_TEST_MATRIX.md`. Do not silently waive a future new M06 failure.
+
+## Milestone 06A physics-validation update
+
+Implemented commands under
+`Tools > MSC Remake > Vehicle Physics Validation`:
+
+- `Build / Rebuild Validation Setup`;
+- `Validate Setup`;
+- `Run Performance Audit`;
+- `Export Summary CSV`;
+- `Dashboard`.
+
+Batch entry points:
+
+- `MSC.Editor.VehicleValidation.VehiclePhysicsValidationBuilder.RunBatch`;
+- `MSC.Editor.VehicleValidation.VehiclePhysicsValidationValidator.RunBatch`;
+- `MSC.Editor.VehicleValidation.VehiclePhysicsValidationPerformanceAudit.RunBatch`;
+- `MSC.Editor.VehicleValidation.VehiclePhysicsValidationEvidenceExporter.RunBatch`.
+
+Fresh Unity `6000.3.11f1` results from 2026-07-16:
+
+- builder: PASS, revision `1.2.0`, `11` fixtures and `50` metrics;
+- strict validator: PASS;
+- focused EditMode class
+  `MSC.Tests.EditMode.VehicleSimulation.VehiclePhysicsValidationEditModeTests`:
+  **7/7 PASS** in `0.1025478 s`;
+- focused PlayMode class
+  `MSC.Tests.PlayMode.VehicleSimulation.VehiclePhysicsValidationPlayModeTests`:
+  **8/8 PASS** in `63.5745205 s`;
+- pure performance audit: PASS, zero measured allocations;
+- evidence export: PASS with five pure trials and passing PhysX evidence.
+
+Seven functional PlayMode fixtures cover repeated start/idle/launch/braking,
+surface/contact validation, three coast-down trials, steering/slalom,
+suspension bump/recovery, six-degree hill start and the bounded production
+world transition. The eighth test measures a stationary real-backend manual
+`Physics.Simulate` window. The production run travels `12.255066 m` to
+`z=-1024` with four wheel contacts. A next-cell-only probe at `z=-970` also
+retains four contacts.
+
+Durable evidence:
+
+- `Docs/VehicleValidation/M06A_PHYSX_RUN_EVIDENCE.json`;
+- `Docs/VehicleValidation/M06A_PHYSICS_VALIDATION_PERFORMANCE.json`;
+- `Docs/VehicleValidation/CALIBRATION_TARGETS.csv`;
+- `Docs/VehicleValidation/CALIBRATION_RUNS.csv`;
+- `Docs/VehicleValidation/METRIC_RESULTS.csv`;
+- `Docs/VehicleValidation/TUNING_CHANGE_LOG.csv`;
+- seven fixture CSV files under `Docs/VehicleValidation/Telemetry/`.
+
+The pure managed performance result at `1/2/4` substeps is
+`2.571855 / 3.55201 / 5.962805 us/tick`; telemetry costs
+`6.04886 us/tick`, scripted validation `6.95269 us/tick`, and measured
+allocations are zero. Production telemetry after a 50-frame warmup records
+mean root + backend `0.038197 ms`, linear p95 `0.0461 ms` and maximum `0.0629 ms`.
+The real-backend window records blocking `Physics.Simulate` means
+`0.024990 / 0.023025 ms` and combined means `0.038737 / 0.036251 ms` with
+telemetry consumer off/on, minimum four contacts, no invalid states and zero
+allocations.
+
+The automated M06A gate is PASS and the user accepted the bounded prototype
+baseline on 2026-07-16; status is `Accepted / HumanAccepted`. The
+`Physics.Processing` marker was unavailable in
+batch mode despite the blocking `Physics.Simulate` measurement; GPU timing and
+a Windows-player 60 FPS acceptance capture remain unavailable. Both production
+pilot cells remain `Rejected` / `NeedsRework` for donor visual and spatial
+parity. The next milestone may be only
+`Prompts/06B_PRODUCTION_WORLD_CELL_FIDELITY_GATE.md`.

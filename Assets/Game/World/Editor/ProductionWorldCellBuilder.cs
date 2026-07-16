@@ -5,7 +5,9 @@ using System.Linq;
 using MSC.Core.Identity;
 using MSC.Interaction.Query;
 using MSC.Player;
+using MSC.Vehicle;
 using MSC.Vehicle.Assembly;
+using MSC.Vehicle.Simulation;
 using MSC.World.Data;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -249,7 +251,14 @@ namespace MSC.World.Remaster.Editor
                 const float depth = 12f;
                 const float height = 2.7f;
                 const float wall = 0.16f;
-                AddBox(root.transform, "Floor", materials["Concrete"], new Vector3(0f, 0.09f, depth * 0.5f), new Vector3(width, 0.18f, depth));
+                GameObject floor = AddBox(
+                    root.transform,
+                    "Floor",
+                    materials["Concrete"],
+                    new Vector3(0f, 0.09f, depth * 0.5f),
+                    new Vector3(width, 0.18f, depth));
+                floor.AddComponent<VehicleSurfaceMetadataAuthoring>()
+                    .Configure(VehicleSurfaceType.Paved);
                 AddBox(root.transform, "RearWall", materials["Wood"], new Vector3(0f, height * 0.5f, depth), new Vector3(width, height, wall));
                 AddBox(root.transform, "LeftWall", materials["Wood"], new Vector3(-width * 0.5f, height * 0.5f, depth * 0.5f), new Vector3(wall, height, depth));
                 AddBox(root.transform, "RightWallFront", materials["Wood"], new Vector3(width * 0.5f, height * 0.5f, 2.2f), new Vector3(wall, height, 4.4f));
@@ -345,9 +354,30 @@ namespace MSC.World.Remaster.Editor
             var root = new GameObject("WR_HomeTerrainRoadDitch");
             try
             {
-                AddMesh(root.transform, "Terrain", meshes["Terrain"], materials["Terrain"], addCollider: true);
-                AddMesh(root.transform, "Road", meshes["Road"], materials["Road"], addCollider: true);
-                AddMesh(root.transform, "Driveway", meshes["Driveway"], materials["Driveway"], addCollider: true);
+                GameObject terrain = AddMesh(
+                    root.transform,
+                    "Terrain",
+                    meshes["Terrain"],
+                    materials["Terrain"],
+                    addCollider: true);
+                terrain.AddComponent<VehicleSurfaceMetadataAuthoring>()
+                    .Configure(VehicleSurfaceType.Grass);
+                GameObject road = AddMesh(
+                    root.transform,
+                    "Road",
+                    meshes["Road"],
+                    materials["Road"],
+                    addCollider: true);
+                road.AddComponent<VehicleSurfaceMetadataAuthoring>()
+                    .Configure(VehicleSurfaceType.Gravel);
+                GameObject driveway = AddMesh(
+                    root.transform,
+                    "Driveway",
+                    meshes["Driveway"],
+                    materials["Driveway"],
+                    addCollider: true);
+                driveway.AddComponent<VehicleSurfaceMetadataAuthoring>()
+                    .Configure(VehicleSurfaceType.Gravel);
                 AddMesh(root.transform, "DitchWater", meshes["Water"], materials["Water"], addCollider: false);
                 return SavePrefab(root, WorldRemasterPaths.TerrainRoadPrefab);
             }
@@ -569,20 +599,24 @@ namespace MSC.World.Remaster.Editor
                     new Vector3(336f, -2.929f, -711f) - anchor,
                     new Vector3(352f, 0.045f, 398f),
                     addCollider: false);
-                AddBox(
+                GameObject shoreApproach = AddBox(
                     root.transform,
                     "ShoreApproach",
                     materials["Terrain"],
                     new Vector3(177f, -0.65f, -939f) - anchor,
                     new Vector3(72f, 0.55f, 80f),
                     new Vector3(1.8f, 0f, 0f));
-                AddBox(
+                shoreApproach.AddComponent<VehicleSurfaceMetadataAuthoring>()
+                    .Configure(VehicleSurfaceType.Grass);
+                GameObject footpath = AddBox(
                     root.transform,
                     "FootpathToPier",
                     materials["Driveway"],
                     new Vector3(177.5f, -0.42f, -939f) - anchor,
                     new Vector3(3.2f, 0.12f, 76f),
                     new Vector3(1.8f, 0f, 0f));
+                footpath.AddComponent<VehicleSurfaceMetadataAuthoring>()
+                    .Configure(VehicleSurfaceType.Gravel);
 
                 GameObject lakeAnchor = new GameObject("LakeTileReferenceAnchor");
                 lakeAnchor.transform.SetParent(root.transform, false);

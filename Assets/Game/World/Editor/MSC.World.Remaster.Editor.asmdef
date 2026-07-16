@@ -6,6 +6,8 @@
     "MSC.Core.Runtime",
     "MSC.Interaction.Runtime",
     "MSC.Player.Runtime",
+    "MSC.Vehicle.Runtime",
+    "MSC.Vehicle.Simulation",
     "MSC.Vehicle.Assembly",
     "MSC.World.Runtime",
     "MSC.World.Remaster.Runtime",
