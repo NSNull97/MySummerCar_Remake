@@ -130,14 +130,22 @@ namespace MSC.Tests.EditMode.WorldBaseline
         }
 
         [Test]
-        public void CanonicalBaseline_IsNotInBuildSettings()
+        public void CanonicalSourceScene_IsNotInBuildSettings_While06B2StreamingScenesRemainActive()
         {
             Assert.That(
                 EditorBuildSettings.scenes.Any(scene =>
-                    scene.path.StartsWith(
-                        WorldBaselinePaths.RuntimeRoot + "/",
+                    string.Equals(
+                        scene.path,
+                        WorldBaselinePaths.CanonicalScene,
                         StringComparison.Ordinal)),
                 Is.False);
+            Assert.That(
+                EditorBuildSettings.scenes.Count(scene =>
+                    scene.enabled &&
+                    scene.path.StartsWith(
+                        WorldBaseline06B2Paths.StreamingSceneRoot + "/",
+                        StringComparison.Ordinal)),
+                Is.EqualTo(50));
         }
     }
 }

@@ -1,0 +1,21 @@
+{
+  "name": "MSC.Development.WorldBaseline",
+  "rootNamespace": "MSC.Development.WorldBaseline",
+  "references": [
+    "MSC.Bootstrap.Runtime",
+    "MSC.LegacyImport.Runtime",
+    "MSC.Vehicle.Runtime",
+    "MSC.Vehicle.Simulation",
+    "MSC.World.Runtime",
+    "Unity.InputSystem"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

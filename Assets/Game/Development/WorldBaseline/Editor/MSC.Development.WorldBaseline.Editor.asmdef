@@ -1,0 +1,16 @@
+{
+  "name": "MSC.Development.WorldBaseline.Editor",
+  "rootNamespace": "MSC.Development.WorldBaseline.Editor",
+  "references": [
+    "MSC.Development.WorldBaseline"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

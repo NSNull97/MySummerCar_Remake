@@ -17,6 +17,8 @@
     "MSC.World.Remaster.Editor",
     "MSC.LegacyImport.Runtime",
     "MSC.LegacyImport.Editor",
+    "MSC.Development.WorldBaseline",
+    "MSC.Development.WorldBaseline.Editor",
     "Unity.RenderPipelines.Core.Runtime",
     "Unity.RenderPipelines.HighDefinition.Runtime"
   ],

@@ -301,8 +301,9 @@ PASS. Gate принят с этим явно записанным огранич
 - Unsplit global aggregates повышают resident memory.
 - Unity Physics предупреждает о шести legacy triangles крупнее 500 m.
 - Реальный standalone GPU/render-thread baseline ещё не снят.
-- Текущее v5.1 изменение оставлено незакоммиченным до отдельной явной команды
-  на фиксацию.
+- Итоговое v5.1 состояние зафиксировано коммитом
+  `79f02b04f4c63471d9503850e7f55acf7972c101`
+  (`world: complete milestone 06B2 v5.1`).
 
 ## 13. Дополнение 06B2 v5.1 — donor material/texture presentation
 

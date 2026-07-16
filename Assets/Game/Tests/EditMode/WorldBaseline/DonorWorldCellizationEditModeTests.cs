@@ -357,6 +357,148 @@ namespace MSC.Tests.EditMode.WorldBaseline
         }
 
         [Test]
+        public void FreezeOutputs_RevisionAndDebtSchemasAreHumanAccepted()
+        {
+            Assert.That(
+                WorldBaseline06B3Paths.RequiredOutputFiles.Count,
+                Is.EqualTo(9));
+            Assert.That(
+                WorldBaseline06B3Paths.RequiredOutputFiles,
+                Does.Contain(
+                    WorldBaseline06B3Paths.BaselineRevision));
+            Assert.That(
+                WorldBaseline06B3Paths.RequiredOutputFiles,
+                Does.Not.Contain(
+                    WorldBaseline06B3Paths.FullMapValidationResult));
+
+            DonorWorldBaselineFreezeValidationResult result =
+                DonorWorldBaselineFreezeValidator
+                    .ValidateOutputContracts();
+            Assert.That(
+                result.Passed,
+                Is.True,
+                string.Join(" | ", result.Errors));
+            Assert.That(result.Errors, Is.Empty);
+            Assert.That(
+                result.Status,
+                Is.EqualTo(WorldBaseline06B3Paths.Frozen));
+            Assert.That(
+                result.ManualVehicleTraversalStatus,
+                Is.EqualTo(
+                    WorldBaseline06B3Paths
+                        .PassedHumanAccepted));
+            Assert.That(
+                result.BaselineRevisionId,
+                Is.EqualTo(
+                    WorldBaseline06B3Paths.BaselineRevisionId));
+            Assert.That(
+                result.SourceRevisionId,
+                Is.EqualTo(WorldBaselinePaths.SourceRevisionId));
+            Assert.That(
+                result.ActiveWorldProfileId,
+                Is.EqualTo(WorldBaseline06B2Paths.ProfileId));
+            Assert.That(
+                result.DebtCatalogueRevision,
+                Is.EqualTo(
+                    WorldBaseline06B3Paths.DebtCatalogueRevision));
+            Assert.That(result.TraversalRowCount, Is.GreaterThan(0));
+            Assert.That(result.DebtRowCount, Is.GreaterThan(0));
+            Assert.That(
+                result.RequiredOutputFileHashes.Count,
+                Is.EqualTo(9));
+            Assert.That(
+                result.RequiredOutputFileHashes.Select(record =>
+                    record.path),
+                Is.EqualTo(
+                    WorldBaseline06B3Paths.RequiredOutputFiles));
+            Assert.That(
+                result.RequiredOutputFileHashes.All(record =>
+                    record.lengthBytes > 0 &&
+                    record.sha256.Length == 64 &&
+                    record.sha256.All(character =>
+                        Uri.IsHexDigit(character) &&
+                        !char.IsUpper(character)) &&
+                    string.Equals(
+                        record.sha256,
+                        DonorWorldBaselineFreezeValidator
+                            .ComputeFileSha256(record.path),
+                        StringComparison.Ordinal)),
+                Is.True);
+            Assert.That(
+                result.RevisionValidationResultSha256,
+                Is.EqualTo(
+                    WorldBaseline06B3Paths
+                        .FirstExportHashPlaceholder));
+        }
+
+        [Test]
+        public void FreezeMachineReadableResult_IsDeterministicAndParseable()
+        {
+            DonorWorldBaselineFreezeValidationResult first =
+                DonorWorldBaselineFreezeValidator
+                    .ValidateOutputContracts();
+            DonorWorldBaselineFreezeValidationResult second =
+                DonorWorldBaselineFreezeValidator
+                    .ValidateOutputContracts();
+            Assert.That(
+                first.Passed,
+                Is.True,
+                string.Join(" | ", first.Errors));
+            Assert.That(
+                second.Passed,
+                Is.True,
+                string.Join(" | ", second.Errors));
+
+            string firstJson =
+                DonorWorldBaselineFreezeValidator
+                    .BuildMachineReadableJson(first);
+            string secondJson =
+                DonorWorldBaselineFreezeValidator
+                    .BuildMachineReadableJson(second);
+            Assert.That(secondJson, Is.EqualTo(firstJson));
+            Assert.That(
+                DonorWorldBaselineFreezeValidator
+                    .ComputeUtf8Sha256(secondJson),
+                Is.EqualTo(
+                    DonorWorldBaselineFreezeValidator
+                        .ComputeUtf8Sha256(firstJson)));
+            Assert.That(
+                DonorWorldBaselineFreezeValidator
+                    .TryValidateMachineReadableJson(
+                        firstJson,
+                        out string parseError),
+                Is.True,
+                parseError);
+            Assert.That(
+                firstJson,
+                Does.Contain(
+                    "\"status\": \"Frozen\""));
+            Assert.That(
+                firstJson,
+                Does.Contain(
+                    "\"manualVehicleTraversalStatus\": " +
+                    "\"PassedHumanAccepted\""));
+            Assert.That(
+                firstJson,
+                Does.Not.Contain(
+                    "\"manualVehicleTraversalStatus\": " +
+                    "\"PendingManualVehicleTraversal\""));
+
+            string mixedStateJson = firstJson.Replace(
+                "\"status\": \"Frozen\"",
+                "\"status\": \"PendingManualVehicleTraversal\"");
+            Assert.That(
+                DonorWorldBaselineFreezeValidator
+                    .TryValidateMachineReadableJson(
+                        mixedStateJson,
+                        out string mixedStateError),
+                Is.False);
+            Assert.That(
+                mixedStateError,
+                Does.Contain("inconsistent freeze"));
+        }
+
+        [Test]
         public void OwnershipManifest_UsesEffectiveSubmeshMaterialSlots()
         {
             DonorWorldCellizationPlan plan =

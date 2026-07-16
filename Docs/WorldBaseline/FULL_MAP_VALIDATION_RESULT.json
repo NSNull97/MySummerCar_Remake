@@ -1,0 +1,81 @@
+{
+    "schemaVersion": 1,
+    "validatorVersion": "1.1.0-06B3",
+    "baselineRevisionId": "DonorWorldBaseline-v001",
+    "status": "Frozen",
+    "automatedValidationPassed": true,
+    "manualVehicleTraversalStatus": "PassedHumanAccepted",
+    "structuralValidationExecuted": true,
+    "structuralValidationPassed": true,
+    "sourceRevisionId": "msc-world-baseline-04a1.1-c3f2f337",
+    "activeWorldProfileId": "donor-feature-parity-06b2",
+    "sceneCount": 50,
+    "globalSceneCount": 1,
+    "cellSceneCount": 49,
+    "entityCount": 3842,
+    "rendererCount": 2605,
+    "colliderCount": 32,
+    "gameplayAnchorCount": 15,
+    "traversalRowCount": 12,
+    "debtRowCount": 16,
+    "ownershipFingerprintSha256": "1abf88e8047c2446e4ecdc1bdc894738171fac0f4ac9651be75470e985bbf28b",
+    "presentationFingerprintSha256": "e337f9d1b5a0344473bd0f096cdb9e0dbf8da321ecb428ebc17da4f7dd8831fd",
+    "debtCatalogueRevision": "legacy-visual-debt-v001",
+    "revisionValidationResultSha256": "pending-first-export",
+    "requiredOutputFiles": [
+        {
+            "path": "Docs/WorldBaseline/FULL_MAP_VALIDATION_REPORT.md",
+            "lengthBytes": 11982,
+            "sha256": "3a29c850b98575a03725a9c5e588a32121dd0681ac59b2a2e04df9665509928f"
+        },
+        {
+            "path": "Docs/WorldBaseline/TRAVERSAL_VALIDATION.csv",
+            "lengthBytes": 7870,
+            "sha256": "d9bc76735426f7b43cafe00561c7803b0d06aa558eec3f97f40f8d5835e85701"
+        },
+        {
+            "path": "Docs/WorldBaseline/COLLISION_AND_OOB_SAFETY.md",
+            "lengthBytes": 14778,
+            "sha256": "d6ecd1abd19acfd9fb2bf8bc4afd50e9c4191e25ce2ef34184d227bd51c71476"
+        },
+        {
+            "path": "Docs/WorldBaseline/LEGACY_VISUAL_DEBT.csv",
+            "lengthBytes": 6471,
+            "sha256": "c534f1b5c5e5cee3323597a38ebf1e3a482db01dbabd7ff1ce0fb15bd186ca5f"
+        },
+        {
+            "path": "Docs/WorldBaseline/BASELINE_REVISION.json",
+            "lengthBytes": 5888,
+            "sha256": "90fe1b384150f2fa02ab15dacede9715023a7d40a1cb6dcd5ba2f058af3de74a"
+        },
+        {
+            "path": "Docs/WorldBaseline/BASELINE_REGENERATION_POLICY.md",
+            "lengthBytes": 15510,
+            "sha256": "184e77babf49501d9bb28bc3f6c69526e0041f647244b05ca205ab11926e0165"
+        },
+        {
+            "path": "Docs/WorldBaseline/PRIVATE_BUILD_CONTENT_AUDIT.md",
+            "lengthBytes": 10591,
+            "sha256": "a114280aaea6b0640a8c4417dc2fb1b339b44e42213ae0fad49f3ac0b6180125"
+        },
+        {
+            "path": "Docs/WorldBaseline/WEATHER_HANDOFF.md",
+            "lengthBytes": 14475,
+            "sha256": "8000aa1ebc00e2467dc432cdeeff2136804caa2ae59ea22e632d8531a79819a2"
+        },
+        {
+            "path": "Docs/Milestones/MILESTONE_06B3_REPORT.md",
+            "lengthBytes": 11858,
+            "sha256": "bf15583ece69f5d55ea8b5c3e6e97ef3b86176520c8bc917309cc2de45c8f514"
+        }
+    ],
+    "errors": [],
+    "warnings": [
+        "Strict donor cellization validation: 06B1 source gate: Runtime collision count is intentionally zero in 06B1; safe collider transfer and traversal validation belong to 06B2.",
+        "Strict donor cellization validation: 06B1 source gate: Temporary category materials are diagnostic presentation only; donor textures and final HDRP materials are not reconstructed.",
+        "Strict donor cellization validation: The feature-parity baseline uses temporary donor-derived compatibility presentation and unsplit global static-batch aggregates; it is not ProductionReady.",
+        "Strict donor cellization validation: The donor night-gradient cubemap and donor shader/runtime lighting/weather/water systems remain intentionally excluded.",
+        "Strict donor cellization validation: The 32-collider allowlist is deliberately narrow; doors, windows, dynamic props, NPCs and trigger volumes remain excluded pending their gameplay milestones.",
+        "BASELINE_REVISION.json keeps validationResultSha256 at pending-first-export; the freeze validator exports and hashes the result without mutating the revision record."
+    ]
+}

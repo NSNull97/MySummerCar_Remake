@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "baselineRevisionId": "DonorWorldBaseline-v001",
+  "classification": "TemporaryDirectImport",
+  "distributionPolicy": "PrivateLocalFeatureParityOnly",
+  "freezeState": "Frozen",
+  "sourceRevisionId": "msc-world-baseline-04a1.1-c3f2f337",
+  "sourceSceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4",
+  "sourceFilesFingerprintSha256": "72567486f72bd9106eadc0ba87aadb290accefdcee9e6517ffe30c2218d5ceec",
+  "sourceManifestSha256": "e385298c0b6ef344ade8c3a5f1f7c5fd684b690a8114808d658aea5f7b15ec6a",
+  "importerSanitizerVersion": "DonorWorldBaselineBuilder 1.0.0-06B1 / sanitation 06B1.4",
+  "cellizationVersion": "1.1.0-06B2-v5.1",
+  "presentationGeneratorVersion": "06B2-v5.1.5",
+  "unityVersion": "6000.3.11f1",
+  "worldUnitsPerMeter": 1.0,
+  "worldOriginPolicy": "Historical CABIN/Shed garage-roof anchor retained; do not recenter",
+  "sourceToProject": {
+    "axes": "X,Y,Z -> X,Y,Z",
+    "translation": {
+      "x": 169.97999572753906,
+      "y": 1.6109999418258667,
+      "z": -1040.625
+    },
+    "rotation": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0,
+      "w": 1.0
+    },
+    "scale": {
+      "x": 1.0,
+      "y": 1.0,
+      "z": 1.0
+    }
+  },
+  "worldBounds": {
+    "minimum": {
+      "x": -2993.205322265625,
+      "y": -412.8290100097656,
+      "z": -3295.29833984375
+    },
+    "maximum": {
+      "x": 3553.165283203125,
+      "y": 913.3709716796875,
+      "z": 2597.9658203125
+    }
+  },
+  "streaming": {
+    "globalSceneCount": 1,
+    "cellSceneCount": 49,
+    "cellSizeMeters": 512.0,
+    "loadingRadiusCells": 1,
+    "unloadingRadiusCells": 2,
+    "vehiclePreloadSpeedMetersPerSecond": 12.0,
+    "vehiclePreloadRadiusCells": 2
+  },
+  "contentCounts": {
+    "eligibleEntities": 3842,
+    "globalEntities": 88,
+    "cellOwnedEntities": 3754,
+    "renderers": 2605,
+    "safeColliders": 32,
+    "gameplayAnchors": 15
+  },
+  "ownershipFingerprintSha256": "1abf88e8047c2446e4ecdc1bdc894738171fac0f4ac9651be75470e985bbf28b",
+  "presentationFingerprintSha256": "e337f9d1b5a0344473bd0f096cdb9e0dbf8da321ecb428ebc17da4f7dd8831fd",
+  "manifestHashes": {
+    "sourceManifest": "e385298c0b6ef344ade8c3a5f1f7c5fd684b690a8114808d658aea5f7b15ec6a",
+    "presentationManifest": "ce89b72ed8f97051b9e1ed0e4cc0cfe7e0bb36f36b0d22ed1d4d25e4d1e00ba5",
+    "activeStreamingManifest": "2552c3d341a99c16771e8deeafd2e76b6e13607570684a3318debb570ad8db71",
+    "gameplayCatalog": "08cb5dbffea015768c396c88a6876e71ce9ea2804f6ee2c61b2b8850061ac7d1",
+    "gameplayAnchorManifest": "4fb51c76ee094872de6d1158bbfebe1e72676668e7cef53cd8fcd4cc1964c65a",
+    "safeColliderAllowlist": "eb62f26d6b6d9f377e2c9f14c335b163dc8c1246b5aee1f6f81dc4ebebb4ad47",
+    "ownershipMatrix": "9f83de8770a966ef7cc28ae9be71f00e6668883b9c6e5e2498adf92b8fc93546",
+    "legacyObjectCellManifest": "794b68c9d86a083343e08452d38ef621bc2c989c433810e7de17429f354cfcb4",
+    "legacyMaterialTextureManifest": "cfbce4faf14eac19658cbad7117b9a794de3009a664f438d3faa28a80ecc4192"
+  },
+  "activeWorldProfileId": "donor-feature-parity-06b2",
+  "activePresentationMode": "LegacyTextured",
+  "prototypeProfileState": "InactiveInFeatureParityProfile",
+  "knownExceptions": [
+    "Temporary donor-derived meshes, materials, textures, vegetation, and proxy geometry are not ProductionReady.",
+    "Only 32 reviewed static colliders are active; building shells, doors, windows, dynamic props, NPCs, and triggers are not a complete donor collision transfer.",
+    "Original donor terrain voids, tree walls, flat proxies, map-edge backdrops, and under-map hacks remain documented remaster debt.",
+    "Large continuous and cross-cell aggregates remain global to avoid unproven destructive splitting.",
+    "The source manifest retains the historical source-stage activation marker PreparedNotActiveUntil06B2; generated runtime scene stamps and the active profile are ActiveFeatureParityProfile.",
+    "The development-only vehicle harness completed an accepted multi-cell drive, reset and below-world recovery smoke without changing production scenes; it is not a production vehicle recovery policy.",
+    "A full donor-profile private Development Player smoke build remains pending; no dedicated 06B3 build runner remaps the current 61-scene Build Settings or authoritative donor scene indices."
+  ],
+  "debtCatalogueRevision": "legacy-visual-debt-v001",
+  "debtCatalogueSha256": "c534f1b5c5e5cee3323597a38ebf1e3a482db01dbabd7ff1ce0fb15bd186ca5f",
+  "traversalCatalogueSha256": "d9bc76735426f7b43cafe00561c7803b0d06aa558eec3f97f40f8d5835e85701",
+  "manualVehicleTraversalEvidence": {
+    "path": "PerformanceCaptures/Milestone06B3/M06B3_VehicleTraversalEvidence.json",
+    "sha256": "22bc948a87ba0fc99f2c15221103a8b60b4d4026554d8d95c54d286408ca12c4",
+    "lengthBytes": 2290,
+    "capturedUtc": "2026-07-16T20:51:30.6273615Z",
+    "humanAcceptedDate": "2026-07-17",
+    "harnessReady": true,
+    "boundaryGoalReached": true,
+    "observedLoadedCellCount": 24,
+    "transitionCount": 35,
+    "longestConsecutiveBoundaryCount": 6,
+    "peakStreamingFrameMilliseconds": 300.2268981933594,
+    "rawPeakFrameMilliseconds": 42787.50390625,
+    "peakSpeedKph": 142.77706909179688,
+    "recoveryCount": 1,
+    "criticalCollisionFailures": 0,
+    "visibleDuplicateOrMissingSections": 0,
+    "userObservedMicrofreezeCount": 1,
+    "userConfirmedRequiredLandmarks": true,
+    "userConfirmedReset": true,
+    "performanceInterpretation": "One brief microfreeze was observed; the user suspects Unity Editor overhead, but the cause is unproven. The 42787.5 ms raw frame sample was not perceived as a 42.8-second runtime freeze and is treated as contaminated by manual Editor/Inspector recovery actions."
+  },
+  "buildCommitIdentifier": "79f02b04f4c63471d9503850e7f55acf7972c101",
+  "validationStatus": "StructuralPass_ManualVehicleTraversalAccepted",
+  "validationResultSha256": "pending-first-export"
+}

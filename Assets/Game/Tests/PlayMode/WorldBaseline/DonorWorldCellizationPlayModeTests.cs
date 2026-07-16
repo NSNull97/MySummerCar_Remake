@@ -216,6 +216,160 @@ namespace MSC.Tests.PlayMode.WorldBaseline
         }
 
         [UnityTest]
+        public IEnumerator EveryRegisteredCell_LoadsAndUnloadsIndividuallyTwice_WhileGlobalSceneRemainsStable()
+        {
+            RuntimeSession session = null;
+            yield return StartSession(value => session = value);
+            ProductionWorldStreamingManifest manifest =
+                session.Streaming.Manifest;
+            ProductionWorldCellScene[] cells =
+                manifest.Cells
+                    .OrderBy(cell => cell.CellId, StringComparer.Ordinal)
+                    .ToArray();
+            int globalRootInstanceId =
+                session.GlobalMetadata.gameObject.GetInstanceID();
+            int registryInstanceId =
+                session.Registry.gameObject.GetInstanceID();
+
+            Assert.That(cells.Length, Is.EqualTo(49));
+            Assert.That(manifest.GlobalScenes.Count, Is.EqualTo(1));
+            Assert.That(
+                session.GlobalMetadata.SceneId,
+                Is.EqualTo("global-legacy"));
+            Assert.That(
+                session.GlobalMetadata.Ownership,
+                Is.EqualTo(
+                    DonorWorldStreamingOwnership.GlobalLegacy));
+            Assert.That(session.GlobalMetadata.OwnerCellId, Is.Empty);
+            Assert.That(
+                session.GlobalMetadata.Classification,
+                Is.EqualTo(
+                    DonorWorldBaselineClassification
+                        .TemporaryDirectImport));
+            Assert.That(
+                session.GlobalMetadata.ActivationState,
+                Is.EqualTo(
+                    DonorWorldBaselineActivationState
+                        .ActiveFeatureParityProfile));
+
+            yield return UnloadAllRegisteredCellScenes(manifest);
+            Assert.That(
+                CountLoadedRegisteredCellScenes(manifest),
+                Is.Zero);
+            AssertGlobalLifetime(
+                session,
+                globalRootInstanceId,
+                registryInstanceId);
+            AssertNoActiveRejectedOrProductionOverrideRoots(
+                session,
+                "initial cell isolation");
+
+            for (int cycle = 0; cycle < 2; cycle++)
+            {
+                foreach (ProductionWorldCellScene cell in cells)
+                {
+                    AsyncOperation load =
+                        SceneManager.LoadSceneAsync(
+                            cell.BuildIndex,
+                            LoadSceneMode.Additive);
+                    Assert.That(
+                        load,
+                        Is.Not.Null,
+                        $"Could not start cycle {cycle + 1} load for " +
+                        $"{cell.CellId}.");
+                    yield return load;
+                    yield return null;
+
+                    Scene loadedScene =
+                        FindLoadedScene(cell.ScenePath);
+                    GameObject[] roots =
+                        loadedScene.GetRootGameObjects();
+                    Assert.That(
+                        roots.Length,
+                        Is.EqualTo(1),
+                        $"{cell.CellId} must have one generated scene root.");
+                    DonorWorldStreamingSceneMetadata[] metadata =
+                        GetSceneComponents<
+                            DonorWorldStreamingSceneMetadata>(
+                            loadedScene);
+                    Assert.That(
+                        metadata.Length,
+                        Is.EqualTo(1),
+                        $"{cell.CellId} must have one scene metadata stamp.");
+                    Assert.That(metadata[0].gameObject, Is.SameAs(roots[0]));
+                    Assert.That(
+                        metadata[0].SceneId,
+                        Is.EqualTo(cell.CellId + "-legacy"));
+                    Assert.That(
+                        metadata[0].Ownership,
+                        Is.EqualTo(
+                            DonorWorldStreamingOwnership.CellLegacy));
+                    Assert.That(
+                        metadata[0].OwnerCellId,
+                        Is.EqualTo(cell.CellId));
+                    Assert.That(
+                        metadata[0].Classification,
+                        Is.EqualTo(
+                            DonorWorldBaselineClassification
+                                .TemporaryDirectImport));
+                    Assert.That(
+                        metadata[0].ActivationState,
+                        Is.EqualTo(
+                            DonorWorldBaselineActivationState
+                                .ActiveFeatureParityProfile));
+                    Assert.That(
+                        metadata[0].SourceRevisionId,
+                        Is.Not.Empty);
+                    Assert.That(
+                        metadata[0].SourceSceneSha256,
+                        Is.Not.Empty);
+                    Assert.That(
+                        metadata[0].OwnershipFingerprintSha256,
+                        Is.Not.Empty);
+                    Assert.That(
+                        CountLoadedRegisteredCellScenes(manifest),
+                        Is.EqualTo(1),
+                        $"Cycle {cycle + 1} loaded more than the isolated " +
+                        $"cell {cell.CellId}.");
+                    AssertGlobalLifetime(
+                        session,
+                        globalRootInstanceId,
+                        registryInstanceId);
+                    AssertNoActiveRejectedOrProductionOverrideRoots(
+                        session,
+                        $"cycle {cycle + 1}, {cell.CellId}");
+
+                    AsyncOperation unload =
+                        SceneManager.UnloadSceneAsync(loadedScene);
+                    Assert.That(
+                        unload,
+                        Is.Not.Null,
+                        $"Could not start cycle {cycle + 1} unload for " +
+                        $"{cell.CellId}.");
+                    yield return unload;
+                    yield return null;
+
+                    Assert.That(
+                        IsSceneLoaded(cell.ScenePath),
+                        Is.False,
+                        $"Cycle {cycle + 1} did not unload {cell.CellId}.");
+                    Assert.That(
+                        CountLoadedRegisteredCellScenes(manifest),
+                        Is.Zero,
+                        $"Cycle {cycle + 1} left another registered cell " +
+                        $"loaded after unloading {cell.CellId}.");
+                    AssertGlobalLifetime(
+                        session,
+                        globalRootInstanceId,
+                        registryInstanceId);
+                    AssertNoActiveRejectedOrProductionOverrideRoots(
+                        session,
+                        $"cycle {cycle + 1}, after {cell.CellId} unload");
+                }
+            }
+        }
+
+        [UnityTest]
         public IEnumerator ReplacementRegistry_PreservesOverrideAndGameplayCatalogAcrossCellUnloadReload()
         {
             RuntimeSession session = null;
@@ -741,6 +895,107 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                 Is.EqualTo(expectedRegistryInstanceId));
         }
 
+        private static IEnumerator UnloadAllRegisteredCellScenes(
+            ProductionWorldStreamingManifest manifest)
+        {
+            ProductionWorldCellScene[] cells =
+                manifest.Cells.ToArray();
+            foreach (ProductionWorldCellScene cell in cells)
+            {
+                if (!TryFindLoadedScene(
+                        cell.ScenePath,
+                        out Scene loadedScene))
+                {
+                    continue;
+                }
+
+                AsyncOperation unload =
+                    SceneManager.UnloadSceneAsync(loadedScene);
+                Assert.That(
+                    unload,
+                    Is.Not.Null,
+                    "Could not isolate registered cell scene: " +
+                    cell.ScenePath);
+                yield return unload;
+            }
+
+            yield return null;
+        }
+
+        private static int CountLoadedRegisteredCellScenes(
+            ProductionWorldStreamingManifest manifest)
+        {
+            int loadedCount = 0;
+            IReadOnlyList<ProductionWorldCellScene> cells =
+                manifest.Cells;
+            for (int index = 0; index < cells.Count; index++)
+            {
+                if (IsSceneLoaded(cells[index].ScenePath))
+                {
+                    loadedCount++;
+                }
+            }
+
+            return loadedCount;
+        }
+
+        private static void AssertNoActiveRejectedOrProductionOverrideRoots(
+            RuntimeSession session,
+            string context)
+        {
+            Assert.That(
+                session.Registry.ActiveProductionOverrideCount,
+                Is.Zero,
+                context + " has an unapproved active replacement override.");
+
+            var invalidRoots = new List<string>();
+            for (int sceneIndex = 0;
+                 sceneIndex < SceneManager.sceneCount;
+                 sceneIndex++)
+            {
+                Scene scene = SceneManager.GetSceneAt(sceneIndex);
+                if (!scene.isLoaded)
+                {
+                    continue;
+                }
+
+                foreach (GameObject root in scene.GetRootGameObjects())
+                {
+                    if (!root.activeInHierarchy)
+                    {
+                        continue;
+                    }
+
+                    string rootName = root.name;
+                    bool rejectedPrototype =
+                        rootName.StartsWith(
+                            "WR_Production_cell_",
+                            StringComparison.Ordinal) ||
+                        rootName.IndexOf(
+                            "RejectedForFidelity",
+                            StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        rootName.IndexOf(
+                            "PrototypeOnly",
+                            StringComparison.OrdinalIgnoreCase) >= 0;
+                    bool productionOverride =
+                        rootName.IndexOf(
+                            "ProductionOverride",
+                            StringComparison.OrdinalIgnoreCase) >= 0;
+                    if (rejectedPrototype || productionOverride)
+                    {
+                        invalidRoots.Add(
+                            scene.path + ":" + rootName);
+                    }
+                }
+            }
+
+            Assert.That(
+                invalidRoots,
+                Is.Empty,
+                context + " loaded forbidden active roots: " +
+                string.Join(" | ", invalidRoots));
+        }
+
         private static void AssertBindingsUseMode(
             IEnumerable<DonorWorldLegacyMaterialBinding> bindings,
             DonorWorldLegacyPresentationMode mode)
@@ -835,6 +1090,22 @@ namespace MSC.Tests.PlayMode.WorldBaseline
 
         private static Scene FindLoadedScene(string path)
         {
+            if (TryFindLoadedScene(path, out Scene scene))
+            {
+                return scene;
+            }
+
+            Assert.Fail("Expected loaded scene was not found: " + path);
+            return default;
+        }
+
+        private static bool IsSceneLoaded(string path) =>
+            TryFindLoadedScene(path, out _);
+
+        private static bool TryFindLoadedScene(
+            string path,
+            out Scene loadedScene)
+        {
             for (int index = 0; index < SceneManager.sceneCount; index++)
             {
                 Scene scene = SceneManager.GetSceneAt(index);
@@ -844,12 +1115,13 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                         path,
                         StringComparison.Ordinal))
                 {
-                    return scene;
+                    loadedScene = scene;
+                    return true;
                 }
             }
 
-            Assert.Fail("Expected loaded scene was not found: " + path);
-            return default;
+            loadedScene = default;
+            return false;
         }
 
         private static T[] GetSceneComponents<T>(Scene scene)

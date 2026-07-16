@@ -9,11 +9,17 @@ Updated for Prompt Pack v5.
 - Milestone 06B1 is closed and committed.
 - **Milestone 06B2 — donor map streaming cellization and active world profile
   has automated status `PASS` and manual status `HumanAccepted`.**
-- 06B2 awaits a focused commit before 06B3 starts.
+- 06B2 is fixed in commit `79f02b0` (`world: complete milestone 06B2 v5.1`).
+- **Milestone 06B3 — runtime baseline validation, debt catalogue, and freeze is
+  closed with status `PASS / Frozen / HumanAccepted`.**
+- The user completed the physical vehicle route through Fleetari, Teimo,
+  inspection/town, the major road loop, railway crossing and a representative
+  bridge. The run covered 24 cells, six consecutive boundaries, reset and OOB
+  recovery without critical collision, duplicate or missing-section failures.
 - The user confirmed Bootstrap startup, donor-map fidelity, a walking route to
   the lake, Teimo-area streaming unload/reload and out-of-bounds recovery.
-- The flat lake and original-game terrain voids remain explicit late-remaster
-  debt, not fixed 06B2 defects.
+- The corrected temporary water presentation and original-game terrain voids
+  remain explicit late-remaster debt, not production art.
 
 ## User-confirmed world state
 
@@ -67,14 +73,13 @@ preserving coordinates, stable IDs, gameplay anchors, saves and streaming.
 
 Current allowed sequence:
 
-1. close out and commit the human-accepted 06B2 state;
-2. `06B3_RUNTIME_BASELINE_VALIDATION_AND_FREEZE.md`;
-3. human baseline review, closeout and commit;
-4. manually import/verify Enviro 3 when absent;
-5. `07A_ENVIRO3_PREFLIGHT_AND_WEATHERLAB.md`;
-6. `07B_TIME_WEATHER_DOMAIN_AND_ENVIRO3_ADAPTER.md`;
-7. `07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md`;
-8. continue to Milestone 08 only after Milestone 07 is stable.
+1. keep frozen `DonorWorldBaseline-v001` unchanged except through the recorded
+   regeneration policy;
+2. manually import/verify Enviro 3 when absent;
+3. `07A_ENVIRO3_PREFLIGHT_AND_WEATHERLAB.md`;
+4. `07B_TIME_WEATHER_DOMAIN_AND_ENVIRO3_ADAPTER.md`;
+5. `07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md`;
+6. continue to Milestone 08 only after Milestone 07 is stable.
 
 Do not run the deprecated
 `06B_PRODUCTION_WORLD_CELL_FIDELITY_GATE.md`.
