@@ -325,7 +325,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1238fbf7de7abd343aae4199eee7f9d4, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicalCarryController
 --- !u!4 &56178455 stripped
 Transform:
@@ -382,7 +382,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 78713710}
@@ -396,7 +396,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 78713714}
@@ -488,7 +488,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: 5e559ae33f5ca2448aaf6aff270e161f, type: 2}
   mountId: mount.wheel_rl
@@ -545,7 +545,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 93734160}
@@ -559,7 +559,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 93734164}
@@ -651,7 +651,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: 6974ffd8e8868d04ead08c25d363a39f, type: 2}
   mountId: mount.hood
@@ -707,7 +707,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 130493904}
@@ -722,7 +722,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 130493907}
@@ -736,7 +736,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 130493906}
   stableIdAuthoring: {fileID: 130493905}
@@ -753,7 +753,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: d9281e3e98544a30f3c8054ac5b6d4be
 --- !u!54 &130493906
@@ -793,14 +793,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: 86e250187afb0c44a8795bf10e46e678, type: 2}
   stableIdAuthoring: {fileID: 130493905}
   targetBody: {fileID: 130493906}
   pickupTarget: {fileID: 130493904}
   assemblyRoot: 1
-  initialMountId:
+  initialMountId: 
 --- !u!1 &176595238
 GameObject:
   m_ObjectHideFlags: 0
@@ -847,7 +847,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 176595241}
@@ -861,7 +861,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.exhaust_manifold
@@ -1057,7 +1057,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 213157714}
@@ -1071,7 +1071,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 213157718}
@@ -1163,7 +1163,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: 7e80d674a34279747b5dfa140f708947, type: 2}
   mountId: mount.battery
@@ -1279,7 +1279,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 331746340}
@@ -1293,7 +1293,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.hood
@@ -1424,7 +1424,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 352466279}
@@ -1438,7 +1438,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.trailing_arm_rl
@@ -1617,14 +1617,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: 8e9b234c13d33ce4491979607bf9c029, type: 2}
   stableIdAuthoring: {fileID: 393285689}
   targetBody: {fileID: 393285688}
   pickupTarget: {fileID: 393285687}
   assemblyRoot: 0
-  initialMountId:
+  initialMountId: 
 --- !u!114 &393285687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1635,7 +1635,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 393285688}
   stableIdAuthoring: {fileID: 393285689}
@@ -1680,7 +1680,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: b16391803a334a28553880d24a833739
 --- !u!114 &393285690
@@ -1693,7 +1693,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 393285687}
@@ -1708,7 +1708,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 393285686}
@@ -1850,14 +1850,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: 96db7274a8db2dc478dfbc97c3fceaf0, type: 2}
   stableIdAuthoring: {fileID: 417191826}
   targetBody: {fileID: 417191825}
   pickupTarget: {fileID: 417191824}
   assemblyRoot: 0
-  initialMountId:
+  initialMountId: 
 --- !u!114 &417191824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1868,7 +1868,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 417191825}
   stableIdAuthoring: {fileID: 417191826}
@@ -1913,7 +1913,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: ba7637a347cb1e419106a9c3c89d61da
 --- !u!114 &417191827
@@ -1926,7 +1926,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 417191824}
@@ -1941,7 +1941,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 417191823}
@@ -2055,14 +2055,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: 99645249ca916b64eae79b0993eedfcc, type: 2}
   stableIdAuthoring: {fileID: 434206258}
   targetBody: {fileID: 434206257}
   pickupTarget: {fileID: 434206256}
   assemblyRoot: 0
-  initialMountId:
+  initialMountId: 
 --- !u!114 &434206256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2073,7 +2073,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 434206257}
   stableIdAuthoring: {fileID: 434206258}
@@ -2117,7 +2117,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: 44b6854add99636834ac264a45f38cd5
 --- !u!114 &434206259
@@ -2130,7 +2130,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 434206256}
@@ -2145,7 +2145,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 434206255}
@@ -2214,7 +2214,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 438771779}
@@ -2228,7 +2228,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 438771783}
@@ -2320,7 +2320,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: 366f4fe201fc1174c882e6a48a2259df, type: 2}
   mountId: mount.alternator
@@ -2501,7 +2501,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 559713246}
@@ -2515,7 +2515,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 559713250}
@@ -2607,7 +2607,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: db3f3372380aa1c4587a1c7de00d1ae0, type: 2}
   mountId: mount.radiator
@@ -2783,7 +2783,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 638776989}
@@ -2797,7 +2797,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.driver_seat
@@ -2914,14 +2914,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: 1ecdc17b52d85774281c9c1d84a8c65c, type: 2}
   stableIdAuthoring: {fileID: 684279951}
   targetBody: {fileID: 684279950}
   pickupTarget: {fileID: 684279949}
   assemblyRoot: 0
-  initialMountId:
+  initialMountId: 
 --- !u!114 &684279949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2932,7 +2932,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 684279950}
   stableIdAuthoring: {fileID: 684279951}
@@ -2977,7 +2977,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: 8814d01788d81541d111e1adbe266a56
 --- !u!114 &684279952
@@ -2990,7 +2990,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 684279949}
@@ -3005,7 +3005,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 684279948}
@@ -3259,7 +3259,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 874317273}
@@ -3273,7 +3273,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.brake_drum_rl
@@ -3419,6 +3419,68 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4669916112702479280, guid: 3b5221c76797b5048907569066225f1d, type: 3}
   m_PrefabInstance: {fileID: 907215339}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &914169626
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2140896737}
+    m_Modifications:
+    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7526174178430951469, guid: 2329f929155342e448fc92d6ce032767, type: 3}
+      propertyPath: m_Name
+      value: WR_05A_PilotWorld
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2329f929155342e448fc92d6ce032767, type: 3}
+--- !u!4 &914169627 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
+  m_PrefabInstance: {fileID: 914169626}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &924463644
 GameObject:
@@ -3588,7 +3650,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 953361255}
@@ -3602,7 +3664,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.engine_block
@@ -3687,68 +3749,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 953361252}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1001 &954061277
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 2140896737}
-    m_Modifications:
-    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7526174178430951469, guid: 2329f929155342e448fc92d6ce032767, type: 3}
-      propertyPath: m_Name
-      value: WR_05A_PilotWorld
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2329f929155342e448fc92d6ce032767, type: 3}
---- !u!4 &954061278 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4760489535591979685, guid: 2329f929155342e448fc92d6ce032767, type: 3}
-  m_PrefabInstance: {fileID: 954061277}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &978258761
 GameObject:
   m_ObjectHideFlags: 0
@@ -3781,14 +3781,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: d2d5abfd42fe643408b155ed44edcbe9, type: 2}
   stableIdAuthoring: {fileID: 978258765}
   targetBody: {fileID: 978258764}
   pickupTarget: {fileID: 978258763}
   assemblyRoot: 0
-  initialMountId:
+  initialMountId: 
 --- !u!114 &978258763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3799,7 +3799,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 978258764}
   stableIdAuthoring: {fileID: 978258765}
@@ -3843,7 +3843,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: 40778c0bad01102917e6c36685bd5585
 --- !u!114 &978258766
@@ -3856,7 +3856,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 978258763}
@@ -3871,7 +3871,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 978258762}
@@ -3937,7 +3937,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1085571121}
@@ -3951,7 +3951,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.cylinder_head
@@ -4082,7 +4082,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1090874590}
@@ -4096,7 +4096,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.radiator
@@ -4262,7 +4262,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1121912249}
@@ -4276,7 +4276,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 1121912253}
@@ -4368,7 +4368,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: 90c5bd5a75c06664f9d30c27573540f3, type: 2}
   mountId: mount.starter
@@ -4408,14 +4408,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: ea3f74e1b6d37454d97c48b554a2d8cb, type: 2}
   stableIdAuthoring: {fileID: 1127129174}
   targetBody: {fileID: 1127129173}
   pickupTarget: {fileID: 1127129172}
   assemblyRoot: 0
-  initialMountId:
+  initialMountId: 
 --- !u!114 &1127129172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4426,7 +4426,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 1127129173}
   stableIdAuthoring: {fileID: 1127129174}
@@ -4471,7 +4471,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: 8908695204169a7219e41bf7107ec3e0
 --- !u!114 &1127129175
@@ -4484,7 +4484,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1127129172}
@@ -4499,7 +4499,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 1127129171}
@@ -4753,7 +4753,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1240312381}
@@ -4767,7 +4767,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 1240312385}
@@ -4859,7 +4859,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: 91a0778d2a8cea74ca6547c18481eca5, type: 2}
   mountId: mount.brake_drum_rl
@@ -4899,7 +4899,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: a4ad377e48abe0c4ba133f90e44aa995, type: 2}
   mountId: mount.intake_manifold
@@ -4934,7 +4934,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1246577107}
@@ -4948,7 +4948,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 1246577104}
@@ -5079,7 +5079,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1272041923}
@@ -5093,7 +5093,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 1272041927}
@@ -5185,7 +5185,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: eac46ff9d2ad53d42918dcf4c7cf611a, type: 2}
   mountId: mount.exhaust_manifold
@@ -5239,7 +5239,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1272273058}
@@ -5253,7 +5253,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.door_left
@@ -5386,7 +5386,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1287710720}
@@ -5401,7 +5401,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 1287710719}
@@ -5415,14 +5415,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: e92bf32aee0847c48a5a486ea178ea22, type: 2}
   stableIdAuthoring: {fileID: 1287710721}
   targetBody: {fileID: 1287710722}
   pickupTarget: {fileID: 1287710720}
   assemblyRoot: 0
-  initialMountId:
+  initialMountId: 
 --- !u!114 &1287710720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5433,7 +5433,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 1287710722}
   stableIdAuthoring: {fileID: 1287710721}
@@ -5451,7 +5451,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: 9951394f144f16fa6ab005d127b6302c
 --- !u!54 &1287710722
@@ -5529,7 +5529,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1308072416}
@@ -5544,7 +5544,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 1308072419}
@@ -5558,7 +5558,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 1308072418}
   stableIdAuthoring: {fileID: 1308072417}
@@ -5576,7 +5576,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: ab86636cb47dfa574ee90390c91f0863
 --- !u!54 &1308072418
@@ -5616,7 +5616,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: 6b645c7b0b5fc914dbfa8f84409dae7c, type: 2}
   stableIdAuthoring: {fileID: 1308072417}
@@ -6080,14 +6080,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: dd4ade2e08407134daa52d5e2e20602a, type: 2}
   stableIdAuthoring: {fileID: 1467796673}
   targetBody: {fileID: 1467796672}
   pickupTarget: {fileID: 1467796671}
   assemblyRoot: 0
-  initialMountId:
+  initialMountId: 
 --- !u!114 &1467796671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6098,7 +6098,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 1467796672}
   stableIdAuthoring: {fileID: 1467796673}
@@ -6143,7 +6143,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: c5529973f4d2e236dbbce7cc592b4f08
 --- !u!114 &1467796674
@@ -6156,7 +6156,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1467796671}
@@ -6171,7 +6171,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 1467796670}
@@ -6389,7 +6389,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1514231064}
@@ -6403,7 +6403,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.battery
@@ -6520,14 +6520,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: 1fd2b6effe96f5d4e852600eb20bc725, type: 2}
   stableIdAuthoring: {fileID: 1519030947}
   targetBody: {fileID: 1519030946}
   pickupTarget: {fileID: 1519030945}
   assemblyRoot: 0
-  initialMountId:
+  initialMountId: 
 --- !u!114 &1519030945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6538,7 +6538,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 1519030946}
   stableIdAuthoring: {fileID: 1519030947}
@@ -6582,7 +6582,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: ee98aa50226f5928504287dba01efa3e
 --- !u!114 &1519030948
@@ -6595,7 +6595,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1519030945}
@@ -6610,7 +6610,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 1519030944}
@@ -6679,7 +6679,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1543662909}
@@ -6693,7 +6693,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 1543662913}
@@ -6785,7 +6785,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: 687d38a36446133418ed091b3b4cc430, type: 2}
   mountId: mount.cylinder_head
@@ -6871,7 +6871,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1552781876}
@@ -6885,7 +6885,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.wheel_rl
@@ -7048,7 +7048,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1611422890}
@@ -7062,7 +7062,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.starter
@@ -7196,7 +7196,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1617734580}
@@ -7210,7 +7210,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 1617734584}
@@ -7302,7 +7302,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: 84db6f17c3cb7644aba0d1c2fec9176a, type: 2}
   mountId: mount.engine_block
@@ -7338,7 +7338,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b489a96ac53fd94ebcff73844f1fcad, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.VehicleAssemblyController
   parts:
   - {fileID: 130493907}
@@ -7453,7 +7453,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b8f00263963a8446a4590e6e45bdd1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountPreviewPresenter
   controller: {fileID: 1623615361}
   carryController: {fileID: 56178454}
@@ -7536,14 +7536,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: bbf507b1ac685f44cb3c5b8be9f0a296, type: 2}
   stableIdAuthoring: {fileID: 1634126388}
   targetBody: {fileID: 1634126387}
   pickupTarget: {fileID: 1634126386}
   assemblyRoot: 0
-  initialMountId:
+  initialMountId: 
 --- !u!114 &1634126386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7554,7 +7554,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 1634126387}
   stableIdAuthoring: {fileID: 1634126388}
@@ -7598,7 +7598,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: 6fc8cba65ae50d97061c067840866eaf
 --- !u!114 &1634126389
@@ -7611,7 +7611,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1634126386}
@@ -7626,7 +7626,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 1634126385}
@@ -7772,14 +7772,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: bd0c7cc32c3e1424a8f2b59859e05161, type: 2}
   stableIdAuthoring: {fileID: 1645684722}
   targetBody: {fileID: 1645684721}
   pickupTarget: {fileID: 1645684720}
   assemblyRoot: 0
-  initialMountId:
+  initialMountId: 
 --- !u!114 &1645684720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7790,7 +7790,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 1645684721}
   stableIdAuthoring: {fileID: 1645684722}
@@ -7835,7 +7835,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: d85a17da114f91b17007a569e058705c
 --- !u!114 &1645684723
@@ -7848,7 +7848,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1645684720}
@@ -7863,7 +7863,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 1645684719}
@@ -7915,14 +7915,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: 5ef3f7db4d6d4754985ac90c542a5c76, type: 2}
   stableIdAuthoring: {fileID: 1666045649}
   targetBody: {fileID: 1666045648}
   pickupTarget: {fileID: 1666045647}
   assemblyRoot: 0
-  initialMountId:
+  initialMountId: 
 --- !u!114 &1666045647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7933,7 +7933,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 1666045648}
   stableIdAuthoring: {fileID: 1666045649}
@@ -7977,7 +7977,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: 8d6eb6503cc1b059d0f88b9064078e1c
 --- !u!114 &1666045650
@@ -7990,7 +7990,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1666045647}
@@ -8005,7 +8005,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 1666045646}
@@ -8071,7 +8071,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1708766584}
@@ -8085,7 +8085,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.intake_manifold
@@ -8341,7 +8341,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1809238230}
@@ -8355,7 +8355,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 1809238234}
@@ -8447,7 +8447,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: d3c94ef219493994c8234f44056eb379, type: 2}
   mountId: mount.driver_seat
@@ -8671,7 +8671,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1924576075}
@@ -8685,7 +8685,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 1924576079}
@@ -8777,7 +8777,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: f44ec05e01683f84782f66d966f89db3, type: 2}
   mountId: mount.door_left
@@ -8831,7 +8831,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1960953360}
@@ -8845,7 +8845,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce1fdc3a5991c894a84bff497fc0ac79, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyFastenerInteractionTarget
   controller: {fileID: 1623615361}
   mountId: mount.alternator
@@ -8980,7 +8980,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 1989112763}
@@ -8994,7 +8994,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19c34d7bc4998ea47a2325b449a0f067, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyMountHandoffTarget
   controller: {fileID: 1623615361}
   mountPoint: {fileID: 1989112767}
@@ -9086,7 +9086,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81032af06f0f378488a04a828abcaf1c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.MountPointAuthoring
   definition: {fileID: 11400000, guid: dbb822c85a3708b4294467f8611d74c0, type: 2}
   mountId: mount.trailing_arm_rl
@@ -9583,14 +9583,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4382f089871f042927443c2e449ba7, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.PartInstance
   definition: {fileID: 11400000, guid: c6247fe153709d04ea12ed897b3c04ac, type: 2}
   stableIdAuthoring: {fileID: 2133405932}
   targetBody: {fileID: 2133405931}
   pickupTarget: {fileID: 2133405930}
   assemblyRoot: 0
-  initialMountId:
+  initialMountId: 
 --- !u!114 &2133405930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9601,7 +9601,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 132b1795f34067240a84344e5641fe98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicsPickupTarget
   targetBody: {fileID: 2133405931}
   stableIdAuthoring: {fileID: 2133405932}
@@ -9647,7 +9647,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee6e91afddcfd1a48bad8853182fbd98, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Core.Runtime::MSC.Core.Identity.StableEntityIdAuthoring
   stableId: e4452afaae782790e32756d7bd3e70b1
 --- !u!114 &2133405933
@@ -9660,7 +9660,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2db9caf8b4562948935520244263571, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Query.InteractionTargetHost
   capabilityComponents:
   - {fileID: 2133405930}
@@ -9675,7 +9675,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d253cd373d672a84795291dbeeb29c0b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.AssemblyInstalledPartInteractionTarget
   controller: {fileID: 1623615361}
   part: {fileID: 2133405929}
@@ -9722,7 +9722,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91830951943cd5d46806a776a56287fe, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.VehicleAssemblyPrototypeMarker
   milestone: 05
   datasetVersion: 04B.4
@@ -9743,7 +9743,7 @@ Transform:
   - {fileID: 56178455}
   - {fileID: 1623615363}
   - {fileID: 1921265073}
-  - {fileID: 954061278}
+  - {fileID: 914169627}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807

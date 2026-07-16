@@ -909,7 +909,9 @@ namespace MSC.Tests.PlayMode.VehicleSimulation
         [UnityTest, Order(7)]
         public IEnumerator ProductionWorld_GarageExitMaintainsFiniteContactsAndLoadsNextCell()
         {
-            yield return LoadScene("Bootstrap", LoadSceneMode.Single);
+            yield return LoadScene(
+                "PrototypeWorldStreamingFixture",
+                LoadSceneMode.Single);
             ProductionWorldStreamingInstaller installer =
                 Object.FindFirstObjectByType<ProductionWorldStreamingInstaller>();
             ProductionWorldStreamingService streaming =

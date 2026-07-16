@@ -245,7 +245,7 @@ namespace MSC.Tests.EditMode.VehicleSimulation
         {
             ProductionWorldStreamingManifest manifest =
                 AssetDatabase.LoadAssetAtPath<ProductionWorldStreamingManifest>(
-                    "Assets/Game/World/Content/Streaming/ProductionWorldStreamingManifest.asset");
+                    "Assets/Game/World/Content/Streaming/PrototypeWorldStreamingManifest.asset");
             Assert.That(manifest, Is.Not.Null);
             Assert.That(manifest.ValidateConfiguration(), Is.Empty);
             Assert.That(manifest.CellSizeMeters, Is.EqualTo(512f));
