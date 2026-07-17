@@ -141,6 +141,10 @@ namespace MSC.Tests.EditMode.Enviro3Integration
             Assert.That(observations.RuntimeAudioSilent, Is.True);
             Assert.That(observations.SourceAudioUnchanged, Is.True);
             Assert.That(observations.RuntimeRainEffectBound, Is.True);
+            Assert.That(observations.RuntimePrecipitationProfilesIsolated, Is.True);
+            Assert.That(observations.PrecipitationMappingsAreDistinct, Is.True);
+            Assert.That(observations.PrecipitationIntensityUpdatedWithoutRestart, Is.True);
+            Assert.That(observations.SourcePrecipitationProfilesUnchanged, Is.True);
             Assert.That(observations.RuntimeStormIsolated, Is.True);
             Assert.That(observations.RuntimeStormAutomaticLightningDisabled, Is.True);
             Assert.That(observations.SourceStormUnchanged, Is.True);
@@ -150,6 +154,17 @@ namespace MSC.Tests.EditMode.Enviro3Integration
             Assert.That(observations.RuntimeStormReleasedOnDetach, Is.True);
             Assert.That(observations.RepeatedLightningReusedMaterial, Is.True);
             Assert.That(observations.LightningPrefabMaterialRestored, Is.True);
+            Assert.That(observations.RuntimeLightningPrefabIsolated, Is.True);
+            Assert.That(observations.SmoothTransitionUsedTypedWeatherPath, Is.True);
+            Assert.That(observations.SmoothTransitionRateApproximatedDuration, Is.True);
+            Assert.That(observations.TimeOnlyRevisionDidNotRestartWeatherTransition, Is.True);
+            Assert.That(observations.ImmediateBindingChangeUsedInstantPath, Is.True);
+            Assert.That(observations.LightningRequestUsedWorldPosition, Is.True);
+            Assert.That(observations.LightningSequenceWasDeduplicated, Is.True);
+            Assert.That(observations.LightningIntensityLimitationWasReported, Is.True);
+            Assert.That(observations.EnvironmentRefreshCapabilityExposed, Is.True);
+            Assert.That(observations.RefreshSequenceWasDeduplicatedAndCooledDown, Is.True);
+            Assert.That(observations.AdapterHasNoSteadyStateLateUpdateWriter, Is.True);
             Assert.That(runtimeLightningMaterialReleased, Is.True);
             Assert.That(
                 volumetricCloudDisableCallCount,
@@ -213,7 +228,15 @@ namespace MSC.Tests.EditMode.Enviro3Integration
 
             public EnviroEffectsModule EffectsSource { get; private set; }
 
+            public EnviroWeatherType SourceClear { get; private set; }
+
+            public EnviroWeatherType SourceRain { get; private set; }
+
             public EnviroWeatherType SourceStorm { get; private set; }
+
+            public EnviroQuality LowQuality { get; private set; }
+
+            public EnviroQuality HighQuality { get; private set; }
 
             public Lightning LightningPrefab { get; private set; }
 
@@ -226,17 +249,19 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 SourceConfiguration.name = "Enviro Source Configuration";
                 CreateSourceModules(SourceConfiguration);
 
-                EnviroWeatherType clear = Create<EnviroWeatherType>();
+                SourceClear = Create<EnviroWeatherType>();
                 EnviroWeatherType overcast = Create<EnviroWeatherType>();
-                EnviroWeatherType rain = Create<EnviroWeatherType>();
+                SourceRain = Create<EnviroWeatherType>();
+                SourceRain.effectsOverride = CreateRainOverride(0.5f);
                 SourceStorm = Create<EnviroWeatherType>();
+                SourceStorm.effectsOverride = CreateRainOverride(1f);
                 SourceStorm.lightningOverride = new EnviroWeatherTypeLightningOverride
                 {
                     lightningStorm = true
                 };
                 EnviroWeatherType fog = Create<EnviroWeatherType>();
-                EnviroQuality low = Create<EnviroQuality>();
-                EnviroQuality high = Create<EnviroQuality>();
+                LowQuality = CreateQuality(32);
+                HighQuality = CreateQuality(64);
 
                 rainPrefabGameObject = new GameObject("Enviro Rain Prefab Test Double");
                 rainPrefabGameObject.SetActive(false);
@@ -254,13 +279,13 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 Bindings.ConfigureForAuthoring(
                     SourceConfiguration,
                     EffectsSource,
-                    clear,
+                    SourceClear,
                     overcast,
-                    rain,
+                    SourceRain,
                     SourceStorm,
                     fog,
-                    low,
-                    high);
+                    LowQuality,
+                    HighQuality);
 
                 lightningPrefabGameObject = new GameObject("Enviro Lightning Prefab Test Double");
                 lightningPrefabGameObject.SetActive(false);
@@ -341,7 +366,7 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 configuration.Sky.Settings = new EnviroSky();
 
                 configuration.lightingModule = Create<EnviroLightingModule>();
-                configuration.lightingModule.Settings = new EnviroLighting();
+                configuration.lightingModule.Settings = CreateLightingSettings();
 
                 configuration.fogModule = Create<EnviroFogModule>();
                 configuration.fogModule.Settings = new EnviroFogSettings();
@@ -371,6 +396,39 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 configuration.Audio.ambientVolumeModifier = 0.6f;
                 configuration.Audio.weatherVolumeModifier = 0.5f;
                 configuration.Audio.thunderVolumeModifier = 0.4f;
+            }
+
+            private EnviroQuality CreateQuality(int fogSteps)
+            {
+                EnviroQuality quality = Create<EnviroQuality>();
+                quality.volumetricCloudsOverride = new EnviroVolumetricCloudsQualitySettings();
+                quality.fogOverride = new EnviroFogQualitySettings { steps = fogSteps };
+                quality.flatCloudsOverride = new EnviroFlatCloudsQualitySettings();
+                quality.auroraOverride = new EnviroAuroraQualitySettings();
+                return quality;
+            }
+
+            private static EnviroWeatherTypeEffectsOverride CreateRainOverride(float emission)
+            {
+                var result = new EnviroWeatherTypeEffectsOverride();
+                result.effectsOverride.Add(new EnviroEffectsOverrideType
+                {
+                    name = "Rain",
+                    emission = emission
+                });
+                return result;
+            }
+
+            private static EnviroLighting CreateLightingSettings()
+            {
+                return new EnviroLighting
+                {
+                    ambientMode = UnityEngine.Rendering.AmbientMode.Flat,
+                    ambientIntensityCurve = AnimationCurve.Constant(0f, 1f, 1f),
+                    ambientSkyColorGradient = new Gradient(),
+                    ambientEquatorColorGradient = new Gradient(),
+                    ambientGroundColorGradient = new Gradient()
+                };
             }
 
             private static EnviroAudio CreateUnsafeAudioSettings()
@@ -445,6 +503,14 @@ namespace MSC.Tests.EditMode.Enviro3Integration
 
             public bool RuntimeRainEffectBound { get; private set; }
 
+            public bool RuntimePrecipitationProfilesIsolated { get; private set; }
+
+            public bool PrecipitationMappingsAreDistinct { get; private set; }
+
+            public bool PrecipitationIntensityUpdatedWithoutRestart { get; private set; }
+
+            public bool SourcePrecipitationProfilesUnchanged { get; private set; }
+
             public bool RuntimeStormIsolated { get; private set; }
 
             public bool RuntimeStormAutomaticLightningDisabled { get; private set; }
@@ -463,7 +529,29 @@ namespace MSC.Tests.EditMode.Enviro3Integration
 
             public bool LightningPrefabMaterialRestored { get; private set; }
 
+            public bool RuntimeLightningPrefabIsolated { get; private set; }
+
             public Material RuntimeLightningFlashMaterial { get; private set; }
+
+            public bool SmoothTransitionUsedTypedWeatherPath { get; private set; }
+
+            public bool SmoothTransitionRateApproximatedDuration { get; private set; }
+
+            public bool TimeOnlyRevisionDidNotRestartWeatherTransition { get; private set; }
+
+            public bool ImmediateBindingChangeUsedInstantPath { get; private set; }
+
+            public bool LightningRequestUsedWorldPosition { get; private set; }
+
+            public bool LightningSequenceWasDeduplicated { get; private set; }
+
+            public bool LightningIntensityLimitationWasReported { get; private set; }
+
+            public bool EnvironmentRefreshCapabilityExposed { get; private set; }
+
+            public bool RefreshSequenceWasDeduplicatedAndCooledDown { get; private set; }
+
+            public bool AdapterHasNoSteadyStateLateUpdateWriter { get; private set; }
 
             public static RuntimeObservations Capture(RuntimeFixture fixture)
             {
@@ -471,7 +559,15 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 EnviroConfiguration source = fixture.SourceConfiguration;
                 Enviro3EnvironmentAdapter adapter = fixture.Adapter;
                 EnvironmentPresentationStatus initialStatus = adapter.Status;
+                EnviroWeatherType runtimeDrizzle =
+                    GetPrivateField<EnviroWeatherType>(adapter, "runtimeDrizzle");
+                EnviroWeatherType runtimeRain =
+                    GetPrivateField<EnviroWeatherType>(adapter, "runtimeRain");
+                EnviroWeatherType runtimeHeavyRain =
+                    GetPrivateField<EnviroWeatherType>(adapter, "runtimeHeavyRain");
                 EnviroWeatherType runtimeStorm = GetPrivateField<EnviroWeatherType>(adapter, "runtimeStorm");
+                Lightning runtimeLightningPrefab =
+                    GetPrivateField<Lightning>(adapter, "runtimeLightningPrefab");
 
                 RuntimeObservations observations = new RuntimeObservations
                 {
@@ -496,6 +592,11 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     RuntimeAudioSilent = IsAudioSilent(manager.Audio),
                     SourceAudioUnchanged = IsSourceAudioUnchanged(source.Audio),
                     RuntimeRainEffectBound = IsRuntimeRainEffectBound(manager.Effects),
+                    RuntimePrecipitationProfilesIsolated =
+                        runtimeDrizzle != null && runtimeDrizzle != fixture.SourceRain &&
+                        runtimeRain != null && runtimeRain != fixture.SourceRain &&
+                        runtimeHeavyRain != null && runtimeHeavyRain != fixture.SourceRain &&
+                        runtimeStorm != null && runtimeStorm != fixture.SourceStorm,
                     RuntimeStormIsolated = runtimeStorm != null && runtimeStorm != fixture.SourceStorm,
                     RuntimeStormAutomaticLightningDisabled =
                         runtimeStorm != null &&
@@ -503,8 +604,184 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                         !runtimeStorm.lightningOverride.lightningStorm,
                     SourceStormUnchanged =
                         fixture.SourceStorm.lightningOverride != null &&
-                        fixture.SourceStorm.lightningOverride.lightningStorm
+                        fixture.SourceStorm.lightningOverride.lightningStorm,
+                    RuntimeLightningPrefabIsolated =
+                        runtimeLightningPrefab != null &&
+                        runtimeLightningPrefab != fixture.LightningPrefab &&
+                        manager.Lightning.Settings.prefab == runtimeLightningPrefab &&
+                        runtimeLightningPrefab.planeMat != fixture.SourceLightningFlashMaterial
                 };
+
+                EnvironmentPresentationStatus smoothStatus = adapter.Present(CreateFrame(
+                    1,
+                    Enviro3EnvironmentBindings.RainIdValue,
+                    normalizedTimeOfDay01: 0.25f,
+                    transitionDurationSeconds: 10f,
+                    precipitationIntensity01: 0.7f));
+                bool smoothInstantFlag = GetPrivateField<bool>(manager.Weather, "instantTransition");
+                float expectedTransitionRate = 4.60517019f / 10f;
+                observations.SmoothTransitionUsedTypedWeatherPath =
+                    smoothStatus.ErrorCount == 0 &&
+                    manager.Weather.targetWeatherType == runtimeRain &&
+                    Mathf.Approximately(GetRainEmission(runtimeRain), 0.7f) &&
+                    !smoothInstantFlag;
+                observations.SmoothTransitionRateApproximatedDuration =
+                    Mathf.Approximately(
+                        manager.Weather.Settings.cloudsTransitionSpeed,
+                        expectedTransitionRate) &&
+                    Mathf.Approximately(
+                        manager.Weather.Settings.effectsTransitionSpeed,
+                        expectedTransitionRate) &&
+                    Mathf.Approximately(
+                        manager.Weather.Settings.environmentTransitionSpeed,
+                        expectedTransitionRate);
+
+                adapter.Present(CreateFrame(
+                    2,
+                    Enviro3EnvironmentBindings.RainIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f,
+                    precipitationIntensity01: 0.7f));
+                observations.TimeOnlyRevisionDidNotRestartWeatherTransition =
+                    manager.Weather.targetWeatherType == runtimeRain &&
+                    !GetPrivateField<bool>(manager.Weather, "instantTransition") &&
+                    Mathf.Approximately(
+                        manager.Weather.Settings.cloudsTransitionSpeed,
+                        expectedTransitionRate);
+
+                adapter.Present(CreateFrame(
+                    3,
+                    Enviro3EnvironmentBindings.RainIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f,
+                    precipitationIntensity01: 0.35f));
+                observations.PrecipitationIntensityUpdatedWithoutRestart =
+                    manager.Weather.targetWeatherType == runtimeRain &&
+                    Mathf.Approximately(GetRainEmission(runtimeRain), 0.35f) &&
+                    !GetPrivateField<bool>(manager.Weather, "instantTransition");
+
+                adapter.Present(CreateFrame(
+                    4,
+                    Enviro3EnvironmentBindings.DrizzleIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f,
+                    precipitationIntensity01: 0.2f));
+                bool drizzleMapped =
+                    manager.Weather.targetWeatherType == runtimeDrizzle &&
+                    Mathf.Approximately(GetRainEmission(runtimeDrizzle), 0.2f);
+                adapter.Present(CreateFrame(
+                    5,
+                    Enviro3EnvironmentBindings.HeavyRainIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f,
+                    precipitationIntensity01: 0.85f));
+                bool heavyMapped =
+                    manager.Weather.targetWeatherType == runtimeHeavyRain &&
+                    Mathf.Approximately(GetRainEmission(runtimeHeavyRain), 0.85f);
+                adapter.Present(CreateFrame(
+                    6,
+                    Enviro3EnvironmentBindings.StormIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f,
+                    precipitationIntensity01: 1f));
+                bool stormMapped =
+                    manager.Weather.targetWeatherType == runtimeStorm &&
+                    Mathf.Approximately(GetRainEmission(runtimeStorm), 1f);
+                observations.PrecipitationMappingsAreDistinct =
+                    drizzleMapped && heavyMapped && stormMapped &&
+                    runtimeDrizzle != runtimeRain &&
+                    runtimeRain != runtimeHeavyRain &&
+                    runtimeHeavyRain != runtimeStorm;
+                observations.SourcePrecipitationProfilesUnchanged =
+                    Mathf.Approximately(GetRainEmission(fixture.SourceRain), 0.5f) &&
+                    Mathf.Approximately(GetRainEmission(fixture.SourceStorm), 1f);
+
+                adapter.Present(CreateFrame(
+                    7,
+                    Enviro3EnvironmentBindings.ClearIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f));
+                observations.ImmediateBindingChangeUsedInstantPath =
+                    manager.Weather.targetWeatherType == fixture.SourceClear &&
+                    GetPrivateField<bool>(manager.Weather, "instantTransition");
+
+                Vector3 requestedLightningPosition = new Vector3(42f, 3f, -17f);
+                EnvironmentLightningVisualRequest lightningRequest =
+                    new EnvironmentLightningVisualRequest(
+                        true,
+                        10,
+                        requestedLightningPosition,
+                        0.4f);
+                EnvironmentPresentationStatus lightningStatus = adapter.Present(CreateFrame(
+                    8,
+                    Enviro3EnvironmentBindings.ClearIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f,
+                    lightning: lightningRequest));
+                Lightning spawnedLightning = FindSpawnedLightning(
+                    fixture.LightningPrefab,
+                    runtimeLightningPrefab);
+                int lightningCountAfterFirstRequest =
+                    CountSpawnedLightning(fixture.LightningPrefab, runtimeLightningPrefab);
+                observations.LightningRequestUsedWorldPosition =
+                    spawnedLightning != null &&
+                    spawnedLightning.target == requestedLightningPosition &&
+                    spawnedLightning.transform.position == requestedLightningPosition;
+                observations.LightningIntensityLimitationWasReported =
+                    lightningStatus.State == EnvironmentPresentationState.Degraded &&
+                    ContainsDiagnostic(adapter, "ENVIRO3-FRAME-004");
+
+                adapter.Present(CreateFrame(
+                    9,
+                    Enviro3EnvironmentBindings.ClearIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f,
+                    lightning: lightningRequest));
+                observations.LightningSequenceWasDeduplicated =
+                    lightningCountAfterFirstRequest == 1 &&
+                    CountSpawnedLightning(fixture.LightningPrefab, runtimeLightningPrefab) ==
+                    lightningCountAfterFirstRequest;
+
+                EnvironmentRefreshRequest firstRefresh = new EnvironmentRefreshRequest(
+                    EnvironmentRefreshTarget.Ambient,
+                    20);
+                adapter.Present(CreateFrame(
+                    10,
+                    Enviro3EnvironmentBindings.ClearIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f,
+                    refresh: firstRefresh));
+                bool firstRefreshExecuted =
+                    GetPrivateField<float>(adapter, "nextRefreshAllowedRealtime") >
+                    Time.realtimeSinceStartup &&
+                    GetPrivateField<uint>(adapter, "pendingRefreshSequence") == 0;
+
+                EnvironmentRefreshRequest cooledRefresh = new EnvironmentRefreshRequest(
+                    EnvironmentRefreshTarget.Ambient,
+                    21);
+                adapter.Present(CreateFrame(
+                    11,
+                    Enviro3EnvironmentBindings.ClearIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f,
+                    refresh: cooledRefresh));
+                adapter.Present(CreateFrame(
+                    12,
+                    Enviro3EnvironmentBindings.ClearIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f,
+                    refresh: cooledRefresh));
+                observations.EnvironmentRefreshCapabilityExposed =
+                    (adapter.Capabilities & EnvironmentPresentationCapabilities.EnvironmentRefresh) != 0;
+                observations.RefreshSequenceWasDeduplicatedAndCooledDown =
+                    firstRefreshExecuted &&
+                    GetPrivateField<uint>(adapter, "lastRefreshSequence") == 21 &&
+                    GetPrivateField<uint>(adapter, "pendingRefreshSequence") == 21 &&
+                    GetPrivateField<Coroutine>(adapter, "delayedRefreshRoutine") != null;
+                observations.AdapterHasNoSteadyStateLateUpdateWriter =
+                    typeof(Enviro3EnvironmentAdapter).GetMethod(
+                        "LateUpdate",
+                        BindingFlags.Instance | BindingFlags.NonPublic) == null;
 
                 InvokePrivate(adapter, "CastLightningVisual");
                 Material firstLightningMaterial =
@@ -547,6 +824,125 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     !adapter.IsAttached &&
                     adapter.Status.State == EnvironmentPresentationState.Detached;
                 return observations;
+            }
+
+            private static EnvironmentPresentationFrame CreateFrame(
+                ulong revision,
+                string bindingValue,
+                float normalizedTimeOfDay01,
+                float transitionDurationSeconds,
+                float precipitationIntensity01 = 0f,
+                EnvironmentLightningVisualRequest lightning = default,
+                EnvironmentRefreshRequest refresh = default)
+            {
+                if (!EnvironmentBindingId.TryParse(
+                        bindingValue,
+                        out EnvironmentBindingId bindingId))
+                {
+                    throw new ArgumentException("Invalid test binding ID.", nameof(bindingValue));
+                }
+
+                bool isRain =
+                    bindingValue == Enviro3EnvironmentBindings.DrizzleIdValue ||
+                    bindingValue == Enviro3EnvironmentBindings.RainIdValue ||
+                    bindingValue == Enviro3EnvironmentBindings.HeavyRainIdValue ||
+                    bindingValue == Enviro3EnvironmentBindings.StormIdValue;
+                return new EnvironmentPresentationFrame(
+                    revision,
+                    true,
+                    1995,
+                    7,
+                    15,
+                    normalizedTimeOfDay01,
+                    bindingId,
+                    isRain ? EnvironmentCloudType.Overcast : EnvironmentCloudType.Clear,
+                    isRain ? 0.8f : 0f,
+                    isRain ? 0.8f : 0f,
+                    isRain
+                        ? EnvironmentPrecipitationType.Rain
+                        : EnvironmentPrecipitationType.None,
+                    isRain ? precipitationIntensity01 : 0f,
+                    0f,
+                    Vector2.zero,
+                    0f,
+                    0f,
+                    lightning,
+                    refresh,
+                    EnvironmentQualityTier.Low,
+                    transitionDurationSeconds);
+            }
+
+            private static float GetRainEmission(EnviroWeatherType weather)
+            {
+                if (weather?.effectsOverride?.effectsOverride == null)
+                {
+                    return -1f;
+                }
+
+                for (int index = 0; index < weather.effectsOverride.effectsOverride.Count; index++)
+                {
+                    EnviroEffectsOverrideType value = weather.effectsOverride.effectsOverride[index];
+                    if (value != null && string.Equals(value.name, "Rain", StringComparison.Ordinal))
+                    {
+                        return value.emission;
+                    }
+                }
+
+                return -1f;
+            }
+
+            private static int CountSpawnedLightning(
+                Lightning sourcePrefab,
+                Lightning runtimeTemplate)
+            {
+                Lightning[] lightningObjects = Object.FindObjectsByType<Lightning>(
+                    FindObjectsInactive.Include,
+                    FindObjectsSortMode.None);
+                int count = 0;
+                for (int index = 0; index < lightningObjects.Length; index++)
+                {
+                    if (lightningObjects[index] != sourcePrefab &&
+                        lightningObjects[index] != runtimeTemplate)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+
+            private static Lightning FindSpawnedLightning(
+                Lightning sourcePrefab,
+                Lightning runtimeTemplate)
+            {
+                Lightning[] lightningObjects = Object.FindObjectsByType<Lightning>(
+                    FindObjectsInactive.Include,
+                    FindObjectsSortMode.None);
+                for (int index = 0; index < lightningObjects.Length; index++)
+                {
+                    if (lightningObjects[index] != sourcePrefab &&
+                        lightningObjects[index] != runtimeTemplate)
+                    {
+                        return lightningObjects[index];
+                    }
+                }
+
+                return null;
+            }
+
+            private static bool ContainsDiagnostic(
+                Enviro3EnvironmentAdapter adapter,
+                string code)
+            {
+                for (int index = 0; index < adapter.Diagnostics.Count; index++)
+                {
+                    if (adapter.Diagnostics[index].Code == code)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
             private static bool AreRequiredModulesIsolated(
@@ -700,7 +1096,10 @@ namespace MSC.Tests.EditMode.Enviro3Integration
             {
                 MethodInfo method = target.GetType().GetMethod(
                     methodName,
-                    BindingFlags.Instance | BindingFlags.NonPublic);
+                    BindingFlags.Instance | BindingFlags.NonPublic,
+                    binder: null,
+                    types: Type.EmptyTypes,
+                    modifiers: null);
                 if (method == null)
                 {
                     throw new MissingMethodException(target.GetType().FullName, methodName);

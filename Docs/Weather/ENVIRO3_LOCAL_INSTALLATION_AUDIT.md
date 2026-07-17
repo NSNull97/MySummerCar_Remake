@@ -4,6 +4,11 @@
 Репозиторий: `E:\GAYmDev_Studio\MySummerCar_Remake`
 Статус: базовый пакет присутствует; integration compile, WeatherLab build, automated preflight и headless runtime smoke завершились успешно. Пользователь подтвердил общее отображение, композицию тумана, молнии и капли Rain/Storm после remediation. Capture artifacts, отдельный Low/High comparison и performance measurements ещё не выполнены.
 
+> Этот документ сохраняет исторический 07A snapshot. В 07B canonical Unity 6
+> serialization baseline контролируемо мигрирован на
+> `538 / 305967931 / 8e376fa2…`; source chain и повторный stability gate описаны
+> в `ENVIRO3_FINGERPRINT_MIGRATION_AUDIT_07B.md`.
+
 ## Итог
 
 Enviro 3 установлен как локальный Asset Store payload, а не как UPM dependency:

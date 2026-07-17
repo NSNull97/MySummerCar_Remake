@@ -2,7 +2,8 @@
   "name": "MSC.Weather.Presentation.Tests.EditMode",
   "rootNamespace": "MSC.Tests.EditMode.WeatherPresentation",
   "references": [
-    "MSC.Weather.Presentation.Runtime"
+    "MSC.Weather.Presentation.Runtime",
+    "MSC.Weather.Runtime"
   ],
   "includePlatforms": [
     "Editor"

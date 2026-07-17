@@ -1,7 +1,9 @@
 {
   "name": "MSC.Weather.Presentation.Runtime",
   "rootNamespace": "MSC.Weather.Presentation",
-  "references": [],
+  "references": [
+    "MSC.Weather.Runtime"
+  ],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

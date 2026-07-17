@@ -133,6 +133,10 @@ Exit gate:
 
 ## Milestone 7 — World and weather
 
+Status: **07A is committed; 07B automated implementation gate passed on
+2026-07-17; 07C is the only next milestone.** Milestone 07B remains a
+WeatherLab/test implementation and is not a production-world rollout.
+
 Deliver:
 
 - time of day;
@@ -141,6 +145,28 @@ Deliver:
 - fog/wind;
 - save/load;
 - performance capture.
+
+Current evidence:
+
+- 07A Enviro 3 preflight and WeatherLab is fixed in commit `61250e2`;
+- project-owned GameTime, deterministic weather fronts, stable environment
+  outputs, accumulated wetness, fair gameplay lightning, versioned DTOs and the
+  Enviro adapter are implemented for 07B;
+- vendor-neutral core suites pass `101/101` (`20` GameTime, `29`
+  WeatherDomain, `52` WeatherPresentation), Enviro integration passes `13/13`,
+  WeatherLab time-domain integration passes `3/3`, and builder/fresh preflight
+  `Final_03` passes;
+- callback/scheduler failure and reentrancy are transactionally hardened,
+  including all-domain rollback for failed WeatherLab DEV advance;
+- the automated Editor PlayMode performance harness passes `1/1` and writes
+  `PerformanceCaptures/Milestone07B/M07B_WeatherLab_Performance.json`;
+- canonical Enviro baseline is `538 / 305967931 /
+  8e376fa2748162157975fbdd8b1045e021b810fea40f01d99eafe22a4d30bd44`;
+- 07B manual captures and standalone/real-GPU performance sign-off remain
+  `PENDING` and are not represented by the automated Editor harness.
+
+Exit boundary: production-world ownership replacement, rollout and validation
+belong only to `Prompts/07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md`.
 
 ## Milestone 8 — Wwise audio
 
@@ -423,5 +449,57 @@ in batch mode despite the blocking `Physics.Simulate` wall-clock measurement;
 GPU timing and a Windows player 60 FPS acceptance capture remain unavailable
 and must not be inferred from the passing Editor evidence.
 
-Gate decision: **automated PASS; human acceptance recorded**. The next and only
-next milestone is `Prompts/06B_PRODUCTION_WORLD_CELL_FIDELITY_GATE.md`.
+Gate decision: **automated PASS; human acceptance recorded**. Its historical
+next step was the 06B world sequence; that sequence is now closed/frozen as
+recorded in `Prompts/CURRENT_STATE.md`.
+
+## Milestone 07A — Enviro 3 preflight and WeatherLab
+
+Status: **implementation committed as `61250e2` on 2026-07-17**.
+
+Delivered:
+
+- hash-identified local Enviro 3.x API and HDRP compatibility audit;
+- one isolated WeatherLab, single-owner environment policy and project-neutral
+  presentation contract;
+- explicit Enviro integration assembly boundary with vendor source kept
+  read-only;
+- automated rain/fog/lightning/lifecycle checks and a reproducible preflight.
+
+The 07A manual capture/performance backlog remains evidence debt; it is not
+silently promoted by the later 07B automated result.
+
+## Milestone 07B — project-owned time/weather domain and Enviro adapter
+
+Status: **automated implementation gate `PASS` on 2026-07-17; manual captures
+and standalone/real-GPU performance sign-off `PENDING`**.
+
+Delivered inside WeatherLab/tests only:
+
+- deterministic `GameTimeService` and versioned time state/DTOs;
+- transactional time mutation: deterministic callback order, reentrancy guards,
+  clock/queue rollback on callback failure and composite WeatherLab rollback;
+- seeded weather fronts, transitions, overrides and stable environment outputs;
+- accumulated/drying wetness, shelter/exposure mapping and shared material
+  wetness/puddle prototype;
+- separated ambient presentation lightning and project-owned gameplay strike
+  selection, cooldown/fairness and thunder requests;
+- stable binding-ID mapping into a single Enviro adapter without core Enviro
+  references or saved vendor objects;
+- Time and Weather DEV tooling, diagnostics and WeatherLab builder/preflight.
+
+Automated evidence is `101/101` vendor-neutral core tests (`20 + 29 + 52`),
+`13/13` Enviro integration tests, `3/3` WeatherLab time integration tests and
+`1/1` Editor PlayMode performance-harness test. Builder/fresh preflight
+`Logs/M07B_WeatherLabBuilder_Final_03.log` is `PASS`; the harness writes the
+automated-only JSON at
+`PerformanceCaptures/Milestone07B/M07B_WeatherLab_Performance.json`. Manual
+captures and standalone/real-GPU sign-off remain `PENDING`. The canonical vendor
+baseline is `538` files, `305967931` bytes, fingerprint
+`8e376fa2748162157975fbdd8b1045e021b810fea40f01d99eafe22a4d30bd44`.
+All logical values/tuning are `RemakeDesignTarget` / project-authored; no donor
+weather code or configuration is claimed as ported.
+
+Readiness decision: **GO only for
+`Prompts/07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md`**. Do not start
+Milestone 08 before the production rollout is validated.

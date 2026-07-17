@@ -4,6 +4,8 @@
   "references": [
     "MSC.Weather.Enviro3Integration",
     "MSC.Weather.Presentation.Runtime",
+    "MSC.Weather.Runtime",
+    "MSC.Core.Runtime",
     "MSC.Development.WeatherLab",
     "Enviro3.Runtime",
     "Unity.RenderPipelines.Core.Runtime"

@@ -20,9 +20,9 @@ namespace MSC.Weather.Enviro3Integration.Editor
     public static class Enviro3PreflightValidator
     {
         public const int BaselineFileCount = 538;
-        public const long BaselineTotalBytes = 305967970L;
+        public const long BaselineTotalBytes = 305967931L;
         public const string BaselineFingerprint =
-            "9a4e8bab6bdf231c415fc8e60f3988f12f221cc20dfbfc0b7090feb14f431af3";
+            "8e376fa2748162157975fbdd8b1045e021b810fea40f01d99eafe22a4d30bd44";
         public const string HdrpRendererRegistration =
             "Enviro.EnviroHDRPRenderer, Enviro3.Runtime";
 
@@ -33,9 +33,10 @@ namespace MSC.Weather.Enviro3Integration.Editor
         private const string IntegrationTestsBoundaryPrefix =
             "Assets/Game/Tests/EditMode/Enviro3Integration/";
 
-        // The post-import baseline was captured by Windows PowerShell Sort-Object under
-        // ru-RU. Pin that comparer so the stored fingerprint remains reproducible even
-        // when Unity runs under a different host culture.
+        // The 07B baseline is the source-package prefab graph after canonical Unity
+        // 6000.3.11f1 serialization. See ENVIRO3_FINGERPRINT_MIGRATION_AUDIT_07B.md.
+        // Its manifest was captured under ru-RU; pin that comparer so the fingerprint
+        // remains reproducible when Unity runs under a different host culture.
         private static readonly StringComparer VendorBaselinePathComparer =
             StringComparer.Create(CultureInfo.GetCultureInfo("ru-RU"), ignoreCase: false);
 

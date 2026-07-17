@@ -1,6 +1,11 @@
-# Porting Matrix — through Milestone 06B2
+# Porting Matrix — through Milestone 07B
 
-Status: controlled reference pipeline, Milestone 3 garage art prototype and the clean-room Milestone 4 player/interaction slice are complete. M4 did not inspect or transfer donor input/FSM code, constants or configuration; player and interaction are `Reimplemented`. Two donor meshes remain `ReferenceOnly`. No donor visual asset is classified as production-ready.
+Status: controlled donor-reference/world-baseline work is recorded through the
+frozen 06B sequence. Milestone 07A is fixed in commit `61250e2`; Milestone 07B
+adds clean-room, project-owned GameTime/weather/wetness/lightning domains and a
+read-only Enviro presentation adapter in WeatherLab/tests only. No donor weather
+code, state machine, configuration value or visual asset is classified as
+ported or production-ready.
 
 Evidence basis: donor file inventory, serialized-file headers/strings, managed assembly names, reflection-only type/member metadata, AssetRipper 1.3.14 object export, staged hashes, and Unity validation.
 
@@ -28,10 +33,10 @@ Evidence basis: donor file inventory, serialized-file headers/strings, managed a
 | Fluids/electrical | `FuelTank`; drivetrain fuel fields; remaining behavior not identified outside serialized FSM data | Very high | Engine, assembly completeness, time, save keys, gauges, failure states | Reimplement subsystem models; transfer tank capacities/densities and wiring/config only when directly observed and unit-checked | High | M5.3 then M6.7 | Oil/coolant ownership, leaks, wiring topology, battery/starter/alternator logic, fluid save schema |
 | Damage/wear | `CarDamage`, `CarDamage2`, `Repair`; mesh-deformation fields/method names; likely FSM/save state | High | Collisions, meshes, assembly state, vehicle simulation, save, audio/VFX | Preserve behavioral thresholds/dimensions where measured; reimplement stateful damage/wear; reauthor mesh deformation presentation | High | M6.8 | Part-level wear, permanent deformation persistence, repair rules, failure thresholds |
 | Save/load | `ES2.dll`, `MoodkieSecurity.dll`, `UniqueSaveManager`; PlayMaker save/player-pref actions; LocalLow files such as `defaultES2File.txt` and `items.txt` | Very high | Scene object names, FSM variables, third-party serializer, mod data, platform storage | Document format first; build native versioned DTOs/stable IDs; optional donor importer only in M9 and only if safely understood | Very high | M1 identity foundation; M5/M6 records; M9 importer study | File schema, encoding/security layer, atomicity, key ownership, scene-path dependence, corrupted-save behavior |
-| Time/needs | No reliable dedicated non-PlayMaker type identified; likely serialized FSM variables/actions in GAME scene | Very high | Save, UI, player state, world events, weather, audio | Behavioral capture and clean scheduled simulation; transfer only observed rates/thresholds/config | High | M7.1 | Time scale, sleep skip, hunger/thirst/stress/fatigue/urine formulas, death/failure transitions |
+| Time/needs | No reliable dedicated non-PlayMaker type identified; likely serialized FSM variables/actions in GAME scene | Very high | Save, UI, player state, world events, weather, audio | GameTime is now a project-owned clean-room service; needs remain deferred; any future donor rates still require measured evidence | High | GameTime M07B complete; needs later | Donor time scale/sleep skip and all hunger/thirst/stress/fatigue/urine formulas remain unknown; 07B time values are `RemakeDesignTarget` |
 | NPCs/traffic | SWS spline/bezier movement types; serialized scene paths/FSMs; no authoritative NPC-domain class inventory | Very high | World splines, schedules/time, physics, audio, save state, scene loading | Defer population; preserve routes/timing as world-layout/behavioral reference; reimplement a small traffic slice only when needed | Very high | Post-vertical-slice except minimal traffic proof | Agents, spawn/despawn, schedules, route graphs, AI state, persistence, collision rules |
 | World/terrain/roads | `mainData`, `level0`–`level3`, shared assets; scene paths; SWS spline/bezier types; largest level is 104 MB but mapping is unproven | Very high | Terrain/meshes, colliders, splines, vegetation, streaming, persistent entities, weather | Controlled extraction of layout/measurements; rebuild terrain/roads/assets; use streaming cells/additive scenes and project-owned IDs | Very high | M2 reference proof; M3 garage slice; M7 expansion | Scene mapping, coordinate origin/scale, terrain format, road centerlines, cell boundaries, key-location transforms |
-| Weather | `CameraFog`, `RainNearClip`, `SetRainClip`, `windshield.RainType`, PlayMaker weather actions, serialized assets | High | Time, camera, particles, materials, audio, indoor/outdoor state, save | Behavioral capture and HDRP reimplementation; transfer only intensity/timing/visibility observations | High | M7.2 | Weather state machine, transition durations, wetness persistence, indoor detection, wind/cloud parameters |
+| Weather | `CameraFog`, `RainNearClip`, `SetRainClip`, `windshield.RainType`, PlayMaker weather actions, serialized assets | High | Time, camera, particles, materials, audio, indoor/outdoor state, save | Project-owned seeded fronts, outputs, wetness and lightning are clean-room `Reimplemented`; Enviro 3 is presentation only; future donor comparison remains behavioral evidence | High | M07A/M07B complete; M07C rollout next | Donor schedule, transition durations, wetness persistence and wind/cloud values remain unknown; all 07B logical values are `RemakeDesignTarget` |
 | Audio | Shared-assets sound containers/derived sound directories; `MasterAudio`, `EventSounds`, `SoundController`, playlists; Unity Audio; frozen `GAME.unity` `AudioEngineSatsuma` and `MasterAudio/Starting` mapping | High | FSM events, player/vehicle/world state, mixer, listener, save settings | Treat the seven ledgered Satsuma clips as external Editor-only `TemporaryDirectImport` diagnostics and routing as `ReferenceOnly`; reauthor final soundscape; new `IAudioBackend` plus Unity fallback, Wwise later | High | M1 boundary; M6 parameters/local diagnostic; M8 Wwise | Complete event/mixer map, load layers, stop/stall clip, interior/exterior logic, licensing/authorship |
 | Animation | `HOTween.dll`, iTween, `SimpleIKSolver`, `IKLimb_BrunoFerreira`, SWS movement, many PlayMaker animation actions | High | Rigs, transforms, interaction targets, FSM timing, tools/vehicle controls | Case-by-case reference; reimplement interaction IK and presentation; retarget only compatible verified clips | High | M4 presentation; M5 tool/assembly IK | Clip/rig inventory, generic/humanoid compatibility, event authority, steering/tool target transforms |
 | UI | `SettingsMenu`, `ShowcaseGUI`, legacy Unity UI/GUI, `cInput`, many PlayMaker GUI/input actions, menu scenes | Very high | Input, save/options, localization, gameplay FSMs, audio settings | Reimplement with current UI/input architecture; transfer labels/flows/config only as behavioral reference | Medium-high | M4 minimal HUD; later feature UI | Screen inventory, accessibility, localization, option semantics, state ownership, resolution behavior |
@@ -220,5 +225,34 @@ bridges and moved the character across cell boundaries without observing
 traversal, collision, seam, duplicate, popping or load/unload issues. This
 manual bridge/cell-boundary gate is `PASS / HumanAccepted`; dedicated vehicle
 driving was not repeated, while automated high-speed preload validation passed.
-The flat lake and original-game voids remain explicit remaster debt. The 06B3
-entry gate is `GO`; 06B3 itself has not started.
+The flat lake and original-game voids remain explicit remaster debt. The later
+06B3 validation/freeze closed as `PASS / Frozen / HumanAccepted`; this does not
+promote donor baseline art to `ProductionReady`.
+
+## Milestones 07A/07B environment implementation state
+
+| Area | Evidence/input | Classification / ownership | Implemented boundary / status |
+|---|---|---|---|
+| Enviro 3 local package and API | Hash-identified third-party installation; 07A audit and WeatherLab | Third-party presentation dependency; not donor content and not a transfer classification | 07A implementation committed as `61250e2`; vendor source stays read-only; accepted 07B baseline is `538 / 305967931 / 8e376fa2748162157975fbdd8b1045e021b810fea40f01d99eafe22a4d30bd44` |
+| Game time/calendar | Project architecture and M07B requirements | `Reimplemented`; `RemakeDesignTarget` | `MSC.Core.Runtime` owns deterministic progression, pause/scale, scheduling, exact snapshot/restore and versioned DTOs; callback/subscriber failure restores clock and due queue, reentrant mutation fails closed, and Enviro cannot feed gameplay time back |
+| Weather fronts and stable outputs | Project-authored profile/front catalog, seeded RNG and output contracts | `Reimplemented`; `RemakeDesignTarget` | `MSC.Weather.Runtime` owns logical state, transitions, overrides, timeline/RNG and cross-system snapshots; no gameplay check uses Enviro preset names |
+| Wetness and material proof | Project-authored accumulation/drying/exposure model | `Reimplemented`; `RemakeDesignTarget` | Ground/road/puddle/vegetation state and DTOs are authoritative; WeatherLab proves shared global/property-block material outputs without per-object material instances |
+| Lightning | Project-authored candidates, attractors, protection, cooldown and fairness rules | `Reimplemented`; `RemakeDesignTarget` | Ambient presentation and gameplay strikes are separated; gameplay selection/thunder/effect hooks exist, while a parallel health system and production damage are intentionally absent |
+| Presentation mapping | Stable project binding IDs plus validated Enviro public API | `Reimplemented` adapter over read-only vendor dependency | `MSC.Weather.Presentation.Runtime` is vendor-neutral; only `MSC.Weather.Enviro3Integration` references Enviro and maps time, weather, quality and visual requests in WeatherLab |
+| Save/dev validation boundary | Project-owned schema DTOs, Time and Weather tooling and WeatherLab | `Reimplemented` | DTO round trips and diagnostics exist; failed composite DEV advance transactionally restores time/weather/wetness/lightning; final file persistence belongs to M09; production-world rollout belongs only to 07C |
+
+Final automated core evidence is `101/101 PASS`: GameTime `20`, WeatherDomain
+`29`, WeatherPresentation `52`. Enviro integration is `13/13 PASS`, WeatherLab
+time-domain integration is `3/3 PASS`, and the Editor PlayMode performance
+harness is `1/1 PASS`. Builder/fresh preflight
+`Logs/M07B_WeatherLabBuilder_Final_03.log` is `PASS`. Automated-only performance
+evidence is stored in
+`PerformanceCaptures/Milestone07B/M07B_WeatherLab_Performance.json`; manual
+comparison captures and standalone/real-GPU sign-off remain `PENDING`, so they
+are not inferred from the automated evidence.
+
+The ledger uses explicit `ProjectAuthored/Milestone07B` rows with empty source
+hashes because these are clean-room project systems. They do not create donor
+provenance records, do not change any donor transfer classification and do not
+claim `CodePorted` or `ConfigurationTransferred`. The only next milestone is
+`07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md`.

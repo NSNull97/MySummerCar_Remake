@@ -2,6 +2,11 @@
 
 Дата проверки: 2026-07-17
 
+> Примечание 07B: приведённый ниже fingerprint — исторический post-import
+> срез 07A. Актуальный canonical baseline, причина контролируемой миграции и
+> повторный runtime/preflight proof находятся в
+> `ENVIRO3_FINGERPRINT_MIGRATION_AUDIT_07B.md` (`538 / 305967931 / 8e376fa2…`).
+
 Статус: **RESOLVED 2026-07-17 — APPROVED URP COMPATIBILITY DEPENDENCY INSTALLED**
 
 ## Закрытие blocker

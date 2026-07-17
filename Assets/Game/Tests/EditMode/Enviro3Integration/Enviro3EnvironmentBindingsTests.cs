@@ -14,6 +14,7 @@ namespace MSC.Tests.EditMode.Enviro3Integration
 
         private Enviro3EnvironmentBindings bindings;
         private EnviroWeatherType clear;
+        private EnviroWeatherType partlyCloudy;
         private EnviroWeatherType overcast;
         private EnviroWeatherType rain;
         private EnviroWeatherType storm;
@@ -29,6 +30,7 @@ namespace MSC.Tests.EditMode.Enviro3Integration
             EnviroConfiguration configuration = Create<EnviroConfiguration>();
             effectsSource = Create<EnviroEffectsModule>();
             clear = Create<EnviroWeatherType>();
+            partlyCloudy = Create<EnviroWeatherType>();
             overcast = Create<EnviroWeatherType>();
             rain = Create<EnviroWeatherType>();
             storm = Create<EnviroWeatherType>();
@@ -40,6 +42,7 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 configuration,
                 effectsSource,
                 clear,
+                partlyCloudy,
                 overcast,
                 rain,
                 storm,
@@ -76,11 +79,23 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 clear,
                 EnvironmentPresentationPresetKind.Clear);
             AssertWeather(
+                Enviro3EnvironmentBindings.PartlyCloudyIdValue,
+                partlyCloudy,
+                EnvironmentPresentationPresetKind.Overcast);
+            AssertWeather(
                 Enviro3EnvironmentBindings.OvercastIdValue,
                 overcast,
                 EnvironmentPresentationPresetKind.Overcast);
             AssertWeather(
+                Enviro3EnvironmentBindings.DrizzleIdValue,
+                rain,
+                EnvironmentPresentationPresetKind.Rain);
+            AssertWeather(
                 Enviro3EnvironmentBindings.RainIdValue,
+                rain,
+                EnvironmentPresentationPresetKind.Rain);
+            AssertWeather(
+                Enviro3EnvironmentBindings.HeavyRainIdValue,
                 rain,
                 EnvironmentPresentationPresetKind.Rain);
             AssertWeather(

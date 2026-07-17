@@ -1,0 +1,21 @@
+{
+  "name": "MSC.Weather.Domain.Tests.EditMode",
+  "rootNamespace": "MSC.Tests.EditMode.WeatherDomain",
+  "references": [
+    "MSC.Weather.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

@@ -16,7 +16,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
 {
     public static class WeatherLabBuilder
     {
-        public const string BuilderVersion = "1.0.1";
+        public const string BuilderVersion = "1.1.0";
         public const string MenuRoot = "Tools/MSC Remake/Enviro 3 Preflight/";
         public const string VendorRoot = "Assets/Enviro 3 - Sky and Weather";
         public const string BindingsAssetPath =
@@ -75,11 +75,25 @@ namespace MSC.Weather.Enviro3Integration.Editor
             Transform diagnostics = CreateGroup(root.transform, "Diagnostics");
             Transform environmentBackend = CreateGroup(root.transform, "EnvironmentBackend");
 
-            BuildGround(geometry, ground, asphalt, gravel, dirt, water);
-            BuildBuilding(geometry, wall, trim, glass);
+            var wetGround = new List<Renderer>();
+            var wetRoad = new List<Renderer>();
+            var wetExterior = new List<Renderer>();
+            var wetVegetation = new List<Renderer>();
+            var wetPuddle = new List<Renderer>();
+            BuildGround(
+                geometry,
+                ground,
+                asphalt,
+                gravel,
+                dirt,
+                water,
+                wetGround,
+                wetRoad,
+                wetPuddle);
+            BuildBuilding(geometry, wall, trim, glass, wetExterior);
             BuildMaterialSamples(props, wall, metal, glass);
             Transform vehicle = BuildVehicleProxy(props, metal, trim);
-            BuildVegetation(vegetation);
+            BuildVegetation(vegetation, wetVegetation);
 
             Camera exterior = CreateCamera(
                 camerasRoot, "ExteriorCamera", new Vector3(12f, 4.5f, -14f),
@@ -142,10 +156,20 @@ namespace MSC.Weather.Enviro3Integration.Editor
 
             WeatherLabStateController stateController =
                 diagnostics.gameObject.AddComponent<WeatherLabStateController>();
+            WeatherLabWetnessMaterialBridge wetnessBridge =
+                diagnostics.gameObject.AddComponent<WeatherLabWetnessMaterialBridge>();
+            wetnessBridge.ConfigureForAuthoring(
+                wetGround.ToArray(),
+                wetRoad.ToArray(),
+                wetExterior.ToArray(),
+                vehicle.GetComponentsInChildren<Renderer>(includeInactive: true),
+                wetVegetation.ToArray(),
+                wetPuddle.ToArray());
             stateController.ConfigureForAuthoring(
                 adapter,
                 cameras,
-                lightningTarget);
+                lightningTarget,
+                wetnessBridge);
             diagnostics.gameObject.AddComponent<WeatherLabPerformanceProbe>();
 
             WeatherLabSceneMarker sceneMarker = root.AddComponent<WeatherLabSceneMarker>();
@@ -365,6 +389,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
                 RequireVendorAsset<EnviroConfiguration>(ConfigurationPath),
                 RequireVendorAsset<EnviroEffectsModule>(EffectsSourceAssetPath),
                 RequireVendorAsset<EnviroWeatherType>(WeatherPath + "Clear Sky.asset"),
+                RequireVendorAsset<EnviroWeatherType>(WeatherPath + "Cloudy 1.asset"),
                 RequireVendorAsset<EnviroWeatherType>(WeatherPath + "Cloudy 3.asset"),
                 RequireVendorAsset<EnviroWeatherType>(WeatherPath + "Rain.asset"),
                 RequireVendorAsset<EnviroWeatherType>(WeatherPath + "Storm.asset"),
@@ -410,21 +435,29 @@ namespace MSC.Weather.Enviro3Integration.Editor
             Material asphalt,
             Material gravel,
             Material dirt,
-            Material water)
+            Material water,
+            ICollection<Renderer> wetGround,
+            ICollection<Renderer> wetRoad,
+            ICollection<Renderer> wetPuddle)
         {
-            CreateBox(parent, "TerrainPatch_40x40", new Vector3(0f, -0.15f, 0f),
-                new Vector3(40f, 0.3f, 40f), ground);
-            CreateBox(parent, "AsphaltRoad_6x36", new Vector3(0f, 0.02f, 0f),
-                new Vector3(6f, 0.04f, 36f), asphalt);
-            CreateBox(parent, "GravelPatch_8x10", new Vector3(-9f, 0.015f, -5f),
-                new Vector3(8f, 0.03f, 10f), gravel);
-            CreateBox(parent, "DirtPatch_8x10", new Vector3(9f, 0.015f, -5f),
-                new Vector3(8f, 0.03f, 10f), dirt);
+            wetGround.Add(CreateBox(
+                parent, "TerrainPatch_40x40", new Vector3(0f, -0.15f, 0f),
+                new Vector3(40f, 0.3f, 40f), ground).GetComponent<Renderer>());
+            wetRoad.Add(CreateBox(
+                parent, "AsphaltRoad_6x36", new Vector3(0f, 0.02f, 0f),
+                new Vector3(6f, 0.04f, 36f), asphalt).GetComponent<Renderer>());
+            wetRoad.Add(CreateBox(
+                parent, "GravelPatch_8x10", new Vector3(-9f, 0.015f, -5f),
+                new Vector3(8f, 0.03f, 10f), gravel).GetComponent<Renderer>());
+            wetRoad.Add(CreateBox(
+                parent, "DirtPatch_8x10", new Vector3(9f, 0.015f, -5f),
+                new Vector3(8f, 0.03f, 10f), dirt).GetComponent<Renderer>());
             CreateBox(parent, "PuddleDepression", new Vector3(10f, -0.24f, 8f),
                 new Vector3(8f, 0.12f, 12f), dirt);
             GameObject waterProxy = CreateBox(parent, "WaterProxy_8x12", new Vector3(10f, -0.12f, 8f),
                 new Vector3(8f, 0.03f, 12f), water, collider: false);
             waterProxy.layer = 0;
+            wetPuddle.Add(waterProxy.GetComponent<Renderer>());
             CreateBox(parent, "ShoreProxy", new Vector3(5.85f, -0.08f, 8f),
                 new Vector3(0.3f, 0.12f, 12f), gravel);
         }
@@ -433,26 +466,27 @@ namespace MSC.Weather.Enviro3Integration.Editor
             Transform parent,
             Material wall,
             Material trim,
-            Material glass)
+            Material glass,
+            ICollection<Renderer> wetExterior)
         {
             Transform building = CreateGroup(parent, "Building");
             Vector3 center = new Vector3(-10f, 0f, 10f);
             CreateBox(building, "InteriorFloor", center + new Vector3(0f, 0.05f, 0f),
                 new Vector3(9f, 0.1f, 8f), trim);
-            CreateBox(building, "BackWall", center + new Vector3(0f, 1.5f, 4f),
-                new Vector3(9f, 3f, 0.2f), wall);
-            CreateBox(building, "LeftWall", center + new Vector3(-4.5f, 1.5f, 0f),
-                new Vector3(0.2f, 3f, 8f), wall);
-            CreateBox(building, "RightWall", center + new Vector3(4.5f, 1.5f, 0f),
-                new Vector3(0.2f, 3f, 8f), wall);
-            CreateBox(building, "FrontWallLeft", center + new Vector3(-3.1f, 1.5f, -4f),
-                new Vector3(2.8f, 3f, 0.2f), wall);
-            CreateBox(building, "FrontWallRight", center + new Vector3(2.9f, 1.5f, -4f),
-                new Vector3(3.2f, 3f, 0.2f), wall);
-            CreateBox(building, "DoorwayHeader", center + new Vector3(-0.1f, 2.65f, -4f),
-                new Vector3(3.2f, 0.7f, 0.2f), wall);
-            CreateBox(building, "Roof", center + new Vector3(0f, 3.2f, 0f),
-                new Vector3(9.6f, 0.25f, 8.6f), trim);
+            wetExterior.Add(CreateBox(building, "BackWall", center + new Vector3(0f, 1.5f, 4f),
+                new Vector3(9f, 3f, 0.2f), wall).GetComponent<Renderer>());
+            wetExterior.Add(CreateBox(building, "LeftWall", center + new Vector3(-4.5f, 1.5f, 0f),
+                new Vector3(0.2f, 3f, 8f), wall).GetComponent<Renderer>());
+            wetExterior.Add(CreateBox(building, "RightWall", center + new Vector3(4.5f, 1.5f, 0f),
+                new Vector3(0.2f, 3f, 8f), wall).GetComponent<Renderer>());
+            wetExterior.Add(CreateBox(building, "FrontWallLeft", center + new Vector3(-3.1f, 1.5f, -4f),
+                new Vector3(2.8f, 3f, 0.2f), wall).GetComponent<Renderer>());
+            wetExterior.Add(CreateBox(building, "FrontWallRight", center + new Vector3(2.9f, 1.5f, -4f),
+                new Vector3(3.2f, 3f, 0.2f), wall).GetComponent<Renderer>());
+            wetExterior.Add(CreateBox(building, "DoorwayHeader", center + new Vector3(-0.1f, 2.65f, -4f),
+                new Vector3(3.2f, 0.7f, 0.2f), wall).GetComponent<Renderer>());
+            wetExterior.Add(CreateBox(building, "Roof", center + new Vector3(0f, 3.2f, 0f),
+                new Vector3(9.6f, 0.25f, 8.6f), trim).GetComponent<Renderer>());
             CreateBox(building, "TransparentWindow", center + new Vector3(4.37f, 1.65f, 0.5f),
                 new Vector3(0.04f, 1.4f, 2.2f), glass, collider: false);
         }
@@ -494,7 +528,9 @@ namespace MSC.Weather.Enviro3Integration.Editor
             return vehicle;
         }
 
-        private static void BuildVegetation(Transform parent)
+        private static void BuildVegetation(
+            Transform parent,
+            ICollection<Renderer> wetVegetation)
         {
             GameObject sprucePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(SprucePrefabPath);
             Vector3[] positions =
@@ -513,6 +549,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
                     proxy.transform.SetParent(parent, false);
                     proxy.transform.position = positions[index] + Vector3.up * 2f;
                     proxy.transform.localScale = new Vector3(0.5f, 2f, 0.5f);
+                    wetVegetation.Add(proxy.GetComponent<Renderer>());
                 }
                 else
                 {
@@ -521,6 +558,11 @@ namespace MSC.Weather.Enviro3Integration.Editor
                     tree.transform.SetParent(parent, false);
                     tree.transform.position = positions[index];
                     tree.transform.localScale = Vector3.one * (0.75f + index % 3 * 0.12f);
+                    Renderer[] renderers = tree.GetComponentsInChildren<Renderer>(includeInactive: true);
+                    for (int rendererIndex = 0; rendererIndex < renderers.Length; rendererIndex++)
+                    {
+                        wetVegetation.Add(renderers[rendererIndex]);
+                    }
                 }
             }
         }

@@ -1,0 +1,24 @@
+{
+  "name": "MSC.Development.WeatherLab.Editor",
+  "rootNamespace": "MSC.Development.WeatherLab.Editor",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Weather.Runtime",
+    "MSC.Weather.Presentation.Runtime",
+    "MSC.Development.WeatherLab"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "ENVIRO_3",
+    "ENVIRO_HDRP"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -24,10 +24,15 @@ namespace MSC.Weather.Enviro3Integration
         private const string StartupPendingCode = "ENVIRO3-LIFECYCLE-001";
         private const string UnknownBindingCode = "ENVIRO3-BINDING-001";
         private const string StaleRevisionCode = "ENVIRO3-FRAME-001";
-        private const string InstantTransitionCode = "ENVIRO3-FRAME-002";
+        private const string TransitionApproximationCode = "ENVIRO3-FRAME-002";
         private const string RefreshUnsupportedCode = "ENVIRO3-FRAME-003";
+        private const string LightningIntensityApproximationCode = "ENVIRO3-FRAME-004";
         private const string VendorCallFailureCode = "ENVIRO3-RUNTIME-001";
         private const string RequiredRainEffectName = "Rain";
+        private const float TransitionSettledRate = 4.60517019f;
+        private const float MinimumTransitionRate = 0.0001f;
+        private const float MaximumTransitionRate = 1000f;
+        private const float RefreshCooldownSeconds = 1f;
 
         private const EnvironmentPresentationCapabilities SupportedCapabilities =
             EnvironmentPresentationCapabilities.TimeOfDay |
@@ -38,6 +43,7 @@ namespace MSC.Weather.Enviro3Integration
             EnvironmentPresentationCapabilities.Fog |
             EnvironmentPresentationCapabilities.Wind |
             EnvironmentPresentationCapabilities.LightningVisual |
+            EnvironmentPresentationCapabilities.EnvironmentRefresh |
             EnvironmentPresentationCapabilities.QualityTiers;
 
         [Header("Direct scene references")]
@@ -54,16 +60,38 @@ namespace MSC.Weather.Enviro3Integration
             new List<UnityEngine.Object>();
 
         private EnviroConfiguration runtimeConfiguration;
+        private EnviroWeatherType runtimeDrizzle;
+        private EnviroWeatherType runtimeRain;
+        private EnviroWeatherType runtimeHeavyRain;
         private EnviroWeatherType runtimeStorm;
+        private Enviro.Lightning runtimeLightningPrefab;
+        private Material sourceLightningFlashMaterial;
         private Material runtimeLightningFlashMaterial;
         private Camera previousCamera;
         private Coroutine delayedAttachRoutine;
+        private Coroutine delayedRefreshRoutine;
         private bool runtimeIsolationPrepared;
         private bool startupBarrierPassed;
         private bool attachRequested;
         private bool isAttached;
+        private bool hasAppliedWeatherBinding;
+        private bool hasAppliedPrecipitationIntensity;
+        private bool hasAppliedQualityTier;
+        private bool hasAppliedDateTime;
         private ulong lastAppliedRevision;
         private uint lastLightningSequence;
+        private uint lastRefreshSequence;
+        private uint pendingRefreshSequence;
+        private EnvironmentRefreshTarget pendingRefreshTargets;
+        private EnvironmentBindingId lastWeatherBindingId;
+        private EnviroWeatherType lastPrecipitationWeather;
+        private float lastPrecipitationIntensity;
+        private EnvironmentQualityTier lastQualityTier;
+        private int lastYear;
+        private int lastMonth;
+        private int lastDay;
+        private int lastTimeOfDaySeconds;
+        private float nextRefreshAllowedRealtime;
         private EnvironmentPresentationStatus status = EnvironmentPresentationStatus.Detached;
 
         public bool IsAttached => isAttached;
@@ -98,7 +126,7 @@ namespace MSC.Weather.Enviro3Integration
             }
 
             presentationCamera = camera;
-            if (isAttached && manager != null)
+            if (isAttached && manager != null && manager.Camera != camera)
             {
                 manager.ChangeCamera(camera);
             }
@@ -132,6 +160,7 @@ namespace MSC.Weather.Enviro3Integration
             yield return null;
             startupBarrierPassed = true;
             CaptureLiveManagerModules();
+            EnsureRuntimeLightningPrefab();
             ApplyAutonomyAndAudioSafety();
 
             if (attachOnStart || attachRequested)
@@ -165,16 +194,6 @@ namespace MSC.Weather.Enviro3Integration
             }
 
             Detach();
-        }
-
-        private void LateUpdate()
-        {
-            if (Application.isPlaying && runtimeIsolationPrepared)
-            {
-                // Weather blending rewrites Enviro audio modifiers during Update.
-                // Reassert the silent/autonomy contract after all Update calls.
-                ApplyAutonomyAndAudioSafety();
-            }
         }
 
         private void OnDestroy()
@@ -219,6 +238,7 @@ namespace MSC.Weather.Enviro3Integration
             }
 
             CaptureLiveManagerModules();
+            EnsureRuntimeLightningPrefab();
             ValidateAttachRequirements();
             if (HasErrors())
             {
@@ -227,25 +247,21 @@ namespace MSC.Weather.Enviro3Integration
 
             try
             {
-                runtimeStorm = CloneOwned(bindings.Storm);
-                runtimeStorm.name = bindings.Storm.name + " (Runtime Visual Storm)";
-                if (runtimeStorm.lightningOverride == null)
+                CreateRuntimeWeatherBindings();
+                previousCamera = manager.Camera;
+                if (manager.Camera != presentationCamera)
                 {
-                    runtimeStorm.lightningOverride = new EnviroWeatherTypeLightningOverride();
+                    manager.ChangeCamera(presentationCamera);
                 }
 
-                runtimeStorm.lightningOverride.lightningStorm = false;
-                previousCamera = manager.Camera;
-                manager.ChangeCamera(presentationCamera);
                 ApplyAutonomyAndAudioSafety();
                 isAttached = true;
-                lastAppliedRevision = 0;
-                lastLightningSequence = 0;
+                ResetAppliedState();
                 return SetStatus(EnvironmentPresentationState.Ready, true);
             }
             catch (Exception exception)
             {
-                DestroyRuntimeStorm();
+                DestroyRuntimeWeatherBindings();
                 AddError(
                     VendorCallFailureCode,
                     "Enviro attachment failed: " + exception.GetType().Name + ".");
@@ -309,40 +325,52 @@ namespace MSC.Weather.Enviro3Integration
                 return SetStatus(EnvironmentPresentationState.Faulted, true);
             }
 
-            if (presetKind == EnvironmentPresentationPresetKind.Storm)
+            weatherType = ResolveRuntimeWeather(weatherType, frame.BindingId, presetKind);
+            if (weatherType == null)
             {
-                weatherType = runtimeStorm;
+                AddError(
+                    UnknownBindingCode,
+                    "The resolved Enviro weather binding has no isolated runtime clone.",
+                    frame.BindingId);
+                return SetStatus(EnvironmentPresentationState.Faulted, true);
             }
 
             try
             {
-                manager.Weather.ChangeWeatherInstant(weatherType);
-                manager.Quality.Settings.defaultQuality = quality;
-                manager.Quality.UpdateModule();
-                ApplyDateAndTime(frame);
+                ApplyPrecipitationIntensityIfDirty(
+                    weatherType,
+                    frame.PrecipitationIntensity01);
+
+                if (!hasAppliedWeatherBinding || frame.BindingId != lastWeatherBindingId)
+                {
+                    ApplyWeatherBinding(
+                        weatherType,
+                        frame.BindingId,
+                        frame.TransitionDurationSeconds);
+                }
+
+                if (!hasAppliedQualityTier || frame.QualityTier != lastQualityTier)
+                {
+                    ApplyQuality(frame.QualityTier, quality);
+                }
+
+                ApplyDateAndTimeIfDirty(frame);
 
                 if (frame.LightningVisual.IsRequested &&
                     frame.LightningVisual.Sequence != lastLightningSequence)
                 {
-                    CastLightningVisual();
+                    CastLightningVisual(frame.LightningVisual);
                     lastLightningSequence = frame.LightningVisual.Sequence;
+                    if (!Mathf.Approximately(frame.LightningVisual.Intensity01, 1f))
+                    {
+                        AddWarning(
+                            LightningIntensityApproximationCode,
+                            "Enviro bolt intensity is approximated through the runtime flash-material color; the vendor-authored line, plane intensity and point-light animation keep their own curves.",
+                            frame.BindingId);
+                    }
                 }
 
-                if (frame.TransitionDurationSeconds > 0f)
-                {
-                    AddWarning(
-                        InstantTransitionCode,
-                        "Milestone 07A maps smoke states with ChangeWeatherInstant; transition duration is not applied.",
-                        frame.BindingId);
-                }
-
-                if (frame.EnvironmentRefresh.Targets != EnvironmentRefreshTarget.None)
-                {
-                    AddWarning(
-                        RefreshUnsupportedCode,
-                        "Explicit reflection/environment refresh is not owned by the bounded 07A adapter.",
-                        frame.BindingId);
-                }
+                AcceptEnvironmentRefresh(frame.EnvironmentRefresh, frame.BindingId);
 
                 lastAppliedRevision = frame.Revision;
                 ApplyAutonomyAndAudioSafety();
@@ -364,6 +392,7 @@ namespace MSC.Weather.Enviro3Integration
 
         public void Detach()
         {
+            CancelPendingRefresh();
             if (!isAttached)
             {
                 status = EnvironmentPresentationStatus.Detached;
@@ -372,22 +401,21 @@ namespace MSC.Weather.Enviro3Integration
 
             ApplyAutonomyAndAudioSafety();
             if (manager != null && manager.Weather != null &&
-                manager.Weather.targetWeatherType == runtimeStorm &&
+                IsRuntimeWeather(manager.Weather.targetWeatherType) &&
                 bindings != null && bindings.Clear != null)
             {
                 manager.Weather.ChangeWeatherInstant(bindings.Clear);
             }
 
-            if (manager != null)
+            if (manager != null && manager.Camera != previousCamera)
             {
                 manager.ChangeCamera(previousCamera);
             }
 
             isAttached = false;
-            lastAppliedRevision = 0;
-            lastLightningSequence = 0;
+            ResetAppliedState();
             previousCamera = null;
-            DestroyRuntimeStorm();
+            DestroyRuntimeWeatherBindings();
             diagnostics.Clear();
             status = EnvironmentPresentationStatus.Detached;
         }
@@ -613,14 +641,15 @@ namespace MSC.Weather.Enviro3Integration
                 AddError(MissingModuleCode, "The Lightning visual prefab has no flash material.");
             }
 
-            if (bindings.Clear == null || bindings.Overcast == null || bindings.Rain == null ||
+            if (bindings.Clear == null || bindings.PartlyCloudy == null ||
+                bindings.Overcast == null || bindings.Rain == null ||
                 bindings.Storm == null || bindings.Fog == null ||
                 bindings.Low == null || bindings.High == null ||
                 bindings.EffectsSource == null)
             {
                 AddError(
                     MissingReferenceCode,
-                    "All direct effects, clear/overcast/rain/storm/fog, and low/high assets must be assigned.");
+                    "All direct effects, clear/partly-cloudy/overcast/rain/storm/fog, and low/high assets must be assigned.");
             }
         }
 
@@ -635,16 +664,76 @@ namespace MSC.Weather.Enviro3Integration
             return false;
         }
 
-        private void ApplyDateAndTime(in EnvironmentPresentationFrame frame)
+        private void ApplyWeatherBinding(
+            EnviroWeatherType weatherType,
+            EnvironmentBindingId bindingId,
+            float transitionDurationSeconds)
+        {
+            if (transitionDurationSeconds <= 0f)
+            {
+                manager.Weather.ChangeWeatherInstant(weatherType);
+            }
+            else
+            {
+                ConfigureTransitionApproximation(transitionDurationSeconds);
+                manager.Weather.ChangeWeather(weatherType);
+                AddWarning(
+                    TransitionApproximationCode,
+                    "Enviro uses exponential per-field blending. The adapter maps the requested duration to an approximately 99% settled transition, so the exact finish time remains frame-rate and profile dependent.",
+                    bindingId);
+            }
+
+            lastWeatherBindingId = bindingId;
+            hasAppliedWeatherBinding = true;
+        }
+
+        /// <summary>
+        /// Enviro applies Lerp(current, target, speed * deltaTime), not a finite-duration
+        /// transition. A rate of -ln(0.01) / duration leaves about one percent residual
+        /// at the requested duration in the continuous approximation.
+        /// </summary>
+        private void ConfigureTransitionApproximation(float durationSeconds)
+        {
+            float rate = Mathf.Clamp(
+                TransitionSettledRate / durationSeconds,
+                MinimumTransitionRate,
+                MaximumTransitionRate);
+            EnviroWeather settings = manager.Weather.Settings;
+            settings.cloudsTransitionSpeed = rate;
+            settings.fogTransitionSpeed = rate;
+            settings.lightingTransitionSpeed = rate;
+            settings.effectsTransitionSpeed = rate;
+            settings.auroraTransitionSpeed = rate;
+            settings.environmentTransitionSpeed = rate;
+            settings.audioTransitionSpeed = rate;
+        }
+
+        private void ApplyQuality(EnvironmentQualityTier qualityTier, EnviroQuality quality)
+        {
+            manager.Quality.Settings.defaultQuality = quality;
+            manager.Quality.UpdateModule();
+            lastQualityTier = qualityTier;
+            hasAppliedQualityTier = true;
+        }
+
+        private void ApplyDateAndTimeIfDirty(in EnvironmentPresentationFrame frame)
         {
             int totalSeconds = Mathf.Clamp(
                 Mathf.FloorToInt(frame.NormalizedTimeOfDay01 * 86400f),
                 0,
                 86399);
+            if (hasAppliedDateTime &&
+                frame.Year == lastYear &&
+                frame.Month == lastMonth &&
+                frame.Day == lastDay &&
+                totalSeconds == lastTimeOfDaySeconds)
+            {
+                return;
+            }
+
             int hours = totalSeconds / 3600;
             int minutes = totalSeconds % 3600 / 60;
             int seconds = totalSeconds % 60;
-            manager.Time.Settings.simulate = false;
             manager.Time.SetDateTime(
                 seconds,
                 minutes,
@@ -652,6 +741,12 @@ namespace MSC.Weather.Enviro3Integration
                 frame.Day,
                 frame.Month,
                 frame.Year);
+
+            lastYear = frame.Year;
+            lastMonth = frame.Month;
+            lastDay = frame.Day;
+            lastTimeOfDaySeconds = totalSeconds;
+            hasAppliedDateTime = true;
         }
 
         private void ApplyAutonomyAndAudioSafety()
@@ -663,18 +758,44 @@ namespace MSC.Weather.Enviro3Integration
 
             if (manager.Time != null && manager.Time.Settings != null)
             {
-                manager.Time.Settings.simulate = false;
+                if (manager.Time.Settings.simulate)
+                {
+                    manager.Time.Settings.simulate = false;
+                }
             }
 
             if (manager.Lightning != null && manager.Lightning.Settings != null)
             {
-                manager.Lightning.Settings.lightningStorm = false;
+                if (manager.Lightning.Settings.lightningStorm)
+                {
+                    manager.Lightning.Settings.lightningStorm = false;
+                }
             }
 
             if (manager.Fog != null && manager.Fog.Settings != null)
             {
-                manager.Fog.Settings.controlHDRPFog = true;
-                manager.Fog.Settings.controlHDRPVolumetrics = true;
+                if (!manager.Fog.Settings.controlHDRPFog)
+                {
+                    manager.Fog.Settings.controlHDRPFog = true;
+                }
+
+                if (!manager.Fog.Settings.controlHDRPVolumetrics)
+                {
+                    manager.Fog.Settings.controlHDRPVolumetrics = true;
+                }
+            }
+
+            if (manager.Reflections != null && manager.Reflections.Settings != null)
+            {
+                if (manager.Reflections.Settings.globalReflectionsUpdateOnGameTime)
+                {
+                    manager.Reflections.Settings.globalReflectionsUpdateOnGameTime = false;
+                }
+
+                if (manager.Reflections.Settings.globalReflectionsUpdateOnPosition)
+                {
+                    manager.Reflections.Settings.globalReflectionsUpdateOnPosition = false;
+                }
             }
 
             SilenceAudio(manager.Audio);
@@ -687,12 +808,35 @@ namespace MSC.Weather.Enviro3Integration
                 return;
             }
 
-            audio.Settings.ambientMasterVolume = 0f;
-            audio.Settings.weatherMasterVolume = 0f;
-            audio.Settings.thunderMasterVolume = 0f;
-            audio.ambientVolumeModifier = 0f;
-            audio.weatherVolumeModifier = 0f;
-            audio.thunderVolumeModifier = 0f;
+            if (!Mathf.Approximately(audio.Settings.ambientMasterVolume, 0f))
+            {
+                audio.Settings.ambientMasterVolume = 0f;
+            }
+
+            if (!Mathf.Approximately(audio.Settings.weatherMasterVolume, 0f))
+            {
+                audio.Settings.weatherMasterVolume = 0f;
+            }
+
+            if (!Mathf.Approximately(audio.Settings.thunderMasterVolume, 0f))
+            {
+                audio.Settings.thunderMasterVolume = 0f;
+            }
+
+            if (!Mathf.Approximately(audio.ambientVolumeModifier, 0f))
+            {
+                audio.ambientVolumeModifier = 0f;
+            }
+
+            if (!Mathf.Approximately(audio.weatherVolumeModifier, 0f))
+            {
+                audio.weatherVolumeModifier = 0f;
+            }
+
+            if (!Mathf.Approximately(audio.thunderVolumeModifier, 0f))
+            {
+                audio.thunderVolumeModifier = 0f;
+            }
             SilenceClips(audio.Settings.ambientClips);
             SilenceClips(audio.Settings.weatherClips);
             SilenceClips(audio.Settings.thunderClips);
@@ -713,54 +857,389 @@ namespace MSC.Weather.Enviro3Integration
                     continue;
                 }
 
-                clip.volume = 0f;
+                if (!Mathf.Approximately(clip.volume, 0f))
+                {
+                    clip.volume = 0f;
+                }
+
                 if (clip.myAudioSource != null)
                 {
-                    clip.myAudioSource.volume = 0f;
-                    clip.myAudioSource.Stop();
+                    if (!Mathf.Approximately(clip.myAudioSource.volume, 0f))
+                    {
+                        clip.myAudioSource.volume = 0f;
+                    }
+
+                    if (clip.myAudioSource.isPlaying)
+                    {
+                        clip.myAudioSource.Stop();
+                    }
                 }
             }
         }
 
         private void CastLightningVisual()
         {
-            Lightning prefab = manager.Lightning.Settings.prefab;
-            Material sourceFlashMaterial = prefab.planeMat;
-            if (runtimeLightningFlashMaterial == null)
+            CastLightningVisual(new EnvironmentLightningVisualRequest(
+                true,
+                1,
+                lightningTarget.position,
+                1f));
+        }
+
+        private bool EnsureRuntimeLightningPrefab()
+        {
+            if (runtimeLightningPrefab != null && manager != null &&
+                manager.Lightning != null && manager.Lightning.Settings != null &&
+                manager.Lightning.Settings.prefab == runtimeLightningPrefab)
             {
-                runtimeLightningFlashMaterial = new Material(sourceFlashMaterial)
-                {
-                    name = sourceFlashMaterial.name + " (Runtime Lightning Visual)",
-                    hideFlags = HideFlags.DontSave
-                };
-                AddOwnedObject(runtimeLightningFlashMaterial);
-            }
-            else
-            {
-                // The vendor bolt animates _Intensity on the supplied material. Reset
-                // the one adapter-owned clone before reuse instead of allocating a new
-                // native Material for every visual request.
-                runtimeLightningFlashMaterial.CopyPropertiesFromMaterial(sourceFlashMaterial);
+                return true;
             }
 
+            Enviro.Lightning sourcePrefab = manager?.Lightning?.Settings?.prefab;
+            if (sourcePrefab == null || sourcePrefab.planeMat == null)
+            {
+                AddError(
+                    MissingModuleCode,
+                    "The Lightning module requires a visual prefab with a flash material.");
+                return false;
+            }
+
+            sourceLightningFlashMaterial = sourcePrefab.planeMat;
+            runtimeLightningFlashMaterial = new Material(sourceLightningFlashMaterial)
+            {
+                name = sourceLightningFlashMaterial.name + " (Runtime Lightning Visual)",
+                hideFlags = HideFlags.DontSave
+            };
+
+            var inactiveHost = new GameObject("Enviro Lightning Runtime Prefab Host")
+            {
+                hideFlags = HideFlags.HideAndDontSave
+            };
+            inactiveHost.SetActive(false);
+            GameObject cloneObject = Instantiate(
+                sourcePrefab.gameObject,
+                inactiveHost.transform,
+                worldPositionStays: false);
+            cloneObject.name = sourcePrefab.gameObject.name + " (Runtime Isolated)";
+            cloneObject.hideFlags = HideFlags.HideAndDontSave;
+            runtimeLightningPrefab = cloneObject.GetComponent<Enviro.Lightning>();
+            if (runtimeLightningPrefab == null)
+            {
+                Destroy(inactiveHost);
+                Destroy(runtimeLightningFlashMaterial);
+                runtimeLightningFlashMaterial = null;
+                sourceLightningFlashMaterial = null;
+                AddError(
+                    MissingModuleCode,
+                    "The cloned lightning prefab has no Enviro.Lightning component.");
+                return false;
+            }
+
+            runtimeLightningPrefab.planeMat = runtimeLightningFlashMaterial;
+            manager.Lightning.Settings.prefab = runtimeLightningPrefab;
+            AddOwnedObject(inactiveHost);
+            AddOwnedObject(runtimeLightningFlashMaterial);
+            return true;
+        }
+
+        private void CastLightningVisual(in EnvironmentLightningVisualRequest request)
+        {
+            if (runtimeLightningPrefab == null ||
+                manager.Lightning.Settings.prefab != runtimeLightningPrefab ||
+                runtimeLightningFlashMaterial == null ||
+                sourceLightningFlashMaterial == null)
+            {
+                throw new InvalidOperationException(
+                    "The adapter-owned lightning prefab and flash material are unavailable.");
+            }
+
+            // The vendor bolt animates _Intensity on the supplied material. Reset the
+            // one adapter-owned clone before reuse instead of allocating a new native
+            // Material for every visual request or touching the paid prefab asset.
+            runtimeLightningFlashMaterial.CopyPropertiesFromMaterial(
+                sourceLightningFlashMaterial);
+
             EnviroAudioModule runtimeAudio = manager.Audio;
+            Vector3 targetPosition = request.WorldPosition;
+            Vector3 originPosition = targetPosition +
+                                     (lightningOrigin.position - lightningTarget.position);
+            ApplyLightningIntensityApproximation(
+                runtimeLightningFlashMaterial,
+                request.Intensity01);
             try
             {
-                // Enviro's Lightning component writes directly to planeMat. Temporarily
-                // inject a runtime-only clone before Instantiate copies the component,
-                // then restore the paid prefab immediately. Audio is also removed for
-                // the duration of the public visual call so no vendor thunder event starts.
-                prefab.planeMat = runtimeLightningFlashMaterial;
+                // Enviro instantiates the adapter-owned inactive runtime prefab. Audio is
+                // removed for the duration of the public visual call so no vendor thunder
+                // event starts. The paid prefab and its serialized component stay read-only.
                 manager.Audio = null;
                 manager.Lightning.CastLightningBolt(
-                    lightningOrigin.position,
-                    lightningTarget.position);
+                    originPosition,
+                    targetPosition);
             }
             finally
             {
                 manager.Audio = runtimeAudio;
-                prefab.planeMat = sourceFlashMaterial;
             }
+        }
+
+        private static void ApplyLightningIntensityApproximation(
+            Material material,
+            float intensity01)
+        {
+            // The installed Enviro API hard-codes the bolt line, plane _Intensity and
+            // point-light animation. Scaling supported color inputs on the runtime-only
+            // flash material is the narrow approximation available without a vendor patch.
+            if (material.HasProperty("_BaseColor"))
+            {
+                Color color = material.GetColor("_BaseColor");
+                material.SetColor("_BaseColor", color * intensity01);
+            }
+
+            if (material.HasProperty("_EmissiveColor"))
+            {
+                Color color = material.GetColor("_EmissiveColor");
+                material.SetColor("_EmissiveColor", color * intensity01);
+            }
+        }
+
+        private void CreateRuntimeWeatherBindings()
+        {
+            runtimeDrizzle = CreateRuntimeWeatherBinding(bindings.Rain, "Drizzle");
+            runtimeRain = CreateRuntimeWeatherBinding(bindings.Rain, "Rain");
+            runtimeHeavyRain = CreateRuntimeWeatherBinding(bindings.Rain, "Heavy Rain");
+            runtimeStorm = CreateRuntimeWeatherBinding(bindings.Storm, "Storm");
+        }
+
+        private EnviroWeatherType CreateRuntimeWeatherBinding(
+            EnviroWeatherType source,
+            string label)
+        {
+            EnviroWeatherType runtimeWeather = CloneOwned(source);
+            runtimeWeather.name = source.name + " (Runtime Visual " + label + ")";
+            if (runtimeWeather.lightningOverride == null)
+            {
+                runtimeWeather.lightningOverride = new EnviroWeatherTypeLightningOverride();
+            }
+
+            runtimeWeather.lightningOverride.lightningStorm = false;
+            return runtimeWeather;
+        }
+
+        private EnviroWeatherType ResolveRuntimeWeather(
+            EnviroWeatherType sourceWeather,
+            EnvironmentBindingId bindingId,
+            EnvironmentPresentationPresetKind presetKind)
+        {
+            if (sourceWeather == null)
+            {
+                return null;
+            }
+
+            switch (bindingId.Value)
+            {
+                case Enviro3EnvironmentBindings.DrizzleIdValue:
+                    return runtimeDrizzle;
+                case Enviro3EnvironmentBindings.RainIdValue:
+                    return runtimeRain;
+                case Enviro3EnvironmentBindings.HeavyRainIdValue:
+                    return runtimeHeavyRain;
+                case Enviro3EnvironmentBindings.StormIdValue:
+                    return runtimeStorm;
+                default:
+                    return sourceWeather;
+            }
+        }
+
+        private bool IsRuntimeWeather(EnviroWeatherType weather)
+        {
+            return weather != null &&
+                   (weather == runtimeDrizzle ||
+                    weather == runtimeRain ||
+                    weather == runtimeHeavyRain ||
+                    weather == runtimeStorm);
+        }
+
+        private void ApplyPrecipitationIntensityIfDirty(
+            EnviroWeatherType weather,
+            float intensity01)
+        {
+            if (!IsRuntimeWeather(weather))
+            {
+                return;
+            }
+
+            if (hasAppliedPrecipitationIntensity &&
+                lastPrecipitationWeather == weather &&
+                Mathf.Approximately(lastPrecipitationIntensity, intensity01))
+            {
+                return;
+            }
+
+            if (!TrySetRainEmission(weather, intensity01))
+            {
+                throw new InvalidOperationException(
+                    "The runtime precipitation binding has no single exact 'Rain' override.");
+            }
+
+            lastPrecipitationWeather = weather;
+            lastPrecipitationIntensity = intensity01;
+            hasAppliedPrecipitationIntensity = true;
+        }
+
+        private static bool TrySetRainEmission(
+            EnviroWeatherType weather,
+            float intensity01)
+        {
+            if (weather == null || weather.effectsOverride == null ||
+                weather.effectsOverride.effectsOverride == null)
+            {
+                return false;
+            }
+
+            int matches = 0;
+            for (int index = 0; index < weather.effectsOverride.effectsOverride.Count; index++)
+            {
+                EnviroEffectsOverrideType effect =
+                    weather.effectsOverride.effectsOverride[index];
+                if (effect == null ||
+                    !string.Equals(
+                        effect.name,
+                        RequiredRainEffectName,
+                        StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                effect.emission = intensity01;
+                matches++;
+            }
+
+            return matches == 1;
+        }
+
+        private void AcceptEnvironmentRefresh(
+            in EnvironmentRefreshRequest request,
+            EnvironmentBindingId bindingId)
+        {
+            if (request.Targets == EnvironmentRefreshTarget.None ||
+                request.Sequence == lastRefreshSequence)
+            {
+                return;
+            }
+
+            lastRefreshSequence = request.Sequence;
+            EnvironmentRefreshTarget supportedTargets = request.Targets &
+                (EnvironmentRefreshTarget.Ambient | EnvironmentRefreshTarget.Reflections);
+
+            if ((request.Targets & EnvironmentRefreshTarget.Sky) != 0)
+            {
+                AddWarning(
+                    RefreshUnsupportedCode,
+                    "The installed Enviro API has no bounded explicit sky-refresh command; regular Enviro sky updates remain active.",
+                    bindingId);
+            }
+
+            if ((supportedTargets & EnvironmentRefreshTarget.Ambient) != 0 &&
+                manager.Lighting == null)
+            {
+                supportedTargets &= ~EnvironmentRefreshTarget.Ambient;
+                AddWarning(
+                    RefreshUnsupportedCode,
+                    "Ambient refresh was requested but the live Enviro Lighting module is unavailable.",
+                    bindingId);
+            }
+
+            if ((supportedTargets & EnvironmentRefreshTarget.Reflections) != 0 &&
+                (manager.Reflections == null ||
+                 manager.Objects == null ||
+                 manager.Objects.globalReflectionProbe == null))
+            {
+                supportedTargets &= ~EnvironmentRefreshTarget.Reflections;
+                AddWarning(
+                    RefreshUnsupportedCode,
+                    "Reflection refresh was requested but the live Enviro reflection probe is unavailable.",
+                    bindingId);
+            }
+
+            if (supportedTargets == EnvironmentRefreshTarget.None)
+            {
+                return;
+            }
+
+            pendingRefreshTargets |= supportedTargets;
+            pendingRefreshSequence = request.Sequence;
+            float remainingSeconds = nextRefreshAllowedRealtime - Time.realtimeSinceStartup;
+            if (remainingSeconds <= 0f)
+            {
+                ExecutePendingEnvironmentRefresh();
+                return;
+            }
+
+            if (delayedRefreshRoutine == null)
+            {
+                delayedRefreshRoutine = StartCoroutine(
+                    ExecutePendingEnvironmentRefreshAfterDelay(remainingSeconds));
+            }
+        }
+
+        private IEnumerator ExecutePendingEnvironmentRefreshAfterDelay(float delaySeconds)
+        {
+            yield return new WaitForSecondsRealtime(delaySeconds);
+            delayedRefreshRoutine = null;
+            ExecutePendingEnvironmentRefresh();
+        }
+
+        private void ExecutePendingEnvironmentRefresh()
+        {
+            EnvironmentRefreshTarget targets = pendingRefreshTargets;
+            pendingRefreshTargets = EnvironmentRefreshTarget.None;
+            pendingRefreshSequence = 0;
+
+            if ((targets & EnvironmentRefreshTarget.Ambient) != 0)
+            {
+                manager.Lighting.UpdateAmbientLighting(true);
+            }
+
+            if ((targets & EnvironmentRefreshTarget.Reflections) != 0)
+            {
+                manager.Reflections.RenderGlobalReflectionProbe(true);
+            }
+
+            nextRefreshAllowedRealtime = Time.realtimeSinceStartup + RefreshCooldownSeconds;
+        }
+
+        private void CancelPendingRefresh()
+        {
+            if (delayedRefreshRoutine != null)
+            {
+                StopCoroutine(delayedRefreshRoutine);
+                delayedRefreshRoutine = null;
+            }
+
+            pendingRefreshTargets = EnvironmentRefreshTarget.None;
+            pendingRefreshSequence = 0;
+        }
+
+        private void ResetAppliedState()
+        {
+            hasAppliedWeatherBinding = false;
+            hasAppliedPrecipitationIntensity = false;
+            hasAppliedQualityTier = false;
+            hasAppliedDateTime = false;
+            lastAppliedRevision = 0;
+            lastLightningSequence = 0;
+            lastRefreshSequence = 0;
+            pendingRefreshSequence = 0;
+            pendingRefreshTargets = EnvironmentRefreshTarget.None;
+            lastWeatherBindingId = default;
+            lastPrecipitationWeather = null;
+            lastPrecipitationIntensity = 0f;
+            lastQualityTier = default;
+            lastYear = 0;
+            lastMonth = 0;
+            lastDay = 0;
+            lastTimeOfDaySeconds = 0;
+            nextRefreshAllowedRealtime = 0f;
         }
 
         private void AssignConfigurationToManager(EnviroConfiguration configuration)
@@ -878,16 +1357,24 @@ namespace MSC.Weather.Enviro3Integration
             }
         }
 
-        private void DestroyRuntimeStorm()
+        private void DestroyRuntimeWeatherBindings()
         {
-            if (runtimeStorm == null)
+            DestroyRuntimeWeather(ref runtimeDrizzle);
+            DestroyRuntimeWeather(ref runtimeRain);
+            DestroyRuntimeWeather(ref runtimeHeavyRain);
+            DestroyRuntimeWeather(ref runtimeStorm);
+        }
+
+        private void DestroyRuntimeWeather(ref EnviroWeatherType runtimeWeather)
+        {
+            if (runtimeWeather == null)
             {
                 return;
             }
 
-            ownedRuntimeObjects.Remove(runtimeStorm);
-            Destroy(runtimeStorm);
-            runtimeStorm = null;
+            ownedRuntimeObjects.Remove(runtimeWeather);
+            Destroy(runtimeWeather);
+            runtimeWeather = null;
         }
 
         private void FailClosedManager()
@@ -920,6 +1407,8 @@ namespace MSC.Weather.Enviro3Integration
             }
 
             ownedRuntimeObjects.Clear();
+            runtimeLightningPrefab = null;
+            sourceLightningFlashMaterial = null;
             runtimeLightningFlashMaterial = null;
             runtimeConfiguration = null;
             runtimeIsolationPrepared = false;

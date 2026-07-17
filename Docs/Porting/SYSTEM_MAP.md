@@ -1,4 +1,4 @@
-# Donor System Map — through Milestone 06B2
+# Donor System Map — through Milestone 07B
 
 This map describes observed donor ownership/coupling and the intended transfer boundary. It is not a claim that any subsystem has been ported.
 
@@ -456,4 +456,70 @@ bridges and moved the character across cell boundaries without observed
 traversal, collision, seam, duplicate, popping or load/unload issues. The
 bridge/cell-boundary gate is `PASS / HumanAccepted`; dedicated vehicle driving
 was not repeated, while automated high-speed preload validation passed. The
-06B3 entry gate is `GO`; 06B3 itself has not started.
+later 06B3 validation/freeze closed as `PASS / Frozen / HumanAccepted`. This
+leaves the donor baseline temporary and does not change its transfer
+classification.
+
+## Milestones 07A/07B project-owned environment flow
+
+```mermaid
+flowchart TD
+    TIME["MSC.Core.Runtime\nGameTimeService"] --> WEATHER["MSC.Weather.Runtime\nWeatherDirector"]
+    WEATHER --> OUTPUTS["WeatherEnvironmentOutputs\nstable project contract"]
+    OUTPUTS --> MAP["MSC.Weather.Presentation.Runtime\nframe mapper + binding IDs"]
+    MAP --> ADAPTER["MSC.Weather.Enviro3Integration\nEnviro3EnvironmentAdapter"]
+    ADAPTER --> ENVIRO["Read-only Enviro 3\npresentation only"]
+    OUTPUTS --> WET["GlobalWetnessController"]
+    OUTPUTS --> LIGHTNING["LightningStrikeDirector"]
+    OUTPUTS --> HOOKS["Road / vehicle / vegetation / water\naudio + UI contracts"]
+    WET --> SHADER["Global wetness/material bridge"]
+    LIGHTNING --> PRESENT["Ambient/gameplay presentation requests\nand delayed thunder/effect hooks"]
+    DTO["Versioned project DTOs"] --> TIME
+    DTO --> WEATHER
+    DTO --> WET
+    DTO --> LIGHTNING
+    LAB["MSC.Development.WeatherLab\n07B composition and DEV controls"] --> TIME
+    LAB --> ADAPTER
+    DONOR["Donor weather FSM/code/assets"] -. "no inspection/transfer/runtime dependency" .-> WEATHER
+```
+
+Ownership and boundaries:
+
+- `MSC.Core.Runtime` owns deterministic game date/time, pause/scale, scheduling,
+  snapshots and time DTOs. Mutation callbacks are ordered and transactional:
+  failures restore clock/due-queue state, while reentrant mutation fails closed
+  without poisoning the next operation.
+- `MSC.Weather.Runtime` owns seeded fronts/timeline, overrides, stable outputs,
+  wetness, shelter/exposure, lightning selection/fairness and weather DTOs.
+- `MSC.Weather.Presentation.Runtime` owns vendor-neutral binding IDs, frames,
+  validation and shared wetness shader output.
+- `MSC.Weather.Enviro3Integration` is the only runtime assembly that references
+  Enviro. It pushes project time/weather into runtime-isolated presentation
+  objects; vendor assets and runtime objects are never game-state authority or
+  serialized save identity.
+- `MSC.Development.WeatherLab` and its Editor assembly own the bounded 07B
+  composition, DEV window, builder and diagnostics. Composite DEV advance also
+  rolls back time/weather/wetness/lightning when a scheduled callback fails.
+  Production world cells are unchanged until 07C.
+
+Every logical value introduced in 07B is project-authored
+`RemakeDesignTarget`; no donor time/weather algorithm, transition duration,
+wetness value or lightning rule is claimed as `CodePorted` or
+`ConfigurationTransferred`. The porting ledger records these as explicit
+`ProjectAuthored/Milestone07B` implementation rows with no donor source hash.
+
+Automated closure evidence is vendor-neutral core `101/101 PASS` (`20` GameTime,
+`29` WeatherDomain, `52` WeatherPresentation), Enviro integration `13/13 PASS`,
+WeatherLab time-domain integration `3/3 PASS`, and performance harness `1/1
+PASS`. Builder/fresh preflight `Logs/M07B_WeatherLabBuilder_Final_03.log` is
+`PASS`. The automated Editor PlayMode JSON is
+`PerformanceCaptures/Milestone07B/M07B_WeatherLab_Performance.json`; manual
+captures and standalone/real-GPU performance sign-off remain `PENDING`. The
+accepted read-only vendor baseline is `538` files / `305967931` bytes /
+`8e376fa2748162157975fbdd8b1045e021b810fea40f01d99eafe22a4d30bd44`.
+The architecture map does not promote automated Editor timing to manual or
+standalone-player acceptance.
+
+Milestone 07A is fixed in commit `61250e2`. The only next implementation step is
+`07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md`; Milestone 08 remains out of
+scope until that rollout is validated.

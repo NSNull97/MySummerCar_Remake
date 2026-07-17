@@ -162,4 +162,6 @@ State, quality, lightning и camera controls реализованы в одно�
 8. Войти в PlayMode и выполнить captures строго по `WEATHERLAB_CAPTURE_INDEX.csv`.
 9. Отдельно выполнить development-build performance matrix.
 
-На момент этого документа пункты 1-7 подтверждены builder `1.0.1`, отдельным fresh-process preflight и targeted Weather/Enviro tests (`57/57`). Runtime smoke ждёт несколько кадров в `Rain` и `Storm`, проверяет normalized emission `0.5`/`1.0`, `isPlaying`, `particleCount > 0`, renderer и material. Пользователь принял общее отображение, fog composition, lightning и капли после remediation. Capture artifacts и отдельный Low/High comparison отсутствуют. Поэтому пункт 8 — `MANUAL_PASS_BY_USER_CAPTURE_MISSING / LOW_HIGH_COMPARISON_PENDING`; пункт 9 — `PERF_PENDING`.
+Исторический 07A срез: пункты 1-7 подтверждены builder `1.0.1`, отдельным fresh-process preflight и targeted Weather/Enviro tests (`57/57`). Runtime smoke ждёт несколько кадров в `Rain` и `Storm`, проверяет normalized emission `0.5`/`1.0`, `isPlaying`, `particleCount > 0`, renderer и material. Пользователь принял общее отображение, fog composition, lightning и капли после remediation. Capture artifacts и отдельный Low/High comparison отсутствовали; пункт 8 был `MANUAL_PASS_BY_USER_CAPTURE_MISSING / LOW_HIGH_COMPARISON_PENDING`, пункт 9 — `PERF_PENDING`.
+
+Актуальный 07B engineering/performance срез находится в `WEATHERLAB_07B_VALIDATION.md` и `WEATHERLAB_07B_PERFORMANCE.md`; исторические числа 07A выше не являются текущим gate.

@@ -1,9 +1,11 @@
 # CURRENT PROJECT STATE — USER CONFIRMED
 
-Updated for Prompt Pack v5.
+Updated through Milestone 07B on 2026-07-17.
 
 ## Active milestone
 
+- The next and only active milestone is
+  `07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md`.
 - Milestone 06 is treated as implemented.
 - Milestone 06A is closed and human-accepted.
 - Milestone 06B1 is closed and committed.
@@ -20,6 +22,26 @@ Updated for Prompt Pack v5.
   the lake, Teimo-area streaming unload/reload and out-of-bounds recovery.
 - The corrected temporary water presentation and original-game terrain voids
   remain explicit late-remaster debt, not production art.
+- **Milestone 07A — Enviro 3 preflight and WeatherLab is implemented and fixed
+  in commit `61250e2` (`weather: complete milestone 07A Enviro WeatherLab`).**
+- **Milestone 07B — project-owned time/weather domain and Enviro 3 adapter has
+  automated status `PASS`.** The implementation remains confined to
+  WeatherLab/tests and has not been rolled into production world cells.
+- The final vendor-neutral core result is **101/101 PASS**: GameTime `20`,
+  WeatherDomain `29`, WeatherPresentation `52`. Enviro integration is **13/13
+  PASS**, WeatherLab time-domain integration is **3/3 PASS**, and the automated
+  Editor PlayMode performance harness is **1/1 PASS**.
+- GameTime callbacks/scheduler mutations are transactionally hardened: callback
+  or subscriber failure rolls back clock/queue state, reentrant mutation fails
+  closed, and WeatherLab DEV advance rolls back every authoritative domain.
+- Final builder/fresh preflight evidence is
+  `Logs/M07B_WeatherLabBuilder_Final_03.log` with `PASS`.
+- The accepted canonical Enviro baseline is `538` files / `305967931` bytes /
+  `8e376fa2748162157975fbdd8b1045e021b810fea40f01d99eafe22a4d30bd44`.
+- Automated Editor PlayMode performance evidence is recorded in
+  `PerformanceCaptures/Milestone07B/M07B_WeatherLab_Performance.json`. Manual
+  comparison captures and standalone/real-GPU performance sign-off remain
+  `PENDING`; neither is inferred from the automated harness.
 
 ## User-confirmed world state
 
@@ -75,14 +97,13 @@ Current allowed sequence:
 
 1. keep frozen `DonorWorldBaseline-v001` unchanged except through the recorded
    regeneration policy;
-2. manually import/verify Enviro 3 when absent;
-3. `07A_ENVIRO3_PREFLIGHT_AND_WEATHERLAB.md`;
-4. `07B_TIME_WEATHER_DOMAIN_AND_ENVIRO3_ADAPTER.md`;
-5. `07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md`;
-6. continue to Milestone 08 only after Milestone 07 is stable.
+2. execute only `07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md` next;
+3. continue to Milestone 08 only after Milestone 07 production rollout and its
+   validation are stable.
 
 Do not run the deprecated
 `06B_PRODUCTION_WORLD_CELL_FIDELITY_GATE.md`.
+Do not repeat 07A or 07B and do not start Milestone 08 before 07C closes.
 
 ## Fixed design decisions
 
@@ -122,6 +143,9 @@ installation automatically.
 
 ## Enviro package status
 
-The user owns Enviro 3. Ownership does not prove that the package is imported or
-which exact version/API is installed. Milestone 07A must inspect local package
-evidence and stop cleanly when it is absent.
+Enviro 3 is imported and its local public API is validated. Exact semantic patch
+metadata is not authoritative, so the installation is identified by the
+canonical 07B fingerprint `538 / 305967931 / 8e376fa2…`. The vendor source is a
+read-only third-party presentation dependency, not donor content and not game
+state authority. Project-owned GameTime, weather fronts, wetness, lightning and
+save DTOs must remain independent of Enviro runtime objects.

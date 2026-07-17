@@ -2,6 +2,8 @@
   "name": "MSC.Development.WeatherLab",
   "rootNamespace": "MSC.Development.WeatherLab",
   "references": [
+    "MSC.Core.Runtime",
+    "MSC.Weather.Runtime",
     "MSC.Weather.Presentation.Runtime"
   ],
   "includePlatforms": [],

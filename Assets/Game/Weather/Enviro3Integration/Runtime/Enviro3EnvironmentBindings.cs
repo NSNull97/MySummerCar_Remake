@@ -15,8 +15,11 @@ namespace MSC.Weather.Enviro3Integration
     public sealed class Enviro3EnvironmentBindings : ScriptableObject
     {
         public const string ClearIdValue = "weather.clear";
+        public const string PartlyCloudyIdValue = "weather.partly_cloudy";
         public const string OvercastIdValue = "weather.overcast";
+        public const string DrizzleIdValue = "weather.drizzle";
         public const string RainIdValue = "weather.rain";
+        public const string HeavyRainIdValue = "weather.heavy_rain";
         public const string StormIdValue = "weather.storm_visual";
         public const string FogIdValue = "weather.fog";
         public const string NightIdValue = "weather.night";
@@ -24,8 +27,11 @@ namespace MSC.Weather.Enviro3Integration
         public const string HighQualityIdValue = "quality.high";
 
         private static readonly EnvironmentBindingId ClearId = ParseKnownId(ClearIdValue);
+        private static readonly EnvironmentBindingId PartlyCloudyId = ParseKnownId(PartlyCloudyIdValue);
         private static readonly EnvironmentBindingId OvercastId = ParseKnownId(OvercastIdValue);
+        private static readonly EnvironmentBindingId DrizzleId = ParseKnownId(DrizzleIdValue);
         private static readonly EnvironmentBindingId RainId = ParseKnownId(RainIdValue);
+        private static readonly EnvironmentBindingId HeavyRainId = ParseKnownId(HeavyRainIdValue);
         private static readonly EnvironmentBindingId StormId = ParseKnownId(StormIdValue);
         private static readonly EnvironmentBindingId FogId = ParseKnownId(FogIdValue);
         private static readonly EnvironmentBindingId NightId = ParseKnownId(NightIdValue);
@@ -38,6 +44,7 @@ namespace MSC.Weather.Enviro3Integration
 
         [Header("Direct weather asset references")]
         [SerializeField] private EnviroWeatherType clear;
+        [SerializeField] private EnviroWeatherType partlyCloudy;
         [SerializeField] private EnviroWeatherType overcast;
         [SerializeField] private EnviroWeatherType rain;
         [SerializeField] private EnviroWeatherType storm;
@@ -52,6 +59,8 @@ namespace MSC.Weather.Enviro3Integration
         public EnviroEffectsModule EffectsSource => effectsSource;
 
         public EnviroWeatherType Clear => clear;
+
+        public EnviroWeatherType PartlyCloudy => partlyCloudy;
 
         public EnviroWeatherType Overcast => overcast;
 
@@ -69,6 +78,7 @@ namespace MSC.Weather.Enviro3Integration
             EnviroConfiguration authoredSourceConfiguration,
             EnviroEffectsModule authoredEffectsSource,
             EnviroWeatherType authoredClear,
+            EnviroWeatherType authoredPartlyCloudy,
             EnviroWeatherType authoredOvercast,
             EnviroWeatherType authoredRain,
             EnviroWeatherType authoredStorm,
@@ -79,12 +89,38 @@ namespace MSC.Weather.Enviro3Integration
             sourceConfiguration = authoredSourceConfiguration;
             effectsSource = authoredEffectsSource;
             clear = authoredClear;
+            partlyCloudy = authoredPartlyCloudy;
             overcast = authoredOvercast;
             rain = authoredRain;
             storm = authoredStorm;
             fog = authoredFog;
             low = authoredLow;
             high = authoredHigh;
+        }
+
+        /// <summary>Compatibility overload for pre-07B test fixtures and local authoring tools.</summary>
+        public void ConfigureForAuthoring(
+            EnviroConfiguration authoredSourceConfiguration,
+            EnviroEffectsModule authoredEffectsSource,
+            EnviroWeatherType authoredClear,
+            EnviroWeatherType authoredOvercast,
+            EnviroWeatherType authoredRain,
+            EnviroWeatherType authoredStorm,
+            EnviroWeatherType authoredFog,
+            EnviroQuality authoredLow,
+            EnviroQuality authoredHigh)
+        {
+            ConfigureForAuthoring(
+                authoredSourceConfiguration,
+                authoredEffectsSource,
+                authoredClear,
+                authoredOvercast,
+                authoredOvercast,
+                authoredRain,
+                authoredStorm,
+                authoredFog,
+                authoredLow,
+                authoredHigh);
         }
 
         public bool TryResolveWeather(
@@ -99,6 +135,13 @@ namespace MSC.Weather.Enviro3Integration
                 return weatherType != null;
             }
 
+            if (bindingId == PartlyCloudyId)
+            {
+                weatherType = partlyCloudy;
+                presetKind = EnvironmentPresentationPresetKind.Overcast;
+                return weatherType != null;
+            }
+
             if (bindingId == OvercastId)
             {
                 weatherType = overcast;
@@ -108,6 +151,16 @@ namespace MSC.Weather.Enviro3Integration
 
             if (bindingId == RainId)
             {
+                weatherType = rain;
+                presetKind = EnvironmentPresentationPresetKind.Rain;
+                return weatherType != null;
+            }
+
+            if (bindingId == DrizzleId || bindingId == HeavyRainId)
+            {
+                // The installed base pack has one typed Rain asset and no public
+                // continuous precipitation-intensity setter. Domain intensity remains
+                // authoritative; presentation is a documented bounded Rain remap.
                 weatherType = rain;
                 presetKind = EnvironmentPresentationPresetKind.Rain;
                 return weatherType != null;

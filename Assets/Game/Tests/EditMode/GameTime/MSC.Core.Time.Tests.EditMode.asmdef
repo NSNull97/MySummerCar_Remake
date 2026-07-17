@@ -1,0 +1,21 @@
+{
+  "name": "MSC.Core.Time.Tests.EditMode",
+  "rootNamespace": "MSC.Tests.EditMode.GameTime",
+  "references": [
+    "MSC.Core.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

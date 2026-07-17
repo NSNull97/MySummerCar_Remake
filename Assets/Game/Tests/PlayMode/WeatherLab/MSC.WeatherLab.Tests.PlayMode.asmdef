@@ -1,0 +1,25 @@
+{
+  "name": "MSC.WeatherLab.Tests.PlayMode",
+  "rootNamespace": "MSC.Tests.PlayMode.WeatherLab",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Weather.Runtime",
+    "MSC.Weather.Presentation.Runtime",
+    "MSC.Development.WeatherLab"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "ENVIRO_3",
+    "ENVIRO_HDRP"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

@@ -2,6 +2,11 @@
 
 Дата среза: 2026-07-17.
 
+Актуальный 07B preflight использует canonical Unity 6 baseline
+`538 / 305967931 / 8e376fa2…`. Исторический 07A fingerprint ниже сохранён как
+аудитный факт; миграция и отсутствие последующего drift доказаны в
+`ENVIRO3_FINGERPRINT_MIGRATION_AUDIT_07B.md`.
+
 ## 1. Exact version неизвестна
 
 `version.txt` одновременно содержит заголовок `3.0.0` и changelog до `3.0.8`; inspector показывает `3.0.7`. Используется hash-identified local payload без уверенного patch label. Подробнее: `ENVIRO3_VERSION_EVIDENCE.md`.
@@ -97,17 +102,19 @@ Vendor Environment module содержит wetness/snow state, но project-owne
 
 `Documentation.pdf` присутствует, захеширован, все 28 страниц извлечены и прочитаны bundled PDF runtime без установки внешних tools. Он подтвердил HDRP define/registration path; exact adapter calls дополнительно сверены с source signatures.
 
-## 22. WeatherLab/preflight созданы, captures/performance не завершены
+## 22. Исторический статус 07A: WeatherLab/preflight созданы
 
-Adapter, binding asset type, builder, preflight, WeatherLab scene и generated content assets присутствуют. Итоговый batch подтвердил 3 cameras, 6 anchors, shipping exclusion, отсутствие donor baseline, canonical vendor fingerprint и single owners; return code 0. Headless runtime smoke циклически применил clear/overcast/rain/storm/night/fog, Low/High и lightning request; post-remediation test также подтвердил работающие Rain particles. Пользователь принял общее отображение, fog composition, lightning и капли Rain/Storm без capture artifacts. Low/High comparison и все screenshot/performance artifacts остаются `PENDING`.
+Adapter, binding asset type, builder, preflight, WeatherLab scene и generated content assets присутствуют. Итоговый 07A batch подтвердил 3 cameras, 6 anchors, shipping exclusion, отсутствие donor baseline, canonical vendor fingerprint и single owners; return code 0. Headless runtime smoke циклически применил clear/overcast/rain/storm/night/fog, Low/High и lightning request; post-remediation test также подтвердил работающие Rain particles. Пользователь принял общее отображение, fog composition, lightning и капли Rain/Storm без capture artifacts. Для 07A Low/High comparison и screenshot/performance artifacts оставались `PENDING`.
+
+В 07B добавлен automated Editor PlayMode baseline по десяти состояниям (`M07B_WeatherLab_Performance.json`). Manual screenshots, standalone 1080p и реальные Render Thread/GPU measurements всё ещё не заявляются.
 
 ## 23. Встроенный performance probe ограничен CPU frame duration
 
 `WeatherLabPerformanceProbe` собирает только sample count, average и max `unscaledDeltaTime` (по умолчанию 600 samples). Он не измеряет GPU/render thread, memory, GC, draw calls или percentile distribution. Полный development-build profiler capture из `WEATHERLAB_PERFORMANCE.md` остаётся обязательным.
 
-## 24. Transition policy 07A мгновенная
+## 24. Историческая transition policy 07A мгновенная
 
-Текущий adapter применяет `ChangeWeatherInstant`. Запрос transition duration больше нуля создаёт warning; плавные production transitions не считаются реализованными.
+В 07A adapter применял `ChangeWeatherInstant`, а запрос transition duration больше нуля создавал warning. В 07B это ограничение снято: project-owned game duration переводится в simulation seconds, а adapter использует bounded exponential Enviro transition. Production-world подтверждение остаётся 07C.
 
 ## 25. Fingerprint зависит от canonical sorting
 
