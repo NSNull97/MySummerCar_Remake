@@ -1,0 +1,26 @@
+{
+  "name": "MSC.Weather.Enviro3Integration.Editor",
+  "rootNamespace": "MSC.Weather.Enviro3Integration.Editor",
+  "references": [
+    "MSC.Development.WeatherLab",
+    "MSC.Weather.Enviro3Integration",
+    "MSC.Weather.Presentation.Runtime",
+    "Enviro3.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "ENVIRO_3",
+    "ENVIRO_HDRP"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

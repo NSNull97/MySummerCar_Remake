@@ -1,0 +1,14 @@
+{
+  "name": "MSC.Weather.Presentation.Runtime",
+  "rootNamespace": "MSC.Weather.Presentation",
+  "references": [],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

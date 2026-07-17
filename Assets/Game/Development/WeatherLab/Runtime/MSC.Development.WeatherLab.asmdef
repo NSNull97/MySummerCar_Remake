@@ -1,0 +1,19 @@
+{
+  "name": "MSC.Development.WeatherLab",
+  "rootNamespace": "MSC.Development.WeatherLab",
+  "references": [
+    "MSC.Weather.Presentation.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "ENVIRO_3",
+    "ENVIRO_HDRP"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

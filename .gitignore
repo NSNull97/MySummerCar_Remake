@@ -63,6 +63,12 @@ WwiseProject/.wsettings
 WwiseProject/GeneratedSoundBanks/
 Assets/StreamingAssets/Audio/GeneratedSoundBanks/
 
+# Licensed local vendor dependencies (manual install required)
+/Assets/Enviro 3 - Sky and Weather/
+/Assets/Enviro 3 - Sky and Weather.meta
+/Assets/Enviro 3 - Additional Weather Pack/
+/Assets/Enviro 3 - Additional Weather Pack.meta
+
 # Local profiling/build artifacts
 PerformanceCaptures/
 TestResults/

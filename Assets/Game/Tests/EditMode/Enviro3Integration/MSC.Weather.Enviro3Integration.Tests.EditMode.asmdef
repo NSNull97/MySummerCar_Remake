@@ -1,0 +1,28 @@
+{
+  "name": "MSC.Weather.Enviro3Integration.Tests.EditMode",
+  "rootNamespace": "MSC.Tests.EditMode.Enviro3Integration",
+  "references": [
+    "MSC.Weather.Enviro3Integration",
+    "MSC.Weather.Presentation.Runtime",
+    "MSC.Development.WeatherLab",
+    "Enviro3.Runtime",
+    "Unity.RenderPipelines.Core.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "ENVIRO_3",
+    "ENVIRO_HDRP"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

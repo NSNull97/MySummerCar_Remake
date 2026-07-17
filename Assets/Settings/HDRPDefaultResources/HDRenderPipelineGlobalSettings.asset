@@ -16,7 +16,8 @@ MonoBehaviour:
     m_Version: 0
     m_BeforeTransparentCustomPostProcesses:
       m_InjectionPoint: 0
-      m_CustomPostProcessTypesAsString: []
+      m_CustomPostProcessTypesAsString:
+      - Enviro.EnviroHDRPRenderer, Enviro3.Runtime
     m_BeforeTAACustomPostProcesses:
       m_InjectionPoint: 3
       m_CustomPostProcessTypesAsString: []
@@ -29,7 +30,8 @@ MonoBehaviour:
     m_AfterPostProcessCustomPostProcesses:
       m_InjectionPoint: 2
       m_CustomPostProcessTypesAsString: []
-  beforeTransparentCustomPostProcesses: []
+  beforeTransparentCustomPostProcesses:
+  - Enviro.EnviroHDRPRenderer, Enviro3.Runtime
   beforePostProcessCustomPostProcesses: []
   afterPostProcessBlursCustomPostProcesses: []
   afterPostProcessCustomPostProcesses: []
@@ -312,7 +314,8 @@ MonoBehaviour:
         m_Version: 0
         m_BeforeTransparentCustomPostProcesses:
           m_InjectionPoint: 0
-          m_CustomPostProcessTypesAsString: []
+          m_CustomPostProcessTypesAsString:
+          - Enviro.EnviroHDRPRenderer, Enviro3.Runtime
         m_BeforeTAACustomPostProcesses:
           m_InjectionPoint: 3
           m_CustomPostProcessTypesAsString: []
