@@ -1,3 +1,4 @@
+using MSC.Weather.Domain;
 using UnityEngine;
 
 namespace MSC.Weather.Presentation
@@ -22,6 +23,8 @@ namespace MSC.Weather.Presentation
             EnvironmentPrecipitationType precipitationType,
             float precipitationIntensity01,
             float fogMistIntensity01,
+            float visibilityMeters,
+            WeatherExposureContext exposureContext,
             Vector2 windDirectionXZ,
             float windSpeedMetersPerSecond,
             float windGustSpeedMetersPerSecond,
@@ -43,6 +46,8 @@ namespace MSC.Weather.Presentation
             PrecipitationType = precipitationType;
             PrecipitationIntensity01 = precipitationIntensity01;
             FogMistIntensity01 = fogMistIntensity01;
+            VisibilityMeters = visibilityMeters;
+            ExposureContext = exposureContext;
             WindDirectionXZ = windDirectionXZ;
             WindSpeedMetersPerSecond = windSpeedMetersPerSecond;
             WindGustSpeedMetersPerSecond = windGustSpeedMetersPerSecond;
@@ -77,6 +82,14 @@ namespace MSC.Weather.Presentation
         public float PrecipitationIntensity01 { get; }
 
         public float FogMistIntensity01 { get; }
+
+        /// <summary>
+        /// Project-domain meteorological visibility target in metres. Presentation
+        /// backends convert this value to their native fog-density representation.
+        /// </summary>
+        public float VisibilityMeters { get; }
+
+        public WeatherExposureContext ExposureContext { get; }
 
         /// <summary>Normalized horizontal direction in project X/Z coordinates.</summary>
         public Vector2 WindDirectionXZ { get; }

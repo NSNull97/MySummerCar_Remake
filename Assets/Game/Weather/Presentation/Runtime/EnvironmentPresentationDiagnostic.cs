@@ -44,6 +44,7 @@ namespace MSC.Weather.Presentation
         public const string InvalidLightningRequest = "ENV-FRAME-011";
         public const string InvalidRefreshRequest = "ENV-FRAME-012";
         public const string DisabledFrameRequest = "ENV-FRAME-013";
+        public const string InvalidExposure = "ENV-FRAME-014";
         public const string InvalidBindingDefinition = "ENV-BINDING-001";
         public const string DuplicateBindingDefinition = "ENV-BINDING-002";
         public const string InvalidPresetKind = "ENV-BINDING-003";

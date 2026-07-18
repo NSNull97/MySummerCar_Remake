@@ -1,0 +1,17 @@
+{
+  "name": "MSC.Weather.Production.LegacyBaseline.Runtime",
+  "rootNamespace": "MSC.Weather.Production.LegacyBaseline",
+  "references": [
+    "MSC.Weather.Runtime",
+    "MSC.LegacyImport.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -192,6 +192,7 @@ namespace MSC.Editor.WorldStreaming
                     playerPrefab,
                     PlayerSpawnPosition,
                     PlayerSpawnRotation);
+                installer.ConfigureWorldOnlyForAuthoring();
 
                 EditorUtility.SetDirty(worldStreaming);
                 EditorUtility.SetDirty(installer);

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e560f6225fa444ada41886dc9ff459d0, type: 3}
+  m_Name: ProductionEnviro3Bindings
+  m_EditorClassIdentifier: MSC.Weather.Enviro3Integration::MSC.Weather.Enviro3Integration.Enviro3EnvironmentBindings
+  sourceConfiguration: {fileID: 11400000, guid: f542e85116feed24e8e28df88842ee3c, type: 2}
+  effectsSource: {fileID: 11400000, guid: 59a8076f06e540343b875f850ac3b6a4, type: 2}
+  clear: {fileID: 11400000, guid: 3e61e22e1ac8ba045a3b0e53c22b3629, type: 2}
+  partlyCloudy: {fileID: 11400000, guid: 6c589d06d1746d04a864437f71d0cc30, type: 2}
+  overcast: {fileID: 11400000, guid: 11fdd63974de7ae44b1c689d499953f6, type: 2}
+  rain: {fileID: 11400000, guid: f736e404e0b052942bc41c35c50dccad, type: 2}
+  storm: {fileID: 11400000, guid: ebf8ae7a51a5cd342a90c81f5182d8a8, type: 2}
+  fog: {fileID: 11400000, guid: 9ba6458aa7df92d4494a7a3d40830a15, type: 2}
+  low: {fileID: 11400000, guid: a002704085c17f1439758fcee25df529, type: 2}
+  medium: {fileID: 11400000, guid: 2e0aaa075bca92245a9e8300b7eace9c, type: 2}
+  high: {fileID: 11400000, guid: 60e887b1524da0a4a8f1318ef102e22a, type: 2}

@@ -27,6 +27,10 @@ namespace MSC.Tests.EditMode.WeatherPresentation
             Assert.That(frame.BindingId.Value, Is.EqualTo("weather.storm_visual"));
             Assert.That(frame.CloudType, Is.EqualTo(EnvironmentCloudType.Storm));
             Assert.That(frame.PrecipitationType, Is.EqualTo(EnvironmentPrecipitationType.Rain));
+            Assert.That(frame.VisibilityMeters, Is.EqualTo(2200f));
+            Assert.That(
+                frame.ExposureContext,
+                Is.EqualTo(WeatherExposureContext.Exterior));
             Assert.That(frame.TransitionDurationSeconds, Is.EqualTo(120f));
         }
 

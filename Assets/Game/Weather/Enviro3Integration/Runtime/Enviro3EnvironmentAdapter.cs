@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Enviro;
+using MSC.Weather.Domain;
 using MSC.Weather.Presentation;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 
 namespace MSC.Weather.Enviro3Integration
 {
@@ -11,15 +14,17 @@ namespace MSC.Weather.Enviro3Integration
     /// Narrow runtime-only Enviro 3 presentation boundary. It owns isolated module
     /// clones and never writes into the vendor configuration or preset assets.
     /// </summary>
-    [DefaultExecutionOrder(-32000)]
+    [DefaultExecutionOrder(-31000)]
     [DisallowMultipleComponent]
     public sealed class Enviro3EnvironmentAdapter : MonoBehaviour,
         IEnvironmentPresentationAdapter,
-        IEnvironmentPresentationCameraTarget
+        IEnvironmentPresentationCameraTarget,
+        IEnvironmentPresentationSceneOwnershipGuard
     {
         private const string MissingReferenceCode = "ENVIRO3-ATTACH-001";
         private const string MissingModuleCode = "ENVIRO3-ATTACH-002";
         private const string DuplicateManagerCode = "ENVIRO3-ATTACH-003";
+        private const string DuplicateWindOwnerCode = "ENVIRO3-ATTACH-004";
         private const string IsolationFailureCode = "ENVIRO3-ISOLATION-001";
         private const string StartupPendingCode = "ENVIRO3-LIFECYCLE-001";
         private const string UnknownBindingCode = "ENVIRO3-BINDING-001";
@@ -33,6 +38,7 @@ namespace MSC.Weather.Enviro3Integration
         private const float MinimumTransitionRate = 0.0001f;
         private const float MaximumTransitionRate = 1000f;
         private const float RefreshCooldownSeconds = 1f;
+        private const float MaximumEnviroWindSpeedMetersPerSecond = 20f;
 
         private const EnvironmentPresentationCapabilities SupportedCapabilities =
             EnvironmentPresentationCapabilities.TimeOfDay |
@@ -44,7 +50,8 @@ namespace MSC.Weather.Enviro3Integration
             EnvironmentPresentationCapabilities.Wind |
             EnvironmentPresentationCapabilities.LightningVisual |
             EnvironmentPresentationCapabilities.EnvironmentRefresh |
-            EnvironmentPresentationCapabilities.QualityTiers;
+            EnvironmentPresentationCapabilities.QualityTiers |
+            EnvironmentPresentationCapabilities.Exposure;
 
         [Header("Direct scene references")]
         [SerializeField] private EnviroManager manager;
@@ -60,6 +67,10 @@ namespace MSC.Weather.Enviro3Integration
             new List<UnityEngine.Object>();
 
         private EnviroConfiguration runtimeConfiguration;
+        private VolumeProfile previousVolumeProfile;
+        private VolumeProfile runtimeVolumeProfile;
+        private Exposure runtimeExposure;
+        private Fog runtimeFog;
         private EnviroWeatherType runtimeDrizzle;
         private EnviroWeatherType runtimeRain;
         private EnviroWeatherType runtimeHeavyRain;
@@ -67,6 +78,7 @@ namespace MSC.Weather.Enviro3Integration
         private Enviro.Lightning runtimeLightningPrefab;
         private Material sourceLightningFlashMaterial;
         private Material runtimeLightningFlashMaterial;
+        private ParticleSystem configuredRainParticleSystem;
         private Camera previousCamera;
         private Coroutine delayedAttachRoutine;
         private Coroutine delayedRefreshRoutine;
@@ -78,6 +90,8 @@ namespace MSC.Weather.Enviro3Integration
         private bool hasAppliedPrecipitationIntensity;
         private bool hasAppliedQualityTier;
         private bool hasAppliedDateTime;
+        private bool hasAppliedWind;
+        private bool hasAppliedVisualPolicy;
         private ulong lastAppliedRevision;
         private uint lastLightningSequence;
         private uint lastRefreshSequence;
@@ -87,6 +101,17 @@ namespace MSC.Weather.Enviro3Integration
         private EnviroWeatherType lastPrecipitationWeather;
         private float lastPrecipitationIntensity;
         private EnvironmentQualityTier lastQualityTier;
+        private Vector2 lastWindDirectionXZ = Vector2.up;
+        private float lastEnviroWindSpeed01;
+        private float lastEnviroWindTurbulence01;
+        private float lastVisibilityMeters = 20000f;
+        private WeatherExposureContext lastExposureContext =
+            WeatherExposureContext.Exterior;
+        private float currentExposureEv;
+        private float exposureEvVelocity;
+        private bool exposureInitialized;
+        private float previousRenderSettingsReflectionIntensity;
+        private bool hasPreviousRenderSettingsReflectionIntensity;
         private int lastYear;
         private int lastMonth;
         private int lastDay;
@@ -102,6 +127,82 @@ namespace MSC.Weather.Enviro3Integration
         public EnvironmentPresentationStatus Status => status;
 
         public IReadOnlyList<EnvironmentPresentationDiagnostic> Diagnostics => diagnostics;
+
+        public bool HasIsolatedRuntimeVolumeTargets =>
+            runtimeVolumeProfile != null &&
+            (runtimeVolumeProfile.hideFlags & HideFlags.DontSave) != 0 &&
+            manager != null && manager.volumeHDRP != null &&
+            manager.volumeHDRP.sharedProfile == runtimeVolumeProfile &&
+            manager.Lighting != null &&
+            manager.Lighting.exposureHDRP == runtimeExposure &&
+            manager.Fog != null && manager.Fog.fogHDRP == runtimeFog;
+
+        public bool IsCustomHeightFogDisabled =>
+            manager != null && manager.Fog != null &&
+            manager.Fog.Settings != null && !manager.Fog.Settings.fog;
+
+        public float ActiveFogMeanFreePathMeters =>
+            runtimeFog == null ? float.NaN : runtimeFog.meanFreePath.value;
+
+        public float ActiveVolumetricLightDimmer =>
+            manager == null || manager.Fog == null ||
+            manager.Fog.Settings == null
+                ? float.NaN
+                : manager.Fog.Settings.directLightMultiplier;
+
+        public float ActiveRainParticleMaxScreenSize
+        {
+            get
+            {
+                if (configuredRainParticleSystem == null)
+                {
+                    return float.NaN;
+                }
+
+                ParticleSystemRenderer renderer =
+                    configuredRainParticleSystem
+                        .GetComponent<ParticleSystemRenderer>();
+                return renderer == null
+                    ? float.NaN
+                    : renderer.maxParticleSize;
+            }
+        }
+
+        public bool IsProductionTimeLocationApplied =>
+            manager != null && manager.Time != null &&
+            manager.Time.Settings != null &&
+            Mathf.Approximately(
+                manager.Time.Settings.latitude,
+                Enviro3ProductionVisualPolicy
+                    .ProductionLatitudeDegrees) &&
+            Mathf.Approximately(
+                manager.Time.Settings.longitude,
+                Enviro3ProductionVisualPolicy
+                    .ProductionLongitudeDegrees) &&
+            manager.Time.Settings.utcOffset ==
+                Enviro3ProductionVisualPolicy
+                    .ProductionUtcOffsetHours;
+
+        public bool IsAuroraSuppressed =>
+            manager != null && manager.Aurora != null &&
+            manager.Aurora.Settings != null &&
+            !manager.Aurora.Settings.useAurora &&
+            Mathf.Approximately(
+                manager.Aurora.Settings.auroraIntensityModifier,
+                0f);
+
+        public float ActiveGlobalReflectionIntensity =>
+            manager == null || manager.Reflections == null ||
+            manager.Reflections.Settings == null
+                ? float.NaN
+                : manager.Reflections.Settings
+                    .globalReflectionsIntensity;
+
+        public float ActiveSunLocalHeight =>
+            manager == null || manager.Objects == null ||
+            manager.Objects.sun == null
+                ? float.NaN
+                : manager.Objects.sun.transform.localPosition.y;
 
         public void ConfigureForAuthoring(
             EnviroManager authoredManager,
@@ -134,6 +235,26 @@ namespace MSC.Weather.Enviro3Integration
             return true;
         }
 
+        public EnvironmentPresentationStatus RevalidateSceneOwnership()
+        {
+            diagnostics.Clear();
+            if (!Application.isPlaying)
+            {
+                AddError(
+                    MissingReferenceCode,
+                    "Enviro scene ownership can be validated only in Play Mode.");
+                return SetStatus(EnvironmentPresentationState.Faulted, false);
+            }
+
+            if (ValidateExclusiveSceneOwnership())
+            {
+                return status;
+            }
+
+            FailClosedSceneOwnership();
+            return SetStatus(EnvironmentPresentationState.Faulted, false);
+        }
+
         private void Awake()
         {
             if (!Application.isPlaying)
@@ -161,6 +282,7 @@ namespace MSC.Weather.Enviro3Integration
             startupBarrierPassed = true;
             CaptureLiveManagerModules();
             EnsureRuntimeLightningPrefab();
+            ApplyRuntimeRainVisibilityPolicy();
             ApplyAutonomyAndAudioSafety();
 
             if (attachOnStart || attachRequested)
@@ -207,6 +329,20 @@ namespace MSC.Weather.Enviro3Integration
             TearDownRuntimeIsolation();
         }
 
+        private void LateUpdate()
+        {
+            if (!Application.isPlaying || !runtimeIsolationPrepared)
+            {
+                return;
+            }
+
+            // Enviro's Weather module writes environment targets during Update. A
+            // single adapter-level LateUpdate reasserts project authority after that
+            // vendor pass; no per-object wind writers or additional WindZones exist.
+            ReassertProjectOwnedEnvironmentAuthority();
+            ApplyRuntimeRainVisibilityPolicy();
+        }
+
         public EnvironmentPresentationStatus Attach()
         {
             attachRequested = true;
@@ -239,6 +375,7 @@ namespace MSC.Weather.Enviro3Integration
 
             CaptureLiveManagerModules();
             EnsureRuntimeLightningPrefab();
+            ApplyRuntimeRainVisibilityPolicy();
             ValidateAttachRequirements();
             if (HasErrors())
             {
@@ -355,6 +492,8 @@ namespace MSC.Weather.Enviro3Integration
                 }
 
                 ApplyDateAndTimeIfDirty(frame);
+                ApplyProjectOwnedWind(frame);
+                ApplyProjectOwnedVisualPolicy(frame);
 
                 if (frame.LightningVisual.IsRequested &&
                     frame.LightningVisual.Sequence != lastLightningSequence)
@@ -443,6 +582,9 @@ namespace MSC.Weather.Enviro3Integration
 
             try
             {
+                previousRenderSettingsReflectionIntensity =
+                    RenderSettings.reflectionIntensity;
+                hasPreviousRenderSettingsReflectionIntensity = true;
                 EnviroConfiguration source = bindings.SourceConfiguration;
                 runtimeConfiguration = CloneOwned(source);
                 runtimeConfiguration.name = source.name + " (Runtime Isolated)";
@@ -466,6 +608,8 @@ namespace MSC.Weather.Enviro3Integration
                 runtimeConfiguration.Environment = CloneOwned(source.Environment);
 
                 AssignConfigurationToManager(runtimeConfiguration);
+                PrepareRuntimeVolumeIsolation();
+                RebindRuntimeVolumeTargets();
                 if (!ValidatePreEnableSafety())
                 {
                     SetStatus(EnvironmentPresentationState.Faulted, false);
@@ -535,6 +679,13 @@ namespace MSC.Weather.Enviro3Integration
                 valid = false;
             }
 
+            if (runtimeConfiguration.Environment != null &&
+                runtimeConfiguration.Environment.Settings == null)
+            {
+                AddError(MissingModuleCode, "The cloned Environment module has no Settings object.");
+                valid = false;
+            }
+
             if (!HasCompatibleRainEffect(runtimeConfiguration.Effects))
             {
                 AddError(
@@ -575,6 +726,55 @@ namespace MSC.Weather.Enviro3Integration
             return matchingEffects == 1;
         }
 
+        private void ApplyRuntimeRainVisibilityPolicy()
+        {
+            if (manager == null || manager.Effects == null ||
+                manager.Effects.Settings == null ||
+                manager.Effects.Settings.effectTypes == null)
+            {
+                return;
+            }
+
+            for (int index = 0;
+                 index < manager.Effects.Settings.effectTypes.Count;
+                 index++)
+            {
+                EnviroEffectTypes effect =
+                    manager.Effects.Settings.effectTypes[index];
+                if (effect == null || effect.mySystem == null ||
+                    !string.Equals(
+                        effect.name,
+                        RequiredRainEffectName,
+                        StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (configuredRainParticleSystem == effect.mySystem)
+                {
+                    return;
+                }
+
+                ParticleSystemRenderer renderer =
+                    effect.mySystem.GetComponent<ParticleSystemRenderer>();
+                if (renderer == null)
+                {
+                    return;
+                }
+
+                // The installed vendor prefab caps stretched rain streaks at
+                // 0.001 of screen height, which is effectively sub-pixel in the
+                // production Game View. Adjust only the instantiated renderer;
+                // the package prefab and material remain read-only.
+                renderer.maxParticleSize =
+                    Enviro3ProductionVisualPolicy
+                        .ResolveRainParticleMaxScreenSize(
+                            renderer.maxParticleSize);
+                configuredRainParticleSystem = effect.mySystem;
+                return;
+            }
+        }
+
         private void ValidateAttachRequirements()
         {
             if (manager == null || presentationCamera == null || bindings == null ||
@@ -585,15 +785,7 @@ namespace MSC.Weather.Enviro3Integration
                     "Manager, camera, bindings, and deterministic lightning anchors are required.");
             }
 
-            EnviroManager[] managers = FindObjectsByType<EnviroManager>(
-                FindObjectsInactive.Include,
-                FindObjectsSortMode.None);
-            if (managers.Length != 1 || managers[0] != manager || EnviroManager.instance != manager)
-            {
-                AddError(
-                    DuplicateManagerCode,
-                    "WeatherLab requires exactly one explicit active EnviroManager instance.");
-            }
+            ValidateExclusiveSceneOwnership();
 
             if (manager == null || manager.configuration != runtimeConfiguration)
             {
@@ -624,7 +816,8 @@ namespace MSC.Weather.Enviro3Integration
             if (manager.Time != null && manager.Time.Settings == null ||
                 manager.Weather != null && manager.Weather.Settings == null ||
                 manager.Lightning != null && manager.Lightning.Settings == null ||
-                manager.Quality != null && manager.Quality.Settings == null)
+                manager.Quality != null && manager.Quality.Settings == null ||
+                manager.Environment != null && manager.Environment.Settings == null)
             {
                 AddError(MissingModuleCode, "A required live Enviro module has no Settings object.");
             }
@@ -644,13 +837,60 @@ namespace MSC.Weather.Enviro3Integration
             if (bindings.Clear == null || bindings.PartlyCloudy == null ||
                 bindings.Overcast == null || bindings.Rain == null ||
                 bindings.Storm == null || bindings.Fog == null ||
-                bindings.Low == null || bindings.High == null ||
+                bindings.Low == null || bindings.Medium == null ||
+                bindings.High == null ||
                 bindings.EffectsSource == null)
             {
                 AddError(
                     MissingReferenceCode,
-                    "All direct effects, clear/partly-cloudy/overcast/rain/storm/fog, and low/high assets must be assigned.");
+                    "All direct effects, clear/partly-cloudy/overcast/rain/storm/fog, and low/medium/high assets must be assigned.");
             }
+        }
+
+        private bool ValidateExclusiveSceneOwnership()
+        {
+            bool valid = true;
+            EnviroManager[] managers = FindObjectsByType<EnviroManager>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None);
+            if (manager == null ||
+                managers.Length != 1 ||
+                managers[0] != manager ||
+                EnviroManager.instance != manager)
+            {
+                AddError(
+                    DuplicateManagerCode,
+                    "Enviro integration requires exactly one explicitly bound EnviroManager across loaded scenes.");
+                valid = false;
+            }
+
+            WindZone enviroWindZone = manager != null && manager.Objects != null
+                ? manager.Objects.windZone
+                : null;
+            if (enviroWindZone == null)
+            {
+                AddError(
+                    MissingModuleCode,
+                    "The live Enviro Environment module has no owned WindZone.");
+                valid = false;
+            }
+            else
+            {
+                WindZone[] activeWindZones = FindObjectsByType<WindZone>(
+                    FindObjectsInactive.Exclude,
+                    FindObjectsSortMode.None);
+                if (activeWindZones.Length != 1 ||
+                    activeWindZones[0] != enviroWindZone ||
+                    !enviroWindZone.transform.IsChildOf(manager.transform))
+                {
+                    AddError(
+                        DuplicateWindOwnerCode,
+                        "Enviro integration requires exactly one active Enviro-owned WindZone across loaded scenes.");
+                    valid = false;
+                }
+            }
+
+            return valid;
         }
 
         private bool RequireModule(ScriptableObject module, string moduleName)
@@ -716,6 +956,23 @@ namespace MSC.Weather.Enviro3Integration
             hasAppliedQualityTier = true;
         }
 
+        private void ApplyProjectOwnedWind(in EnvironmentPresentationFrame frame)
+        {
+            Vector2 direction = frame.WindDirectionXZ.sqrMagnitude > 0.0001f
+                ? frame.WindDirectionXZ.normalized
+                : Vector2.up;
+            lastWindDirectionXZ = direction;
+            lastEnviroWindSpeed01 = Mathf.Clamp01(
+                frame.WindSpeedMetersPerSecond /
+                MaximumEnviroWindSpeedMetersPerSecond);
+            lastEnviroWindTurbulence01 = Mathf.Clamp01(
+                (frame.WindGustSpeedMetersPerSecond -
+                 frame.WindSpeedMetersPerSecond) /
+                MaximumEnviroWindSpeedMetersPerSecond);
+            hasAppliedWind = true;
+            ReassertProjectOwnedEnvironmentAuthority();
+        }
+
         private void ApplyDateAndTimeIfDirty(in EnvironmentPresentationFrame frame)
         {
             int totalSeconds = Mathf.Clamp(
@@ -741,6 +998,7 @@ namespace MSC.Weather.Enviro3Integration
                 frame.Day,
                 frame.Month,
                 frame.Year);
+            manager.Time.UpdateSunAndMoonPosition();
 
             lastYear = frame.Year;
             lastMonth = frame.Month;
@@ -774,6 +1032,14 @@ namespace MSC.Weather.Enviro3Integration
 
             if (manager.Fog != null && manager.Fog.Settings != null)
             {
+                // HDRP native fog is the single production fog owner. Enviro's
+                // custom height-fog renderer would otherwise composite a second
+                // pass over the same camera.
+                if (manager.Fog.Settings.fog)
+                {
+                    manager.Fog.Settings.fog = false;
+                }
+
                 if (!manager.Fog.Settings.controlHDRPFog)
                 {
                     manager.Fog.Settings.controlHDRPFog = true;
@@ -798,7 +1064,214 @@ namespace MSC.Weather.Enviro3Integration
                 }
             }
 
+            ReassertProjectOwnedEnvironmentAuthority();
+
             SilenceAudio(manager.Audio);
+        }
+
+        private void ReassertProjectOwnedEnvironmentAuthority()
+        {
+            EnviroTime timeSettings = manager?.Time?.Settings;
+            if (timeSettings != null)
+            {
+                // Project calendar defaults target the art-directed Finnish
+                // summer cadence. These are solar-calibration values rather than
+                // an in-world GPS claim. The vendor 0/0/UTC0 defaults otherwise
+                // produce an equatorial 18:00 sunset.
+                timeSettings.latitude = Enviro3ProductionVisualPolicy
+                    .ProductionLatitudeDegrees;
+                timeSettings.longitude = Enviro3ProductionVisualPolicy
+                    .ProductionLongitudeDegrees;
+                timeSettings.utcOffset = Enviro3ProductionVisualPolicy
+                    .ProductionUtcOffsetHours;
+            }
+
+            EnviroAurora auroraSettings = manager?.Aurora?.Settings;
+            if (auroraSettings != null)
+            {
+                // Low/Medium vendor quality profiles re-enable aurora. It is not
+                // part of the approved 07C summer production policy.
+                auroraSettings.useAurora = false;
+                auroraSettings.auroraIntensityModifier = 0f;
+                if (manager.Sky != null &&
+                    manager.Sky.mySkyboxMat != null)
+                {
+                    manager.Aurora.UpdateAuroraShader(
+                        manager.Sky.mySkyboxMat);
+                }
+            }
+
+            EnviroReflections reflectionSettings =
+                manager?.Reflections?.Settings;
+            if (reflectionSettings != null)
+            {
+                // TemporaryDirectImport materials were authored around a neutral
+                // reflection baseline. Retain Enviro reflections, but cap their
+                // runtime intensity so wet low-detail surfaces do not read as metal.
+                reflectionSettings.globalReflectionsIntensity =
+                    Enviro3ProductionVisualPolicy
+                        .TemporaryBaselineReflectionIntensity;
+                RenderSettings.reflectionIntensity =
+                    Enviro3ProductionVisualPolicy
+                        .TemporaryBaselineReflectionIntensity;
+
+                EnviroReflectionProbe probe = manager.Objects != null
+                    ? manager.Objects.globalReflectionProbe
+                    : null;
+                if (probe != null && probe.hdprobe != null)
+                {
+                    probe.hdprobe.settingsRaw.lighting.multiplier =
+                        Enviro3ProductionVisualPolicy
+                            .TemporaryBaselineReflectionIntensity;
+                }
+            }
+
+            EnviroFogSettings fogSettings = manager?.Fog?.Settings;
+            if (fogSettings != null)
+            {
+                // Enviro's Quality module writes this flag every Update. Keep the
+                // single HDRP-native fog owner authoritative in the later bounded
+                // adapter pass even before the first presentation frame arrives.
+                fogSettings.fog = false;
+                fogSettings.controlHDRPFog = true;
+                fogSettings.controlHDRPVolumetrics = true;
+            }
+
+            EnviroEnvironment settings = manager?.Environment?.Settings;
+            if (settings != null)
+            {
+                // The project domain owns calendar/seasonal policy and accumulated
+                // wetness. Enviro remains a presentation backend, so its runtime clone is
+                // held at the approved summer/no-snow/no-vendor-wetness baseline.
+                settings.changeSeason = false;
+                settings.season = EnviroEnvironment.Seasons.Summer;
+                settings.wetness = 0f;
+                settings.wetnessTarget = 0f;
+                settings.snow = 0f;
+                settings.snowTarget = 0f;
+                settings.wetnessAccumulationSpeed = 0f;
+                settings.wetnessDrySpeed = 0f;
+                settings.snowAccumulationSpeed = 0f;
+                settings.snowMeltSpeed = 0f;
+            }
+
+            if (settings != null && hasAppliedWind)
+            {
+                settings.windDirectionX = lastWindDirectionXZ.x;
+                settings.windDirectionY = lastWindDirectionXZ.y;
+                settings.windSpeed = lastEnviroWindSpeed01;
+                settings.windTurbulence = lastEnviroWindTurbulence01;
+
+                WindZone windZone = manager.Objects != null
+                    ? manager.Objects.windZone
+                    : null;
+                if (windZone != null)
+                {
+                    windZone.windMain = lastEnviroWindSpeed01;
+                    windZone.windTurbulence = lastEnviroWindTurbulence01;
+                    windZone.transform.forward = new Vector3(
+                        -lastWindDirectionXZ.x,
+                        0f,
+                        -lastWindDirectionXZ.y);
+                }
+            }
+
+            ReassertProjectOwnedVisualPolicy();
+        }
+
+        private void ApplyProjectOwnedVisualPolicy(
+            in EnvironmentPresentationFrame frame)
+        {
+            lastVisibilityMeters = frame.VisibilityMeters;
+            lastExposureContext = frame.ExposureContext;
+            hasAppliedVisualPolicy = true;
+            ReassertProjectOwnedVisualPolicy();
+        }
+
+        private void ReassertProjectOwnedVisualPolicy()
+        {
+            if (!hasAppliedVisualPolicy || manager == null ||
+                manager.Lighting == null || manager.Lighting.Settings == null ||
+                manager.Fog == null || manager.Fog.Settings == null ||
+                runtimeExposure == null || runtimeFog == null)
+            {
+                return;
+            }
+
+            RebindRuntimeVolumeTargets();
+
+            float targetExposureEv =
+                Enviro3ProductionVisualPolicy.CalculateExposureEv(
+                    manager.Lighting.Settings.sceneExposure,
+                    manager.solarTime,
+                    lastExposureContext);
+            if (!exposureInitialized)
+            {
+                currentExposureEv = targetExposureEv;
+                exposureEvVelocity = 0f;
+                exposureInitialized = true;
+            }
+            else
+            {
+                currentExposureEv = Mathf.SmoothDamp(
+                    currentExposureEv,
+                    targetExposureEv,
+                    ref exposureEvVelocity,
+                    Enviro3ProductionVisualPolicy.ExposureAdaptationSeconds,
+                    Mathf.Infinity,
+                    Mathf.Max(Time.unscaledDeltaTime, 0.0001f));
+            }
+
+            runtimeExposure.active = true;
+            runtimeExposure.mode.Override(ExposureMode.Fixed);
+            runtimeExposure.fixedExposure.Override(currentExposureEv);
+
+            float meanFreePath =
+                Enviro3ProductionVisualPolicy.CalculateFogMeanFreePathMeters(
+                    lastVisibilityMeters);
+            runtimeFog.active = true;
+            runtimeFog.enabled.Override(true);
+            runtimeFog.meanFreePath.Override(meanFreePath);
+            runtimeFog.baseHeight.Override(
+                Enviro3ProductionVisualPolicy.FogBaseHeightMeters);
+            runtimeFog.maximumHeight.Override(
+                Enviro3ProductionVisualPolicy.FogMaximumHeightMeters);
+            runtimeFog.enableVolumetricFog.Override(true);
+            runtimeFog.globalLightProbeDimmer.Override(1f);
+
+            EnviroFogSettings fogSettings = manager.Fog.Settings;
+            fogSettings.fog = false;
+            fogSettings.controlHDRPFog = true;
+            fogSettings.controlHDRPVolumetrics = true;
+            fogSettings.fogAttenuationDistance = meanFreePath;
+            fogSettings.baseHeight =
+                Enviro3ProductionVisualPolicy.FogBaseHeightMeters;
+            fogSettings.maxHeight =
+                Enviro3ProductionVisualPolicy.FogMaximumHeightMeters;
+            fogSettings.ambientDimmer = 1f;
+            fogSettings.directLightMultiplier =
+                Enviro3ProductionVisualPolicy.VolumetricLightDimmer;
+            fogSettings.directLightShadowdimmer =
+                Enviro3ProductionVisualPolicy.VolumetricLightDimmer;
+
+            ReassertVolumetricLightDimmer(
+                manager.Lighting.directionalLightHDRP);
+            ReassertVolumetricLightDimmer(
+                manager.Lighting.additionalLightHDRP);
+        }
+
+        private static void ReassertVolumetricLightDimmer(
+            HDAdditionalLightData light)
+        {
+            if (light == null)
+            {
+                return;
+            }
+
+            light.volumetricDimmer =
+                Enviro3ProductionVisualPolicy.VolumetricLightDimmer;
+            light.volumetricShadowDimmer =
+                Enviro3ProductionVisualPolicy.VolumetricLightDimmer;
         }
 
         private static void SilenceAudio(EnviroAudioModule audio)
@@ -1226,6 +1699,8 @@ namespace MSC.Weather.Enviro3Integration
             hasAppliedPrecipitationIntensity = false;
             hasAppliedQualityTier = false;
             hasAppliedDateTime = false;
+            hasAppliedWind = false;
+            hasAppliedVisualPolicy = false;
             lastAppliedRevision = 0;
             lastLightningSequence = 0;
             lastRefreshSequence = 0;
@@ -1235,6 +1710,14 @@ namespace MSC.Weather.Enviro3Integration
             lastPrecipitationWeather = null;
             lastPrecipitationIntensity = 0f;
             lastQualityTier = default;
+            lastWindDirectionXZ = Vector2.up;
+            lastEnviroWindSpeed01 = 0f;
+            lastEnviroWindTurbulence01 = 0f;
+            lastVisibilityMeters = 20000f;
+            lastExposureContext = WeatherExposureContext.Exterior;
+            currentExposureEv = 0f;
+            exposureEvVelocity = 0f;
+            exposureInitialized = false;
             lastYear = 0;
             lastMonth = 0;
             lastDay = 0;
@@ -1282,6 +1765,7 @@ namespace MSC.Weather.Enviro3Integration
             AddOwnedIfRuntime(manager.Lightning);
             AddOwnedIfRuntime(manager.Quality);
             AddOwnedIfRuntime(manager.Environment);
+            RebindRuntimeVolumeTargets();
         }
 
         private void AddOwnedIfRuntime(ScriptableObject module)
@@ -1336,6 +1820,90 @@ namespace MSC.Weather.Enviro3Integration
                    module == source.Environment;
         }
 
+        private void PrepareRuntimeVolumeIsolation()
+        {
+            if (manager == null || manager.volumeHDRP == null ||
+                manager.volumeHDRP.sharedProfile == null)
+            {
+                throw new InvalidOperationException(
+                    "The Enviro manager requires an authored production HDRP volume profile.");
+            }
+
+            previousVolumeProfile = manager.volumeHDRP.sharedProfile;
+            runtimeVolumeProfile =
+                ScriptableObject.CreateInstance<VolumeProfile>();
+            runtimeVolumeProfile.name =
+                previousVolumeProfile.name + " (Runtime Isolated)";
+            runtimeVolumeProfile.hideFlags = HideFlags.DontSave;
+            AddOwnedObject(runtimeVolumeProfile);
+
+            for (int index = 0;
+                 index < previousVolumeProfile.components.Count;
+                 index++)
+            {
+                VolumeComponent sourceComponent =
+                    previousVolumeProfile.components[index];
+                if (sourceComponent == null)
+                {
+                    continue;
+                }
+
+                VolumeComponent runtimeComponent = Instantiate(sourceComponent);
+                runtimeComponent.hideFlags = HideFlags.DontSave;
+                runtimeVolumeProfile.components.Add(runtimeComponent);
+                AddOwnedObject(runtimeComponent);
+            }
+
+            if (!runtimeVolumeProfile.TryGet(out runtimeExposure) ||
+                !runtimeVolumeProfile.TryGet(out runtimeFog))
+            {
+                throw new InvalidOperationException(
+                    "The production HDRP volume requires Exposure and Fog components.");
+            }
+
+            manager.volumeHDRP.sharedProfile = runtimeVolumeProfile;
+        }
+
+        private void RebindRuntimeVolumeTargets()
+        {
+            if (runtimeVolumeProfile == null || runtimeExposure == null ||
+                runtimeFog == null || manager == null)
+            {
+                return;
+            }
+
+            if (manager.volumeHDRP != null &&
+                manager.volumeHDRP.sharedProfile != runtimeVolumeProfile)
+            {
+                manager.volumeHDRP.sharedProfile = runtimeVolumeProfile;
+            }
+
+            if (manager.Lighting != null)
+            {
+                manager.Lighting.exposureHDRP = runtimeExposure;
+                manager.Lighting.indirectLightingHDRP = null;
+                if (runtimeVolumeProfile.TryGet(
+                        out IndirectLightingController indirectLighting))
+                {
+                    manager.Lighting.indirectLightingHDRP = indirectLighting;
+                }
+            }
+
+            if (manager.Fog != null)
+            {
+                manager.Fog.fogHDRP = runtimeFog;
+            }
+        }
+
+        private void RestoreAuthoredVolumeProfile()
+        {
+            if (manager != null && manager.volumeHDRP != null &&
+                previousVolumeProfile != null)
+            {
+                manager.volumeHDRP.sharedProfile = previousVolumeProfile;
+            }
+        }
+
         private T CloneOwned<T>(T source) where T : ScriptableObject
         {
             if (source == null)
@@ -1388,12 +1956,67 @@ namespace MSC.Weather.Enviro3Integration
             ClearManagerReferences();
         }
 
+        private void FailClosedSceneOwnership()
+        {
+            CancelPendingRefresh();
+            ApplyAutonomyAndAudioSafety();
+            if (manager != null && manager.Weather != null &&
+                IsRuntimeWeather(manager.Weather.targetWeatherType) &&
+                bindings != null && bindings.Clear != null)
+            {
+                manager.Weather.ChangeWeatherInstant(bindings.Clear);
+            }
+
+            if (manager != null && manager.Camera != previousCamera)
+            {
+                manager.ChangeCamera(previousCamera);
+            }
+
+            isAttached = false;
+            ResetAppliedState();
+            previousCamera = null;
+            DestroyRuntimeWeatherBindings();
+
+            // A late additive duplicate is an ownership breach, not a recoverable
+            // presentation warning. Stop every concrete owner discovered by the
+            // integration boundary so no unbound vendor schedule or WindZone keeps
+            // driving the world behind the project domain.
+            EnviroManager[] managers = FindObjectsByType<EnviroManager>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None);
+            for (int index = 0; index < managers.Length; index++)
+            {
+                EnviroManager discoveredManager = managers[index];
+                if (discoveredManager != null)
+                {
+                    discoveredManager.enabled = false;
+                }
+            }
+
+            WindZone[] windZones = FindObjectsByType<WindZone>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None);
+            for (int index = 0; index < windZones.Length; index++)
+            {
+                WindZone discoveredWindZone = windZones[index];
+                if (discoveredWindZone != null &&
+                    discoveredWindZone.gameObject.activeSelf)
+                {
+                    // WindZone derives from Component rather than Behaviour and
+                    // therefore has no enabled flag. A topology breach is fatal
+                    // for this session, so deactivate its concrete owner.
+                    discoveredWindZone.gameObject.SetActive(false);
+                }
+            }
+        }
+
         private void TearDownRuntimeIsolation()
         {
             if (manager != null)
             {
                 ApplyAutonomyAndAudioSafety();
                 DisableManagerModulesForTeardown();
+                RestoreAuthoredVolumeProfile();
                 ClearManagerReferences();
             }
 
@@ -1410,8 +2033,25 @@ namespace MSC.Weather.Enviro3Integration
             runtimeLightningPrefab = null;
             sourceLightningFlashMaterial = null;
             runtimeLightningFlashMaterial = null;
+            configuredRainParticleSystem = null;
             runtimeConfiguration = null;
+            previousVolumeProfile = null;
+            runtimeVolumeProfile = null;
+            runtimeExposure = null;
+            runtimeFog = null;
             runtimeIsolationPrepared = false;
+
+            if (hasPreviousRenderSettingsReflectionIntensity &&
+                Mathf.Approximately(
+                    RenderSettings.reflectionIntensity,
+                    Enviro3ProductionVisualPolicy
+                        .TemporaryBaselineReflectionIntensity))
+            {
+                RenderSettings.reflectionIntensity =
+                    previousRenderSettingsReflectionIntensity;
+            }
+
+            hasPreviousRenderSettingsReflectionIntensity = false;
         }
 
         private void DisableManagerModulesForTeardown()

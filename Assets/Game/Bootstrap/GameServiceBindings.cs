@@ -96,6 +96,27 @@ namespace MSC.Bootstrap
                 requireCompleteSet: false);
         }
 
+        /// <summary>
+        /// Creates the bounded production environment/world binding without
+        /// manufacturing placeholder save, audio, interaction, or identity services.
+        /// </summary>
+        public static GameServiceBindings CreateProductionEnvironmentPartial(
+            IGameTimeService gameTime,
+            IWeatherService weather,
+            IWorldStreamingService worldStreaming)
+        {
+            return new GameServiceBindings(
+                gameTime: gameTime ?? throw new ArgumentNullException(nameof(gameTime)),
+                weather: weather ?? throw new ArgumentNullException(nameof(weather)),
+                save: null,
+                audio: null,
+                interaction: null,
+                entityIds: null,
+                worldStreaming: worldStreaming ??
+                    throw new ArgumentNullException(nameof(worldStreaming)),
+                requireCompleteSet: false);
+        }
+
         public IGameTimeService GameTime { get; }
 
         public IWeatherService Weather { get; }

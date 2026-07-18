@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using MSC.Core.Lifecycle;
 using MSC.World.Partition;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,7 +13,9 @@ namespace MSC.World.Streaming
     /// The service unloads only scenes that it loaded itself.
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class ProductionWorldStreamingService : MonoBehaviour, IWorldStreamingService
+    public sealed class ProductionWorldStreamingService : MonoBehaviour,
+        IWorldStreamingService,
+        IGameSessionLifetime
     {
         [SerializeField] private ProductionWorldStreamingManifest manifest;
         [SerializeField] private Transform focus;
@@ -245,6 +248,39 @@ namespace MSC.World.Streaming
         private void OnDestroy()
         {
             SceneManager.sceneUnloaded -= HandleSceneUnloaded;
+        }
+
+        public void EndGameSession()
+        {
+            if (automaticRefresh != null)
+            {
+                StopCoroutine(automaticRefresh);
+                automaticRefresh = null;
+            }
+
+            SceneManager.sceneUnloaded -= HandleSceneUnloaded;
+            var ownedPaths = new List<string>(
+                ownedLoadedSceneHandles.Keys);
+            for (int index = 0; index < ownedPaths.Count; index++)
+            {
+                string scenePath = ownedPaths[index];
+                if (ownedLoadedSceneHandles.TryGetValue(
+                        scenePath,
+                        out int ownedHandle) &&
+                    TryGetLoadedScene(scenePath, out Scene scene) &&
+                    scene.handle == ownedHandle)
+                {
+                    SceneManager.UnloadSceneAsync(scene);
+                }
+            }
+
+            focus = null;
+            boundFocusRigidbody = null;
+            ownedLoadedSceneHandles.Clear();
+            isStreaming = false;
+            hasObservedCell = false;
+            hasObservedLoadingRadius = false;
+            reportedFocusSpeedMetersPerSecond = 0f;
         }
 
         private void Update()

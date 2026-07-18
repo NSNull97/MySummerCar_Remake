@@ -1,0 +1,181 @@
+{
+    "schemaVersion": 1,
+    "sourceRevisionId": "msc-world-baseline-04a1.1-c3f2f337",
+    "sourceScene": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_0_-3_Legacy.unity",
+    "sourceSceneSha256": "6253afec3050187d41bab2d7417238a61341d86c55898c185eab319d85fee3e8",
+    "derivationPolicy": "frozen-renderer-aabb-inset-v1",
+    "horizontalInsetMeters": 0.10000000149011612,
+    "floorInsetMeters": 0.05000000074505806,
+    "ceilingInsetMeters": 0.10000000149011612,
+    "records": [
+        {
+            "label": "home-main-roof-audit-only",
+            "stableId": "1704d967080fa78707fe486f215b2811",
+            "derivationRole": "audit-only; its aggregate AABB reaches below the floor",
+            "sourceHierarchyPath": "YARD/Building/MeshLOD/house_roof",
+            "center": {
+                "x": 159.79556274414063,
+                "y": 2.5586977005004885,
+                "z": -1034.3057861328125
+            },
+            "extents": {
+                "x": 9.192192077636719,
+                "y": 2.3411502838134767,
+                "z": 9.336901664733887
+            }
+        },
+        {
+            "label": "home-secondary-roof",
+            "stableId": "a71d9deddebb37f4a37bd02b13cef9f9",
+            "derivationRole": "house-ceiling",
+            "sourceHierarchyPath": "YARD/Building/MeshLOD/house_roof 1",
+            "center": {
+                "x": 162.39044189453126,
+                "y": 4.107076644897461,
+                "z": -1034.180908203125
+            },
+            "extents": {
+                "x": 6.59731388092041,
+                "y": 0.7927714586257935,
+                "z": 9.21203327178955
+            }
+        },
+        {
+            "label": "home-living-roof",
+            "stableId": "3f48c3f8da113c762f5ef4d32409e45c",
+            "derivationRole": "house-ceiling",
+            "sourceHierarchyPath": "YARD/Building/LIVINGROOM/house_roof_metal",
+            "center": {
+                "x": 162.83935546875,
+                "y": 4.206291675567627,
+                "z": -1031.8656005859375
+            },
+            "extents": {
+                "x": 6.17451286315918,
+                "y": 0.7270129919052124,
+                "z": 6.952818870544434
+            }
+        },
+        {
+            "label": "home-floor-bathroom",
+            "stableId": "42aa8c997b8afde59d68e3ee7f9f73b7",
+            "derivationRole": "house-floor",
+            "sourceHierarchyPath": "YARD/Building/MeshLOD/house_floor_bathroom",
+            "center": {
+                "x": 159.3612823486328,
+                "y": 1.0371791124343873,
+                "z": -1034.5457763671875
+            },
+            "extents": {
+                "x": 3.422891139984131,
+                "y": 0.0000028679628485406285,
+                "z": 6.442083358764648
+            }
+        },
+        {
+            "label": "home-floor-carpet",
+            "stableId": "f818a8da820952a72d428d74815488b4",
+            "derivationRole": "house-floor",
+            "sourceHierarchyPath": "YARD/Building/MeshLOD/house_floor_carpet",
+            "center": {
+                "x": 160.15614318847657,
+                "y": 1.0371794700622559,
+                "z": -1031.9947509765625
+            },
+            "extents": {
+                "x": 4.2177348136901859,
+                "y": 0.0000030591534141422018,
+                "z": 6.081046104431152
+            }
+        },
+        {
+            "label": "home-floor-tiles",
+            "stableId": "2b391ab6d5dd0500a5a06391e45b7150",
+            "derivationRole": "house-floor",
+            "sourceHierarchyPath": "YARD/Building/MeshLOD/house_floor_tiles",
+            "center": {
+                "x": 162.67080688476563,
+                "y": 1.0371803045272828,
+                "z": -1030.835205078125
+            },
+            "extents": {
+                "x": 5.631012916564941,
+                "y": 0.0000032625462154101116,
+                "z": 4.921473503112793
+            }
+        },
+        {
+            "label": "home-garage-shell",
+            "stableId": "419f49d30da6bff0fcfa679c84d652ce",
+            "derivationRole": "garage-shell-and-floor",
+            "sourceHierarchyPath": "YARD/Building/MeshLOD/house_wall_garage",
+            "center": {
+                "x": 153.3863983154297,
+                "y": 2.3871774673461916,
+                "z": -1038.41015625
+            },
+            "extents": {
+                "x": 2.3947031497955324,
+                "y": 1.350002408027649,
+                "z": 4.851118087768555
+            }
+        },
+        {
+            "label": "home-garage-roof",
+            "stableId": "b5e7b987d5aac9da197a6ce662beb64c",
+            "derivationRole": "garage-ceiling",
+            "sourceHierarchyPath": "YARD/Building/MeshLOD/house_roof_garage",
+            "center": {
+                "x": 154.83645629882813,
+                "y": 3.69950795173645,
+                "z": -1038.4066162109375
+            },
+            "extents": {
+                "x": 4.26854944229126,
+                "y": 0.14811427891254426,
+                "z": 5.272570610046387
+            }
+        }
+    ],
+    "shelters": [
+        {
+            "stableId": "weather.shelter.home.house.interior.v1",
+            "shelterKind": 1,
+            "center": {
+                "x": 162.12010192871095,
+                "y": 2.1507444381713869,
+                "z": -1033.4508056640625
+            },
+            "extents": {
+                "x": 6.0817108154296879,
+                "y": 1.063560962677002,
+                "z": 7.4371337890625
+            },
+            "sourceStableIds": [
+                "42aa8c997b8afde59d68e3ee7f9f73b7",
+                "f818a8da820952a72d428d74815488b4",
+                "2b391ab6d5dd0500a5a06391e45b7150",
+                "a71d9deddebb37f4a37bd02b13cef9f9",
+                "3f48c3f8da113c762f5ef4d32409e45c"
+            ]
+        },
+        {
+            "stableId": "weather.shelter.home.garage.interior.v1",
+            "shelterKind": 1,
+            "center": {
+                "x": 153.3863983154297,
+                "y": 2.26928448677063,
+                "z": -1038.41015625
+            },
+            "extents": {
+                "x": 2.2946929931640627,
+                "y": 1.1821093559265137,
+                "z": 4.7510986328125
+            },
+            "sourceStableIds": [
+                "419f49d30da6bff0fcfa679c84d652ce",
+                "b5e7b987d5aac9da197a6ce662beb64c"
+            ]
+        }
+    ]
+}

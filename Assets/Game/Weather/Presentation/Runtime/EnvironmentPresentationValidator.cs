@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MSC.Weather.Domain;
 using UnityEngine;
 
 namespace MSC.Weather.Presentation
@@ -22,7 +23,8 @@ namespace MSC.Weather.Presentation
             EnvironmentPresentationCapabilities.Wind |
             EnvironmentPresentationCapabilities.LightningVisual |
             EnvironmentPresentationCapabilities.EnvironmentRefresh |
-            EnvironmentPresentationCapabilities.QualityTiers;
+            EnvironmentPresentationCapabilities.QualityTiers |
+            EnvironmentPresentationCapabilities.Exposure;
 
         private const EnvironmentRefreshTarget AllRefreshTargets =
             EnvironmentRefreshTarget.Sky |
@@ -115,6 +117,27 @@ namespace MSC.Weather.Presentation
                     diagnostics,
                     EnvironmentPresentationDiagnosticCodes.InvalidFog,
                     "Fog or mist target must be a finite normalized value.",
+                    frame.BindingId);
+            }
+
+            if (!IsFinite(frame.VisibilityMeters) ||
+                frame.VisibilityMeters <= 0f)
+            {
+                AddError(
+                    diagnostics,
+                    EnvironmentPresentationDiagnosticCodes.InvalidFog,
+                    "Meteorological visibility must be finite and greater than zero metres.",
+                    frame.BindingId);
+            }
+
+            if (!Enum.IsDefined(
+                    typeof(WeatherExposureContext),
+                    frame.ExposureContext))
+            {
+                AddError(
+                    diagnostics,
+                    EnvironmentPresentationDiagnosticCodes.InvalidExposure,
+                    "The exposure context is unknown.",
                     frame.BindingId);
             }
 

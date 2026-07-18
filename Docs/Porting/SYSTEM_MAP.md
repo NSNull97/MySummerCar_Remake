@@ -1,4 +1,4 @@
-# Donor System Map — through Milestone 07B
+# Donor System Map — through Milestone 07C night/dawn follow-up
 
 This map describes observed donor ownership/coupling and the intended transfer boundary. It is not a claim that any subsystem has been ported.
 
@@ -520,6 +520,71 @@ accepted read-only vendor baseline is `538` files / `305967931` bytes /
 The architecture map does not promote automated Editor timing to manual or
 standalone-player acceptance.
 
-Milestone 07A is fixed in commit `61250e2`. The only next implementation step is
-`07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md`; Milestone 08 remains out of
-scope until that rollout is validated.
+Milestone 07A is fixed in commit `61250e2`; Milestone 07B handed its project-owned
+domains into `07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md`. The current 07C
+topology and night/dawn follow-up are recorded below. The manual dawn/night
+retest is user-accepted; performance and other scoped gates remain pending.
+
+## Milestone 07C production environment topology
+
+```text
+GameCompositionRoot (persistent session owner)
+  -> ProductionEnvironmentController
+       -> GameTimeService / WeatherDirector
+       -> GlobalWetnessController / LightningStrikeDirector
+       -> versioned project save DTO and cross-system outputs
+       -> IEnvironmentPresentationAdapter
+            -> Enviro3EnvironmentAdapter (only Enviro-aware runtime boundary)
+                 -> solar calibration 60 N / 27.3 E / UTC+3
+                 -> same-pass sun update; aurora suppressed
+                 -> smooth minimum night exposure 7.5 EV
+                 -> temporary baseline reflection intensity <= 0.6
+  -> ProductionEnvironmentBackendActivator
+       -> inactive authored ProductionEnvironmentBackendMarker
+            -> linked Enviro source prefab + runtime-isolated HDRP volume profile
+            -> Enviro3ShelterRemovalBridge
+            -> two project-owned home Interior AABBs
+                 -> tiled removal zones with vertical stretch >= 1
+            -> DonorWorldLegacyWetnessBridge
+                 -> wet smoothness <= 0.45 opaque / 0.25 alpha-clip
+  -> ProductionWorldStreamingService
+       -> additive donor-baseline cells (never weather owners)
+```
+
+The composition root wins process/session ownership before the inactive Enviro
+backend is activated. On a same-scene Single reload, the replacement waits for
+the previous persistent root and Enviro static manager to be destroyed before
+enabling its linked prefab. The streaming installer waits for backend readiness
+before coherent restore/presentation sync and world reveal. Additive scene
+callbacks are coalesced and revalidated after Unity finishes deferred
+destruction/vendor startup; a real duplicate manager or WindZone fails closed.
+
+`ProductionEnvironmentController` survives cell changes, rebuilds shelter
+registrations from the explicit persistent root plus loaded scenes, and is the
+only authority for time/weather/wetness/lightning. Enviro autonomous time,
+schedule, gameplay lightning and audio remain disabled. Audio, UI, vehicle,
+water and vegetation consume vendor-neutral project outputs only.
+
+The committed Enviro hierarchy remains a linked prefab because it is authored
+inactive; this avoids the vendor Editor `OnEnable` unpack hook without changing
+vendor source. The package boundary is unchanged at `538 / 305967931 /
+8e376fa2748162157975fbdd8b1045e021b810fea40f01d99eafe22a4d30bd44`.
+The follow-up solar calibration produces approximate `04:59` and `21:35`
+horizon crossings on the reference date. Its `7.5 EV` minimum night exposure
+blends from full-night `solarTime <= 0.43` toward unchanged daylight at `0.5`.
+Fresh automated results are Enviro integration `17/17`, combined production
+EditMode `32/32` and lifecycle PlayMode `6/6` in
+`Logs/M07C_VisualRemediation3_*`. Full EditMode is `328/334`: the same four
+historical failures plus two current WorldBaseline material-contract failures
+from four ignored generated materials already rewritten before this follow-up.
+A fresh focused WorldBaseline rerun is `8/10` with the same two failures, so the
+current generated-payload drift is persistent rather than test-order pollution.
+The previous `Logs/M07C_VisualRemediation2_WorldFreeze.log` remains the last
+strict frozen-world `PASS`, with result SHA-256
+`10544fc3ed5bd6c8cd44b451155e766c0552710f4c9d8cc91dda263de001ba5f`;
+current generated-material validation is not clean. The user accepted rain and
+the current sunset, accepted metallic-looking surfaces as temporary donor
+material/shader debt, and marked the corrected dawn/night presentation
+`USER PASS` on 2026-07-18 without capture artifacts. Matched fidelity, other
+interiors and performance evidence remain pending; the whole 07C milestone is
+not marked passed.

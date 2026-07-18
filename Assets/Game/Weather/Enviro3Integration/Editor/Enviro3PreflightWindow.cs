@@ -188,6 +188,10 @@ namespace MSC.Weather.Enviro3Integration.Editor
             {
                 LogStatus(controller.ApplyQuality(EnvironmentQualityTier.Low));
             }
+            if (GUILayout.Button("Quality Medium"))
+            {
+                LogStatus(controller.ApplyQuality(EnvironmentQualityTier.Medium));
+            }
             if (GUILayout.Button("Quality High"))
             {
                 LogStatus(controller.ApplyQuality(EnvironmentQualityTier.High));

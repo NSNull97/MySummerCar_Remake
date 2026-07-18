@@ -32,6 +32,8 @@ namespace MSC.Weather.Enviro3Integration.Editor
             "Assets/Game/Weather/Enviro3Integration/";
         private const string IntegrationTestsBoundaryPrefix =
             "Assets/Game/Tests/EditMode/Enviro3Integration/";
+        private const string ProductionIntegrationTestsBoundaryPrefix =
+            "Assets/Game/Tests/EditMode/WeatherProductionIntegration/";
 
         // The 07B baseline is the source-package prefab graph after canonical Unity
         // 6000.3.11f1 serialization. See ENVIRO3_FINGERPRINT_MIGRATION_AUDIT_07B.md.
@@ -295,6 +297,30 @@ namespace MSC.Weather.Enviro3Integration.Editor
                 errors.Add("WeatherLab Effects source is not the validated base Enviro effects preset.");
             }
 
+            if (bindings == null || bindings.Low == null || bindings.Medium == null ||
+                bindings.High == null)
+            {
+                errors.Add("WeatherLab requires direct Low, Medium, and High Enviro quality bindings.");
+            }
+            else
+            {
+                ValidateBoundAssetPath(
+                    errors,
+                    "Low quality",
+                    bindings.Low,
+                    WeatherLabBuilder.LowQualityAssetPath);
+                ValidateBoundAssetPath(
+                    errors,
+                    "Medium quality",
+                    bindings.Medium,
+                    WeatherLabBuilder.MediumQualityAssetPath);
+                ValidateBoundAssetPath(
+                    errors,
+                    "High quality",
+                    bindings.High,
+                    WeatherLabBuilder.HighQualityAssetPath);
+            }
+
             if (!File.Exists(Path.GetFullPath(WeatherLabSceneMarker.SceneAssetPath)))
             {
                 errors.Add("WeatherLab scene has not been built.");
@@ -412,6 +438,20 @@ namespace MSC.Weather.Enviro3Integration.Editor
             }
         }
 
+        private static void ValidateBoundAssetPath(
+            ICollection<string> errors,
+            string label,
+            UnityEngine.Object asset,
+            string expectedPath)
+        {
+            string actualPath = AssetDatabase.GetAssetPath(asset);
+            if (!string.Equals(actualPath, expectedPath, StringComparison.Ordinal))
+            {
+                errors.Add(
+                    $"WeatherLab {label} binding is '{actualPath}', expected '{expectedPath}'.");
+            }
+        }
+
         private static T[] GetComponents<T>(IEnumerable<GameObject> roots) where T : Component
         {
             return roots
@@ -429,6 +469,9 @@ namespace MSC.Weather.Enviro3Integration.Editor
             return relativePath.StartsWith(IntegrationBoundaryPrefix, StringComparison.Ordinal) ||
                    relativePath.StartsWith(
                        IntegrationTestsBoundaryPrefix,
+                       StringComparison.Ordinal) ||
+                   relativePath.StartsWith(
+                       ProductionIntegrationTestsBoundaryPrefix,
                        StringComparison.Ordinal);
         }
 

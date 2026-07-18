@@ -1,6 +1,6 @@
-# Donor Audit — Milestone 0 baseline through Milestone 06B2
+# Donor Audit — Milestone 0 baseline through Milestone 07C night/dawn follow-up
 
-Audit dates: 2026-07-13 baseline; 2026-07-14 Milestones 3–05A updates; 2026-07-15 Milestones 05B–06 updates; 2026-07-16 M06 diagnostic-audio, M06B1 sanitation and M06B2 cellization addenda
+Audit dates: 2026-07-13 baseline; 2026-07-14 Milestones 3–05A updates; 2026-07-15 Milestones 05B–06 updates; 2026-07-16 M06 diagnostic-audio, M06B1 sanitation and M06B2 cellization addenda; 2026-07-18 Milestone 07C provenance, second visual-remediation and night/dawn follow-up addenda
 
 Scope: read-only filesystem, binary-header, log, file-hash, reflection-only managed metadata inspection, audited use of previously staged references, and a user-authorized local-only Satsuma diagnostic-audio mapping from frozen external staging
 
@@ -523,4 +523,78 @@ the character across cell boundaries without observing traversal, collision,
 seam, duplicate, popping or load/unload issues. Dedicated vehicle driving was
 not repeated; automated high-speed preload validation passed. The v5.1 manual
 completion gate is `PASS / HumanAccepted`, and the 06B3 entry gate is `GO`;
-06B3 itself has not started.
+the subsequent 06B3 audit is now closed as
+`PASS / Frozen / HumanAccepted` without promoting the donor baseline to
+production art.
+
+## Milestone 07C production-weather provenance
+
+Milestone 07C does not inspect, transfer or execute donor weather code,
+PlayMaker state, lighting logic, audio logic or save data. Project time,
+calendar, weather fronts, wetness, lightning, exposure and save DTOs remain
+clean-room `Reimplemented` systems. Enviro 3 is a separately licensed,
+read-only third-party presentation dependency and is not donor content. Its
+accepted installation remains identified by `538` files, `305967931` bytes and
+SHA-256 fingerprint
+`8e376fa2748162157975fbdd8b1045e021b810fea40f01d99eafe22a4d30bd44`;
+the 07C vendor-file diff is zero.
+
+The only donor-derived 07C measurements are the bounded home-house and
+home-garage static renderer AABBs from the already frozen world baseline. They
+are classified `DimensionalReference`; the generated runtime volumes use the
+project-owned stable IDs
+`weather.shelter.home.house.interior.v1` and
+`weather.shelter.home.garage.interior.v1`. The measurement evidence pins the
+normalized source SHA-256
+`6253afec3050187d41bab2d7417238a61341d86c55898c185eab319d85fee3e8`.
+No donor hierarchy path or instance ID becomes runtime identity.
+
+The frozen `DonorWorldBaseline-v001`, active profile
+`donor-feature-parity-06b2`, ownership/presentation fingerprints, source
+transforms and generated world payload were not modified by the weather
+rollout. Production wetness uses a reviewed, bounded compatibility allowlist
+over shared materials; it does not reauthor or promote donor materials to
+`ProductionReady`.
+
+The bounded visual follow-ups also remain project-owned presentation
+configuration rather than donor transfer. The user accepted rain and the
+current sunset, and accepted metallic-looking temporary surfaces as donor
+material/shader debt for later replacement. At runtime the adapter now applies
+the solar calibration `60 N / 27.3 E / UTC+3`; on the reference date the
+installed Enviro algorithm crosses the horizon at approximately `04:59` and
+`21:35`. A smooth `7.5 EV` minimum night exposure applies from full-night
+`solarTime <= 0.43` toward unchanged daylight at `0.5`. Aurora remains
+suppressed across quality tiers, temporary donor-baseline reflection intensity
+is capped at `0.6`, and reviewed wet-surface smoothness remains limited to
+`0.45` for opaque surfaces and `0.25` for alpha-clipped vegetation. Shelter
+removal ellipsoids keep their measured horizontal tiling while enforcing
+vertical stretch `>= 1`. None of these values is claimed as donor
+`ConfigurationTransferred` or final production-art tuning.
+
+Fresh night/dawn follow-up evidence is:
+
+- Enviro integration `17/17`, combined production EditMode `32/32` and
+  production PlayMode `6/6` pass in the matching
+  `Logs/M07C_VisualRemediation3_*.xml` artifacts;
+- full EditMode is `328/334`: the same four historical Garage/World failures
+  plus two current WorldBaseline material-contract failures
+  (`Logs/M07C_VisualRemediation3_FullEditMode.xml`);
+- a fresh focused WorldBaseline rerun is `8/10` with the same two failures
+  (`Logs/M07C_VisualRemediation3_WorldBaseline.xml`), confirming persistent
+  generated-payload drift rather than full-suite ordering pollution;
+- the four affected ignored generated compatibility materials (`06cd8242...`,
+  `2b837893...`, `5cc44389...`, `69ad9b54...`) were already rewritten before
+  this follow-up; the night/dawn change did not edit frozen payload;
+- the previous second-remediation freeze result remains the last strict `PASS`,
+  with SHA-256
+  `10544fc3ed5bd6c8cd44b451155e766c0552710f4c9d8cc91dda263de001ba5f`
+  (`Logs/M07C_VisualRemediation2_WorldFreeze.log`). Current generated-material
+  validation is not clean and is not a fresh freeze pass.
+
+The user accepted the corrected night brightness and approximately `05:00` dawn
+as `USER PASS` on 2026-07-18; no capture artifact was supplied for that manual
+retest. This does not accept matched world-fidelity captures, additional
+interior coverage, Development Player performance or the whole 07C milestone;
+those gates remain `PENDING`. Neither the Enviro vendor payload nor frozen donor
+world was modified by this follow-up, and the material-contract failure above
+remains open.

@@ -737,9 +737,7 @@ namespace MSC.Development.WeatherLab
                 wetnessController.Outputs,
                 exposureContext,
                 new WeatherPresentationStatusOutput(
-                    currentQuality == EnvironmentQualityTier.Low
-                        ? "quality.low"
-                        : "quality.high",
+                    GetQualityTierId(currentQuality),
                     MapPresentationHealth(currentStatus.State),
                     currentStatus.LastAppliedRevision > uint.MaxValue
                         ? uint.MaxValue
@@ -844,6 +842,24 @@ namespace MSC.Development.WeatherLab
                     return WeatherPresentationHealth.Unavailable;
                 default:
                     return WeatherPresentationHealth.Unknown;
+            }
+        }
+
+        private static string GetQualityTierId(EnvironmentQualityTier qualityTier)
+        {
+            switch (qualityTier)
+            {
+                case EnvironmentQualityTier.Low:
+                    return "quality.low";
+                case EnvironmentQualityTier.Medium:
+                    return "quality.medium";
+                case EnvironmentQualityTier.High:
+                    return "quality.high";
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        nameof(qualityTier),
+                        qualityTier,
+                        null);
             }
         }
 

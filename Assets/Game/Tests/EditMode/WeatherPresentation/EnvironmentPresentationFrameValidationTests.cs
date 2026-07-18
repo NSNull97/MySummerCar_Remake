@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MSC.Weather.Domain;
 using MSC.Weather.Presentation;
 using NUnit.Framework;
 using UnityEngine;
@@ -137,6 +138,17 @@ namespace MSC.Tests.EditMode.WeatherPresentation
         }
 
         [Test]
+        public void Validate_MediumQualityTier_Passes()
+        {
+            IReadOnlyList<EnvironmentPresentationDiagnostic> diagnostics =
+                EnvironmentPresentationValidator.Validate(
+                    CreateValidFrame(
+                        qualityTier: EnvironmentQualityTier.Medium));
+
+            Assert.That(diagnostics, Is.Empty, Describe(diagnostics));
+        }
+
+        [Test]
         public void Validate_LightningRequestRequiresSequenceFinitePositionAndIntensity()
         {
             var lightning = new EnvironmentLightningVisualRequest(
@@ -198,6 +210,9 @@ namespace MSC.Tests.EditMode.WeatherPresentation
             EnvironmentPrecipitationType precipitationType = EnvironmentPrecipitationType.None,
             float precipitationIntensity = 0f,
             float fogIntensity = 0f,
+            float visibilityMeters = 20000f,
+            WeatherExposureContext exposureContext =
+                WeatherExposureContext.Exterior,
             Vector2? windDirection = null,
             float windSpeed = 0f,
             float windGustSpeed = 0f,
@@ -231,6 +246,8 @@ namespace MSC.Tests.EditMode.WeatherPresentation
                 precipitationType,
                 precipitationIntensity,
                 fogIntensity,
+                visibilityMeters,
+                exposureContext,
                 resolvedWindDirection,
                 windSpeed,
                 windGustSpeed,

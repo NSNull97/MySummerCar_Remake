@@ -228,6 +228,14 @@ namespace MSC.Editor.WorldStreaming
                         "Prototype fixture streaming composition must be active, enabled, and build-visible.");
                 }
 
+                if (installer.StartupMode !=
+                        ProductionWorldStartupMode.WorldOnlyDevelopment ||
+                    !installer.HasCoherentStartupConfiguration)
+                {
+                    result.AddError(
+                        "Prototype fixture must use a coherent explicit world-only startup configuration.");
+                }
+
                 ProductionWorldStreamingManifest expectedManifest =
                     AssetDatabase.LoadAssetAtPath<ProductionWorldStreamingManifest>(
                         ProductionWorldStreamingBuilder.ManifestAssetPath);

@@ -21,4 +21,5 @@ MonoBehaviour:
   storm: {fileID: 11400000, guid: ebf8ae7a51a5cd342a90c81f5182d8a8, type: 2}
   fog: {fileID: 11400000, guid: 9ba6458aa7df92d4494a7a3d40830a15, type: 2}
   low: {fileID: 11400000, guid: a002704085c17f1439758fcee25df529, type: 2}
+  medium: {fileID: 11400000, guid: 2e0aaa075bca92245a9e8300b7eace9c, type: 2}
   high: {fileID: 11400000, guid: 60e887b1524da0a4a8f1318ef102e22a, type: 2}

@@ -72,6 +72,8 @@ namespace MSC.Weather.Presentation
                     : EnvironmentPrecipitationType.Rain,
                 weather.PrecipitationIntensity01,
                 weather.FogIntensity01,
+                weather.VisibilityMeters,
+                outputs.ExposureContext,
                 windDirection,
                 weather.WindSpeedMetersPerSecond,
                 gustSpeed,

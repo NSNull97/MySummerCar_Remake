@@ -24,6 +24,7 @@ namespace MSC.Weather.Enviro3Integration
         public const string FogIdValue = "weather.fog";
         public const string NightIdValue = "weather.night";
         public const string LowQualityIdValue = "quality.low";
+        public const string MediumQualityIdValue = "quality.medium";
         public const string HighQualityIdValue = "quality.high";
 
         private static readonly EnvironmentBindingId ClearId = ParseKnownId(ClearIdValue);
@@ -52,6 +53,7 @@ namespace MSC.Weather.Enviro3Integration
 
         [Header("Direct quality asset references")]
         [SerializeField] private EnviroQuality low;
+        [SerializeField] private EnviroQuality medium;
         [SerializeField] private EnviroQuality high;
 
         public EnviroConfiguration SourceConfiguration => sourceConfiguration;
@@ -72,6 +74,8 @@ namespace MSC.Weather.Enviro3Integration
 
         public EnviroQuality Low => low;
 
+        public EnviroQuality Medium => medium;
+
         public EnviroQuality High => high;
 
         public void ConfigureForAuthoring(
@@ -84,6 +88,7 @@ namespace MSC.Weather.Enviro3Integration
             EnviroWeatherType authoredStorm,
             EnviroWeatherType authoredFog,
             EnviroQuality authoredLow,
+            EnviroQuality authoredMedium,
             EnviroQuality authoredHigh)
         {
             sourceConfiguration = authoredSourceConfiguration;
@@ -95,7 +100,39 @@ namespace MSC.Weather.Enviro3Integration
             storm = authoredStorm;
             fog = authoredFog;
             low = authoredLow;
+            medium = authoredMedium;
             high = authoredHigh;
+        }
+
+        /// <summary>
+        /// Compatibility overload for 07A/07B authoring callers. Until they are
+        /// regenerated with a direct Medium asset, Medium resolves to their existing
+        /// High reference instead of becoming an unbound tier.
+        /// </summary>
+        public void ConfigureForAuthoring(
+            EnviroConfiguration authoredSourceConfiguration,
+            EnviroEffectsModule authoredEffectsSource,
+            EnviroWeatherType authoredClear,
+            EnviroWeatherType authoredPartlyCloudy,
+            EnviroWeatherType authoredOvercast,
+            EnviroWeatherType authoredRain,
+            EnviroWeatherType authoredStorm,
+            EnviroWeatherType authoredFog,
+            EnviroQuality authoredLow,
+            EnviroQuality authoredHigh)
+        {
+            ConfigureForAuthoring(
+                authoredSourceConfiguration,
+                authoredEffectsSource,
+                authoredClear,
+                authoredPartlyCloudy,
+                authoredOvercast,
+                authoredRain,
+                authoredStorm,
+                authoredFog,
+                authoredLow,
+                authoredHigh,
+                authoredHigh);
         }
 
         /// <summary>Compatibility overload for pre-07B test fixtures and local authoring tools.</summary>
@@ -120,6 +157,7 @@ namespace MSC.Weather.Enviro3Integration
                 authoredStorm,
                 authoredFog,
                 authoredLow,
+                authoredHigh,
                 authoredHigh);
         }
 
@@ -201,6 +239,9 @@ namespace MSC.Weather.Enviro3Integration
             {
                 case EnvironmentQualityTier.Low:
                     quality = low;
+                    return quality != null;
+                case EnvironmentQualityTier.Medium:
+                    quality = medium;
                     return quality != null;
                 case EnvironmentQualityTier.High:
                     quality = high;

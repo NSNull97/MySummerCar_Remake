@@ -465,6 +465,7 @@ namespace MSC.Editor.WorldBaseline
                 if (installer.WorldStreaming != service ||
                     installer.CompositionRoot != roots[0] ||
                     installer.PlayerPrefab == null ||
+                    !installer.HasCoherentStartupConfiguration ||
                     controller.gameObject != roots[0].gameObject ||
                     controller.Mode !=
                         DonorWorldLegacyPresentationMode.LegacyTextured)

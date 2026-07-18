@@ -16,7 +16,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
 {
     public static class WeatherLabBuilder
     {
-        public const string BuilderVersion = "1.1.0";
+        public const string BuilderVersion = "1.1.1";
         public const string MenuRoot = "Tools/MSC Remake/Enviro 3 Preflight/";
         public const string VendorRoot = "Assets/Enviro 3 - Sky and Weather";
         public const string BindingsAssetPath =
@@ -29,8 +29,13 @@ namespace MSC.Weather.Enviro3Integration.Editor
             VendorRoot + "/Profiles/Configurations/Default Enviro Configuration.asset";
         public const string EffectsSourceAssetPath =
             VendorRoot + "/Scripts/Runtime/Modules/Effects/Preset/Default Effects Preset.asset";
+        public const string LowQualityAssetPath =
+            VendorRoot + "/Profiles/Quality/Low.asset";
+        public const string MediumQualityAssetPath =
+            VendorRoot + "/Profiles/Quality/Medium.asset";
+        public const string HighQualityAssetPath =
+            VendorRoot + "/Profiles/Quality/High.asset";
         private const string WeatherPath = VendorRoot + "/Profiles/Weather Types/";
-        private const string QualityPath = VendorRoot + "/Profiles/Quality/";
         private const string SprucePrefabPath =
             "Assets/Game/World/Production/Prefabs/WR_SpruceTree.prefab";
 
@@ -394,8 +399,9 @@ namespace MSC.Weather.Enviro3Integration.Editor
                 RequireVendorAsset<EnviroWeatherType>(WeatherPath + "Rain.asset"),
                 RequireVendorAsset<EnviroWeatherType>(WeatherPath + "Storm.asset"),
                 RequireVendorAsset<EnviroWeatherType>(WeatherPath + "Foggy.asset"),
-                RequireVendorAsset<EnviroQuality>(QualityPath + "Low.asset"),
-                RequireVendorAsset<EnviroQuality>(QualityPath + "High.asset"));
+                RequireVendorAsset<EnviroQuality>(LowQualityAssetPath),
+                RequireVendorAsset<EnviroQuality>(MediumQualityAssetPath),
+                RequireVendorAsset<EnviroQuality>(HighQualityAssetPath));
             EditorUtility.SetDirty(bindings);
             return bindings;
         }

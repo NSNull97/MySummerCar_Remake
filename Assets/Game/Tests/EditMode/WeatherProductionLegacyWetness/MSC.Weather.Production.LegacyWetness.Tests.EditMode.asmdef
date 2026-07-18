@@ -1,0 +1,23 @@
+{
+  "name": "MSC.Weather.Production.LegacyWetness.Tests.EditMode",
+  "rootNamespace": "MSC.Tests.EditMode.WeatherProductionLegacyWetness",
+  "references": [
+    "MSC.Weather.Production.LegacyBaseline.Runtime",
+    "MSC.Weather.Runtime",
+    "MSC.LegacyImport.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

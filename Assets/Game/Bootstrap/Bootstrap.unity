@@ -132,6 +132,9 @@ GameObject:
   - component: {fileID: 161771369}
   - component: {fileID: 161771368}
   - component: {fileID: 161771370}
+  - component: {fileID: 161771372}
+  - component: {fileID: 161771371}
+  - component: {fileID: 161771373}
   m_Layer: 0
   m_Name: Game Composition Root
   m_TagString: Untagged
@@ -163,7 +166,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1201817839}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &161771368
@@ -180,6 +184,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: MSC.Bootstrap.Runtime::MSC.Bootstrap.ProductionWorldStreamingInstaller
   compositionRoot: {fileID: 161771366}
   worldStreaming: {fileID: 161771369}
+  environment: {fileID: 161771371}
+  startupMode: 0
   playerPrefab: {fileID: 334472089413303144, guid: 3dbb343a041856b4caee6bb095dc2f54, type: 3}
   playerSpawnPosition: {x: 153.495, y: 1.1, z: -1028.03}
   playerSpawnEulerAngles: {x: -0, y: 180, z: 0}
@@ -211,6 +217,101 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: MSC.LegacyImport.Runtime::MSC.LegacyImport.DonorWorldLegacyPresentationController
   mode: 0
+--- !u!114 &161771371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161771365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bcca5517f58bb14b91c47f2f261f93e, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Weather.Production.Runtime::MSC.Weather.Production.ProductionEnvironmentController
+  adapterBehaviour: {fileID: 545456525}
+  wetnessBridgeBehaviour: {fileID: 161771372}
+  initialQuality: 2
+  initialWeatherSeed: 19950801
+--- !u!114 &161771372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161771365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61f0539d76eb4634b93f091bf5b63af5, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Weather.Production.LegacyBaseline.Runtime::MSC.Weather.Production.LegacyBaseline.DonorWorldLegacyWetnessBridge
+  coverageProfile: {fileID: 11400000, guid: a41b540fb2f48ae47b1bec749ef935c4, type: 2}
+  quantizationSteps: 64
+  opaqueWetColorMultiplier: 0.84
+  opaqueWetSmoothness: 0.45
+  alphaClipWetColorMultiplier: 0.9
+  alphaClipWetSmoothness: 0.25
+--- !u!114 &161771373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161771365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94a81c61b4899b8408ce403729fd3dae, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Bootstrap.Runtime::MSC.Bootstrap.ProductionEnvironmentBackendActivator
+  backendMarker: {fileID: 1201817837}
+--- !u!1 &382902696
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 382902697}
+  - component: {fileID: 382902698}
+  m_Layer: 0
+  m_Name: HomeHouseInterior
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &382902697
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 382902696}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 162.1201, y: 2.1507444, z: -1033.4508}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1634974597}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &382902698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 382902696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ee0aa7968879e149846f35ace5d3d2c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Weather.Production.Runtime::MSC.Weather.Production.ProductionShelterVolumeAuthoring
+  stableId: weather.shelter.home.house.interior.v1
+  localCenter: {x: 0, y: 0, z: 0}
+  localExtents: {x: 6.081711, y: 1.063561, z: 7.437134}
+  shelterKind: 1
 --- !u!1 &492949555
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,7 +329,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &492949556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -451,6 +552,147 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &513235592
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 513235593}
+  m_Layer: 0
+  m_Name: LightningOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &513235593
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 513235592}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 80, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1201817839}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &545456521
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1201817839}
+    m_Modifications:
+    - target: {fileID: 336668470337076204, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 336668470337076204, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 336668470337076204, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 336668470337076204, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 336668470337076204, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 336668470337076204, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 336668470337076204, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 336668470337076204, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 336668470337076204, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 336668470337076204, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 336668470337076205, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      propertyPath: Camera
+      value:
+      objectReference: {fileID: 1938839195}
+    - target: {fileID: 336668470337076205, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      propertyPath: volumeHDRP
+      value:
+      objectReference: {fileID: 1481914290}
+    - target: {fileID: 336668470337076206, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      propertyPath: m_Name
+      value: Enviro3_ProductionInstance
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 336668470337076204, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1481914291}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 336668470337076206, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 545456525}
+  m_SourcePrefab: {fileID: 100100000, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+--- !u!114 &545456522 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 336668470337076205, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+  m_PrefabInstance: {fileID: 545456521}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 545456524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43b4e18e1baccc642a82a5e642fd6997, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!4 &545456523 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 336668470337076204, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+  m_PrefabInstance: {fileID: 545456521}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &545456524 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 336668470337076206, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
+  m_PrefabInstance: {fileID: 545456521}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &545456525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 545456524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b744d10844449c1ae6763eb5a620ab6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Weather.Enviro3Integration::MSC.Weather.Enviro3Integration.Enviro3EnvironmentAdapter
+  manager: {fileID: 545456522}
+  presentationCamera: {fileID: 1938839195}
+  bindings: {fileID: 11400000, guid: b4949b68e4602fc4d86ea6ca2716d924, type: 2}
+  lightningOrigin: {fileID: 513235593}
+  lightningTarget: {fileID: 1260887593}
+  attachOnStart: 1
 --- !u!1 &1022952520
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,7 +709,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1022952521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,6 +741,316 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1201817836
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1201817839}
+  - component: {fileID: 1201817837}
+  - component: {fileID: 1201817838}
+  m_Layer: 0
+  m_Name: ProductionEnvironmentBackend
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1201817837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201817836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9a052356c5858e46bea8e7b099c6236, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Bootstrap.Runtime::MSC.Bootstrap.ProductionEnvironmentBackendMarker
+  ownerId: production.environment.backend.v1
+--- !u!114 &1201817838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201817836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe01451c93a93844e9bd2791a11f3b31, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Weather.Enviro3Integration::MSC.Weather.Enviro3Integration.Enviro3ShelterRemovalBridge
+  manager: {fileID: 545456522}
+  density: -2
+  feather: 0.2
+--- !u!4 &1201817839
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201817836}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1634974597}
+  - {fileID: 1938839196}
+  - {fileID: 513235593}
+  - {fileID: 1260887593}
+  - {fileID: 545456523}
+  m_Father: {fileID: 161771367}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1260887592
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1260887593}
+  m_Layer: 0
+  m_Name: LightningTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1260887593
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260887592}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1201817839}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1481914289
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1481914291}
+  - component: {fileID: 1481914290}
+  m_Layer: 0
+  m_Name: Enviro3_HDRPVolume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1481914290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481914289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 10
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: f6cbcd57ee8e65445891d5cd9ba29cb6, type: 2}
+--- !u!4 &1481914291
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481914289}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 545456523}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1634974596
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1634974597}
+  m_Layer: 0
+  m_Name: ProjectOwnedShelterVolumes
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1634974597
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634974596}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 382902697}
+  - {fileID: 1728515925}
+  m_Father: {fileID: 1201817839}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1728515924
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1728515925}
+  - component: {fileID: 1728515926}
+  m_Layer: 0
+  m_Name: HomeGarageInterior
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1728515925
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728515924}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 153.3864, y: 2.2692845, z: -1038.4102}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1634974597}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1728515926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728515924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ee0aa7968879e149846f35ace5d3d2c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Weather.Production.Runtime::MSC.Weather.Production.ProductionShelterVolumeAuthoring
+  stableId: weather.shelter.home.garage.interior.v1
+  localCenter: {x: 0, y: 0, z: 0}
+  localExtents: {x: 2.294693, y: 1.1821094, z: 4.7510986}
+  shelterKind: 1
+--- !u!1 &1938839194
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1938839196}
+  - component: {fileID: 1938839195}
+  m_Layer: 0
+  m_Name: StartupCameraPlaceholder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!20 &1938839195
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1938839194}
+  m_Enabled: 0
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!4 &1938839196
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1938839194}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1201817839}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -179,6 +179,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: MSC.Bootstrap.Runtime::MSC.Bootstrap.ProductionWorldStreamingInstaller
   compositionRoot: {fileID: 161771366}
   worldStreaming: {fileID: 161771369}
+  environment: {fileID: 0}
+  startupMode: 1
   playerPrefab: {fileID: 334472089413303144, guid: 3dbb343a041856b4caee6bb095dc2f54, type: 3}
   playerSpawnPosition: {x: 153.495, y: 1.1, z: -1028.03}
   playerSpawnEulerAngles: {x: -0, y: 180, z: 0}

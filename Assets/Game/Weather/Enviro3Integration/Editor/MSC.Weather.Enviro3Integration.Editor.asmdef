@@ -2,9 +2,16 @@
   "name": "MSC.Weather.Enviro3Integration.Editor",
   "rootNamespace": "MSC.Weather.Enviro3Integration.Editor",
   "references": [
+    "MSC.Bootstrap.Runtime",
+    "MSC.Core.Runtime",
     "MSC.Development.WeatherLab",
+    "MSC.LegacyImport.Runtime",
     "MSC.Weather.Enviro3Integration",
     "MSC.Weather.Presentation.Runtime",
+    "MSC.Weather.Production.Runtime",
+    "MSC.Weather.Production.LegacyBaseline.Runtime",
+    "MSC.Weather.Runtime",
+    "MSC.World.Runtime",
     "Enviro3.Runtime",
     "Unity.RenderPipelines.Core.Runtime",
     "Unity.RenderPipelines.HighDefinition.Runtime"

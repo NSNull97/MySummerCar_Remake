@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1347d7c01d7fa5469ee95243101606d, type: 3}
+  m_Name: ProductionLegacyWetnessCoverage
+  m_EditorClassIdentifier: MSC.Weather.Production.LegacyBaseline.Runtime::MSC.Weather.Production.LegacyBaseline.LegacyWetnessCoverageProfile
+  entries:
+  - sourceMaterialGuid: 3053483f32ee213419283150a38bf862
+    category: 0
+  - sourceMaterialGuid: 7a19fb2d522ee4c44a2ae61c01a064fa
+    category: 0
+  - sourceMaterialGuid: a0571159690cbed438f5965225dc2df4
+    category: 0
+  - sourceMaterialGuid: da5bc03c62a0f174197555e90357aac9
+    category: 0
+  - sourceMaterialGuid: 2b8378937c6afb64390d5474f4bcd14a
+    category: 1
+  - sourceMaterialGuid: 5cc44389f1f10bf4cabee6d33feb1551
+    category: 1
+  - sourceMaterialGuid: bee65a18eecc0bc409361e160d6b1aca
+    category: 1
+  - sourceMaterialGuid: e04a30ebc42fb694285479839635f6e3
+    category: 1
+  - sourceMaterialGuid: e4f7ddfffd5f47947966d4f2906b4b20
+    category: 1
+  - sourceMaterialGuid: 52580e7b1213f134b9d538d61097139e
+    category: 2
+  - sourceMaterialGuid: 6523ecc3a1a6530468696a093eccedaf
+    category: 2
+  - sourceMaterialGuid: 772517eaa38ab4b4ca88da91ff2b6b42
+    category: 2
+  - sourceMaterialGuid: 98f55c71a86a0eb4683e721772261798
+    category: 2
+  - sourceMaterialGuid: a1f5959787c382a4a890ea8b6542be3a
+    category: 2
+  - sourceMaterialGuid: b3e8f6161e4c4894fbb28e0a00a163a0
+    category: 2
+  - sourceMaterialGuid: 4c655eee1f5769647aaba353726e3d53
+    category: 3
+  - sourceMaterialGuid: 5331eb6053122a543bb6668ec5bd908e
+    category: 3
+  - sourceMaterialGuid: 5a5c0f1993185af4fac578c232e2eaea
+    category: 3
+  - sourceMaterialGuid: 74e2af945e6f6e948a99429361720d66
+    category: 3
+  - sourceMaterialGuid: ceece334d48596b47928e148fe30959a
+    category: 3

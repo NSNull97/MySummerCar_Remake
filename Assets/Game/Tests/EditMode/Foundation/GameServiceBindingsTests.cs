@@ -1,6 +1,8 @@
 using System;
 using MSC.Bootstrap;
+using MSC.Core.Time;
 using MSC.Interaction;
+using MSC.Weather.Domain;
 using MSC.World;
 using NUnit.Framework;
 using UnityEngine;
@@ -56,6 +58,29 @@ namespace MSC.Tests.EditMode.Foundation
         public void NullWorldStreamingPartialBindingIsRejected()
         {
             Assert.Throws<ArgumentNullException>(() => GameServiceBindings.CreateWorldStreamingPartial(null));
+        }
+
+        [Test]
+        public void ProductionEnvironmentPartialBindsTimeWeatherAndWorldOnly()
+        {
+            var gameTime = new GameTimeService();
+            var weather = new WeatherDirector(
+                WeatherProfileCatalog.CreateRemakeDesignTargets(),
+                new WeatherSeed(1UL, 7UL),
+                WeatherStateIds.Clear);
+            var worldStreaming = new WorldStreamingServiceStub();
+
+            GameServiceBindings bindings =
+                GameServiceBindings.CreateProductionEnvironmentPartial(
+                    gameTime,
+                    weather,
+                    worldStreaming);
+
+            Assert.That(bindings.GameTime, Is.SameAs(gameTime));
+            Assert.That(bindings.Weather, Is.SameAs(weather));
+            Assert.That(bindings.WorldStreaming, Is.SameAs(worldStreaming));
+            Assert.That(bindings.ServiceCount, Is.EqualTo(3));
+            Assert.That(bindings.IsComplete, Is.False);
         }
 
         private sealed class InteractionServiceStub : IInteractionService

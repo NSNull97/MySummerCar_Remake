@@ -20,6 +20,7 @@ namespace MSC.Tests.EditMode.Enviro3Integration
         private EnviroWeatherType storm;
         private EnviroWeatherType fog;
         private EnviroQuality low;
+        private EnviroQuality medium;
         private EnviroQuality high;
         private EnviroEffectsModule effectsSource;
 
@@ -36,6 +37,7 @@ namespace MSC.Tests.EditMode.Enviro3Integration
             storm = Create<EnviroWeatherType>();
             fog = Create<EnviroWeatherType>();
             low = Create<EnviroQuality>();
+            medium = Create<EnviroQuality>();
             high = Create<EnviroQuality>();
 
             bindings.ConfigureForAuthoring(
@@ -48,6 +50,7 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 storm,
                 fog,
                 low,
+                medium,
                 high);
         }
 
@@ -113,7 +116,15 @@ namespace MSC.Tests.EditMode.Enviro3Integration
         }
 
         [Test]
-        public void LowAndHighQualityTiers_ResolveToExactAssignedAssets()
+        public void QualityTierNumericValues_PreserveExistingSerializedContract()
+        {
+            Assert.That((int)EnvironmentQualityTier.Low, Is.Zero);
+            Assert.That((int)EnvironmentQualityTier.High, Is.EqualTo(1));
+            Assert.That((int)EnvironmentQualityTier.Medium, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void LowMediumAndHighQualityTiers_ResolveToExactAssignedAssets()
         {
             Assert.That(
                 EnvironmentBindingId.TryParse(
@@ -126,12 +137,51 @@ namespace MSC.Tests.EditMode.Enviro3Integration
 
             Assert.That(
                 EnvironmentBindingId.TryParse(
+                    Enviro3EnvironmentBindings.MediumQualityIdValue,
+                    out EnvironmentBindingId mediumId),
+                Is.True);
+            Assert.That(
+                mediumId.Value,
+                Is.EqualTo(Enviro3EnvironmentBindings.MediumQualityIdValue));
+            Assert.That(
+                bindings.TryResolveQuality(
+                    EnvironmentQualityTier.Medium,
+                    out EnviroQuality actualMedium),
+                Is.True);
+            Assert.That(actualMedium, Is.SameAs(medium));
+
+            Assert.That(
+                EnvironmentBindingId.TryParse(
                     Enviro3EnvironmentBindings.HighQualityIdValue,
                     out EnvironmentBindingId highId),
                 Is.True);
             Assert.That(highId.Value, Is.EqualTo(Enviro3EnvironmentBindings.HighQualityIdValue));
             Assert.That(bindings.TryResolveQuality(EnvironmentQualityTier.High, out EnviroQuality actualHigh), Is.True);
             Assert.That(actualHigh, Is.SameAs(high));
+        }
+
+        [Test]
+        public void Pre07CCompatibilityOverload_MapsMediumToExistingHighAsset()
+        {
+            bindings.ConfigureForAuthoring(
+                bindings.SourceConfiguration,
+                effectsSource,
+                clear,
+                partlyCloudy,
+                overcast,
+                rain,
+                storm,
+                fog,
+                low,
+                high);
+
+            Assert.That(bindings.Medium, Is.SameAs(high));
+            Assert.That(
+                bindings.TryResolveQuality(
+                    EnvironmentQualityTier.Medium,
+                    out EnviroQuality resolved),
+                Is.True);
+            Assert.That(resolved, Is.SameAs(high));
         }
 
         [Test]

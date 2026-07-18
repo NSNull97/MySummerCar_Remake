@@ -2,8 +2,12 @@
     "name": "MSC.Weather.Enviro3Integration",
     "rootNamespace": "MSC.Weather.Enviro3Integration",
     "references": [
+        "MSC.Weather.Runtime",
         "MSC.Weather.Presentation.Runtime",
-        "Enviro3.Runtime"
+        "MSC.Weather.Production.Runtime",
+        "Enviro3.Runtime",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.HighDefinition.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

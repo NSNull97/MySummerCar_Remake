@@ -1,11 +1,14 @@
-# Porting Matrix — through Milestone 07B
+# Porting Matrix — through Milestone 07C night/dawn follow-up
 
 Status: controlled donor-reference/world-baseline work is recorded through the
 frozen 06B sequence. Milestone 07A is fixed in commit `61250e2`; Milestone 07B
 adds clean-room, project-owned GameTime/weather/wetness/lightning domains and a
-read-only Enviro presentation adapter in WeatherLab/tests only. No donor weather
-code, state machine, configuration value or visual asset is classified as
-ported or production-ready.
+read-only Enviro presentation adapter. Milestone 07C night/dawn follow-up tests
+pass, and the user accepted the corrected dawn/night presentation on 2026-07-18
+without capture artifacts. Performance and other scoped manual gates remain
+pending, and current generated-material contract validation is not clean. No
+donor weather code, state machine, configuration value or visual asset is
+classified as ported or production-ready.
 
 Evidence basis: donor file inventory, serialized-file headers/strings, managed assembly names, reflection-only type/member metadata, AssetRipper 1.3.14 object export, staged hashes, and Unity validation.
 
@@ -36,7 +39,7 @@ Evidence basis: donor file inventory, serialized-file headers/strings, managed a
 | Time/needs | No reliable dedicated non-PlayMaker type identified; likely serialized FSM variables/actions in GAME scene | Very high | Save, UI, player state, world events, weather, audio | GameTime is now a project-owned clean-room service; needs remain deferred; any future donor rates still require measured evidence | High | GameTime M07B complete; needs later | Donor time scale/sleep skip and all hunger/thirst/stress/fatigue/urine formulas remain unknown; 07B time values are `RemakeDesignTarget` |
 | NPCs/traffic | SWS spline/bezier movement types; serialized scene paths/FSMs; no authoritative NPC-domain class inventory | Very high | World splines, schedules/time, physics, audio, save state, scene loading | Defer population; preserve routes/timing as world-layout/behavioral reference; reimplement a small traffic slice only when needed | Very high | Post-vertical-slice except minimal traffic proof | Agents, spawn/despawn, schedules, route graphs, AI state, persistence, collision rules |
 | World/terrain/roads | `mainData`, `level0`–`level3`, shared assets; scene paths; SWS spline/bezier types; largest level is 104 MB but mapping is unproven | Very high | Terrain/meshes, colliders, splines, vegetation, streaming, persistent entities, weather | Controlled extraction of layout/measurements; rebuild terrain/roads/assets; use streaming cells/additive scenes and project-owned IDs | Very high | M2 reference proof; M3 garage slice; M7 expansion | Scene mapping, coordinate origin/scale, terrain format, road centerlines, cell boundaries, key-location transforms |
-| Weather | `CameraFog`, `RainNearClip`, `SetRainClip`, `windshield.RainType`, PlayMaker weather actions, serialized assets | High | Time, camera, particles, materials, audio, indoor/outdoor state, save | Project-owned seeded fronts, outputs, wetness and lightning are clean-room `Reimplemented`; Enviro 3 is presentation only; future donor comparison remains behavioral evidence | High | M07A/M07B complete; M07C rollout next | Donor schedule, transition durations, wetness persistence and wind/cloud values remain unknown; all 07B logical values are `RemakeDesignTarget` |
+| Weather | `CameraFog`, `RainNearClip`, `SetRainClip`, `windshield.RainType`, PlayMaker weather actions, serialized assets | High | Time, camera, particles, materials, audio, indoor/outdoor state, save | Project-owned seeded fronts, outputs, wetness and lightning are clean-room `Reimplemented`; Enviro 3 is presentation only; future donor comparison remains behavioral evidence | High | M07A/M07B complete; M07C night/dawn follow-up automated tests pass and manual dawn/night retest is `USER PASS` 2026-07-18 without capture artifacts | Donor schedule, transition durations, wetness persistence and wind/cloud values remain unknown; all logical/runtime presentation values are project-owned `RemakeDesignTarget` |
 | Audio | Shared-assets sound containers/derived sound directories; `MasterAudio`, `EventSounds`, `SoundController`, playlists; Unity Audio; frozen `GAME.unity` `AudioEngineSatsuma` and `MasterAudio/Starting` mapping | High | FSM events, player/vehicle/world state, mixer, listener, save settings | Treat the seven ledgered Satsuma clips as external Editor-only `TemporaryDirectImport` diagnostics and routing as `ReferenceOnly`; reauthor final soundscape; new `IAudioBackend` plus Unity fallback, Wwise later | High | M1 boundary; M6 parameters/local diagnostic; M8 Wwise | Complete event/mixer map, load layers, stop/stall clip, interior/exterior logic, licensing/authorship |
 | Animation | `HOTween.dll`, iTween, `SimpleIKSolver`, `IKLimb_BrunoFerreira`, SWS movement, many PlayMaker animation actions | High | Rigs, transforms, interaction targets, FSM timing, tools/vehicle controls | Case-by-case reference; reimplement interaction IK and presentation; retarget only compatible verified clips | High | M4 presentation; M5 tool/assembly IK | Clip/rig inventory, generic/humanoid compatibility, event authority, steering/tool target transforms |
 | UI | `SettingsMenu`, `ShowcaseGUI`, legacy Unity UI/GUI, `cInput`, many PlayMaker GUI/input actions, menu scenes | Very high | Input, save/options, localization, gameplay FSMs, audio settings | Reimplement with current UI/input architecture; transfer labels/flows/config only as behavioral reference | Medium-high | M4 minimal HUD; later feature UI | Screen inventory, accessibility, localization, option semantics, state ownership, resolution behavior |
@@ -254,5 +257,34 @@ are not inferred from the automated evidence.
 The ledger uses explicit `ProjectAuthored/Milestone07B` rows with empty source
 hashes because these are clean-room project systems. They do not create donor
 provenance records, do not change any donor transfer classification and do not
-claim `CodePorted` or `ConfigurationTransferred`. The only next milestone is
-`07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md`.
+claim `CodePorted` or `ConfigurationTransferred`. This was the 07B handoff into
+`07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md`; current 07C status follows.
+
+## Milestone 07C production rollout state
+
+| Area | Evidence/input | Classification / ownership | Implemented boundary / status |
+|---|---|---|---|
+| Production environment composition | Project-owned 07B domains, Bootstrap lifetime and read-only Enviro API | `Reimplemented`; Enviro is a third-party presentation dependency | One persistent `ProductionEnvironmentController` and one adapter; linked inactive Enviro prefab activates only after session ownership; no direct Enviro reference from core/gameplay assemblies |
+| Scene and streaming lifecycle | Existing additive donor-world streamer and project composition root | `Reimplemented` | Coalesced post-lifecycle owner validation, shelter rebuild, duplicate Bootstrap rejection, same/different Single-scene root handoff and clean teardown; repeat cellization preserves production mode and explicit fixture conversion removes weather ownership; focused PlayMode `6/6 PASS`, legacy world-only compatibility `1/1 PASS` |
+| Wetness/material compatibility | 07B wetness outputs plus reviewed legacy material-slot allowlist | `Reimplemented` compatibility layer over `TemporaryDirectImport` visuals | Shared globals/property blocks only; no unique material instantiation; wet smoothness remains capped at `0.45` opaque / `0.25` alpha-clip and temporary baseline reflections at `0.6`; the user accepted the metallic look as temporary donor material/shader debt, but current generated-material contract validation is not clean |
+| Home shelter measurements | Frozen home-house/garage renderer bounds | `DimensionalReference` input; project-owned runtime identities | Two stable-ID interior AABBs with pinned normalized source hash; deterministic removal ellipsoids preserve horizontal tiling and enforce vertical stretch `>= 1`; Teimo and other interiors are not claimed; living-room rain retest is user-accepted |
+| Time/weather/lightning/save orchestration | Project-authored 07B state and 07C lifecycle requirements | `Reimplemented` | Restore precedes reveal, initial sync is instant, scheduled fronts use remaining simulation time, ambient lightning is director-owned and load/spawn bounded; runtime presentation uses solar calibration `60 N / 27.3 E / UTC+3`, approximately `04:59`/`21:35` horizon crossings on the reference date, and same-pass sun updates; no Enviro runtime object is serialized |
+| Low/Medium/High presentation mapping | Project quality IDs and isolated Enviro runtime clones | `Reimplemented` adapter mapping | Structural and focused automated tests pass; aurora is suppressed across tiers; smooth minimum night exposure is `7.5 EV` from `solarTime <= 0.43` toward unchanged daylight at `0.5`; manual dawn/night comparison is `USER PASS` 2026-07-18 without capture artifacts, while real-GPU performance remains `PENDING` |
+
+Fresh night/dawn follow-up evidence is Enviro integration `17/17`, combined
+production EditMode `32/32` and production lifecycle PlayMode `6/6`, with exact
+XML artifacts under `Logs/M07C_VisualRemediation3_*`. Full EditMode is `328/334`:
+the same four historical failures plus two current WorldBaseline material-
+contract failures caused by four ignored generated materials that were already
+rewritten before this follow-up. A fresh focused WorldBaseline rerun is `8/10`
+with the same two failures, confirming persistent generated-payload drift rather
+than full-suite ordering pollution. The previous result in
+`Logs/M07C_VisualRemediation2_WorldFreeze.log` remains the last strict world-
+freeze `PASS` with SHA-256
+`10544fc3ed5bd6c8cd44b451155e766c0552710f4c9d8cc91dda263de001ba5f`;
+current generated-material validation is not clean. Rain and the current sunset
+are user-accepted, metallic-looking temporary surfaces are accepted visual debt,
+and the corrected dawn/night presentation is `USER PASS` on 2026-07-18 without
+capture artifacts. Matched fidelity, other interiors and Development Player
+performance remain pending; this is not whole-milestone acceptance. No 07C item
+is classified `CodePorted` or `ConfigurationTransferred`.

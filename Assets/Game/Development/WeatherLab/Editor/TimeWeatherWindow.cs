@@ -289,6 +289,13 @@ namespace MSC.Development.WeatherLab.Editor
                 Run(() => controller.ApplyQuality(EnvironmentQualityTier.Low), "Low quality applied.");
             }
 
+            if (GUILayout.Button("Medium"))
+            {
+                Run(
+                    () => controller.ApplyQuality(EnvironmentQualityTier.Medium),
+                    "Medium quality applied.");
+            }
+
             if (GUILayout.Button("High"))
             {
                 Run(() => controller.ApplyQuality(EnvironmentQualityTier.High), "High quality applied.");

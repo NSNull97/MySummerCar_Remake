@@ -1,0 +1,24 @@
+{
+  "name": "MSC.Weather.Production.Tests.EditMode",
+  "rootNamespace": "MSC.Tests.EditMode.WeatherProduction",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Weather.Runtime",
+    "MSC.Weather.Presentation.Runtime",
+    "MSC.Weather.Production.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

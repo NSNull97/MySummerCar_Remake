@@ -111,8 +111,8 @@ namespace MSC.Tests.EditMode.Enviro3Integration
             Assert.That(observations.AdapterAttached, Is.True);
             Assert.That(observations.AllStatesOperational, Is.True);
             Assert.That(observations.AllMappingsExact, Is.True);
-            Assert.That(observations.BothQualityTiersOperational, Is.True);
-            Assert.That(observations.BothQualityMappingsExact, Is.True);
+            Assert.That(observations.AllQualityTiersOperational, Is.True);
+            Assert.That(observations.AllQualityMappingsExact, Is.True);
             Assert.That(observations.LightningRequestOperational, Is.True);
             Assert.That(observations.RainParticlesOperational, Is.True);
             Assert.That(observations.StormParticlesOperational, Is.True);
@@ -477,9 +477,9 @@ namespace MSC.Tests.EditMode.Enviro3Integration
 
             public bool AllMappingsExact { get; private set; }
 
-            public bool BothQualityTiersOperational { get; private set; }
+            public bool AllQualityTiersOperational { get; private set; }
 
-            public bool BothQualityMappingsExact { get; private set; }
+            public bool AllQualityMappingsExact { get; private set; }
 
             public bool LightningRequestOperational { get; private set; }
 
@@ -563,6 +563,10 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 EnvironmentPresentationStatus lowStatus =
                     controller.ApplyQuality(EnvironmentQualityTier.Low);
                 bool lowMapped = manager.Quality.Settings.defaultQuality == bindings.Low;
+                EnvironmentPresentationStatus mediumStatus =
+                    controller.ApplyQuality(EnvironmentQualityTier.Medium);
+                bool mediumMapped =
+                    manager.Quality.Settings.defaultQuality == bindings.Medium;
                 EnvironmentPresentationStatus highStatus =
                     controller.ApplyQuality(EnvironmentQualityTier.High);
                 bool highMapped = manager.Quality.Settings.defaultQuality == bindings.High;
@@ -604,8 +608,12 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     AdapterAttached = adapter.IsAttached,
                     AllStatesOperational = statesOperational,
                     AllMappingsExact = mappingsExact,
-                    BothQualityTiersOperational = lowStatus.IsOperational && highStatus.IsOperational,
-                    BothQualityMappingsExact = lowMapped && highMapped,
+                    AllQualityTiersOperational =
+                        lowStatus.IsOperational &&
+                        mediumStatus.IsOperational &&
+                        highStatus.IsOperational,
+                    AllQualityMappingsExact =
+                        lowMapped && mediumMapped && highMapped,
                     LightningRequestOperational = lightningStatus.IsOperational,
                     RainParticlesOperational = rainParticlesOperational,
                     StormParticlesOperational = stormParticlesOperational,

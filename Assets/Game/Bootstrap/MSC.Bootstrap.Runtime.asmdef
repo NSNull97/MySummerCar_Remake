@@ -6,6 +6,7 @@
     "MSC.Interaction.Runtime",
     "MSC.World.Runtime",
     "MSC.Weather.Runtime",
+    "MSC.Weather.Production.Runtime",
     "MSC.Audio.Runtime",
     "MSC.Save.Runtime"
   ],

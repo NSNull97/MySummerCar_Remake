@@ -5,7 +5,10 @@ namespace MSC.Weather.Presentation
     public enum EnvironmentQualityTier
     {
         Low = 0,
-        High = 1
+        // High keeps its pre-07C serialized value. Medium is appended instead of
+        // inserted so existing scenes and assets continue to deserialize as High.
+        High = 1,
+        Medium = 2
     }
 
     public enum EnvironmentCloudType
@@ -45,7 +48,8 @@ namespace MSC.Weather.Presentation
         Wind = 1 << 6,
         LightningVisual = 1 << 7,
         EnvironmentRefresh = 1 << 8,
-        QualityTiers = 1 << 9
+        QualityTiers = 1 << 9,
+        Exposure = 1 << 10
     }
 
     public enum EnvironmentPresentationState

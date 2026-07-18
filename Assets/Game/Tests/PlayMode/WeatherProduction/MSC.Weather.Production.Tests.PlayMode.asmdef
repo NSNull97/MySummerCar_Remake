@@ -1,0 +1,28 @@
+{
+  "name": "MSC.Weather.Production.Tests.PlayMode",
+  "rootNamespace": "MSC.Tests.PlayMode.WeatherProduction",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Bootstrap.Runtime",
+    "MSC.World.Runtime",
+    "MSC.Weather.Runtime",
+    "MSC.Weather.Presentation.Runtime",
+    "MSC.Weather.Production.Runtime",
+    "MSC.Weather.Enviro3Integration"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "ENVIRO_3",
+    "ENVIRO_HDRP"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

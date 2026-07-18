@@ -8,7 +8,8 @@
     "MSC.Core.Runtime",
     "MSC.Development.WeatherLab",
     "Enviro3.Runtime",
-    "Unity.RenderPipelines.Core.Runtime"
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
   ],
   "includePlatforms": [
     "Editor"

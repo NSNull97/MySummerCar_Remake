@@ -22,4 +22,14 @@ namespace MSC.Weather.Presentation
 
         void Detach();
     }
+
+    /// <summary>
+    /// Optional integration-boundary guard invoked after additive scene topology
+    /// changes. The contract stays vendor-neutral; the adapter is responsible for
+    /// detecting its own concrete manager/owner types and failing closed.
+    /// </summary>
+    public interface IEnvironmentPresentationSceneOwnershipGuard
+    {
+        EnvironmentPresentationStatus RevalidateSceneOwnership();
+    }
 }
