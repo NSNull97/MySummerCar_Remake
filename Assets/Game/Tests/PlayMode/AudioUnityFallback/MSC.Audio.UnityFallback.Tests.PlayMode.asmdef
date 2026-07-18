@@ -1,0 +1,20 @@
+{
+  "name": "MSC.Audio.UnityFallback.Tests.PlayMode",
+  "rootNamespace": "MSC.Tests.PlayMode.AudioUnityFallback",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Audio.UnityFallback"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

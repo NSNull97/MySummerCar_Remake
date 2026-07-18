@@ -1,4 +1,4 @@
-# Donor System Map — through Milestone 07C night/dawn follow-up
+# Donor System Map — through Milestone 08 audio prototype
 
 This map describes observed donor ownership/coupling and the intended transfer boundary. It is not a claim that any subsystem has been ported.
 
@@ -588,3 +588,55 @@ material/shader debt, and marked the corrected dawn/night presentation
 `USER PASS` on 2026-07-18 without capture artifacts. Matched fidelity, other
 interiors and performance evidence remain pending; the whole 07C milestone is
 not marked passed.
+
+## Milestone 08 audio ownership map
+
+```text
+Vehicle telemetry ----> VehicleAudioPresenter ----> IVehicleAudioBackend
+Weather outputs ------> WeatherAudioPresenter -----+
+Interaction completed -> InteractionAudioBridge ---+-> IAudioBackend
+Player displacement --> PlayerFootstepAudioPresenter +
+Listener/zones/portal -> AudioListenerContext ------+
+Weather exposure -----> listener fallback ----------+
+                                                     -> AudioBackendRouter
+                                                          -> WwiseAudioBackend
+                                                             (official API only)
+                                                          -> UnityAudioBackend
+                                                             (fallback)
+```
+
+`MSC.Audio.Runtime` owns stable IDs, maps, handles, emitter/listener contexts,
+settings, validation and router lifetime. Domain assemblies do not reference
+Wwise or Enviro. `MSC.Audio.Wwise` is the only project adapter that references
+the official Wwise integration; `MSC.Audio.UnityFallback` remains operational
+when Wwise is unavailable. Scene unload removes scene-owned emitters/voices.
+
+Production Enviro audio remains disabled. Project weather outputs are the sole
+rain/wind/thunder source. Donor gameplay clips are local ignored
+`TemporaryDirectImport` prototypes only; final audio is newly authored. World
+ambience placement, expanded mechanical/interaction producers and UI sounds are
+declared `DeferredHook`, not active runtime coverage. Player footsteps are an
+active typed producer with grounded distance cadence, teleport reset and
+explicit surface metadata. Explicit audio zones override the coarser production
+weather-exposure listener fallback.
+
+Wwise authoring validates 52 events, 32 RTPCs, 4 switch groups, 3 state groups,
+5 user banks plus `Init`, 6 mixer buses/Volume curves, 7 routed roots and exact
+child routing `52/52`. Footsteps validate 10 sounds, 5 random pairs and `9/9`
+assignments. Live Bootstrap functional PlayMode is 7/7 with six banks and no
+missing bank; the user also confirms Wwise/6/0 in the runtime diagnostics.
+Post-remediation performance 1/1 records baseline/peak/cleanup emitters/voices
+2/0 -> 3/5 -> 2/0, `0 B`
+allocations in bounded RTPC/vehicle/weather updates and zero occlusion queries.
+The private Windows Development build is `844,040,197 B`; its complete folder is
+`844,257,747 B`, all six packaged banks hash-match, and native boot initializes
+Wwise SDK `2025.1.9.9197`.
+Headless output suspension leaves audibility and real-device Wwise Profiler CPU
+manual. The user accepted the bounded Milestone 08 baseline on 2026-07-18 and
+explicitly deferred more detailed zone/mix tuning to polishing. Full EditMode
+is 350/356 with six unrelated Garage/World failures. Full
+PlayMode is 68/70 with one unrelated VehiclePhysicsValidation GarageExit failure
+and one environment-gated performance skip; the explicitly enabled performance
+run is 1/1, and the exact failed vehicle-route case is 1/1 in an 8.696 s
+isolated rerun. The full-suite failure is order-dependent/flaky and outside
+audio; neither full suite is claimed as a pass.

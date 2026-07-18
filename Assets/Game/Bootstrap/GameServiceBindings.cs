@@ -117,6 +117,28 @@ namespace MSC.Bootstrap
                 requireCompleteSet: false);
         }
 
+        /// <summary>
+        /// Creates the production environment/world/audio binding once the
+        /// project-owned audio router has been composed.
+        /// </summary>
+        public static GameServiceBindings CreateProductionEnvironmentAudioPartial(
+            IGameTimeService gameTime,
+            IWeatherService weather,
+            IAudioBackend audio,
+            IWorldStreamingService worldStreaming)
+        {
+            return new GameServiceBindings(
+                gameTime: gameTime ?? throw new ArgumentNullException(nameof(gameTime)),
+                weather: weather ?? throw new ArgumentNullException(nameof(weather)),
+                save: null,
+                audio: audio ?? throw new ArgumentNullException(nameof(audio)),
+                interaction: null,
+                entityIds: null,
+                worldStreaming: worldStreaming ??
+                    throw new ArgumentNullException(nameof(worldStreaming)),
+                requireCompleteSet: false);
+        }
+
         public IGameTimeService GameTime { get; }
 
         public IWeatherService Weather { get; }

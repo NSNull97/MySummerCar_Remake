@@ -1,0 +1,20 @@
+{
+  "name": "MSC.Audio.PlayerIntegration.Tests.EditMode",
+  "rootNamespace": "MSC.Tests.EditMode.AudioPlayerIntegration",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Audio.PlayerIntegration",
+    "MSC.Vehicle.Runtime",
+    "MSC.Vehicle.Simulation"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": ["TestAssemblies"]
+}

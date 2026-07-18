@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using MSC.Audio.Composition;
 using MSC.Weather.Production;
 using MSC.Weather.Wetness;
 using MSC.World.Streaming;
@@ -25,6 +26,7 @@ namespace MSC.Bootstrap
         [SerializeField] private GameCompositionRoot compositionRoot;
         [SerializeField] private ProductionWorldStreamingService worldStreaming;
         [SerializeField] private ProductionEnvironmentController environment;
+        [SerializeField] private ProductionAudioComposition audioComposition;
         [SerializeField] private ProductionWorldStartupMode startupMode =
             ProductionWorldStartupMode.ProductionEnvironmentRequired;
         [SerializeField] private GameObject playerPrefab;
@@ -38,6 +40,7 @@ namespace MSC.Bootstrap
         public GameCompositionRoot CompositionRoot => compositionRoot;
         public ProductionWorldStreamingService WorldStreaming => worldStreaming;
         public ProductionEnvironmentController Environment => environment;
+        public ProductionAudioComposition AudioComposition => audioComposition;
         public ProductionWorldStartupMode StartupMode => startupMode;
         public bool HasCoherentStartupConfiguration
         {
@@ -190,6 +193,13 @@ namespace MSC.Bootstrap
             startupMode =
                 ProductionWorldStartupMode.ProductionEnvironmentRequired;
         }
+
+        public void ConfigureAudioForAuthoring(
+            ProductionAudioComposition configuredAudioComposition)
+        {
+            audioComposition = configuredAudioComposition ??
+                throw new ArgumentNullException(nameof(configuredAudioComposition));
+        }
 #endif
 
         private void Awake()
@@ -229,11 +239,24 @@ namespace MSC.Bootstrap
             }
 
             worldStreaming.BindFocus(spawnedPlayer.transform);
+            if (startupMode ==
+                    ProductionWorldStartupMode.ProductionEnvironmentRequired &&
+                (audioComposition == null ||
+                 !audioComposition.InitializeSession(spawnedPlayer, environment)))
+            {
+                throw new InvalidOperationException(
+                    "Production audio composition failed: " +
+                    (audioComposition != null
+                        ? audioComposition.LastFailure
+                        : "composition is missing."));
+            }
+
             compositionRoot.Initialize(startupMode ==
                 ProductionWorldStartupMode.ProductionEnvironmentRequired
-                ? GameServiceBindings.CreateProductionEnvironmentPartial(
+                ? GameServiceBindings.CreateProductionEnvironmentAudioPartial(
                     environment.GameTime,
                     environment.Weather,
+                    audioComposition.Backend,
                     worldStreaming)
                 : GameServiceBindings.CreateWorldStreamingPartial(
                     worldStreaming));
@@ -297,7 +320,8 @@ namespace MSC.Bootstrap
             {
                 case ProductionWorldStartupMode.ProductionEnvironmentRequired:
                     if (!HasCoherentStartupConfiguration ||
-                        !environment.IsPrimaryOwner)
+                        !environment.IsPrimaryOwner ||
+                        audioComposition == null)
                     {
                         throw new InvalidOperationException(
                             "Production environment startup mode has no coherent active primary owner/backend composition.");
@@ -355,10 +379,11 @@ namespace MSC.Bootstrap
                 gameObject != compositionRoot.gameObject ||
                 (startupMode ==
                      ProductionWorldStartupMode.ProductionEnvironmentRequired &&
-                 environment.gameObject != compositionRoot.gameObject))
+                 (environment.gameObject != compositionRoot.gameObject ||
+                  audioComposition.gameObject != compositionRoot.gameObject)))
             {
                 throw new InvalidOperationException(
-                    "Composition root, production streaming service, optional production environment, and installer must share the process-lifetime bootstrap object.");
+                    "Composition root, production streaming service, optional production environment/audio, and installer must share the process-lifetime bootstrap object.");
             }
         }
 

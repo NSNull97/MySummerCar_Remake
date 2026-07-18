@@ -1,4 +1,4 @@
-# Porting Matrix — through Milestone 07C night/dawn follow-up
+# Porting Matrix — through Milestone 08 audio prototype
 
 Status: controlled donor-reference/world-baseline work is recorded through the
 frozen 06B sequence. Milestone 07A is fixed in commit `61250e2`; Milestone 07B
@@ -9,6 +9,15 @@ without capture artifacts. Performance and other scoped manual gates remain
 pending, and current generated-material contract validation is not clean. No
 donor weather code, state machine, configuration value or visual asset is
 classified as ported or production-ready.
+
+Milestone 08 audio remediation is `Completed / AutomatedValidated /
+UserAcceptedBoundedBaseline`: official
+Wwise authoring/runtime/build gates pass, footsteps and the separate vehicle
+playtest are wired, and donor prototype clips remain local ignored
+`TemporaryDirectImport`. The user confirms Wwise / 6 banks / 0 missing. Audible
+fine-grained zone/mix calibration and real-device Wwise Profiler CPU are
+deferred to polishing; full EditMode/PlayMode retain unrelated Garage/World/
+VehiclePhysics baseline failures and are not claimed as passes.
 
 Evidence basis: donor file inventory, serialized-file headers/strings, managed assembly names, reflection-only type/member metadata, AssetRipper 1.3.14 object export, staged hashes, and Unity validation.
 
@@ -40,7 +49,7 @@ Evidence basis: donor file inventory, serialized-file headers/strings, managed a
 | NPCs/traffic | SWS spline/bezier movement types; serialized scene paths/FSMs; no authoritative NPC-domain class inventory | Very high | World splines, schedules/time, physics, audio, save state, scene loading | Defer population; preserve routes/timing as world-layout/behavioral reference; reimplement a small traffic slice only when needed | Very high | Post-vertical-slice except minimal traffic proof | Agents, spawn/despawn, schedules, route graphs, AI state, persistence, collision rules |
 | World/terrain/roads | `mainData`, `level0`–`level3`, shared assets; scene paths; SWS spline/bezier types; largest level is 104 MB but mapping is unproven | Very high | Terrain/meshes, colliders, splines, vegetation, streaming, persistent entities, weather | Controlled extraction of layout/measurements; rebuild terrain/roads/assets; use streaming cells/additive scenes and project-owned IDs | Very high | M2 reference proof; M3 garage slice; M7 expansion | Scene mapping, coordinate origin/scale, terrain format, road centerlines, cell boundaries, key-location transforms |
 | Weather | `CameraFog`, `RainNearClip`, `SetRainClip`, `windshield.RainType`, PlayMaker weather actions, serialized assets | High | Time, camera, particles, materials, audio, indoor/outdoor state, save | Project-owned seeded fronts, outputs, wetness and lightning are clean-room `Reimplemented`; Enviro 3 is presentation only; future donor comparison remains behavioral evidence | High | M07A/M07B complete; M07C night/dawn follow-up automated tests pass and manual dawn/night retest is `USER PASS` 2026-07-18 without capture artifacts | Donor schedule, transition durations, wetness persistence and wind/cloud values remain unknown; all logical/runtime presentation values are project-owned `RemakeDesignTarget` |
-| Audio | Shared-assets sound containers/derived sound directories; `MasterAudio`, `EventSounds`, `SoundController`, playlists; Unity Audio; frozen `GAME.unity` `AudioEngineSatsuma` and `MasterAudio/Starting` mapping | High | FSM events, player/vehicle/world state, mixer, listener, save settings | Treat the seven ledgered Satsuma clips as external Editor-only `TemporaryDirectImport` diagnostics and routing as `ReferenceOnly`; reauthor final soundscape; new `IAudioBackend` plus Unity fallback, Wwise later | High | M1 boundary; M6 parameters/local diagnostic; M8 Wwise | Complete event/mixer map, load layers, stop/stall clip, interior/exterior logic, licensing/authorship |
+| Audio | Shared-assets sound containers/derived sound directories; `MasterAudio`, `EventSounds`, `SoundController`, playlists; Unity Audio; frozen `GAME.unity` `AudioEngineSatsuma` and `MasterAudio/Starting` mapping | High | FSM events, player/vehicle/world state, mixer, listener, save settings | Hash-ledgered prototype clips remain local ignored `TemporaryDirectImport` and routing metadata `ReferenceOnly`; project-owned `IAudioBackend`, router, Unity fallback and isolated official Wwise 2025.1.9 adapter are `Reimplemented`; final soundscape is newly authored | High | M1 boundary; M6 diagnostic; M8 completed/automated-validated/user-accepted bounded baseline; 52 events, 32 RTPCs, 4 switches, 3 states, six verified banks, runtime footsteps, exposure fallback and separate vehicle playtest | Final authored content/mix, detailed production-world zone tuning and Wwise Profiler polish; deferred extended interaction/UI producers |
 | Animation | `HOTween.dll`, iTween, `SimpleIKSolver`, `IKLimb_BrunoFerreira`, SWS movement, many PlayMaker animation actions | High | Rigs, transforms, interaction targets, FSM timing, tools/vehicle controls | Case-by-case reference; reimplement interaction IK and presentation; retarget only compatible verified clips | High | M4 presentation; M5 tool/assembly IK | Clip/rig inventory, generic/humanoid compatibility, event authority, steering/tool target transforms |
 | UI | `SettingsMenu`, `ShowcaseGUI`, legacy Unity UI/GUI, `cInput`, many PlayMaker GUI/input actions, menu scenes | Very high | Input, save/options, localization, gameplay FSMs, audio settings | Reimplement with current UI/input architecture; transfer labels/flows/config only as behavioral reference | Medium-high | M4 minimal HUD; later feature UI | Screen inventory, accessibility, localization, option semantics, state ownership, resolution behavior |
 

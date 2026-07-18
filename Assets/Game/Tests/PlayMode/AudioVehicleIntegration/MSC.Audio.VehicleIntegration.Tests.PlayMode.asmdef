@@ -1,0 +1,23 @@
+{
+  "name": "MSC.Audio.VehicleIntegration.Tests.PlayMode",
+  "rootNamespace": "MSC.Tests.PlayMode.AudioVehicleIntegration",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Audio.Composition",
+    "MSC.Audio.VehicleIntegration",
+    "MSC.Vehicle.Runtime",
+    "MSC.Vehicle.Simulation"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

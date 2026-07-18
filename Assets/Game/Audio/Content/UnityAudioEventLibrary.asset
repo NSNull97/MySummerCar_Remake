@@ -1,0 +1,438 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c45c2ef1673b4f60b724f1b43acf744c, type: 3}
+  m_Name: UnityAudioEventLibrary
+  m_EditorClassIdentifier: MSC.Audio.UnityFallback::MSC.Audio.UnityFallback.UnityAudioEventLibrary
+  events:
+  - eventId: audio.event.vehicle.starter.engaged
+    clip: {fileID: 8300000, guid: e08556a103afe9247b8749853a82631f, type: 3}
+    category: 0
+    loop: 0
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.vehicle.starter.disengaged
+    clip: {fileID: 8300000, guid: e08556a103afe9247b8749853a82631f, type: 3}
+    category: 0
+    loop: 0
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.vehicle.engine.started
+    clip: {fileID: 8300000, guid: e08556a103afe9247b8749853a82631f, type: 3}
+    category: 0
+    loop: 0
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.vehicle.engine.stopped
+    clip: {fileID: 8300000, guid: e08556a103afe9247b8749853a82631f, type: 3}
+    category: 0
+    loop: 0
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.vehicle.engine.stalled
+    clip: {fileID: 8300000, guid: e08556a103afe9247b8749853a82631f, type: 3}
+    category: 0
+    loop: 0
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.vehicle.reset
+    clip: {fileID: 8300000, guid: e08556a103afe9247b8749853a82631f, type: 3}
+    category: 0
+    loop: 0
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.vehicle.engine.intake
+    clip: {fileID: 8300000, guid: 95cc802f81400da448bedb65ff123da6, type: 3}
+    category: 0
+    loop: 1
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.vehicle.engine.exhaust
+    clip: {fileID: 8300000, guid: 95cc802f81400da448bedb65ff123da6, type: 3}
+    category: 0
+    loop: 1
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.vehicle.engine.mechanical
+    clip: {fileID: 8300000, guid: 95cc802f81400da448bedb65ff123da6, type: 3}
+    category: 0
+    loop: 1
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.vehicle.transmission.loop
+    clip: {fileID: 8300000, guid: e08556a103afe9247b8749853a82631f, type: 3}
+    category: 0
+    loop: 0
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.vehicle.body.rattle
+    clip: {fileID: 8300000, guid: e08556a103afe9247b8749853a82631f, type: 3}
+    category: 0
+    loop: 0
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.vehicle.suspension.impact
+    clip: {fileID: 8300000, guid: e08556a103afe9247b8749853a82631f, type: 3}
+    category: 0
+    loop: 0
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.vehicle.tire.roll
+    clip: {fileID: 8300000, guid: 95cc802f81400da448bedb65ff123da6, type: 3}
+    category: 0
+    loop: 1
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.vehicle.tire.skid
+    clip: {fileID: 8300000, guid: e08556a103afe9247b8749853a82631f, type: 3}
+    category: 0
+    loop: 0
+    volume: 0.25
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.weather.rain.exterior
+    clip: {fileID: 8300000, guid: a9417e295d8f5e046abbdcb54e0989a7, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 0
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.weather.rain.sheltered
+    clip: {fileID: 8300000, guid: a9417e295d8f5e046abbdcb54e0989a7, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.08
+    pitch: 1
+    spatialBlend: 0
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.weather.rain.interior
+    clip: {fileID: 8300000, guid: a9417e295d8f5e046abbdcb54e0989a7, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.03
+    pitch: 1
+    spatialBlend: 0
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.weather.wind
+    clip: {fileID: 8300000, guid: 5264307fff893d14295e946ef25f01b3, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 0
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.weather.thunder
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 2
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.weather.thunder.distant
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 2
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.weather.thunder.strike
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 2
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.world.forest.ambience
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 80
+  - eventId: audio.event.world.lake.ambience
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 80
+  - eventId: audio.event.world.garage.roomtone
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 0
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 80
+  - eventId: audio.event.world.interior.roomtone
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 0
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 80
+  - eventId: audio.event.world.distant_traffic
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 80
+  - eventId: audio.event.world.birds
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 80
+  - eventId: audio.event.world.insects
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 80
+  - eventId: audio.event.interaction.pickup
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.drop
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.throw
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.place
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.mount_handoff
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.impact
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.tool.use
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.fastener.insert
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.fastener.tighten
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.fastener.loosen
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.part.install
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.part.remove
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.door.open
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.door.close
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.gate.open
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.gate.close
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.window.open
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.interaction.window.close
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45
+  - eventId: audio.event.player.footstep
+    clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
+    category: 1
+    loop: 0
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 45

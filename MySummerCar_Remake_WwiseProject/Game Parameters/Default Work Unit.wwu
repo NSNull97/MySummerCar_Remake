@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}" SchemaVersion="133">
+	<GameParameters>
+		<WorkUnit Name="Default Work Unit" ID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}" PersistMode="Standalone">
+			<ChildrenList>
+				<GameParameter Name="MSC_Mixer_Master" ID="{241ECE0D-99D0-450A-A0D5-BF911EDC5C92}">
+					<Comment>Project-owned mapping: audio.parameter.mixer.master</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="1"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Mixer_Vehicle" ID="{3B477530-73F4-429E-B866-ADB3AC57EC94}">
+					<Comment>Project-owned mapping: audio.parameter.mixer.vehicle</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="1"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Mixer_Effects" ID="{277B2B13-8EF4-4653-9408-DA1DF5DF2A0E}">
+					<Comment>Project-owned mapping: audio.parameter.mixer.effects</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="1"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Mixer_Ambience" ID="{F23A8A27-B0E8-4B23-A905-C3FEB956C839}">
+					<Comment>Project-owned mapping: audio.parameter.mixer.ambience</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="1"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Mixer_Music" ID="{15926913-5B6C-4732-BD0C-D0BA2522EB5F}">
+					<Comment>Project-owned mapping: audio.parameter.mixer.music</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="1"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Mixer_UI" ID="{B0DFA4B2-8BA6-478D-BD2C-6EB0B2DD9736}">
+					<Comment>Project-owned mapping: audio.parameter.mixer.ui</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="1"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_RPM" ID="{BA80BA11-5707-4F0A-94FA-EEAF2EB272FC}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.rpm</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="9000"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_RPM_Normalized" ID="{7A35FF34-8EE1-4061-AEC1-39608F5BB7A4}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.rpm.normalized</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_EngineLoad" ID="{CA57684C-89D2-4278-9706-4B9B154DF574}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.engine_load</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_Throttle" ID="{81F4BC9D-4F95-484C-B3B1-E834B79447A1}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.throttle</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_Gear" ID="{CB594C44-30FD-452B-A37F-A6B212FC253B}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.gear</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="6"/>
+						<Property Name="Min" Type="Real64" Value="-1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_ClutchSlipRPM" ID="{53BC2664-358D-4E1C-BA03-58D9B8E7F2F9}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.clutch_slip</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="9000"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_Speed" ID="{8A3F8E6C-714A-488D-AFA9-2BAA08FCBD6D}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.speed</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="80"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_WheelSpeedRadPS" ID="{5BDB5E46-A533-4A25-B864-6ADE336696E0}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.wheel_speed_radps</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="250"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_WheelSlip" ID="{14C24EFE-A4CE-4958-81EF-3911CBE7FD6B}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.wheel_slip</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_Brake" ID="{65E87EA2-4C79-4F59-A956-555479293B73}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.brake</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_SuspensionImpact" ID="{41C91CA4-9924-4E2E-881C-C2DA12981B18}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.suspension_impact</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_BatteryVoltage" ID="{1C305BAF-0EBE-449A-BAD0-6BF83326C4CA}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.battery_voltage</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="12.6"/>
+						<Property Name="Max" Type="Real64" Value="18"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_EngineTemperature" ID="{E526452E-DA18-463B-A193-CC36C1228F98}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.engine_temperature</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="20"/>
+						<Property Name="Max" Type="Real64" Value="180"/>
+						<Property Name="Min" Type="Real64" Value="-50"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_Damage" ID="{8368AB2D-CE76-4023-ABD3-E8C2F48280AA}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.damage</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_InteriorBlend" ID="{7235D052-6D1B-49DC-839E-3B193351D9A3}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.interior_blend</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_DoorOpenness" ID="{FFD8B610-9EAC-4070-A72C-0156590F8811}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.door_openness</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Vehicle_WindowOpenness" ID="{8D02DAB1-75B0-42A1-8090-516144848401}">
+					<Comment>Project-owned mapping: audio.parameter.vehicle.window_openness</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Weather_Precipitation" ID="{ADC88D2A-88DC-49F3-ADDC-826D2ED70718}">
+					<Comment>Project-owned mapping: audio.parameter.weather.precipitation</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Weather_Wind" ID="{B78416C1-83BE-44AD-8CFC-9E27910AB237}">
+					<Comment>Project-owned mapping: audio.parameter.weather.wind</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Weather_ThunderRisk" ID="{63E54A08-51E7-4726-AB6F-18EAB3C98E78}">
+					<Comment>Project-owned mapping: audio.parameter.weather.thunder_risk</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Environment_Shelter" ID="{0A1BCA8C-D9D3-4A6E-B879-E338C9DA4547}">
+					<Comment>Project-owned mapping: audio.parameter.environment.shelter</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Environment_TimeOfDay" ID="{0D1B3266-6EF1-4413-944F-1418AD19B2B4}">
+					<Comment>Project-owned mapping: audio.parameter.environment.time_of_day</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0.5"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Interaction_ImpactIntensity" ID="{9C101164-1400-4577-B582-FFC3F6494D0D}">
+					<Comment>Project-owned mapping: audio.parameter.interaction.impact_intensity</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Lightning_Intensity" ID="{7A53E2AD-A37C-49DE-B937-7F23CB08F1FB}">
+					<Comment>Project-owned mapping: audio.parameter.lightning.intensity</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="1"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Lightning_DistanceMeters" ID="{D07ABFE6-E594-4449-880F-E2788BEC725A}">
+					<Comment>Project-owned mapping: audio.parameter.lightning.distance</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="5000"/>
+					</PropertyList>
+				</GameParameter>
+				<GameParameter Name="MSC_Lightning_DelaySeconds" ID="{6CF543F3-1CA4-41A3-BA47-C3707C48EAA2}">
+					<Comment>Project-owned mapping: audio.parameter.lightning.delay</Comment>
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="Max" Type="Real64" Value="20"/>
+					</PropertyList>
+				</GameParameter>
+			</ChildrenList>
+		</WorkUnit>
+	</GameParameters>
+</WwiseDocument>

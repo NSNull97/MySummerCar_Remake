@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" SchemaVersion="133">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" PersistMode="Standalone">
+			<ChildrenList>
+				<Folder Name="MSC_Vehicle" ID="{970C0EAE-5C37-4B5B-9EA9-D471190BA95A}" ShortID="738058151">
+					<Comment>Milestone 08 project-owned vehicle events.</Comment>
+					<ChildrenList>
+						<Event Name="Play_MSC_Vehicle_Starter_Engage" ID="{0A500C58-8D9E-47CC-8F4F-AEC312921B25}">
+							<Comment>Project-owned mapping: audio.event.vehicle.starter.engaged; bank=MSC_Vehicle</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{0DB97D54-A6CA-450C-8DDA-7340127D4176}" ShortID="1055150873">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Starter_Whine" ID="{F453E213-F732-44AF-9922-DB2904778625}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Stop_MSC_Vehicle_Starter" ID="{54E7E262-C069-4CC8-9CA6-6E4D2851E880}">
+							<Comment>Project-owned mapping: audio.event.vehicle.starter.disengaged; bank=MSC_Vehicle</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{B3725E81-9290-41C3-9D7D-C83861359833}" ShortID="55694686">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="2"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Starter_Whine" ID="{F453E213-F732-44AF-9922-DB2904778625}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Vehicle_Engine_Start" ID="{A96574E2-40BB-47A3-999D-AEFB03F17AB3}">
+							<Comment>Project-owned mapping: audio.event.vehicle.engine.started; bank=MSC_Vehicle</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{189039D5-6343-4793-A8E9-84EB26338FBA}" ShortID="842573546">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Engine_Start" ID="{2C33A154-0842-48A1-A5ED-BFA838F9A8BD}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Stop_MSC_Vehicle_Engine" ID="{24AD4218-9E92-4CE2-9A9C-ADB2703FD464}">
+							<Comment>Project-owned mapping: audio.event.vehicle.engine.stopped; bank=MSC_Vehicle</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{249FF2CC-4344-46B3-8B3E-0CFE0DE4A6B8}" ShortID="911998582">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="2"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Engine_Layers" ID="{0FA96497-8C07-40D0-BF13-2F4FE10CF69B}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Vehicle_Engine_Stall" ID="{8D59DD0C-06F3-4DBC-9704-72D3FABC04D8}">
+							<Comment>Project-owned mapping: audio.event.vehicle.engine.stalled; bank=MSC_Vehicle</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{8500118A-1E7A-4236-8F71-72E7B18E03AC}" ShortID="1062052157">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Engine_Stall_Proxy" ID="{1BA2841F-351D-4E08-AA22-742AC10162B8}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Stop_MSC_Vehicle_All" ID="{40923D36-D3CB-4292-9B0F-6A0916E30024}">
+							<Comment>Project-owned mapping: audio.event.vehicle.reset; bank=MSC_Vehicle</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{97457BBB-42E1-4AE9-8356-92AB8699AC81}" ShortID="496710349">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="3"/>
+									</PropertyList>
+									<ReferenceList/>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Vehicle_Engine_Intake" ID="{0E55AD29-F1A8-4009-A151-6C362DBDDD14}">
+							<Comment>Project-owned mapping: audio.event.vehicle.engine.intake; bank=MSC_Vehicle</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{4E6DBB55-991E-4FD5-BBBF-63E5BA4260BC}" ShortID="476078546">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Engine_Intake" ID="{BE756F25-CFED-42E2-B1CE-069DB9556BAB}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Vehicle_Engine_Exhaust" ID="{DD414DC5-9A6D-4685-871B-D03AA4B62E07}">
+							<Comment>Project-owned mapping: audio.event.vehicle.engine.exhaust; bank=MSC_Vehicle</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{E2180806-956A-4B32-8F57-C7CFF0B74446}" ShortID="741732785">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Engine_Exhaust" ID="{C300D5C4-E798-4B99-86EB-66CDC4860C27}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Vehicle_Engine_Mechanical" ID="{C30A15F7-D7EB-4C0B-A302-9AE15F7626C4}">
+							<Comment>Project-owned mapping: audio.event.vehicle.engine.mechanical; bank=MSC_Vehicle</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{7AC4A60D-05F7-4EAB-8CB2-D31EFFAD0DCE}" ShortID="73455950">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Engine_Mechanical" ID="{498214D8-7625-4B47-95D3-99F8E3926B3E}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Vehicle_Transmission" ID="{7D341CE4-FED3-44C2-A9AC-200113220499}">
+							<Comment>Project-owned mapping: audio.event.vehicle.transmission.loop; bank=MSC_Vehicle</Comment>
+						</Event>
+						<Event Name="Play_MSC_Vehicle_Body_Rattle" ID="{041A46E4-4B24-4BCE-B436-2D26C0969704}">
+							<Comment>Project-owned mapping: audio.event.vehicle.body.rattle; bank=MSC_Vehicle</Comment>
+						</Event>
+						<Event Name="Play_MSC_Vehicle_Suspension_Impact" ID="{BBCEEE60-6304-4F55-AA57-2D5D9FC1D559}">
+							<Comment>Project-owned mapping: audio.event.vehicle.suspension.impact; bank=MSC_Vehicle</Comment>
+						</Event>
+						<Event Name="Play_MSC_Vehicle_Tire_Roll" ID="{B13D978F-09B1-405C-9CD2-A49015BC0D84}">
+							<Comment>Project-owned mapping: audio.event.vehicle.tire.roll; bank=MSC_Vehicle</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{6D1E4473-04DA-4C55-BC9A-0D9A58B44D58}" ShortID="925763928">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Tire_Roll" ID="{54213805-E2CC-448D-B74F-825425EC7CCE}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Vehicle_Tire_Skid" ID="{FD4F1E5D-F136-4329-B5A1-6A7A4AF8C81D}">
+							<Comment>Project-owned mapping: audio.event.vehicle.tire.skid; bank=MSC_Vehicle</Comment>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="MSC_Weather" ID="{BD1D873B-CB42-4B80-BB99-D94B100B0A6B}" ShortID="747307411">
+					<Comment>Project-owned Milestone 08 event namespace.</Comment>
+					<ChildrenList>
+						<Event Name="Play_MSC_Weather_Rain_Exterior" ID="{5EE6CF6F-F047-43D4-B88F-A1CD389FDAC2}">
+							<Comment>Project-owned mapping: audio.event.weather.rain.exterior; bank=MSC_Weather</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{5827D0F6-31AD-4CAD-84F2-B1FEDBA8C3B0}" ShortID="1011898093">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Rain_Exterior" ID="{02950850-7FD8-40F3-BD19-401A41134255}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Weather_Rain_Sheltered" ID="{F4ACFBFA-D702-468E-98D3-1CED3C02B2A3}">
+							<Comment>Project-owned mapping: audio.event.weather.rain.sheltered; bank=MSC_Weather</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{CE0D1BFD-A61C-4882-AC4C-E29858B94982}" ShortID="117334825">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Rain_Sheltered" ID="{48FBF039-996D-40B8-9542-31B0E4CF42E1}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Weather_Rain_Interior" ID="{49275C91-0C4E-4D15-B4CE-BFB79497DA48}">
+							<Comment>Project-owned mapping: audio.event.weather.rain.interior; bank=MSC_Weather</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{1A265EA6-543F-40E5-9117-AC7CAFB22E83}" ShortID="725181434">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Rain_Interior" ID="{824431BD-8602-4F57-B19C-E9AEC5D4EF94}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Weather_Wind" ID="{E8F7D032-A281-42D0-AE50-FA354D90BAAA}">
+							<Comment>Project-owned mapping: audio.event.weather.wind; bank=MSC_Weather</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{300FFC8D-3AFB-48CC-8762-8D3AA0157EF3}" ShortID="534217761">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Wind" ID="{F9F18587-60AD-4840-85D8-FA22EB0C4D82}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Weather_Thunder" ID="{D781DB05-B8E7-4C7A-9969-0367E0383F90}">
+							<Comment>Project-owned mapping: audio.event.weather.thunder; bank=MSC_Weather</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{8DA7DFA7-8AED-4421-A10E-E898652E764B}" ShortID="425524434">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Thunder" ID="{75459BCE-2B42-46E7-AEE7-944342CA1073}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Weather_Thunder_Distant" ID="{3E679DD5-C6D4-49BF-844C-6A2DCC4ACDFF}">
+							<Comment>Project-owned mapping: audio.event.weather.thunder.distant; bank=MSC_Weather</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{D60949D9-0248-473B-90BD-FADE30C8FC1C}" ShortID="1035061707">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Thunder" ID="{75459BCE-2B42-46E7-AEE7-944342CA1073}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Weather_Thunder_Strike" ID="{97469B31-E889-4213-A7A2-ABA5EB59970F}">
+							<Comment>Project-owned mapping: audio.event.weather.thunder.strike; bank=MSC_Weather</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{E47E3A1D-A76D-4080-955F-EE4DFCCDB1A8}" ShortID="789415068">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Thunder" ID="{75459BCE-2B42-46E7-AEE7-944342CA1073}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="MSC_World" ID="{F151F28E-3DF0-46D3-ACE8-9A9F799812EF}" ShortID="113444997">
+					<Comment>Project-owned Milestone 08 event namespace.</Comment>
+					<ChildrenList>
+						<Event Name="Play_MSC_World_Forest_Ambience" ID="{A579EDBD-1F45-47AE-938F-2E75A1CB9AE3}">
+							<Comment>Project-owned mapping: audio.event.world.forest.ambience; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{42ADF9A7-043B-45A6-A857-48C0AB32648F}" ShortID="391150344">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Forest_Ambience" ID="{0BF4191E-C987-4C18-A3F4-A800CE1F9C4A}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Lake_Ambience" ID="{0CAD4318-3F92-42E5-80B8-D1996D601C1F}">
+							<Comment>Project-owned mapping: audio.event.world.lake.ambience; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{D72D101B-F72A-4FF7-B089-155E1D0B404A}" ShortID="559753158">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Lake_Ambience" ID="{BF5CA20C-14D6-45F2-87CD-D2DD2EF05528}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Garage_RoomTone" ID="{109599EF-86B6-4B75-916D-24FD1AD00C9E}">
+							<Comment>Project-owned mapping: audio.event.world.garage.roomtone; bank=MSC_World</Comment>
+						</Event>
+						<Event Name="Play_MSC_World_Interior_RoomTone" ID="{E161C36E-EE03-43F9-BC64-5AAF1A50C0BD}">
+							<Comment>Project-owned mapping: audio.event.world.interior.roomtone; bank=MSC_World</Comment>
+						</Event>
+						<Event Name="Play_MSC_World_Distant_Traffic" ID="{8C98E89B-6C55-4BE9-A071-B9EF5B10ABE2}">
+							<Comment>Project-owned mapping: audio.event.world.distant_traffic; bank=MSC_World</Comment>
+						</Event>
+						<Event Name="Play_MSC_World_Birds" ID="{AFFE44BE-39A4-434B-939F-CF8F0F24E12D}">
+							<Comment>Project-owned mapping: audio.event.world.birds; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{ABB29479-9252-43F7-A37B-FF68BB79B977}" ShortID="109587966">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Forest_Ambience" ID="{0BF4191E-C987-4C18-A3F4-A800CE1F9C4A}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Insects" ID="{2B26B7B2-E798-434E-BD37-92BF16EF7516}">
+							<Comment>Project-owned mapping: audio.event.world.insects; bank=MSC_World</Comment>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="MSC_Interaction" ID="{1348BF88-E751-4909-92D2-1D672A9FC5AC}" ShortID="80553052">
+					<Comment>Project-owned Milestone 08 event namespace.</Comment>
+					<ChildrenList>
+						<Event Name="Play_MSC_Interaction_Pickup" ID="{A4656E4B-1315-4A31-8C73-6C0A33226A3A}">
+							<Comment>Project-owned mapping: audio.event.interaction.pickup; bank=MSC_Interaction</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{B4336F61-D49C-4466-A882-CED297C3FF97}" ShortID="124899222">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Pickup" ID="{9D3FD35F-AAEC-4AB9-AC4F-15EE87729686}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Drop" ID="{AB218F8A-B62A-4DC0-B889-0DED17C3940E}">
+							<Comment>Project-owned mapping: audio.event.interaction.drop; bank=MSC_Interaction</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{76E0E876-0FD7-4483-8BEE-F9C984298F3A}" ShortID="653155463">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Drop" ID="{AAA4883B-5B64-4E69-84EB-93F87954239A}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Throw" ID="{5438D69E-6115-439B-94B5-3362CB3C7D87}">
+							<Comment>Project-owned mapping: audio.event.interaction.throw; bank=MSC_Interaction</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{FDE18070-5F08-4062-99E3-DFAD9F828A4F}" ShortID="114493409">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Throw" ID="{DDCB41AE-CE62-48B6-8465-A719886D27BE}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Place" ID="{9678D8FE-1C8B-4818-8554-AB6782C14496}">
+							<Comment>Project-owned mapping: audio.event.interaction.place; bank=MSC_Interaction</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{6325D9BA-BAF5-49A3-95FC-7573C48982E6}" ShortID="797741236">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Place" ID="{CBEFAB9F-B37D-4BBB-83E7-0E33F2241021}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Mount_Handoff" ID="{AB29AC3A-5107-412C-BC6E-36C458D82251}">
+							<Comment>Project-owned mapping: audio.event.interaction.mount_handoff; bank=MSC_Interaction</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{C2ABA121-F72A-41E4-8DC4-BF8AA4A1A532}" ShortID="672670693">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Mount_Handoff" ID="{C3F09C76-A2EB-4803-93F1-00A7F60E2B96}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Impact" ID="{0218BEDB-65A9-426E-9B54-102D5C9D1D97}">
+							<Comment>Project-owned mapping: audio.event.interaction.impact; bank=MSC_Interaction</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{E0F7AE44-1B1F-4E99-B5E3-49AA24542BCD}" ShortID="233238754">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Drop" ID="{AAA4883B-5B64-4E69-84EB-93F87954239A}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Tool_Use" ID="{BDBCB59D-AC35-46F6-A4B8-6D2BA3936F5B}">
+							<Comment>Project-owned mapping: audio.event.interaction.tool.use; bank=MSC_Interaction</Comment>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Fastener_Insert" ID="{162E9D0C-675A-40D4-BE9A-6E59D66A3A27}">
+							<Comment>Project-owned mapping: audio.event.interaction.fastener.insert; bank=MSC_Interaction</Comment>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Fastener_Tighten" ID="{F841A8C3-4834-4A68-9DF0-D6321DCD94E5}">
+							<Comment>Project-owned mapping: audio.event.interaction.fastener.tighten; bank=MSC_Interaction</Comment>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Fastener_Loosen" ID="{DB25AE48-B82A-4578-B90E-6B7AD048A5AB}">
+							<Comment>Project-owned mapping: audio.event.interaction.fastener.loosen; bank=MSC_Interaction</Comment>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Part_Install" ID="{BC935327-2088-4475-8806-F2EBC70972C7}">
+							<Comment>Project-owned mapping: audio.event.interaction.part.install; bank=MSC_Interaction</Comment>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Part_Remove" ID="{895C8642-52F3-4778-A371-BB707E0EFDAA}">
+							<Comment>Project-owned mapping: audio.event.interaction.part.remove; bank=MSC_Interaction</Comment>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Door_Open" ID="{A6FC919B-48AD-4E64-A0C2-64B95A69AA44}">
+							<Comment>Project-owned mapping: audio.event.interaction.door.open; bank=MSC_Interaction</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{9B7D6F91-A991-4A0C-9167-B0D541ADAF14}" ShortID="627887506">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Door_Open_Proxy" ID="{3F57C54B-8737-4D45-AF32-AD6052F85567}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Door_Close" ID="{3E302617-D0E3-4453-BC35-1660762E2638}">
+							<Comment>Project-owned mapping: audio.event.interaction.door.close; bank=MSC_Interaction</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{D610DCE0-9F8E-4630-B76C-E07F36D11625}" ShortID="1061153532">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Door_Close_Proxy" ID="{3C849821-EC65-49EF-B5C3-4AB8358528C8}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Gate_Open" ID="{1CF5CF64-ACAF-4BFC-8110-8F5859B8E724}">
+							<Comment>Project-owned mapping: audio.event.interaction.gate.open; bank=MSC_Interaction</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{33EC9DFC-1B93-4B53-8DF0-D64EAA15B595}" ShortID="744233677">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Door_Open_Proxy" ID="{3F57C54B-8737-4D45-AF32-AD6052F85567}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Gate_Close" ID="{3C279CEA-9600-4485-B3EE-5940B666FED8}">
+							<Comment>Project-owned mapping: audio.event.interaction.gate.close; bank=MSC_Interaction</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{5E32533E-DEC5-41C3-A03C-0907DBABAD08}" ShortID="1014153515">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Door_Close_Proxy" ID="{3C849821-EC65-49EF-B5C3-4AB8358528C8}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Window_Open" ID="{BE1B6374-86B1-4294-A9D8-3650141E4C71}">
+							<Comment>Project-owned mapping: audio.event.interaction.window.open; bank=MSC_Interaction</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{E617F0F5-5928-4A2B-BDF8-CD1301153376}" ShortID="791106150">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Door_Open_Proxy" ID="{3F57C54B-8737-4D45-AF32-AD6052F85567}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Interaction_Window_Close" ID="{49A1D93B-F713-4575-91B8-6FD366C9ED4C}">
+							<Comment>Project-owned mapping: audio.event.interaction.window.close; bank=MSC_Interaction</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{BDB50559-6E1A-4433-8583-331FCE82BAA6}" ShortID="953061742">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Door_Close_Proxy" ID="{3C849821-EC65-49EF-B5C3-4AB8358528C8}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_Player_Footstep" ID="{F770D05F-0581-4E4C-A432-70E21F15D06D}">
+							<Comment>Project-owned mapping: audio.event.player.footstep; bank=MSC_Interaction</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{89D2A453-ADB5-4A8F-A0E6-3ADA3B1019A4}" ShortID="523018570">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="MSC_Player_Footsteps" ID="{0FE04640-CBF7-4FD2-A61D-12FCDC0D3593}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="MSC_UI" ID="{3096C8BA-604E-41E4-BE26-CA192418DC09}" ShortID="242583689">
+					<Comment>Project-owned Milestone 08 event namespace.</Comment>
+					<ChildrenList>
+						<Event Name="Play_MSC_UI_Navigate" ID="{FE08D8F1-5EF1-4FB0-B556-CCF1CC9645E9}">
+							<Comment>Project-owned mapping: audio.event.ui.navigate; bank=MSC_UI</Comment>
+						</Event>
+						<Event Name="Play_MSC_UI_Confirm" ID="{1B747659-229B-4FA6-B507-2D4416ED0F72}">
+							<Comment>Project-owned mapping: audio.event.ui.confirm; bank=MSC_UI</Comment>
+						</Event>
+						<Event Name="Play_MSC_UI_Cancel" ID="{3D55E001-364F-4881-8DA0-06474379BE06}">
+							<Comment>Project-owned mapping: audio.event.ui.cancel; bank=MSC_UI</Comment>
+						</Event>
+						<Event Name="Play_MSC_UI_Save_Feedback" ID="{A19BA771-4C9C-49B8-9DF1-A1ED3DE686A0}">
+							<Comment>Project-owned mapping: audio.event.ui.save.feedback; bank=MSC_UI</Comment>
+						</Event>
+						<Event Name="Play_MSC_UI_Load_Feedback" ID="{F811D2CF-8CD9-4EF8-88DF-0368C7B881F0}">
+							<Comment>Project-owned mapping: audio.event.ui.load.feedback; bank=MSC_UI</Comment>
+						</Event>
+					</ChildrenList>
+				</Folder>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

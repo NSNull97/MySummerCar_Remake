@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{49A3DD60-93CC-420A-997C-9516EA1DFF6A}" SchemaVersion="133">
+	<Switches>
+		<WorkUnit Name="Default Work Unit" ID="{49A3DD60-93CC-420A-997C-9516EA1DFF6A}" PersistMode="Standalone">
+			<ChildrenList>
+				<SwitchGroup Name="MSC_Vehicle_Surface" ID="{53E95113-51C3-42D7-B05A-20F515E98428}">
+					<Comment>Project-owned mapping: audio.switch.vehicle.surface</Comment>
+					<ChildrenList>
+						<Switch Name="Unknown" ID="{67559759-BE56-462B-BA17-58E66FC5DA03}">
+							<Comment>Project-owned value for audio.switch.vehicle.surface</Comment>
+						</Switch>
+						<Switch Name="Paved" ID="{0FA50D98-47B2-4B29-9973-1EDA6304FF10}">
+							<Comment>Project-owned value for audio.switch.vehicle.surface</Comment>
+						</Switch>
+						<Switch Name="Gravel" ID="{D646CCDD-AB44-4967-ABD7-32E416422279}">
+							<Comment>Project-owned value for audio.switch.vehicle.surface</Comment>
+						</Switch>
+						<Switch Name="Dirt" ID="{7E37C2D0-0576-42C4-BC4E-40E716EFBD7C}">
+							<Comment>Project-owned value for audio.switch.vehicle.surface</Comment>
+						</Switch>
+						<Switch Name="Grass" ID="{B4A7282B-16AD-4DCB-BACD-399C7F9B666C}">
+							<Comment>Project-owned value for audio.switch.vehicle.surface</Comment>
+						</Switch>
+						<Switch Name="MudWet" ID="{BCA4D261-80B4-4115-8C50-FB206BE01623}">
+							<Comment>Project-owned value for audio.switch.vehicle.surface</Comment>
+						</Switch>
+					</ChildrenList>
+				</SwitchGroup>
+				<SwitchGroup Name="MSC_Weather_PrecipitationType" ID="{162AFBBB-54C2-41A9-AD08-E74B5C2881A5}">
+					<Comment>Project-owned mapping: audio.switch.weather.precipitation_type</Comment>
+					<ChildrenList>
+						<Switch Name="Drizzle" ID="{B7FC5998-FF67-45F5-A8FD-510E892A8CCD}">
+							<Comment>Project-owned value for audio.switch.weather.precipitation_type</Comment>
+						</Switch>
+						<Switch Name="Rain" ID="{18771ACD-8441-4B5C-965B-B07E82DF8C9C}">
+							<Comment>Project-owned value for audio.switch.weather.precipitation_type</Comment>
+						</Switch>
+						<Switch Name="Snow" ID="{E29FFEEB-53B9-46D8-B18B-4ED48F869BC2}">
+							<Comment>Project-owned value for audio.switch.weather.precipitation_type</Comment>
+						</Switch>
+						<Switch Name="None_01" ID="{9719E4F1-9E0C-4F61-8779-9AD64A44FE68}">
+							<Comment>Project-owned value for audio.switch.weather.precipitation_type (Wwise reserves None, so stable None maps to authoring value None_01)</Comment>
+						</Switch>
+					</ChildrenList>
+				</SwitchGroup>
+				<SwitchGroup Name="MSC_Interaction_Material" ID="{6F948824-9546-42B8-A12F-101DFF99B8AF}">
+					<Comment>Project-owned mapping: audio.switch.interaction.material</Comment>
+					<ChildrenList>
+						<Switch Name="Unknown" ID="{8FF4BCB4-E50A-4577-937D-1D01C1B54863}">
+							<Comment>Project-owned value for audio.switch.interaction.material</Comment>
+						</Switch>
+						<Switch Name="Metal" ID="{63D04868-BCB5-4A59-8D23-1654E2730C91}">
+							<Comment>Project-owned value for audio.switch.interaction.material</Comment>
+						</Switch>
+						<Switch Name="Wood" ID="{75DE7578-C90C-40ED-9EAF-71599B3D60D6}">
+							<Comment>Project-owned value for audio.switch.interaction.material</Comment>
+						</Switch>
+						<Switch Name="Plastic" ID="{8A50D430-9B9A-4B85-8C8A-C35FF63DCC2A}">
+							<Comment>Project-owned value for audio.switch.interaction.material</Comment>
+						</Switch>
+						<Switch Name="Glass" ID="{DBADFFC5-CA52-4062-80EA-2F2E7715DE88}">
+							<Comment>Project-owned value for audio.switch.interaction.material</Comment>
+						</Switch>
+						<Switch Name="Concrete" ID="{194A065F-1F27-471D-9AD3-B90169AFD95D}">
+							<Comment>Project-owned value for audio.switch.interaction.material</Comment>
+						</Switch>
+						<Switch Name="Fabric" ID="{4C988A88-E01D-4850-A5EB-BC2B433BF3D6}">
+							<Comment>Project-owned value for audio.switch.interaction.material</Comment>
+						</Switch>
+					</ChildrenList>
+				</SwitchGroup>
+				<SwitchGroup Name="MSC_Player_FootstepSurface" ID="{11E6C20B-D94C-4BF6-BDEF-3BACF4D9E468}">
+					<Comment>Project-owned mapping: audio.switch.footstep.surface</Comment>
+					<ChildrenList>
+						<Switch Name="Unknown" ID="{5DDBD909-2B30-479D-9D1F-3323FAF065D1}">
+							<Comment>Project-owned value for audio.switch.footstep.surface</Comment>
+						</Switch>
+						<Switch Name="Paved" ID="{71BE9FF7-CC66-429E-8AEA-FE37918B94BF}">
+							<Comment>Project-owned value for audio.switch.footstep.surface</Comment>
+						</Switch>
+						<Switch Name="Gravel" ID="{929AA4EE-8BD2-43E7-B453-B8BAB808A2CB}">
+							<Comment>Project-owned value for audio.switch.footstep.surface</Comment>
+						</Switch>
+						<Switch Name="Dirt" ID="{0EF1C2E3-D773-45B6-9299-85CBF129328E}">
+							<Comment>Project-owned value for audio.switch.footstep.surface</Comment>
+						</Switch>
+						<Switch Name="Grass" ID="{D46B3708-DD07-42DD-A7BD-1E61CB73A9F0}">
+							<Comment>Project-owned value for audio.switch.footstep.surface</Comment>
+						</Switch>
+						<Switch Name="Wood" ID="{3BDA2843-BD42-4133-AAF1-B9510E5CA7CA}">
+							<Comment>Project-owned value for audio.switch.footstep.surface</Comment>
+						</Switch>
+						<Switch Name="Concrete" ID="{5592520B-1F3F-4119-83DB-7784569E507C}">
+							<Comment>Project-owned value for audio.switch.footstep.surface</Comment>
+						</Switch>
+						<Switch Name="Metal" ID="{490B624D-EF06-418B-9F89-FC95DE9098C3}">
+							<Comment>Project-owned value for audio.switch.footstep.surface</Comment>
+						</Switch>
+						<Switch Name="Wet" ID="{A7E06A32-83A2-475E-9ABE-2D79E7D21F8A}">
+							<Comment>Project-owned value for audio.switch.footstep.surface</Comment>
+						</Switch>
+					</ChildrenList>
+				</SwitchGroup>
+			</ChildrenList>
+		</WorkUnit>
+	</Switches>
+</WwiseDocument>

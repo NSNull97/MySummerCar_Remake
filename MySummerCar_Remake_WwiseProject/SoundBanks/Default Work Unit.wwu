@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{35D8EA0F-9A2F-4204-ADF8-94774B85F960}" SchemaVersion="133">
+	<SoundBanks>
+		<WorkUnit Name="Default Work Unit" ID="{35D8EA0F-9A2F-4204-ADF8-94774B85F960}" PersistMode="Standalone">
+			<ChildrenList>
+				<SoundBank Name="MSC_Vehicle" ID="{5F3CAAAF-FCF0-492E-879F-E1257E39C34C}">
+					<Comment>Milestone 08 project-owned bank definition.</Comment>
+					<ObjectInclusionList>
+						<ObjectRef Name="Play_MSC_Vehicle_Engine_Intake" ID="{0E55AD29-F1A8-4009-A151-6C362DBDDD14}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Vehicle_Tire_Roll" ID="{B13D978F-09B1-405C-9CD2-A49015BC0D84}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_MSC_Vehicle_All" ID="{40923D36-D3CB-4292-9B0F-6A0916E30024}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Vehicle_Tire_Skid" ID="{FD4F1E5D-F136-4329-B5A1-6A7A4AF8C81D}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Vehicle_Transmission" ID="{7D341CE4-FED3-44C2-A9AC-200113220499}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Vehicle_Engine_Exhaust" ID="{DD414DC5-9A6D-4685-871B-D03AA4B62E07}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Vehicle_Engine_Start" ID="{A96574E2-40BB-47A3-999D-AEFB03F17AB3}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Vehicle_Starter_Engage" ID="{0A500C58-8D9E-47CC-8F4F-AEC312921B25}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Vehicle_Body_Rattle" ID="{041A46E4-4B24-4BCE-B436-2D26C0969704}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Vehicle_Engine_Mechanical" ID="{C30A15F7-D7EB-4C0B-A302-9AE15F7626C4}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_MSC_Vehicle_Starter" ID="{54E7E262-C069-4CC8-9CA6-6E4D2851E880}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Stop_MSC_Vehicle_Engine" ID="{24AD4218-9E92-4CE2-9A9C-ADB2703FD464}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Vehicle_Engine_Stall" ID="{8D59DD0C-06F3-4DBC-9704-72D3FABC04D8}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Vehicle_Suspension_Impact" ID="{BBCEEE60-6304-4F55-AA57-2D5D9FC1D559}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+				<SoundBank Name="MSC_Weather" ID="{F8B98249-4BA4-4ABE-9050-4C1199D6A17F}">
+					<Comment>Milestone 08 project-owned bank definition.</Comment>
+					<ObjectInclusionList>
+						<ObjectRef Name="Play_MSC_Weather_Thunder_Strike" ID="{97469B31-E889-4213-A7A2-ABA5EB59970F}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Weather_Wind" ID="{E8F7D032-A281-42D0-AE50-FA354D90BAAA}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Weather_Rain_Exterior" ID="{5EE6CF6F-F047-43D4-B88F-A1CD389FDAC2}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Weather_Rain_Sheltered" ID="{F4ACFBFA-D702-468E-98D3-1CED3C02B2A3}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Weather_Thunder_Distant" ID="{3E679DD5-C6D4-49BF-844C-6A2DCC4ACDFF}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Weather_Thunder" ID="{D781DB05-B8E7-4C7A-9969-0367E0383F90}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Weather_Rain_Interior" ID="{49275C91-0C4E-4D15-B4CE-BFB79497DA48}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+				<SoundBank Name="MSC_World" ID="{178A9109-B917-430E-B38B-01FD99D984A9}">
+					<Comment>Milestone 08 project-owned bank definition.</Comment>
+					<ObjectInclusionList>
+						<ObjectRef Name="Play_MSC_World_Lake_Ambience" ID="{0CAD4318-3F92-42E5-80B8-D1996D601C1F}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Birds" ID="{AFFE44BE-39A4-434B-939F-CF8F0F24E12D}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Insects" ID="{2B26B7B2-E798-434E-BD37-92BF16EF7516}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Interior_RoomTone" ID="{E161C36E-EE03-43F9-BC64-5AAF1A50C0BD}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Forest_Ambience" ID="{A579EDBD-1F45-47AE-938F-2E75A1CB9AE3}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Garage_RoomTone" ID="{109599EF-86B6-4B75-916D-24FD1AD00C9E}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Distant_Traffic" ID="{8C98E89B-6C55-4BE9-A071-B9EF5B10ABE2}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+				<SoundBank Name="MSC_Interaction" ID="{AD4BCB7C-923D-4F30-8B05-30D098B93EE2}">
+					<Comment>Milestone 08 project-owned bank definition.</Comment>
+					<ObjectInclusionList>
+						<ObjectRef Name="Play_MSC_Interaction_Fastener_Insert" ID="{162E9D0C-675A-40D4-BE9A-6E59D66A3A27}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Mount_Handoff" ID="{AB29AC3A-5107-412C-BC6E-36C458D82251}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Impact" ID="{0218BEDB-65A9-426E-9B54-102D5C9D1D97}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Window_Open" ID="{BE1B6374-86B1-4294-A9D8-3650141E4C71}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Throw" ID="{5438D69E-6115-439B-94B5-3362CB3C7D87}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Door_Close" ID="{3E302617-D0E3-4453-BC35-1660762E2638}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Part_Install" ID="{BC935327-2088-4475-8806-F2EBC70972C7}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Gate_Close" ID="{3C279CEA-9600-4485-B3EE-5940B666FED8}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Window_Close" ID="{49A1D93B-F713-4575-91B8-6FD366C9ED4C}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Fastener_Loosen" ID="{DB25AE48-B82A-4578-B90E-6B7AD048A5AB}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Tool_Use" ID="{BDBCB59D-AC35-46F6-A4B8-6D2BA3936F5B}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Part_Remove" ID="{895C8642-52F3-4778-A371-BB707E0EFDAA}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Place" ID="{9678D8FE-1C8B-4818-8554-AB6782C14496}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Pickup" ID="{A4656E4B-1315-4A31-8C73-6C0A33226A3A}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Fastener_Tighten" ID="{F841A8C3-4834-4A68-9DF0-D6321DCD94E5}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Gate_Open" ID="{1CF5CF64-ACAF-4BFC-8110-8F5859B8E724}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Drop" ID="{AB218F8A-B62A-4DC0-B889-0DED17C3940E}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Player_Footstep" ID="{F770D05F-0581-4E4C-A432-70E21F15D06D}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_Interaction_Door_Open" ID="{A6FC919B-48AD-4E64-A0C2-64B95A69AA44}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+				<SoundBank Name="MSC_UI" ID="{B992C6C8-AF26-4B4C-85A7-72D0D1113C7D}">
+					<Comment>Milestone 08 project-owned bank definition.</Comment>
+					<ObjectInclusionList>
+						<ObjectRef Name="Play_MSC_UI_Cancel" ID="{3D55E001-364F-4881-8DA0-06474379BE06}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_UI_Save_Feedback" ID="{A19BA771-4C9C-49B8-9DF1-A1ED3DE686A0}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_UI_Load_Feedback" ID="{F811D2CF-8CD9-4EF8-88DF-0368C7B881F0}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_UI_Confirm" ID="{1B747659-229B-4FA6-B507-2D4416ED0F72}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_UI_Navigate" ID="{FE08D8F1-5EF1-4FB0-B556-CCF1CC9645E9}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+			</ChildrenList>
+		</WorkUnit>
+	</SoundBanks>
+</WwiseDocument>

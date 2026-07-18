@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{AE3FDDDB-2C95-4B98-B254-54EF0F77108F}" SchemaVersion="133">
+	<States>
+		<WorkUnit Name="Default Work Unit" ID="{AE3FDDDB-2C95-4B98-B254-54EF0F77108F}" PersistMode="Standalone">
+			<ChildrenList>
+				<StateGroup Name="MSC_Environment" ID="{A805FE21-E6D5-4653-B24A-430804FE6720}">
+					<Comment>Project-owned mapping: audio.state.environment</Comment>
+					<ChildrenList>
+						<State Name="Exterior" ID="{53E55AE1-95A3-4ACE-AE15-5895567D5272}">
+							<Comment>Project-owned value for audio.state.environment</Comment>
+						</State>
+						<State Name="Sheltered" ID="{FFD0B87B-C76D-4D5A-9B0F-58C0BB5A6D79}">
+							<Comment>Project-owned value for audio.state.environment</Comment>
+						</State>
+						<State Name="Interior" ID="{E2013AE3-3F91-445B-97C8-D7C34702901C}">
+							<Comment>Project-owned value for audio.state.environment</Comment>
+						</State>
+						<State Name="VehicleInterior" ID="{91B207E8-FE2E-4C65-8FFD-B5C41585AB7D}">
+							<Comment>Project-owned value for audio.state.environment</Comment>
+						</State>
+					</ChildrenList>
+				</StateGroup>
+				<StateGroup Name="MSC_Time_DayPhase" ID="{56394201-6109-4CAA-A0F4-7D965F09AA70}">
+					<Comment>Project-owned mapping: audio.state.day_phase</Comment>
+					<ChildrenList>
+						<State Name="Day" ID="{C2235230-8CAC-46EB-A503-B66BCACE7C2C}">
+							<Comment>Project-owned value for audio.state.day_phase</Comment>
+						</State>
+						<State Name="Night" ID="{145F6FB5-7AE9-4339-89F7-4D0F4C87068F}">
+							<Comment>Project-owned value for audio.state.day_phase</Comment>
+						</State>
+						<State Name="Dawn" ID="{0207202E-B0FD-4CA6-A5B8-AF96C2532118}">
+							<Comment>Project-owned value for audio.state.day_phase</Comment>
+						</State>
+						<State Name="Evening" ID="{DF0BD9E6-A5EF-4180-9134-22FC66F24CD1}">
+							<Comment>Project-owned value for audio.state.day_phase</Comment>
+						</State>
+					</ChildrenList>
+				</StateGroup>
+				<StateGroup Name="MSC_Vehicle_EngineState" ID="{0659640B-B8A2-48AE-A5A4-3635BE2569CA}">
+					<Comment>Project-owned mapping: audio.state.vehicle.engine</Comment>
+					<ChildrenList>
+						<State Name="Off" ID="{E53289E3-54B9-4C46-8541-7D14CDEE6B9A}">
+							<Comment>Project-owned value for audio.state.vehicle.engine</Comment>
+						</State>
+						<State Name="Cranking" ID="{D2AF3157-D9AE-4B72-A810-B4CB6DA38C34}">
+							<Comment>Project-owned value for audio.state.vehicle.engine</Comment>
+						</State>
+						<State Name="Running" ID="{71CE7488-A5D1-4749-8953-29E41C16A7EB}">
+							<Comment>Project-owned value for audio.state.vehicle.engine</Comment>
+						</State>
+						<State Name="Stalled" ID="{DCDA22AC-9A16-4ED3-8E68-45ADEC5C0E6F}">
+							<Comment>Project-owned value for audio.state.vehicle.engine</Comment>
+						</State>
+					</ChildrenList>
+				</StateGroup>
+			</ChildrenList>
+		</WorkUnit>
+	</States>
+</WwiseDocument>

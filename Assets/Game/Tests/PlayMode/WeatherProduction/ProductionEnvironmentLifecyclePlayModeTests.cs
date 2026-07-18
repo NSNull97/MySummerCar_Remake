@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using MSC.Audio;
 using MSC.Bootstrap;
 using MSC.Core.Time;
 using MSC.Weather.Domain;
@@ -70,6 +72,16 @@ namespace MSC.Tests.PlayMode.WeatherProduction
             Assert.That(owner.IsSimulationActive, Is.True);
             Assert.That(owner.PresentationStatus.IsOperational, Is.True);
             Assert.That(installer.SpawnedPlayer.activeSelf, Is.True);
+            AudioListenerContextPresenter audioListener =
+                installer.SpawnedPlayer.GetComponent<AudioListenerContextPresenter>();
+            Assert.That(audioListener, Is.Not.Null);
+            Assert.That(audioListener.enabled, Is.True);
+            Assert.That(
+                installer.SpawnedPlayer
+                    .GetComponentInChildren<Camera>(true)
+                    .GetComponent<AudioListenerContextPresenter>(),
+                Is.Null,
+                "The child camera cannot receive the root CharacterController's zone triggers.");
             yield return null;
             Assert.That(
                 owner.DevRefreshPresentation().IsOperational,
@@ -437,6 +449,49 @@ namespace MSC.Tests.PlayMode.WeatherProduction
         public IEnumerator TearDown()
         {
             yield return DestroyPersistentRootIfPresent();
+        }
+
+        [UnityTest]
+        public IEnumerator BootstrapAudioBackend_UsesFallbackOrLoadsAllRequiredWwiseBanks()
+        {
+            yield return DestroyPersistentRootIfPresent();
+            yield return SceneManager.LoadSceneAsync(
+                BootstrapScenePath,
+                LoadSceneMode.Single);
+            yield return WaitForBootstrapReady();
+
+            AudioBackendRouter router = Object.FindFirstObjectByType<AudioBackendRouter>(
+                FindObjectsInactive.Include);
+            Assert.That(router, Is.Not.Null);
+            bool requireLiveWwise = string.Equals(
+                Environment.GetEnvironmentVariable("MSC_REQUIRE_LIVE_WWISE"),
+                "1",
+                StringComparison.Ordinal);
+
+            for (int frame = 0;
+                 frame < 360 && requireLiveWwise && router.Kind != AudioBackendKind.Wwise;
+                 frame++)
+            {
+                yield return null;
+            }
+
+            AudioRuntimeSnapshot snapshot = router.CaptureSnapshot();
+            Assert.That(snapshot.IsReady, Is.True, snapshot.LastFailure);
+            if (requireLiveWwise)
+            {
+                Assert.That(snapshot.Kind, Is.EqualTo(AudioBackendKind.Wwise));
+                Assert.That(snapshot.IsFallback, Is.False);
+                Assert.That(snapshot.LoadedBankCount, Is.EqualTo(6));
+                Assert.That(snapshot.MissingBanks, Is.Empty);
+            }
+            else
+            {
+                Assert.That(
+                    snapshot.Kind == AudioBackendKind.Wwise ||
+                    snapshot.Kind == AudioBackendKind.Unity,
+                    Is.True,
+                    snapshot.LastFailure);
+            }
         }
 
         private static int CountActive<T>() where T : Component

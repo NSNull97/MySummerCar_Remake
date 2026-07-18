@@ -2,6 +2,7 @@
   "name": "MSC.Weather.Production.Tests.PlayMode",
   "rootNamespace": "MSC.Tests.PlayMode.WeatherProduction",
   "references": [
+    "MSC.Audio.Runtime",
     "MSC.Core.Runtime",
     "MSC.Bootstrap.Runtime",
     "MSC.World.Runtime",

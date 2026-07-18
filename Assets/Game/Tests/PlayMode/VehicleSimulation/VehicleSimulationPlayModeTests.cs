@@ -219,6 +219,16 @@ namespace MSC.Tests.PlayMode.VehicleSimulation
                 VehicleEngineStatus.Cranking,
                 FixedFramesPerSecond);
             Assert.That(host.State.EngineStatus, Is.EqualTo(VehicleEngineStatus.Cranking));
+            Assert.That(recordingAudio.LastParameters.IgnitionOn, Is.True);
+            Assert.That(recordingAudio.LastParameters.StarterRequested, Is.True);
+            Assert.That(recordingAudio.LastParameters.StarterActive, Is.True);
+            Assert.That(recordingAudio.LastParameters.Brake01, Is.Zero);
+            Assert.That(
+                recordingAudio.LastParameters.SignedVehicleSpeedMetersPerSecond,
+                Is.EqualTo(host.Telemetry.VehicleSpeedMetersPerSecond).Within(0.0001f));
+            Assert.That(recordingAudio.LastParameters.DamageAvailable, Is.False);
+            Assert.That(recordingAudio.LastParameters.InteriorContextAvailable, Is.False);
+            Assert.That(recordingAudio.LastParameters.OpeningsContextAvailable, Is.False);
 
             host.ResetToSpawn();
             Assert.That(host.State.EngineStatus, Is.EqualTo(VehicleEngineStatus.Off));
@@ -248,6 +258,12 @@ namespace MSC.Tests.PlayMode.VehicleSimulation
 
             Assert.That(host.State.EngineStatus, Is.Not.EqualTo(VehicleEngineStatus.Running));
             Assert.That(host.State.EngineRpm, Is.EqualTo(0f).Within(0.001f));
+            Assert.That(recordingAudio.LastParameters.IgnitionOn, Is.True);
+            Assert.That(recordingAudio.LastParameters.StarterRequested, Is.True);
+            Assert.That(
+                recordingAudio.LastParameters.StarterActive,
+                Is.False,
+                "Starter request is intent; Cranking state remains the authoritative active signal.");
             Assert.That(
                 host.Root.Prerequisites.HasAny(
                     VehicleSimulationPrerequisiteFailure.FuelUnavailable),
@@ -268,6 +284,15 @@ namespace MSC.Tests.PlayMode.VehicleSimulation
                 host.State.EngineRpm,
                 Is.EqualTo(host.Config.Engine.IdleTargetRpm).Within(100f));
             Assert.That(host.State.IsFinite(), Is.True);
+            Assert.That(recordingAudio.LastParameters.IgnitionOn, Is.True);
+            Assert.That(recordingAudio.LastParameters.StarterRequested, Is.False);
+            Assert.That(recordingAudio.LastParameters.StarterActive, Is.False);
+            Assert.That(
+                recordingAudio.LastParameters.AggregateWheelSpeedRadiansPerSecond,
+                Is.GreaterThanOrEqualTo(0f));
+            Assert.That(
+                recordingAudio.LastParameters.SuspensionImpact01,
+                Is.InRange(0f, 1f));
 
             int starterEngaged = recordingAudio.Events.IndexOf(VehicleAudioEvent.StarterEngaged);
             int starterDisengaged = recordingAudio.Events.IndexOf(VehicleAudioEvent.StarterDisengaged);
@@ -498,19 +523,18 @@ namespace MSC.Tests.PlayMode.VehicleSimulation
             }
 
             float deadline = Time.realtimeSinceStartup + 5f;
-            while (!audioBackend.IsReady &&
-                   string.IsNullOrEmpty(audioBackend.FailureReason) &&
+            while (!audioBackend.IsLocalDiagnosticLoadComplete &&
                    Time.realtimeSinceStartup < deadline)
             {
                 yield return null;
             }
 
-            if (!audioBackend.IsReady)
+            if (!audioBackend.IsLocalDiagnosticReady)
             {
                 Debug.LogWarning(
                     "Configured local diagnostic audio is unavailable; " +
                     "the required silent fallback remains active. " +
-                    audioBackend.FailureReason);
+                    audioBackend.LocalDiagnosticFailureReason);
             }
 #else
             yield break;
@@ -554,6 +578,10 @@ namespace MSC.Tests.PlayMode.VehicleSimulation
 
         private sealed class RecordingVehicleAudioBackend : MonoBehaviour, IVehicleAudioBackend
         {
+            public string BackendId => "audio.test.vehicle";
+
+            public AudioBackendKind Kind => AudioBackendKind.Silent;
+
             public bool IsReady => true;
 
             public string FailureReason => string.Empty;
@@ -572,6 +600,53 @@ namespace MSC.Tests.PlayMode.VehicleSimulation
             {
                 Events.Add(audioEvent);
             }
+
+            public bool RegisterEmitter(IAudioEmitter emitter, out string failure)
+            {
+                failure = string.Empty;
+                return emitter != null;
+            }
+
+            public bool UnregisterEmitter(IAudioEmitter emitter) => emitter != null;
+
+            public IAudioEventHandle PostEvent(in AudioEventRequest request) =>
+                AudioEventHandles.Invalid;
+
+            public bool SetParameter(
+                AudioParameterId parameterId,
+                float value,
+                IAudioEmitter emitter = null) => true;
+
+            public bool SetSwitch(
+                AudioSwitchId switchGroupId,
+                AudioSwitchId switchValueId,
+                IAudioEmitter emitter = null) => true;
+
+            public bool SetState(AudioStateId stateGroupId, AudioStateId stateValueId) => true;
+
+            public void SetListenerContext(in AudioListenerContext context)
+            {
+            }
+
+            public void ApplySettings(in AudioSettingsState settings)
+            {
+            }
+
+            public void StopAll(float fadeSeconds = 0f)
+            {
+            }
+
+            public AudioRuntimeSnapshot CaptureSnapshot() => new AudioRuntimeSnapshot(
+                BackendId,
+                Kind,
+                true,
+                false,
+                0,
+                0,
+                0,
+                new string[0],
+                default,
+                string.Empty);
         }
     }
 }

@@ -31,6 +31,63 @@ namespace MSC.Audio
     }
 
     /// <summary>
+    /// Additional vehicle signals introduced after the original M06 diagnostic
+    /// contract. Availability flags keep future gameplay domains explicit: an
+    /// unavailable value must not be presented as measured zero.
+    /// </summary>
+    public readonly struct VehicleAudioSupplementalParameters
+    {
+        public VehicleAudioSupplementalParameters(
+            bool ignitionOn,
+            bool starterRequested,
+            bool starterActive,
+            float brake01,
+            float aggregateWheelSpeedRadiansPerSecond,
+            float signedVehicleSpeedMetersPerSecond,
+            float suspensionImpact01,
+            bool damageAvailable = false,
+            float damage01 = 0f,
+            bool interiorContextAvailable = false,
+            float interiorBlend01 = 0f,
+            bool openingsContextAvailable = false,
+            float doorOpenness01 = 0f,
+            float windowOpenness01 = 0f)
+        {
+            IgnitionOn = ignitionOn;
+            StarterRequested = starterRequested;
+            StarterActive = starterActive;
+            Brake01 = brake01;
+            AggregateWheelSpeedRadiansPerSecond = aggregateWheelSpeedRadiansPerSecond;
+            SignedVehicleSpeedMetersPerSecond = signedVehicleSpeedMetersPerSecond;
+            SuspensionImpact01 = suspensionImpact01;
+            DamageAvailable = damageAvailable;
+            Damage01 = damage01;
+            InteriorContextAvailable = interiorContextAvailable;
+            InteriorBlend01 = interiorBlend01;
+            OpeningsContextAvailable = openingsContextAvailable;
+            DoorOpenness01 = doorOpenness01;
+            WindowOpenness01 = windowOpenness01;
+        }
+
+        public bool IgnitionOn { get; }
+        public bool StarterRequested { get; }
+        public bool StarterActive { get; }
+        public float Brake01 { get; }
+        public float AggregateWheelSpeedRadiansPerSecond { get; }
+        public float SignedVehicleSpeedMetersPerSecond { get; }
+        public float SuspensionImpact01 { get; }
+        public bool DamageAvailable { get; }
+        public float Damage01 { get; }
+        public bool InteriorContextAvailable { get; }
+        public float InteriorBlend01 { get; }
+        public bool OpeningsContextAvailable { get; }
+        public float DoorOpenness01 { get; }
+        public float WindowOpenness01 { get; }
+
+        public static VehicleAudioSupplementalParameters Unavailable => default;
+    }
+
+    /// <summary>
     /// Physical and normalized values exposed to an audio implementation. Audio is
     /// presentation-only and must never feed state back into the simulation.
     /// </summary>
@@ -49,6 +106,37 @@ namespace MSC.Audio
             VehicleAudioSurface surface,
             float batteryVoltage,
             float engineTemperatureCelsius)
+            : this(
+                engineState,
+                engineRpm,
+                redlineRpm,
+                engineLoad01,
+                throttle01,
+                selectedGear,
+                clutchSlipRpm,
+                vehicleSpeedMetersPerSecond,
+                wheelSlip01,
+                surface,
+                batteryVoltage,
+                engineTemperatureCelsius,
+                VehicleAudioSupplementalParameters.Unavailable)
+        {
+        }
+
+        public VehicleAudioParameters(
+            VehicleAudioEngineState engineState,
+            float engineRpm,
+            float redlineRpm,
+            float engineLoad01,
+            float throttle01,
+            int selectedGear,
+            float clutchSlipRpm,
+            float vehicleSpeedMetersPerSecond,
+            float wheelSlip01,
+            VehicleAudioSurface surface,
+            float batteryVoltage,
+            float engineTemperatureCelsius,
+            VehicleAudioSupplementalParameters supplemental)
         {
             EngineState = engineState;
             EngineRpm = NonNegativeFinite(engineRpm);
@@ -62,6 +150,29 @@ namespace MSC.Audio
             Surface = surface;
             BatteryVoltage = NonNegativeFinite(batteryVoltage);
             EngineTemperatureCelsius = FiniteOrZero(engineTemperatureCelsius);
+            IgnitionOn = supplemental.IgnitionOn;
+            StarterRequested = supplemental.StarterRequested;
+            StarterActive = supplemental.StarterActive &&
+                            engineState == VehicleAudioEngineState.Cranking;
+            Brake01 = Clamp01(supplemental.Brake01);
+            AggregateWheelSpeedRadiansPerSecond = NonNegativeFinite(
+                Math.Abs(supplemental.AggregateWheelSpeedRadiansPerSecond));
+            SignedVehicleSpeedMetersPerSecond = FiniteOrZero(
+                supplemental.SignedVehicleSpeedMetersPerSecond);
+            SuspensionImpact01 = Clamp01(supplemental.SuspensionImpact01);
+            DamageAvailable = supplemental.DamageAvailable;
+            Damage01 = DamageAvailable ? Clamp01(supplemental.Damage01) : 0f;
+            InteriorContextAvailable = supplemental.InteriorContextAvailable;
+            InteriorBlend01 = InteriorContextAvailable
+                ? Clamp01(supplemental.InteriorBlend01)
+                : 0f;
+            OpeningsContextAvailable = supplemental.OpeningsContextAvailable;
+            DoorOpenness01 = OpeningsContextAvailable
+                ? Clamp01(supplemental.DoorOpenness01)
+                : 0f;
+            WindowOpenness01 = OpeningsContextAvailable
+                ? Clamp01(supplemental.WindowOpenness01)
+                : 0f;
         }
 
         public VehicleAudioEngineState EngineState { get; }
@@ -76,6 +187,28 @@ namespace MSC.Audio
         public VehicleAudioSurface Surface { get; }
         public float BatteryVoltage { get; }
         public float EngineTemperatureCelsius { get; }
+        public bool IgnitionOn { get; }
+        public bool StarterRequested { get; }
+        public bool StarterActive { get; }
+        public float Brake01 { get; }
+
+        /// <summary>Arithmetic mean of absolute wheel angular speeds.</summary>
+        public float AggregateWheelSpeedRadiansPerSecond { get; }
+
+        /// <summary>
+        /// Signed source speed when the simulation backend provides direction.
+        /// VehicleSpeedMetersPerSecond remains the legacy absolute magnitude.
+        /// </summary>
+        public float SignedVehicleSpeedMetersPerSecond { get; }
+
+        public float SuspensionImpact01 { get; }
+        public bool DamageAvailable { get; }
+        public float Damage01 { get; }
+        public bool InteriorContextAvailable { get; }
+        public float InteriorBlend01 { get; }
+        public bool OpeningsContextAvailable { get; }
+        public float DoorOpenness01 { get; }
+        public float WindowOpenness01 { get; }
 
         public static VehicleAudioParameters Silent => new VehicleAudioParameters(
             VehicleAudioEngineState.Off,
@@ -114,8 +247,6 @@ namespace MSC.Audio
     /// </summary>
     public interface IVehicleAudioBackend : IAudioBackend
     {
-        string FailureReason { get; }
-
         void SetVehicleParameters(in VehicleAudioParameters parameters);
 
         void PostVehicleEvent(VehicleAudioEvent audioEvent);

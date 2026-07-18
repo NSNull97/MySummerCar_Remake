@@ -45,6 +45,10 @@ namespace MSC.Weather.Production
             new List<ShelterVolume>(16);
         private readonly HashSet<string> shelterIds =
             new HashSet<string>(StringComparer.Ordinal);
+        private readonly HashSet<uint> publishedLightningSequences =
+            new HashSet<uint>();
+        private readonly HashSet<uint> publishedThunderSequences =
+            new HashSet<uint>();
 
         private IEnvironmentPresentationAdapter adapter;
         private IEnvironmentPresentationSceneOwnershipGuard sceneOwnershipGuard;
@@ -79,6 +83,26 @@ namespace MSC.Weather.Production
         private bool simulationActive;
         private bool isDuplicateOwner;
         private Coroutine topologyRevalidationRoutine;
+
+        /// <summary>
+        /// Vendor-neutral notification emitted after a coherent environment
+        /// output has been composed and presented. Subscriber failures are
+        /// isolated and cannot interrupt the authoritative environment owner.
+        /// </summary>
+        public event Action<WeatherEnvironmentOutputs>
+            EnvironmentOutputsChanged;
+
+        /// <summary>
+        /// Project-owned lightning notification. Each strike sequence is
+        /// published at most once for the lifetime of this controller.
+        /// </summary>
+        public event Action<LightningStrikeEvent> LightningOccurred;
+
+        /// <summary>
+        /// Project-owned thunder request. Each request sequence is published at
+        /// most once and Enviro remains presentation-only.
+        /// </summary>
+        public event Action<ThunderAudioRequest> ThunderRequested;
 
         public static ProductionEnvironmentController ActiveOwner => activeOwner;
 
@@ -322,9 +346,11 @@ namespace MSC.Weather.Production
                 result.Presentation.Sequence,
                 result.Presentation.TargetWorldPosition,
                 result.Presentation.Intensity01);
-            return IsWorldRevealReady
+            EnvironmentPresentationStatus status = IsWorldRevealReady
                 ? PresentCurrentState()
                 : PresentationStatus;
+            PublishAmbientLightning(result);
+            return status;
         }
 
         public bool TryCreateGameplayLightning(
@@ -354,6 +380,9 @@ namespace MSC.Weather.Production
             {
                 PresentCurrentState();
             }
+
+            PublishLightningOccurred(result.StrikeEvent);
+            PublishThunderRequested(result.Thunder);
 
             return true;
         }
@@ -530,8 +559,9 @@ namespace MSC.Weather.Production
             currentOutputs = weather.CreateEnvironmentOutputs(context);
             QueueCadencedEnvironmentRefresh(
                 currentOutputs.Weather.PresentationBindingId);
-            QueueAutomaticAmbientLightningIfDue(
-                currentOutputs.Weather);
+            AmbientLightningResult? automaticLightning =
+                QueueAutomaticAmbientLightningIfDue(
+                    currentOutputs.Weather);
 
             float transitionDurationSeconds =
                 ResolvePresentationTransitionDurationSeconds();
@@ -564,6 +594,15 @@ namespace MSC.Weather.Production
             pendingTransitionDurationSeconds = float.NaN;
             pendingLightningVisual = EnvironmentLightningVisualRequest.None;
             pendingRefresh = EnvironmentRefreshRequest.None;
+            DispatchSafely(
+                EnvironmentOutputsChanged,
+                currentOutputs,
+                nameof(EnvironmentOutputsChanged));
+            if (automaticLightning.HasValue)
+            {
+                PublishAmbientLightning(automaticLightning.Value);
+            }
+
             return result;
         }
 
@@ -689,7 +728,7 @@ namespace MSC.Weather.Production
             wasAmbientLightningEligible = false;
         }
 
-        private void QueueAutomaticAmbientLightningIfDue(
+        private AmbientLightningResult? QueueAutomaticAmbientLightningIfDue(
             in WeatherState state)
         {
             double now = lightning.SimulationSeconds;
@@ -703,7 +742,7 @@ namespace MSC.Weather.Production
             {
                 wasAmbientLightningEligible = false;
                 nextAmbientLightningGameSeconds = double.PositiveInfinity;
-                return;
+                return null;
             }
 
             if (!wasAmbientLightningEligible)
@@ -713,12 +752,12 @@ namespace MSC.Weather.Production
                     CalculateAmbientLightningCooldownSeconds(
                         state.LightningRisk01,
                         ambientLightningOrdinal);
-                return;
+                return null;
             }
 
             if (now < nextAmbientLightningGameSeconds)
             {
-                return;
+                return null;
             }
 
             if (pendingLightningVisual.IsRequested)
@@ -727,7 +766,7 @@ namespace MSC.Weather.Production
                     CalculateAmbientLightningCooldownSeconds(
                         state.LightningRisk01,
                         ambientLightningOrdinal);
-                return;
+                return null;
             }
 
             Vector3 target = CalculateAmbientLightningTarget(
@@ -746,6 +785,81 @@ namespace MSC.Weather.Production
                 CalculateAmbientLightningCooldownSeconds(
                     state.LightningRisk01,
                     ambientLightningOrdinal);
+            return result;
+        }
+
+        private void PublishAmbientLightning(
+            in AmbientLightningResult result)
+        {
+            PublishLightningOccurred(result.StrikeEvent);
+            if (listener == null)
+            {
+                return;
+            }
+
+            double delaySeconds = lightning.CalculateThunderDelaySeconds(
+                result.StrikeEvent.WorldPosition,
+                listener.position);
+            PublishThunderRequested(new ThunderAudioRequest(
+                result.StrikeEvent.Sequence,
+                result.StrikeEvent.WorldPosition,
+                result.StrikeEvent.Intensity01,
+                delaySeconds));
+        }
+
+        private void PublishLightningOccurred(
+            in LightningStrikeEvent strikeEvent)
+        {
+            if (!publishedLightningSequences.Add(strikeEvent.Sequence))
+            {
+                return;
+            }
+
+            DispatchSafely(
+                LightningOccurred,
+                strikeEvent,
+                nameof(LightningOccurred));
+        }
+
+        private void PublishThunderRequested(
+            in ThunderAudioRequest request)
+        {
+            if (!publishedThunderSequences.Add(request.Sequence))
+            {
+                return;
+            }
+
+            DispatchSafely(
+                ThunderRequested,
+                request,
+                nameof(ThunderRequested));
+        }
+
+        private void DispatchSafely<T>(
+            Action<T> subscribers,
+            T payload,
+            string eventName)
+        {
+            if (subscribers == null)
+            {
+                return;
+            }
+
+            Delegate[] invocationList = subscribers.GetInvocationList();
+            for (int index = 0; index < invocationList.Length; index++)
+            {
+                try
+                {
+                    ((Action<T>)invocationList[index]).Invoke(payload);
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogError(
+                        "Production environment subscriber failed for " +
+                        eventName + ": " + exception.Message,
+                        this);
+                }
+            }
         }
 
         private double CalculateAmbientLightningCooldownSeconds(

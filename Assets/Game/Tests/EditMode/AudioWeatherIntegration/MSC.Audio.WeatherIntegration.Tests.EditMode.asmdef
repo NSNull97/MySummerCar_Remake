@@ -1,0 +1,24 @@
+{
+  "name": "MSC.Audio.WeatherIntegration.Tests.EditMode",
+  "rootNamespace": "MSC.Tests.EditMode.AudioWeatherIntegration",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Audio.WeatherIntegration",
+    "MSC.Weather.Runtime",
+    "MSC.Weather.Production.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

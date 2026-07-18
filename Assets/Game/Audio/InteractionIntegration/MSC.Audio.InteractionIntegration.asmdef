@@ -1,0 +1,18 @@
+{
+  "name": "MSC.Audio.InteractionIntegration",
+  "rootNamespace": "MSC.Audio.InteractionIntegration",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Audio.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

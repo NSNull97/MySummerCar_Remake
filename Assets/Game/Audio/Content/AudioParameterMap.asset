@@ -1,0 +1,207 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e0add3e7b05424e8464fdccd8c00d5e, type: 3}
+  m_Name: AudioParameterMap
+  m_EditorClassIdentifier: MSC.Audio.Runtime::MSC.Audio.AudioParameterMap
+  entries:
+  - audioParameterId: audio.parameter.mixer.master
+    backendParameterName: MSC_Mixer_Master
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 1
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.mixer.vehicle
+    backendParameterName: MSC_Mixer_Vehicle
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 1
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.mixer.effects
+    backendParameterName: MSC_Mixer_Effects
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 1
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.mixer.ambience
+    backendParameterName: MSC_Mixer_Ambience
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 1
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.mixer.music
+    backendParameterName: MSC_Mixer_Music
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 1
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.mixer.ui
+    backendParameterName: MSC_Mixer_UI
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 1
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.rpm
+    backendParameterName: MSC_Vehicle_RPM
+    minimumValue: 0
+    maximumValue: 9000
+    defaultValue: 0
+    updateDeadband: 1
+  - audioParameterId: audio.parameter.vehicle.rpm.normalized
+    backendParameterName: MSC_Vehicle_RPM_Normalized
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.engine_load
+    backendParameterName: MSC_Vehicle_EngineLoad
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.throttle
+    backendParameterName: MSC_Vehicle_Throttle
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.gear
+    backendParameterName: MSC_Vehicle_Gear
+    minimumValue: -1
+    maximumValue: 6
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.clutch_slip
+    backendParameterName: MSC_Vehicle_ClutchSlipRPM
+    minimumValue: 0
+    maximumValue: 9000
+    defaultValue: 0
+    updateDeadband: 1
+  - audioParameterId: audio.parameter.vehicle.speed
+    backendParameterName: MSC_Vehicle_Speed
+    minimumValue: 0
+    maximumValue: 80
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.wheel_speed_radps
+    backendParameterName: MSC_Vehicle_WheelSpeedRadPS
+    minimumValue: 0
+    maximumValue: 250
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.wheel_slip
+    backendParameterName: MSC_Vehicle_WheelSlip
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.brake
+    backendParameterName: MSC_Vehicle_Brake
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.suspension_impact
+    backendParameterName: MSC_Vehicle_SuspensionImpact
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.battery_voltage
+    backendParameterName: MSC_Vehicle_BatteryVoltage
+    minimumValue: 0
+    maximumValue: 18
+    defaultValue: 12.6
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.engine_temperature
+    backendParameterName: MSC_Vehicle_EngineTemperature
+    minimumValue: -50
+    maximumValue: 180
+    defaultValue: 20
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.damage
+    backendParameterName: MSC_Vehicle_Damage
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.interior_blend
+    backendParameterName: MSC_Vehicle_InteriorBlend
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.door_openness
+    backendParameterName: MSC_Vehicle_DoorOpenness
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.vehicle.window_openness
+    backendParameterName: MSC_Vehicle_WindowOpenness
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.weather.precipitation
+    backendParameterName: MSC_Weather_Precipitation
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.weather.wind
+    backendParameterName: MSC_Weather_Wind
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.weather.thunder_risk
+    backendParameterName: MSC_Weather_ThunderRisk
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.environment.shelter
+    backendParameterName: MSC_Environment_Shelter
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.environment.time_of_day
+    backendParameterName: MSC_Environment_TimeOfDay
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0.5
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.lightning.intensity
+    backendParameterName: MSC_Lightning_Intensity
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.lightning.distance
+    backendParameterName: MSC_Lightning_DistanceMeters
+    minimumValue: 0
+    maximumValue: 5000
+    defaultValue: 0
+    updateDeadband: 0.1
+  - audioParameterId: audio.parameter.lightning.delay
+    backendParameterName: MSC_Lightning_DelaySeconds
+    minimumValue: 0
+    maximumValue: 20
+    defaultValue: 0
+    updateDeadband: 0.001
+  - audioParameterId: audio.parameter.interaction.impact_intensity
+    backendParameterName: MSC_Interaction_ImpactIntensity
+    minimumValue: 0
+    maximumValue: 1
+    defaultValue: 0
+    updateDeadband: 0.001

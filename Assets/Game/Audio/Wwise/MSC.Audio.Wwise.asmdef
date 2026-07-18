@@ -1,0 +1,22 @@
+{
+  "name": "MSC.Audio.Wwise",
+  "rootNamespace": "MSC.Audio.Wwise",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Audio.Composition",
+    "AK.Wwise.Unity.API",
+    "AK.Wwise.Unity.MonoBehaviour"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "WWISE_2024_OR_LATER",
+    "!UNITY_SERVER"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

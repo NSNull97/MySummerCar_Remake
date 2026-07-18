@@ -1,0 +1,26 @@
+{
+  "name": "MSC.Audio.Wwise.Editor",
+  "rootNamespace": "MSC.Audio.Wwise.Editor",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Audio.Composition",
+    "MSC.Audio.UnityFallback",
+    "MSC.Audio.WeatherIntegration",
+    "MSC.Audio.VehicleIntegration",
+    "MSC.Audio.Wwise",
+    "MSC.Bootstrap.Runtime",
+    "MSC.Weather.Production.Runtime",
+    "AK.Wwise.Unity.API",
+    "AK.Wwise.Unity.MonoBehaviour",
+    "AK.Wwise.Unity.MonoBehaviour.Editor"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": ["WWISE_2024_OR_LATER"],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

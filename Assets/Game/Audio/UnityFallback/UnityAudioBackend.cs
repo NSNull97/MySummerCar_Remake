@@ -1,5 +1,6 @@
-#if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
+#if UNITY_EDITOR
 using System.Collections;
 using System.IO;
 using System.Security.Cryptography;
@@ -7,21 +8,44 @@ using UnityEngine.Networking;
 #endif
 using MSC.Audio;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MSC.Audio.UnityFallback
 {
     /// <summary>
-    /// Temporary diagnostic vehicle mix. Donor clips are loaded read-only from
-    /// ignored external staging in the Editor and are never serialized into Assets.
+    /// Operational Unity Audio fallback for project-owned events plus the private
+    /// M06 vehicle diagnostic. Donor clips are loaded read-only from ignored
+    /// external staging in the Editor and are never serialized into Assets.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class UnityAudioBackend : MonoBehaviour, IVehicleAudioBackend
     {
+        private const string RuntimeBackendId = "unity.fallback";
+        private const string DisabledFailure = "Unity Audio fallback is disabled.";
+        private const string NotInitializedFailure =
+            "Unity Audio fallback has not been initialized.";
+
+        [Header("Project-owned fallback events")]
+        [SerializeField] private UnityAudioEventLibrary eventLibrary;
+        [SerializeField, Min(1)] private int maximumGenericVoices = 32;
+
+        [Header("Private M06 vehicle diagnostic")]
         [SerializeField, Range(0f, 1f)] private float masterVolume = 0.65f;
         [SerializeField, Min(0.1f)] private float volumeResponsePerSecond = 4f;
         [SerializeField, Range(0f, 1f)] private float spatialBlend = 0.9f;
         [SerializeField, Min(0.1f)] private float minimumDistanceMeters = 1.5f;
         [SerializeField, Min(1f)] private float maximumDistanceMeters = 45f;
+
+        private readonly Dictionary<string, IAudioEmitter> emitters =
+            new Dictionary<string, IAudioEmitter>(StringComparer.Ordinal);
+        private readonly Dictionary<AudioParameterId, float> parametersById =
+            new Dictionary<AudioParameterId, float>();
+        private readonly Dictionary<AudioSwitchId, AudioSwitchId> switchesByGroup =
+            new Dictionary<AudioSwitchId, AudioSwitchId>();
+        private readonly Dictionary<AudioStateId, AudioStateId> statesByGroup =
+            new Dictionary<AudioStateId, AudioStateId>();
+        private readonly List<UnityVoice> voices = new List<UnityVoice>();
+        private readonly List<string> emitterRemovalBuffer = new List<string>();
 
         private AudioSource idleSource;
         private AudioSource middleSource;
@@ -29,24 +53,68 @@ namespace MSC.Audio.UnityFallback
         private AudioSource starterMotorLoopSource;
         private AudioSource starterWhineLoopSource;
         private AudioSource starterOneShotSource;
-        private AudioClip[] loadedClips;
-        private VehicleAudioParameters parameters = VehicleAudioParameters.Silent;
+        private AudioClip[] loadedDiagnosticClips;
+        private VehicleAudioParameters vehicleParameters = VehicleAudioParameters.Silent;
+        private AudioSettingsState settings = AudioSettingsState.Default;
+        private AudioListenerContext listenerContext;
         private bool pendingStarterEngaged;
         private bool pendingEngineStarted;
         private bool starterSequenceActive;
+        private bool applicationHasFocus = true;
+        private bool initialized;
+        private bool sceneCallbacksRegistered;
+        private string lastOperationalFailure = string.Empty;
+        private ulong nextHandleId = 1UL;
 
-        public bool IsReady { get; private set; }
+        public string BackendId => RuntimeBackendId;
+        public AudioBackendKind Kind => AudioBackendKind.Unity;
 
-        public string FailureReason { get; private set; } = string.Empty;
+        /// <summary>
+        /// Unity Audio remains a usable backend even when the optional local
+        /// donor diagnostic or the project-owned event library is unavailable.
+        /// </summary>
+        public bool IsReady => initialized && isActiveAndEnabled;
+
+        public string FailureReason => !initialized
+            ? NotInitializedFailure
+            : isActiveAndEnabled
+                ? string.Empty
+                : DisabledFailure;
+
+        public bool IsLocalDiagnosticReady { get; private set; }
+        public bool IsLocalDiagnosticLoadComplete { get; private set; }
+        public string LocalDiagnosticFailureReason { get; private set; } = string.Empty;
+        public int ActiveGenericVoiceCount => CountActiveGenericVoices();
+
+#if UNITY_EDITOR
+        public void ConfigureForAuthoring(UnityAudioEventLibrary configuredLibrary)
+        {
+            eventLibrary = configuredLibrary;
+        }
+#endif
 
         private void Awake()
         {
-            idleSource = CreateSource(true);
-            middleSource = CreateSource(true);
-            highSource = CreateSource(true);
-            starterMotorLoopSource = CreateSource(true);
-            starterWhineLoopSource = CreateSource(true);
-            starterOneShotSource = CreateSource(false);
+            maximumGenericVoices = Mathf.Max(1, maximumGenericVoices);
+            idleSource = CreateDiagnosticSource(true);
+            middleSource = CreateDiagnosticSource(true);
+            highSource = CreateDiagnosticSource(true);
+            starterMotorLoopSource = CreateDiagnosticSource(true);
+            starterWhineLoopSource = CreateDiagnosticSource(true);
+            starterOneShotSource = CreateDiagnosticSource(false);
+
+            initialized = true;
+            ValidateConfiguredLibrary();
+        }
+
+        private void OnEnable()
+        {
+            RegisterSceneCallbacks();
+            RemoveDestroyedEmitterRegistrations();
+            if (IsLocalDiagnosticReady)
+            {
+                StartDiagnosticLoops();
+            }
         }
 
 #if UNITY_EDITOR
@@ -57,74 +125,275 @@ namespace MSC.Audio.UnityFallback
 #else
         private void Start()
         {
-            Fail("Local donor diagnostic clips are intentionally disabled outside the Unity Editor.");
+            FailLocalDiagnostic(
+                "Local donor diagnostic clips are intentionally disabled outside the Unity Editor.");
         }
 #endif
 
         private void Update()
+        {
+            RemoveDestroyedEmitterRegistrations();
+            UpdateGenericVoices();
+            UpdateDiagnosticVehicleMix();
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            applicationHasFocus = hasFocus;
+        }
+
+        private void OnDisable()
+        {
+            UnregisterSceneCallbacks();
+            StopAll(0f);
+        }
+
+        private void OnDestroy()
+        {
+            StopAll(0f);
+            initialized = false;
+            if (loadedDiagnosticClips == null)
+            {
+                return;
+            }
+
+            for (int index = 0; index < loadedDiagnosticClips.Length; index++)
+            {
+                if (loadedDiagnosticClips[index] != null)
+                {
+                    Destroy(loadedDiagnosticClips[index]);
+                }
+            }
+        }
+
+        public bool RegisterEmitter(IAudioEmitter emitter, out string failure)
+        {
+            RemoveDestroyedEmitterRegistrations();
+            if (!IsReady)
+            {
+                failure = FailureReason;
+                return false;
+            }
+
+            if (IsNullOrDestroyed(emitter))
+            {
+                failure = "Audio emitter is required.";
+                return false;
+            }
+
+            string stableId = emitter.StableId?.Trim() ?? string.Empty;
+            if (stableId.Length == 0)
+            {
+                failure = "Audio emitter stable ID is required.";
+                return false;
+            }
+
+            if (emitter.AudioTransform == null)
+            {
+                failure = $"Audio emitter {stableId} has no Transform.";
+                return false;
+            }
+
+            if (emitters.ContainsKey(stableId))
+            {
+                failure = $"Audio emitter {stableId} is already registered.";
+                return false;
+            }
+
+            emitters.Add(stableId, emitter);
+            failure = string.Empty;
+            return true;
+        }
+
+        public bool UnregisterEmitter(IAudioEmitter emitter)
+        {
+            if (ReferenceEquals(emitter, null))
+            {
+                return false;
+            }
+
+            string registeredId = null;
+            foreach (KeyValuePair<string, IAudioEmitter> pair in emitters)
+            {
+                if (ReferenceEquals(pair.Value, emitter))
+                {
+                    registeredId = pair.Key;
+                    break;
+                }
+            }
+
+            if (registeredId == null)
+            {
+                return false;
+            }
+
+            StopVoicesForEmitter(emitter);
+            return emitters.Remove(registeredId);
+        }
+
+        public IAudioEventHandle PostEvent(in AudioEventRequest request)
+        {
+            if (!IsReady)
+            {
+                RecordOperationalFailure(FailureReason);
+                return AudioEventHandles.Invalid;
+            }
+
+            if (eventLibrary == null)
+            {
+                RecordOperationalFailure(
+                    $"Unity fallback event library is not assigned; event {request.EventId} was not played.");
+                return AudioEventHandles.Invalid;
+            }
+
+            if (!eventLibrary.TryResolve(request.EventId, out UnityAudioEventDefinition definition) ||
+                definition == null || definition.Clip == null)
+            {
+                RecordOperationalFailure(
+                    $"Unity fallback event {request.EventId} has no playable mapping.");
+                return AudioEventHandles.Invalid;
+            }
+
+            if (request.Emitter != null && !IsRegisteredEmitter(request.Emitter))
+            {
+                RecordOperationalFailure(
+                    $"Emitter {request.Emitter.StableId} must be registered before posting {request.EventId}.");
+                return AudioEventHandles.Invalid;
+            }
+
+            if (!request.AllowMultiple)
+            {
+                UnityVoice existing = FindActiveVoice(request.EventId, request.Emitter);
+                if (existing != null)
+                {
+                    return CreateHandle(existing);
+                }
+            }
+
+            UnityVoice voice = AcquireVoice();
+            if (voice == null)
+            {
+                RecordOperationalFailure(
+                    $"Unity fallback voice limit ({maximumGenericVoices}) reached; event {request.EventId} was rejected.");
+                return AudioEventHandles.Invalid;
+            }
+
+            ConfigureAndPlay(voice, definition, request);
+            lastOperationalFailure = string.Empty;
+            return CreateHandle(voice);
+        }
+
+        public bool SetParameter(
+            AudioParameterId parameterId,
+            float value,
+            IAudioEmitter emitter = null)
+        {
+            if (!IsReady || parameterId.IsEmpty ||
+                emitter != null && !IsRegisteredEmitter(emitter))
+            {
+                return false;
+            }
+
+            parametersById[parameterId] = FiniteOrZero(value);
+            return true;
+        }
+
+        public bool SetSwitch(
+            AudioSwitchId switchGroupId,
+            AudioSwitchId switchValueId,
+            IAudioEmitter emitter = null)
+        {
+            if (!IsReady || switchGroupId.IsEmpty || switchValueId.IsEmpty ||
+                emitter != null && !IsRegisteredEmitter(emitter))
+            {
+                return false;
+            }
+
+            switchesByGroup[switchGroupId] = switchValueId;
+            return true;
+        }
+
+        public bool SetState(AudioStateId stateGroupId, AudioStateId stateValueId)
+        {
+            if (!IsReady || stateGroupId.IsEmpty || stateValueId.IsEmpty)
+            {
+                return false;
+            }
+
+            statesByGroup[stateGroupId] = stateValueId;
+            return true;
+        }
+
+        public void SetListenerContext(in AudioListenerContext context)
+        {
+            listenerContext = context;
+        }
+
+        public void ApplySettings(in AudioSettingsState value)
+        {
+            settings = value;
+        }
+
+        public void StopAll(float fadeSeconds = 0f)
+        {
+            float safeFadeSeconds = Mathf.Clamp(FiniteOrZero(fadeSeconds), 0f, 10f);
+            for (int index = 0; index < voices.Count; index++)
+            {
+                UnityVoice voice = voices[index];
+                if (voice.Active)
+                {
+                    RequestVoiceStop(voice, safeFadeSeconds);
+                }
+            }
+
+            vehicleParameters = VehicleAudioParameters.Silent;
+            starterSequenceActive = false;
+            pendingStarterEngaged = false;
+            pendingEngineStarted = false;
+            StopDiagnosticImmediately();
+        }
+
+        public AudioRuntimeSnapshot CaptureSnapshot()
+        {
+            RemoveDestroyedEmitterRegistrations();
+            return new AudioRuntimeSnapshot(
+                BackendId,
+                Kind,
+                IsReady,
+                isFallback: true,
+                emitters.Count,
+                CountActiveGenericVoices() + CountPlayingDiagnosticVoices(),
+                loadedBankCount: 0,
+                Array.Empty<string>(),
+                listenerContext,
+                string.IsNullOrWhiteSpace(lastOperationalFailure)
+                    ? FailureReason
+                    : lastOperationalFailure);
+        }
+
+        public void SetVehicleParameters(in VehicleAudioParameters value)
         {
             if (!IsReady)
             {
                 return;
             }
 
-            float deltaTime = Mathf.Min(0.1f, Time.unscaledDeltaTime);
-            bool running = parameters.EngineState == VehicleAudioEngineState.Running;
-            bool cranking = starterSequenceActive &&
-                            parameters.EngineState == VehicleAudioEngineState.Cranking;
-            float rpm01 = Mathf.Clamp01(parameters.EngineRpm / parameters.RedlineRpm);
-            float lowWeight = 1f - Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.18f, 0.46f, rpm01));
-            float highWeight = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.48f, 0.82f, rpm01));
-            float middleWeight = Mathf.Max(0f, 1f - lowWeight - highWeight);
-            float load = Mathf.Max(parameters.EngineLoad01, parameters.Throttle01 * 0.7f);
-            float engineGain = running ? masterVolume * Mathf.Lerp(0.55f, 1f, load) : 0f;
-
-            SetVolume(idleSource, engineGain * lowWeight, deltaTime);
-            SetVolume(middleSource, engineGain * middleWeight, deltaTime);
-            SetVolume(highSource, engineGain * highWeight, deltaTime);
-            SetVolume(starterMotorLoopSource, cranking ? masterVolume * 0.56f : 0f, deltaTime);
-            SetVolume(starterWhineLoopSource, cranking ? masterVolume * 0.38f : 0f, deltaTime);
-
-            idleSource.pitch = Mathf.Lerp(0.72f, 1.35f, Mathf.InverseLerp(500f, 1900f, parameters.EngineRpm));
-            middleSource.pitch = Mathf.Lerp(0.72f, 1.38f, Mathf.InverseLerp(1200f, 4800f, parameters.EngineRpm));
-            highSource.pitch = Mathf.Lerp(0.72f, 1.4f, Mathf.InverseLerp(3200f, parameters.RedlineRpm, parameters.EngineRpm));
-            float starterPitch = Mathf.Lerp(
-                0.9f,
-                1.08f,
-                Mathf.InverseLerp(0f, 700f, parameters.EngineRpm));
-            starterMotorLoopSource.pitch = starterPitch;
-            starterWhineLoopSource.pitch = starterPitch;
-        }
-
-        private void OnDestroy()
-        {
-            if (loadedClips == null)
-            {
-                return;
-            }
-
-            for (int index = 0; index < loadedClips.Length; index++)
-            {
-                if (loadedClips[index] != null)
-                {
-                    Destroy(loadedClips[index]);
-                }
-            }
-        }
-
-        public void SetVehicleParameters(in VehicleAudioParameters value)
-        {
-            parameters = value;
+            vehicleParameters = value;
         }
 
         public void PostVehicleEvent(VehicleAudioEvent audioEvent)
         {
+            if (!IsReady)
+            {
+                return;
+            }
+
             switch (audioEvent)
             {
                 case VehicleAudioEvent.StarterEngaged:
                     starterSequenceActive = true;
                     pendingEngineStarted = false;
-                    if (IsReady)
+                    if (IsLocalDiagnosticReady)
                     {
                         PlayStarterOneShot(3);
                     }
@@ -140,7 +409,7 @@ namespace MSC.Audio.UnityFallback
                 case VehicleAudioEvent.EngineStarted:
                     starterSequenceActive = false;
                     pendingStarterEngaged = false;
-                    if (IsReady)
+                    if (IsLocalDiagnosticReady)
                     {
                         PlayStarterOneShot(5);
                     }
@@ -156,16 +425,409 @@ namespace MSC.Audio.UnityFallback
                     pendingEngineStarted = false;
                     break;
                 case VehicleAudioEvent.Reset:
-                    parameters = VehicleAudioParameters.Silent;
+                    vehicleParameters = VehicleAudioParameters.Silent;
                     starterSequenceActive = false;
                     pendingStarterEngaged = false;
                     pendingEngineStarted = false;
-                    StopImmediately();
+                    StopDiagnosticImmediately();
                     break;
             }
         }
 
-        private AudioSource CreateSource(bool loop)
+        private void ValidateConfiguredLibrary()
+        {
+            if (eventLibrary == null || eventLibrary.Validate(out string[] failures))
+            {
+                return;
+            }
+
+            lastOperationalFailure = string.Join(" ", failures);
+            Debug.LogWarning(
+                "Unity fallback event library contains invalid mappings: " +
+                lastOperationalFailure,
+                this);
+        }
+
+        private bool IsRegisteredEmitter(IAudioEmitter emitter)
+        {
+            if (IsNullOrDestroyed(emitter))
+            {
+                return false;
+            }
+
+            string stableId = emitter.StableId?.Trim() ?? string.Empty;
+            return emitters.TryGetValue(stableId, out IAudioEmitter registered) &&
+                   ReferenceEquals(registered, emitter);
+        }
+
+        private void OnSceneUnloaded(Scene scene)
+        {
+            emitterRemovalBuffer.Clear();
+            foreach (KeyValuePair<string, IAudioEmitter> pair in emitters)
+            {
+                if (IsNullOrDestroyed(pair.Value) ||
+                    pair.Value.OwningSceneHandle == scene.handle)
+                {
+                    emitterRemovalBuffer.Add(pair.Key);
+                }
+            }
+
+            for (int index = 0; index < emitterRemovalBuffer.Count; index++)
+            {
+                string stableId = emitterRemovalBuffer[index];
+                if (emitters.TryGetValue(stableId, out IAudioEmitter emitter))
+                {
+                    StopVoicesForEmitter(emitter);
+                }
+
+                emitters.Remove(stableId);
+            }
+        }
+
+        private void RemoveDestroyedEmitterRegistrations()
+        {
+            if (emitters.Count == 0)
+            {
+                return;
+            }
+
+            emitterRemovalBuffer.Clear();
+            foreach (KeyValuePair<string, IAudioEmitter> pair in emitters)
+            {
+                if (IsNullOrDestroyed(pair.Value))
+                {
+                    emitterRemovalBuffer.Add(pair.Key);
+                }
+            }
+
+            for (int index = 0; index < emitterRemovalBuffer.Count; index++)
+            {
+                string stableId = emitterRemovalBuffer[index];
+                if (emitters.TryGetValue(stableId, out IAudioEmitter emitter))
+                {
+                    StopVoicesForEmitter(emitter);
+                }
+
+                emitters.Remove(stableId);
+            }
+        }
+
+        private void RegisterSceneCallbacks()
+        {
+            if (sceneCallbacksRegistered)
+            {
+                return;
+            }
+
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
+            sceneCallbacksRegistered = true;
+        }
+
+        private void UnregisterSceneCallbacks()
+        {
+            if (!sceneCallbacksRegistered)
+            {
+                return;
+            }
+
+            SceneManager.sceneUnloaded -= OnSceneUnloaded;
+            sceneCallbacksRegistered = false;
+        }
+
+        private UnityVoice AcquireVoice()
+        {
+            for (int index = 0; index < voices.Count; index++)
+            {
+                if (!voices[index].Active)
+                {
+                    return voices[index];
+                }
+            }
+
+            if (voices.Count >= maximumGenericVoices)
+            {
+                return null;
+            }
+
+            var voiceObject = new GameObject($"UnityAudioVoice_{voices.Count:00}");
+            voiceObject.hideFlags = HideFlags.DontSave;
+            voiceObject.transform.SetParent(transform, false);
+            AudioSource source = voiceObject.AddComponent<AudioSource>();
+            source.playOnAwake = false;
+            source.dopplerLevel = 0.15f;
+            source.rolloffMode = AudioRolloffMode.Linear;
+            var voice = new UnityVoice(source);
+            voices.Add(voice);
+            return voice;
+        }
+
+        private void ConfigureAndPlay(
+            UnityVoice voice,
+            UnityAudioEventDefinition definition,
+            in AudioEventRequest request)
+        {
+            voice.Generation++;
+            voice.HandleId = nextHandleId++;
+            if (nextHandleId == 0UL)
+            {
+                nextHandleId = 1UL;
+            }
+
+            voice.Active = true;
+            voice.EventId = request.EventId;
+            voice.Emitter = request.Emitter;
+            voice.Definition = definition;
+            voice.RequestVolume01 = request.Volume01;
+            voice.FadingOut = false;
+
+            AudioSource source = voice.Source;
+            source.Stop();
+            source.clip = definition.Clip;
+            source.loop = definition.Loop;
+            source.pitch = definition.Pitch;
+            source.spatialBlend = definition.SpatialBlend;
+            source.minDistance = definition.MinimumDistanceMeters;
+            source.maxDistance = definition.MaximumDistanceMeters;
+            source.transform.position = request.ResolveWorldPosition();
+            source.volume = ResolveVoiceVolume(voice);
+
+            double startDspTime = UnityEngine.AudioSettings.dspTime + request.DelaySeconds;
+            voice.ScheduledStartDspTime = startDspTime;
+            voice.ScheduledEndDspTime = definition.Loop
+                ? double.PositiveInfinity
+                : startDspTime + Math.Max(0.01d, definition.Clip.length / definition.Pitch);
+            source.PlayScheduled(startDspTime);
+        }
+
+        private IAudioEventHandle CreateHandle(UnityVoice voice)
+        {
+            return new UnityAudioEventHandle(this, voice, voice.Generation, voice.HandleId);
+        }
+
+        private UnityVoice FindActiveVoice(AudioEventId eventId, IAudioEmitter emitter)
+        {
+            for (int index = 0; index < voices.Count; index++)
+            {
+                UnityVoice voice = voices[index];
+                if (voice.Active && voice.EventId == eventId &&
+                    ReferenceEquals(voice.Emitter, emitter))
+                {
+                    return voice;
+                }
+            }
+
+            return null;
+        }
+
+        private void UpdateGenericVoices()
+        {
+            double currentDspTime = UnityEngine.AudioSettings.dspTime;
+            for (int index = 0; index < voices.Count; index++)
+            {
+                UnityVoice voice = voices[index];
+                if (!voice.Active)
+                {
+                    continue;
+                }
+
+                if (voice.Emitter != null)
+                {
+                    if (IsNullOrDestroyed(voice.Emitter) ||
+                        !voice.Emitter.IsAudioEmitterActive ||
+                        voice.Emitter.AudioTransform == null)
+                    {
+                        ReleaseVoice(voice);
+                        continue;
+                    }
+
+                    voice.Source.transform.position = voice.Emitter.AudioTransform.position;
+                }
+
+                if (voice.FadingOut)
+                {
+                    if (currentDspTime >= voice.FadeEndDspTime)
+                    {
+                        ReleaseVoice(voice);
+                        continue;
+                    }
+
+                    double duration = Math.Max(0.0001d, voice.FadeEndDspTime - voice.FadeStartDspTime);
+                    float remaining01 = Mathf.Clamp01(
+                        (float)((voice.FadeEndDspTime - currentDspTime) / duration));
+                    voice.Source.volume = ResolveVoiceVolume(voice) * remaining01;
+                }
+                else
+                {
+                    voice.Source.volume = ResolveVoiceVolume(voice);
+                }
+
+                if (!voice.Definition.Loop && currentDspTime >= voice.ScheduledEndDspTime)
+                {
+                    ReleaseVoice(voice);
+                }
+            }
+        }
+
+        private float ResolveVoiceVolume(UnityVoice voice)
+        {
+            float categoryGain;
+            switch (voice.Definition.Category)
+            {
+                case UnityAudioCategory.Vehicle:
+                    categoryGain = settings.Vehicle01;
+                    break;
+                case UnityAudioCategory.Ambience:
+                    categoryGain = settings.Ambience01;
+                    break;
+                case UnityAudioCategory.Music:
+                    categoryGain = settings.Music01;
+                    break;
+                case UnityAudioCategory.UserInterface:
+                    categoryGain = settings.Ui01;
+                    break;
+                default:
+                    categoryGain = settings.Effects01;
+                    break;
+            }
+
+            float focusGain = settings.MuteOnFocusLoss &&
+                              (!applicationHasFocus ||
+                               listenerContext.IsValid && !listenerContext.HasFocus)
+                ? 0f
+                : 1f;
+            float loudnessGain = settings.ReduceLoudSounds ? 0.8f : 1f;
+            return Mathf.Clamp01(
+                voice.RequestVolume01 *
+                voice.Definition.Volume *
+                settings.Master01 *
+                categoryGain *
+                focusGain *
+                loudnessGain);
+        }
+
+        private void RequestVoiceStop(UnityVoice voice, float fadeSeconds)
+        {
+            if (!voice.Active)
+            {
+                return;
+            }
+
+            if (fadeSeconds <= 0f)
+            {
+                ReleaseVoice(voice);
+                return;
+            }
+
+            double currentDspTime = UnityEngine.AudioSettings.dspTime;
+            voice.FadingOut = true;
+            voice.FadeStartDspTime = currentDspTime;
+            voice.FadeEndDspTime = currentDspTime + fadeSeconds;
+        }
+
+        private void ReleaseVoice(UnityVoice voice)
+        {
+            voice.Source.Stop();
+            voice.Source.clip = null;
+            voice.Active = false;
+            voice.Emitter = null;
+            voice.Definition = null;
+            voice.EventId = default;
+            voice.RequestVolume01 = 0f;
+            voice.FadingOut = false;
+        }
+
+        private void StopVoicesForEmitter(IAudioEmitter emitter)
+        {
+            for (int index = 0; index < voices.Count; index++)
+            {
+                UnityVoice voice = voices[index];
+                if (voice.Active && ReferenceEquals(voice.Emitter, emitter))
+                {
+                    ReleaseVoice(voice);
+                }
+            }
+        }
+
+        private bool IsVoiceValid(UnityVoice voice, uint generation, ulong handleId)
+        {
+            return voice != null && voice.Active && voice.Generation == generation &&
+                   voice.HandleId == handleId;
+        }
+
+        private bool IsVoicePlaying(UnityVoice voice, uint generation, ulong handleId)
+        {
+            return IsVoiceValid(voice, generation, handleId);
+        }
+
+        private void StopVoice(
+            UnityVoice voice,
+            uint generation,
+            ulong handleId,
+            float fadeSeconds)
+        {
+            if (!IsVoiceValid(voice, generation, handleId))
+            {
+                return;
+            }
+
+            RequestVoiceStop(voice, Mathf.Clamp(FiniteOrZero(fadeSeconds), 0f, 10f));
+        }
+
+        private int CountActiveGenericVoices()
+        {
+            int count = 0;
+            for (int index = 0; index < voices.Count; index++)
+            {
+                if (voices[index].Active)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        private int CountPlayingDiagnosticVoices()
+        {
+            if (!IsLocalDiagnosticReady)
+            {
+                return 0;
+            }
+
+            int count = 0;
+            count += idleSource != null && idleSource.isPlaying ? 1 : 0;
+            count += middleSource != null && middleSource.isPlaying ? 1 : 0;
+            count += highSource != null && highSource.isPlaying ? 1 : 0;
+            count += starterMotorLoopSource != null && starterMotorLoopSource.isPlaying ? 1 : 0;
+            count += starterWhineLoopSource != null && starterWhineLoopSource.isPlaying ? 1 : 0;
+            count += starterOneShotSource != null && starterOneShotSource.isPlaying ? 1 : 0;
+            return count;
+        }
+
+        private void RecordOperationalFailure(string reason)
+        {
+            lastOperationalFailure = string.IsNullOrWhiteSpace(reason)
+                ? "Unity fallback audio operation failed."
+                : reason;
+            Debug.LogWarning(lastOperationalFailure, this);
+        }
+
+        private static float FiniteOrZero(float value)
+        {
+            return float.IsNaN(value) || float.IsInfinity(value) ? 0f : value;
+        }
+
+        private static bool IsNullOrDestroyed(IAudioEmitter emitter)
+        {
+            if (ReferenceEquals(emitter, null))
+            {
+                return true;
+            }
+
+            return emitter is UnityEngine.Object unityObject && unityObject == null;
+        }
+
+        private AudioSource CreateDiagnosticSource(bool loop)
         {
             AudioSource source = gameObject.AddComponent<AudioSource>();
             source.playOnAwake = false;
@@ -179,7 +841,78 @@ namespace MSC.Audio.UnityFallback
             return source;
         }
 
-        private void SetVolume(AudioSource source, float target, float deltaTime)
+        private void UpdateDiagnosticVehicleMix()
+        {
+            if (!IsLocalDiagnosticReady)
+            {
+                return;
+            }
+
+            float deltaTime = Mathf.Min(0.1f, Time.unscaledDeltaTime);
+            bool running = vehicleParameters.EngineState == VehicleAudioEngineState.Running;
+            bool cranking = starterSequenceActive &&
+                            vehicleParameters.EngineState == VehicleAudioEngineState.Cranking;
+            float rpm01 = Mathf.Clamp01(
+                vehicleParameters.EngineRpm / vehicleParameters.RedlineRpm);
+            float lowWeight = 1f - Mathf.SmoothStep(
+                0f,
+                1f,
+                Mathf.InverseLerp(0.18f, 0.46f, rpm01));
+            float highWeight = Mathf.SmoothStep(
+                0f,
+                1f,
+                Mathf.InverseLerp(0.48f, 0.82f, rpm01));
+            float middleWeight = Mathf.Max(0f, 1f - lowWeight - highWeight);
+            float load = Mathf.Max(
+                vehicleParameters.EngineLoad01,
+                vehicleParameters.Throttle01 * 0.7f);
+            float settingsGain = settings.Master01 * settings.Vehicle01;
+            if (settings.MuteOnFocusLoss &&
+                (!applicationHasFocus || listenerContext.IsValid && !listenerContext.HasFocus))
+            {
+                settingsGain = 0f;
+            }
+
+            float engineGain = running
+                ? masterVolume * settingsGain * Mathf.Lerp(0.55f, 1f, load)
+                : 0f;
+
+            SetDiagnosticVolume(idleSource, engineGain * lowWeight, deltaTime);
+            SetDiagnosticVolume(middleSource, engineGain * middleWeight, deltaTime);
+            SetDiagnosticVolume(highSource, engineGain * highWeight, deltaTime);
+            SetDiagnosticVolume(
+                starterMotorLoopSource,
+                cranking ? masterVolume * settingsGain * 0.56f : 0f,
+                deltaTime);
+            SetDiagnosticVolume(
+                starterWhineLoopSource,
+                cranking ? masterVolume * settingsGain * 0.38f : 0f,
+                deltaTime);
+
+            idleSource.pitch = Mathf.Lerp(
+                0.72f,
+                1.35f,
+                Mathf.InverseLerp(500f, 1900f, vehicleParameters.EngineRpm));
+            middleSource.pitch = Mathf.Lerp(
+                0.72f,
+                1.38f,
+                Mathf.InverseLerp(1200f, 4800f, vehicleParameters.EngineRpm));
+            highSource.pitch = Mathf.Lerp(
+                0.72f,
+                1.4f,
+                Mathf.InverseLerp(
+                    3200f,
+                    vehicleParameters.RedlineRpm,
+                    vehicleParameters.EngineRpm));
+            float starterPitch = Mathf.Lerp(
+                0.9f,
+                1.08f,
+                Mathf.InverseLerp(0f, 700f, vehicleParameters.EngineRpm));
+            starterMotorLoopSource.pitch = starterPitch;
+            starterWhineLoopSource.pitch = starterPitch;
+        }
+
+        private void SetDiagnosticVolume(AudioSource source, float target, float deltaTime)
         {
             target = Mathf.Clamp01(target);
             if (target > 0.0001f && !source.isPlaying)
@@ -199,15 +932,17 @@ namespace MSC.Audio.UnityFallback
 
         private void PlayStarterOneShot(int clipIndex)
         {
-            if (!IsReady || loadedClips == null)
+            if (!IsReady || !IsLocalDiagnosticReady || loadedDiagnosticClips == null)
             {
                 return;
             }
 
-            starterOneShotSource.PlayOneShot(loadedClips[clipIndex], masterVolume * 0.8f);
+            starterOneShotSource.PlayOneShot(
+                loadedDiagnosticClips[clipIndex],
+                masterVolume * settings.Master01 * settings.Vehicle01 * 0.8f);
         }
 
-        private void StopImmediately()
+        private void StopDiagnosticImmediately()
         {
             if (idleSource == null)
             {
@@ -227,14 +962,29 @@ namespace MSC.Audio.UnityFallback
             starterOneShotSource.Stop();
         }
 
-        private void Fail(string reason)
+        private void StartDiagnosticLoops()
         {
-            IsReady = false;
-            FailureReason = reason;
-            StopImmediately();
+            if (loadedDiagnosticClips == null || idleSource == null)
+            {
+                return;
+            }
+
+            idleSource.Play();
+            middleSource.Play();
+            highSource.Play();
+            starterMotorLoopSource.Play();
+            starterWhineLoopSource.Play();
+        }
+
+        private void FailLocalDiagnostic(string reason)
+        {
+            IsLocalDiagnosticReady = false;
+            IsLocalDiagnosticLoadComplete = true;
+            LocalDiagnosticFailureReason = reason ?? string.Empty;
+            StopDiagnosticImmediately();
             Debug.LogWarning(
                 "M06 local diagnostic vehicle audio is unavailable: " + reason +
-                " Simulation continues with a silent fallback.",
+                " The operational Unity fallback remains active.",
                 this);
         }
 
@@ -256,30 +1006,37 @@ namespace MSC.Audio.UnityFallback
 
         private IEnumerator LoadLocalDiagnosticClips()
         {
+            IsLocalDiagnosticLoadComplete = false;
             string[] resolvedFiles;
             try
             {
                 string projectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
-                string configurationPath = ResolveContainedPath(projectRoot, DonorPathConfiguration);
+                string configurationPath = ResolveContainedPath(
+                    projectRoot,
+                    DonorPathConfiguration);
                 if (!File.Exists(configurationPath))
                 {
-                    Fail("Config/DonorPaths.local.json is missing.");
+                    FailLocalDiagnostic("Config/DonorPaths.local.json is missing.");
                     yield break;
                 }
 
                 DonorPathsData localPaths = JsonUtility.FromJson<DonorPathsData>(
                     File.ReadAllText(configurationPath));
-                if (localPaths == null || string.IsNullOrWhiteSpace(localPaths.DonorStagingDirectory))
+                if (localPaths == null ||
+                    string.IsNullOrWhiteSpace(localPaths.DonorStagingDirectory))
                 {
-                    Fail("DonorStagingDirectory is missing from the local path configuration.");
+                    FailLocalDiagnostic(
+                        "DonorStagingDirectory is missing from the local path configuration.");
                     yield break;
                 }
 
                 string stagingRoot = Path.GetFullPath(
-                    Environment.ExpandEnvironmentVariables(localPaths.DonorStagingDirectory.Trim()));
+                    Environment.ExpandEnvironmentVariables(
+                        localPaths.DonorStagingDirectory.Trim()));
                 if (!Directory.Exists(stagingRoot))
                 {
-                    Fail("The configured donor staging directory does not exist.");
+                    FailLocalDiagnostic(
+                        "The configured donor staging directory does not exist.");
                     yield break;
                 }
 
@@ -291,14 +1048,19 @@ namespace MSC.Audio.UnityFallback
                     string clipPath = ResolveContainedPath(audioRoot, spec.FileName);
                     if (!File.Exists(clipPath))
                     {
-                        Fail("Required staged clip is missing: " + spec.FileName + ".");
+                        FailLocalDiagnostic(
+                            "Required staged clip is missing: " + spec.FileName + ".");
                         yield break;
                     }
 
                     string actualHash = ComputeSha256(clipPath);
-                    if (!string.Equals(actualHash, spec.Sha256, StringComparison.OrdinalIgnoreCase))
+                    if (!string.Equals(
+                            actualHash,
+                            spec.Sha256,
+                            StringComparison.OrdinalIgnoreCase))
                     {
-                        Fail("SHA-256 mismatch for staged clip: " + spec.FileName + ".");
+                        FailLocalDiagnostic(
+                            "SHA-256 mismatch for staged clip: " + spec.FileName + ".");
                         yield break;
                     }
 
@@ -307,11 +1069,12 @@ namespace MSC.Audio.UnityFallback
             }
             catch (Exception exception)
             {
-                Fail("Local path or hash validation failed: " + exception.Message);
+                FailLocalDiagnostic(
+                    "Local path or hash validation failed: " + exception.Message);
                 yield break;
             }
 
-            loadedClips = new AudioClip[ClipSpecs.Length];
+            loadedDiagnosticClips = new AudioClip[ClipSpecs.Length];
             for (int index = 0; index < resolvedFiles.Length; index++)
             {
                 string clipUri = new Uri(resolvedFiles[index]).AbsoluteUri;
@@ -322,27 +1085,39 @@ namespace MSC.Audio.UnityFallback
                     yield return request.SendWebRequest();
                     if (request.result != UnityWebRequest.Result.Success)
                     {
-                        Fail("OGG loading failed for " + ClipSpecs[index].FileName + ": " + request.error);
+                        FailLocalDiagnostic(
+                            "OGG loading failed for " + ClipSpecs[index].FileName +
+                            ": " + request.error);
                         yield break;
                     }
 
-                    loadedClips[index] = DownloadHandlerAudioClip.GetContent(request);
-                    loadedClips[index].name = "LocalDiagnostic_" + ClipSpecs[index].FileName;
+                    AudioClip loadedClip = DownloadHandlerAudioClip.GetContent(request);
+                    if (loadedClip == null)
+                    {
+                        FailLocalDiagnostic(
+                            "OGG decoding returned no clip for " +
+                            ClipSpecs[index].FileName + ".");
+                        yield break;
+                    }
+
+                    loadedDiagnosticClips[index] = loadedClip;
+                    loadedClip.name =
+                        "LocalDiagnostic_" + ClipSpecs[index].FileName;
                 }
             }
 
-            idleSource.clip = loadedClips[0];
-            middleSource.clip = loadedClips[1];
-            highSource.clip = loadedClips[2];
-            starterMotorLoopSource.clip = loadedClips[4];
-            starterWhineLoopSource.clip = loadedClips[6];
-            idleSource.Play();
-            middleSource.Play();
-            highSource.Play();
-            starterMotorLoopSource.Play();
-            starterWhineLoopSource.Play();
-            FailureReason = string.Empty;
-            IsReady = true;
+            idleSource.clip = loadedDiagnosticClips[0];
+            middleSource.clip = loadedDiagnosticClips[1];
+            highSource.clip = loadedDiagnosticClips[2];
+            starterMotorLoopSource.clip = loadedDiagnosticClips[4];
+            starterWhineLoopSource.clip = loadedDiagnosticClips[6];
+            LocalDiagnosticFailureReason = string.Empty;
+            IsLocalDiagnosticReady = true;
+            IsLocalDiagnosticLoadComplete = true;
+            if (isActiveAndEnabled)
+            {
+                StartDiagnosticLoops();
+            }
             Debug.Log(
                 $"M06_LOCAL_DIAGNOSTIC_AUDIO_READY clips={ClipSpecs.Length} " +
                 "source=ExternalDonorStaging hashes=Verified",
@@ -361,20 +1136,26 @@ namespace MSC.Audio.UnityFallback
 
         private static string ResolveContainedPath(string root, string relativePath)
         {
-            if (string.IsNullOrWhiteSpace(root) || string.IsNullOrWhiteSpace(relativePath) ||
+            if (string.IsNullOrWhiteSpace(root) ||
+                string.IsNullOrWhiteSpace(relativePath) ||
                 Path.IsPathRooted(relativePath))
             {
-                throw new InvalidOperationException("A contained path must use a non-empty relative path.");
+                throw new InvalidOperationException(
+                    "A contained path must use a non-empty relative path.");
             }
 
             string normalizedRoot = Path.GetFullPath(root)
                 .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            string portableRelative = relativePath.Replace('/', Path.DirectorySeparatorChar);
-            string candidate = Path.GetFullPath(Path.Combine(normalizedRoot, portableRelative));
+            string portableRelative = relativePath.Replace(
+                '/',
+                Path.DirectorySeparatorChar);
+            string candidate = Path.GetFullPath(
+                Path.Combine(normalizedRoot, portableRelative));
             string rootPrefix = normalizedRoot + Path.DirectorySeparatorChar;
             if (!candidate.StartsWith(rootPrefix, StringComparison.OrdinalIgnoreCase))
             {
-                throw new InvalidOperationException("A local diagnostic path resolves outside its configured root.");
+                throw new InvalidOperationException(
+                    "A local diagnostic path resolves outside its configured root.");
             }
 
             return candidate;
@@ -385,7 +1166,8 @@ namespace MSC.Audio.UnityFallback
             using (FileStream stream = File.OpenRead(path))
             using (SHA256 sha256 = SHA256.Create())
             {
-                return BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", string.Empty);
+                return BitConverter.ToString(sha256.ComputeHash(stream))
+                    .Replace("-", string.Empty);
             }
         }
 
@@ -407,5 +1189,66 @@ namespace MSC.Audio.UnityFallback
             public string Sha256 { get; }
         }
 #endif
+
+        private sealed class UnityVoice
+        {
+            public UnityVoice(AudioSource source)
+            {
+                Source = source;
+            }
+
+            public AudioSource Source { get; }
+            public bool Active { get; set; }
+            public uint Generation { get; set; }
+            public ulong HandleId { get; set; }
+            public AudioEventId EventId { get; set; }
+            public IAudioEmitter Emitter { get; set; }
+            public UnityAudioEventDefinition Definition { get; set; }
+            public float RequestVolume01 { get; set; }
+            public double ScheduledStartDspTime { get; set; }
+            public double ScheduledEndDspTime { get; set; }
+            public bool FadingOut { get; set; }
+            public double FadeStartDspTime { get; set; }
+            public double FadeEndDspTime { get; set; }
+        }
+
+        private sealed class UnityAudioEventHandle : IAudioEventHandle
+        {
+            private UnityAudioBackend backend;
+            private readonly UnityVoice voice;
+            private readonly uint generation;
+
+            public UnityAudioEventHandle(
+                UnityAudioBackend backend,
+                UnityVoice voice,
+                uint generation,
+                ulong handleId)
+            {
+                this.backend = backend;
+                this.voice = voice;
+                this.generation = generation;
+                HandleId = handleId;
+                EventId = voice.EventId;
+            }
+
+            public ulong HandleId { get; }
+            public AudioEventId EventId { get; }
+            public bool IsValid => backend != null &&
+                                   backend.IsVoiceValid(voice, generation, HandleId);
+            public bool IsPlaying => backend != null &&
+                                     backend.IsVoicePlaying(voice, generation, HandleId);
+
+            public void Stop(float fadeSeconds = 0f)
+            {
+                backend?.StopVoice(voice, generation, HandleId, fadeSeconds);
+            }
+
+            public void Dispose()
+            {
+                Stop();
+                backend = null;
+            }
+        }
+
     }
 }

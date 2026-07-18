@@ -1,0 +1,20 @@
+{
+  "name": "MSC.Audio.InteractionIntegration.Tests.EditMode",
+  "rootNamespace": "MSC.Tests.EditMode.AudioInteractionIntegration",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Audio.Runtime",
+    "MSC.Audio.InteractionIntegration"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": ["TestAssemblies"]
+}

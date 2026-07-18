@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{52A91766-D696-43B8-BEFF-641CCD8D5924}" SchemaVersion="133">
+	<Busses>
+		<WorkUnit Name="Default Work Unit" ID="{52A91766-D696-43B8-BEFF-641CCD8D5924}" PersistMode="Standalone">
+			<ChildrenList>
+				<Bus Name="Main Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}">
+					<ReferenceList>
+						<Reference Name="AudioDevice" PluginName="System" CompanyID="0" PluginID="174" PluginType="7">
+							<ObjectRef Name="System" ID="{8360F90D-157D-443C-90EB-65919693A802}" WorkUnitID="{877E3B53-3493-47CF-851C-B888E9BCC50A}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<Bus Name="MSC_Master" ID="{311C6899-788D-4729-B58F-F26AB1289CE5}">
+							<Comment>Project-owned master audio bus.</Comment>
+							<ChildrenList>
+								<Bus Name="Vehicle" ID="{96FEE9E9-CD84-4334-B3F0-A46E2157F736}">
+									<Comment>Vehicle category bus.</Comment>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<RTPC Name="" ID="{77FF0F7F-76B0-4736-A627-82594F1C2098}" ShortID="5782256">
+												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="MSC_Mixer_Vehicle" ID="{3B477530-73F4-429E-B866-ADB3AC57EC94}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{9987E8B4-36B5-4E9F-A520-F3166EE7EF15}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-96</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>1</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</ObjectList>
+									</ObjectLists>
+								</Bus>
+								<Bus Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}">
+									<Comment>Interaction and gameplay effects category bus.</Comment>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<RTPC Name="" ID="{620D27C1-9C2B-4361-AFDB-99804F77F45F}" ShortID="238301048">
+												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="MSC_Mixer_Effects" ID="{277B2B13-8EF4-4653-9408-DA1DF5DF2A0E}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{B65AE6B6-B266-4D7C-A4BE-AD14FF623A6E}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-96</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>1</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</ObjectList>
+									</ObjectLists>
+								</Bus>
+								<Bus Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}">
+									<Comment>Weather and world ambience category bus.</Comment>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<RTPC Name="" ID="{2BBD5DDC-3FFC-416C-857C-F8598A494B7C}" ShortID="794589375">
+												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="MSC_Mixer_Ambience" ID="{F23A8A27-B0E8-4B23-A905-C3FEB956C839}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{9ED5F2A6-914F-4C3F-BC73-5D3B13E08E51}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-96</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>1</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</ObjectList>
+									</ObjectLists>
+								</Bus>
+								<Bus Name="Music" ID="{968BD6EF-4C07-47A8-A7A9-F0392A2FB8E0}">
+									<Comment>Reserved project music category bus.</Comment>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<RTPC Name="" ID="{5C4C66FE-4123-42EC-ABAA-3A88811325BB}" ShortID="578091366">
+												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="MSC_Mixer_Music" ID="{15926913-5B6C-4732-BD0C-D0BA2522EB5F}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{68A1EA8E-49BC-41C5-A609-C496047086E0}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-96</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>1</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</ObjectList>
+									</ObjectLists>
+								</Bus>
+								<Bus Name="UI" ID="{A7F43629-595F-4151-8E6F-E89C7C3DC4A6}">
+									<Comment>Project UI category bus; Milestone 08 has no UI media.</Comment>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<RTPC Name="" ID="{3EC832FF-BFBB-4B04-B59B-5FFBC06DDBE2}" ShortID="160110384">
+												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="MSC_Mixer_UI" ID="{B0DFA4B2-8BA6-478D-BD2C-6EB0B2DD9736}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{A8B60A76-3C25-4132-B7C1-E8785D05B167}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-96</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>1</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</ObjectList>
+									</ObjectLists>
+								</Bus>
+							</ChildrenList>
+							<ObjectLists>
+								<ObjectList Name="RTPC">
+									<RTPC Name="" ID="{A0572526-D8DF-42C3-98FE-1890FE8396AA}" ShortID="127786210">
+										<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+										<PropertyList>
+											<Property Name="PropertyName" Type="string" Value="Volume"/>
+										</PropertyList>
+										<ReferenceList>
+											<Reference Name="ControlInput">
+												<ObjectRef Name="MSC_Mixer_Master" ID="{241ECE0D-99D0-450A-A0D5-BF911EDC5C92}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+											</Reference>
+											<Reference Name="Curve">
+												<Custom>
+													<Curve Name="" ID="{11346940-9E11-4940-8119-C9FFA199595B}">
+														<PropertyList>
+															<Property Name="Flags" Type="int32" Value="3"/>
+														</PropertyList>
+														<PointList>
+															<Point>
+																<XPos>0</XPos>
+																<YPos>-96</YPos>
+																<Flags>5</Flags>
+															</Point>
+															<Point>
+																<XPos>1</XPos>
+																<YPos>0</YPos>
+																<Flags>37</Flags>
+															</Point>
+														</PointList>
+													</Curve>
+												</Custom>
+											</Reference>
+										</ReferenceList>
+									</RTPC>
+								</ObjectList>
+							</ObjectLists>
+						</Bus>
+					</ChildrenList>
+				</Bus>
+			</ChildrenList>
+		</WorkUnit>
+	</Busses>
+</WwiseDocument>

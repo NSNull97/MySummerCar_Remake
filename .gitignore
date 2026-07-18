@@ -58,10 +58,29 @@ Assets/Game/Imported/DonorGenerated/**
 !Assets/Game/Imported/DonorGenerated/.gitkeep
 
 # Wwise generated/cache
-WwiseProject/.cache/
-WwiseProject/.wsettings
-WwiseProject/GeneratedSoundBanks/
+# Superseded local setup attempt and installer extraction artifacts. The
+# canonical authoring project is MySummerCar_Remake_WwiseProject below.
+/WwiseProject/
+/WwiseUnityIntegration_*_Src.zip
+/logRunSetup.txt
+MySummerCar_Remake_WwiseProject/.cache*/
+MySummerCar_Remake_WwiseProject/GeneratedSoundBanks/
+# Private donor-audio prototype copies created by Wwise authoring. Source
+# hashes and mappings are tracked; licensed binary media remains local-only.
+MySummerCar_Remake_WwiseProject/Originals/**/TempDonorPrototype/
 Assets/StreamingAssets/Audio/GeneratedSoundBanks/
+
+# The current supported Wwise integration target is Windows x64. Keep the
+# official source and Windows x64 runtime/profile plugins, but do not vendor
+# unrelated local help payloads or Mac/Windows-x86 native binaries.
+/Assets/Wwise/Documentation/
+/Assets/Wwise/Documentation.meta
+/Assets/Wwise/LauncherInfo.json
+/Assets/Wwise/LauncherInfo.json.meta
+/Assets/Wwise/**/Plugins/Mac/
+/Assets/Wwise/**/Plugins/Mac.meta
+/Assets/Wwise/**/Plugins/Windows/x86/
+/Assets/Wwise/**/Plugins/Windows/x86.meta
 
 # Licensed local vendor dependencies (manual install required)
 /Assets/Enviro 3 - Sky and Weather/

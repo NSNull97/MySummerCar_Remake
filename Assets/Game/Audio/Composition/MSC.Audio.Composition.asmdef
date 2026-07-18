@@ -1,0 +1,22 @@
+{
+  "name": "MSC.Audio.Composition",
+  "rootNamespace": "MSC.Audio.Composition",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Audio.Runtime",
+    "MSC.Audio.PlayerIntegration",
+    "MSC.Audio.WeatherIntegration",
+    "MSC.Audio.InteractionIntegration",
+    "MSC.Interaction.Runtime",
+    "MSC.Weather.Production.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

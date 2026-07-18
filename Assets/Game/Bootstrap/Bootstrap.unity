@@ -135,6 +135,14 @@ GameObject:
   - component: {fileID: 161771372}
   - component: {fileID: 161771371}
   - component: {fileID: 161771373}
+  - component: {fileID: 161771381}
+  - component: {fileID: 161771380}
+  - component: {fileID: 161771379}
+  - component: {fileID: 161771378}
+  - component: {fileID: 161771377}
+  - component: {fileID: 161771376}
+  - component: {fileID: 161771375}
+  - component: {fileID: 161771374}
   m_Layer: 0
   m_Name: Game Composition Root
   m_TagString: Untagged
@@ -152,7 +160,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3c43619073978cc46b998c9da3467aa9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Bootstrap.Runtime::MSC.Bootstrap.GameCompositionRoot
 --- !u!4 &161771367
 Transform:
@@ -180,11 +188,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d427e99b30718b342bf6d59f52fb70b9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Bootstrap.Runtime::MSC.Bootstrap.ProductionWorldStreamingInstaller
   compositionRoot: {fileID: 161771366}
   worldStreaming: {fileID: 161771369}
   environment: {fileID: 161771371}
+  audioComposition: {fileID: 161771374}
   startupMode: 0
   playerPrefab: {fileID: 334472089413303144, guid: 3dbb343a041856b4caee6bb095dc2f54, type: 3}
   playerSpawnPosition: {x: 153.495, y: 1.1, z: -1028.03}
@@ -200,7 +209,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 61b70fed13ca1d448944625a57e1fb91, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.World.Runtime::MSC.World.Streaming.ProductionWorldStreamingService
   manifest: {fileID: 11400000, guid: e17dab08902e82c4fb7b378f8fbc4c1c, type: 2}
   focus: {fileID: 0}
@@ -214,7 +223,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 72c7fe7cac5c4bbbb45e28b1a117ec6f, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.LegacyImport.Runtime::MSC.LegacyImport.DonorWorldLegacyPresentationController
   mode: 0
 --- !u!114 &161771371
@@ -227,7 +236,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4bcca5517f58bb14b91c47f2f261f93e, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Weather.Production.Runtime::MSC.Weather.Production.ProductionEnvironmentController
   adapterBehaviour: {fileID: 545456525}
   wetnessBridgeBehaviour: {fileID: 161771372}
@@ -243,7 +252,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 61f0539d76eb4634b93f091bf5b63af5, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Weather.Production.LegacyBaseline.Runtime::MSC.Weather.Production.LegacyBaseline.DonorWorldLegacyWetnessBridge
   coverageProfile: {fileID: 11400000, guid: a41b540fb2f48ae47b1bec749ef935c4, type: 2}
   quantizationSteps: 64
@@ -261,9 +270,172 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 94a81c61b4899b8408ce403729fd3dae, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Bootstrap.Runtime::MSC.Bootstrap.ProductionEnvironmentBackendActivator
   backendMarker: {fileID: 1201817837}
+--- !u!114 &161771374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161771365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4d8e3b6de9447efad3aa5346a9bfd7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MSC.Audio.Composition::MSC.Audio.Composition.ProductionAudioComposition
+  router: {fileID: 161771378}
+  preferredBackendComponent: {fileID: 161771380}
+  fallbackBackendComponent: {fileID: 161771379}
+  runtimeOwnerComponent: {fileID: 161771377}
+  ambienceEmitter: {fileID: 161771376}
+  weatherPresenter: {fileID: 161771375}
+--- !u!114 &161771375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161771365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9163ffb838514c8a9c459c1c7945723f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MSC.Audio.WeatherIntegration::MSC.Audio.WeatherIntegration.WeatherAudioPresenter
+  environmentController: {fileID: 161771371}
+  backendComponent: {fileID: 161771378}
+  ambienceEmitter: {fileID: 161771376}
+  listenerPresenter: {fileID: 0}
+--- !u!114 &161771376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161771365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e9603d2596e499ea03e813518779b33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MSC.Audio.Runtime::MSC.Audio.AudioEmitterAuthoring
+  stableEntityId: {fileID: 0}
+  transientAudioId: audio.emitter.environment.production
+  audioTransform: {fileID: 161771367}
+  explicitBackendComponent: {fileID: 161771378}
+  surfaceSwitchId: audio.switch.vehicle.surface.unknown
+  surfaceWetness01: 0
+  surfaceRoughness01: 0.5
+  listenerSpace: 0
+  shelter01: 0
+  obstruction01: 0
+  reverbSend01: 0
+--- !u!114 &161771377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161771365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e1aa5e2afad43c996624f15b6319b34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MSC.Audio.Wwise::MSC.Audio.Wwise.WwiseRuntimeBankOwner
+  backend: {fileID: 161771380}
+  bankNames:
+  - Init
+  - MSC_Vehicle
+  - MSC_Weather
+  - MSC_World
+  - MSC_Interaction
+  - MSC_UI
+--- !u!114 &161771378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161771365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e17ad3be6ec4ecfa2b31f0ccbb3c46c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MSC.Audio.Runtime::MSC.Audio.AudioBackendRouter
+  preferredBackendComponent: {fileID: 161771380}
+  fallbackBackendComponent: {fileID: 161771379}
+  registerEmittersFromLoadedScenes: 1
+  parameterUpdateDeadband: 0.0001
+--- !u!114 &161771379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161771365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba43d2efafde45abac8c7c85fe5f4493, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MSC.Audio.UnityFallback::MSC.Audio.UnityFallback.UnityAudioBackend
+  eventLibrary: {fileID: 11400000, guid: 648e310874ac4c348af4773602437094, type: 2}
+  maximumGenericVoices: 32
+  masterVolume: 0.65
+  volumeResponsePerSecond: 4
+  spatialBlend: 0.9
+  minimumDistanceMeters: 1.5
+  maximumDistanceMeters: 45
+--- !u!114 &161771380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161771365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b784e282d10d74b47adee47e5022c480, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MSC.Audio.Wwise::MSC.Audio.Wwise.WwiseAudioBackend
+  eventMap: {fileID: 11400000, guid: 6f21b9dc17b4ecb45a1bf3a35f919518, type: 2}
+  parameterMap: {fileID: 11400000, guid: d83b0b78f0df60945a0007c6544c1fd6, type: 2}
+  backendNameMap: {fileID: 11400000, guid: 62c33b2589eca1340a81ab49fd7ba75b, type: 2}
+  perEventVolumeRtpcName: 
+  perEventVolumeRtpcMaximum: 100
+  updateRegisteredEmitterPositions: 1
+  requireReportedBanks: 1
+  requiredBankNames:
+  - Init
+  - MSC_Vehicle
+  - MSC_Weather
+  - MSC_World
+  - MSC_Interaction
+  - MSC_UI
+--- !u!114 &161771381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161771365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3fd5f3513ec4d4e829eb0f53b8cee7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AK.Wwise.Unity.MonoBehaviour::AkInitializer
+  InitializationSettings: {fileID: 11400000, guid: 13630e66841b38e4e8bc1c64e2b06131, type: 2}
+  basePath: 
+  language: 
+  defaultPoolSize: 0
+  lowerPoolSize: 0
+  streamingPoolSize: 0
+  memoryCutoffThreshold: 0
+  monitorPoolSize: 0
+  monitorQueuePoolSize: 0
+  callbackManagerBufferSize: 0
+  spatialAudioPoolSize: 0
+  maxSoundPropagationDepth: 0
+  engineLogging: 0
 --- !u!1 &382902696
 GameObject:
   m_ObjectHideFlags: 0
@@ -306,7 +478,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ee0aa7968879e149846f35ace5d3d2c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Weather.Production.Runtime::MSC.Weather.Production.ProductionShelterVolumeAuthoring
   stableId: weather.shelter.home.house.interior.v1
   localCenter: {x: 0, y: 0, z: 0}
@@ -633,11 +805,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 336668470337076205, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
       propertyPath: Camera
-      value:
+      value: 
       objectReference: {fileID: 1938839195}
     - target: {fileID: 336668470337076205, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
       propertyPath: volumeHDRP
-      value:
+      value: 
       objectReference: {fileID: 1481914290}
     - target: {fileID: 336668470337076206, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
       propertyPath: m_Name
@@ -663,8 +835,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 43b4e18e1baccc642a82a5e642fd6997, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &545456523 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 336668470337076204, guid: f9fee1c04330c6843b39a6dc8c632219, type: 3}
@@ -685,7 +857,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b744d10844449c1ae6763eb5a620ab6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Weather.Enviro3Integration::MSC.Weather.Enviro3Integration.Enviro3EnvironmentAdapter
   manager: {fileID: 545456522}
   presentationCamera: {fileID: 1938839195}
@@ -770,7 +942,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b9a052356c5858e46bea8e7b099c6236, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Bootstrap.Runtime::MSC.Bootstrap.ProductionEnvironmentBackendMarker
   ownerId: production.environment.backend.v1
 --- !u!114 &1201817838
@@ -783,7 +955,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe01451c93a93844e9bd2791a11f3b31, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Weather.Enviro3Integration::MSC.Weather.Enviro3Integration.Enviro3ShelterRemovalBridge
   manager: {fileID: 545456522}
   density: -2
@@ -866,7 +1038,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
   m_IsGlobal: 1
   priority: 10
@@ -963,7 +1135,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ee0aa7968879e149846f35ace5d3d2c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: MSC.Weather.Production.Runtime::MSC.Weather.Production.ProductionShelterVolumeAuthoring
   stableId: weather.shelter.home.garage.interior.v1
   localCenter: {x: 0, y: 0, z: 0}

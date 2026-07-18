@@ -92,6 +92,113 @@ namespace MSC.Tests.EditMode.VehicleSimulation
             Assert.That(parameters.Surface, Is.EqualTo(VehicleAudioSurface.Gravel));
             Assert.That(parameters.BatteryVoltage, Is.Zero);
             Assert.That(parameters.EngineTemperatureCelsius, Is.Zero);
+            Assert.That(parameters.IgnitionOn, Is.False);
+            Assert.That(parameters.StarterRequested, Is.False);
+            Assert.That(parameters.StarterActive, Is.False);
+            Assert.That(parameters.Brake01, Is.Zero);
+            Assert.That(parameters.AggregateWheelSpeedRadiansPerSecond, Is.Zero);
+            Assert.That(parameters.SignedVehicleSpeedMetersPerSecond, Is.Zero);
+            Assert.That(parameters.SuspensionImpact01, Is.Zero);
+            Assert.That(parameters.DamageAvailable, Is.False);
+            Assert.That(parameters.InteriorContextAvailable, Is.False);
+            Assert.That(parameters.OpeningsContextAvailable, Is.False);
+        }
+
+        [Test]
+        public void VehicleAudioParameters_SanitizeSupplementalSignalsAndPreserveAvailability()
+        {
+            var supplemental = new VehicleAudioSupplementalParameters(
+                ignitionOn: true,
+                starterRequested: true,
+                starterActive: true,
+                brake01: 2f,
+                aggregateWheelSpeedRadiansPerSecond: -42f,
+                signedVehicleSpeedMetersPerSecond: -12f,
+                suspensionImpact01: float.PositiveInfinity,
+                damageAvailable: false,
+                damage01: 0.75f,
+                interiorContextAvailable: false,
+                interiorBlend01: 0.8f,
+                openingsContextAvailable: false,
+                doorOpenness01: 0.6f,
+                windowOpenness01: 0.4f);
+            var parameters = new VehicleAudioParameters(
+                VehicleAudioEngineState.Cranking,
+                500f,
+                7000f,
+                0.5f,
+                0.25f,
+                -1,
+                -300f,
+                -12f,
+                0.4f,
+                VehicleAudioSurface.Paved,
+                12.4f,
+                80f,
+                supplemental);
+
+            Assert.That(parameters.IgnitionOn, Is.True);
+            Assert.That(parameters.StarterRequested, Is.True);
+            Assert.That(parameters.StarterActive, Is.True);
+            Assert.That(parameters.Brake01, Is.EqualTo(1f));
+            Assert.That(parameters.AggregateWheelSpeedRadiansPerSecond, Is.EqualTo(42f));
+            Assert.That(parameters.VehicleSpeedMetersPerSecond, Is.EqualTo(12f));
+            Assert.That(parameters.SignedVehicleSpeedMetersPerSecond, Is.EqualTo(-12f));
+            Assert.That(parameters.SuspensionImpact01, Is.Zero);
+            Assert.That(parameters.DamageAvailable, Is.False);
+            Assert.That(parameters.Damage01, Is.Zero);
+            Assert.That(parameters.InteriorContextAvailable, Is.False);
+            Assert.That(parameters.InteriorBlend01, Is.Zero);
+            Assert.That(parameters.OpeningsContextAvailable, Is.False);
+            Assert.That(parameters.DoorOpenness01, Is.Zero);
+            Assert.That(parameters.WindowOpenness01, Is.Zero);
+        }
+
+        [Test]
+        public void VehicleAudioParameters_ClampAvailableFutureContextHooks()
+        {
+            var supplemental = new VehicleAudioSupplementalParameters(
+                ignitionOn: false,
+                starterRequested: false,
+                starterActive: true,
+                brake01: float.NaN,
+                aggregateWheelSpeedRadiansPerSecond: float.PositiveInfinity,
+                signedVehicleSpeedMetersPerSecond: float.NegativeInfinity,
+                suspensionImpact01: 1.5f,
+                damageAvailable: true,
+                damage01: 2f,
+                interiorContextAvailable: true,
+                interiorBlend01: -1f,
+                openingsContextAvailable: true,
+                doorOpenness01: 0.6f,
+                windowOpenness01: float.NaN);
+            var parameters = new VehicleAudioParameters(
+                VehicleAudioEngineState.Off,
+                0f,
+                7000f,
+                0f,
+                0f,
+                0,
+                0f,
+                0f,
+                0f,
+                VehicleAudioSurface.Unknown,
+                0f,
+                20f,
+                supplemental);
+
+            Assert.That(parameters.Brake01, Is.Zero);
+            Assert.That(parameters.StarterActive, Is.False);
+            Assert.That(parameters.AggregateWheelSpeedRadiansPerSecond, Is.Zero);
+            Assert.That(parameters.SignedVehicleSpeedMetersPerSecond, Is.Zero);
+            Assert.That(parameters.SuspensionImpact01, Is.EqualTo(1f));
+            Assert.That(parameters.DamageAvailable, Is.True);
+            Assert.That(parameters.Damage01, Is.EqualTo(1f));
+            Assert.That(parameters.InteriorContextAvailable, Is.True);
+            Assert.That(parameters.InteriorBlend01, Is.Zero);
+            Assert.That(parameters.OpeningsContextAvailable, Is.True);
+            Assert.That(parameters.DoorOpenness01, Is.EqualTo(0.6f));
+            Assert.That(parameters.WindowOpenness01, Is.Zero);
         }
 
         [Test]

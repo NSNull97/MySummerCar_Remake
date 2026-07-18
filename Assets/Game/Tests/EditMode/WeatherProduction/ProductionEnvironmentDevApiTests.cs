@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using MSC.Core.Time;
 using MSC.Weather.Domain;
+using MSC.Weather.Lightning;
 using MSC.Weather.Presentation;
 using MSC.Weather.Production;
 using NUnit.Framework;
@@ -175,6 +176,35 @@ namespace MSC.Tests.EditMode.WeatherProduction
         }
 
         [Test]
+        public void EnvironmentOutputsChanged_IsCoherentAndIsolatesSubscribers()
+        {
+            int successfulSubscriberCalls = 0;
+            WeatherEnvironmentOutputs received = default;
+            controller.EnvironmentOutputsChanged += _ =>
+                throw new InvalidOperationException("intentional test failure");
+            controller.EnvironmentOutputsChanged += outputs =>
+            {
+                successfulSubscriberCalls++;
+                received = outputs;
+            };
+            LogAssert.Expect(
+                LogType.Error,
+                "Production environment subscriber failed for " +
+                "EnvironmentOutputsChanged: intentional test failure");
+
+            CompleteInitialization(controller);
+
+            Assert.That(successfulSubscriberCalls, Is.EqualTo(1));
+            Assert.That(received.IsValid, Is.True);
+            Assert.That(
+                received.LogicalRevision,
+                Is.EqualTo(controller.CurrentOutputs.LogicalRevision));
+            Assert.That(
+                received.Weather.Id,
+                Is.EqualTo(controller.CurrentOutputs.Weather.Id));
+        }
+
+        [Test]
         public void AutomaticStormLightning_IsDirectorOwnedGraceBoundedAndNonLethal()
         {
             GameObject cameraObject = new GameObject("LightningCamera");
@@ -183,6 +213,10 @@ namespace MSC.Tests.EditMode.WeatherProduction
             Camera camera = cameraObject.AddComponent<Camera>();
             Assert.That(controller.BindPresentationCamera(camera), Is.True);
             CompleteInitialization(controller);
+            var strikes = new List<LightningStrikeEvent>();
+            var thunder = new List<ThunderAudioRequest>();
+            controller.LightningOccurred += strikes.Add;
+            controller.ThunderRequested += thunder.Add;
             Assert.That(
                 controller.DevTryApplyWeatherOverride(
                     WeatherStateIds.Thunderstorm.Value,
@@ -217,6 +251,14 @@ namespace MSC.Tests.EditMode.WeatherProduction
                 new Vector2(offset.x, offset.z).magnitude;
             Assert.That(horizontalDistance, Is.InRange(180f, 450f));
             Assert.That(offset.y, Is.EqualTo(0f).Within(0.001f));
+            Assert.That(strikes, Has.Count.EqualTo(1));
+            Assert.That(thunder, Has.Count.EqualTo(1));
+            Assert.That(
+                thunder[0].Sequence,
+                Is.EqualTo(strikes[0].Sequence));
+            Assert.That(
+                thunder[0].DelaySeconds,
+                Is.EqualTo(offset.magnitude / 343d).Within(0.0001d));
             Assert.That(controller.AuthoritativeLightning.NonLethalMode, Is.True);
             Assert.That(
                 controller.AuthoritativeLightning.CaptureSnapshot()
@@ -356,6 +398,10 @@ namespace MSC.Tests.EditMode.WeatherProduction
 
             Assert.That(controller.BindPresentationCamera(camera), Is.True);
             CompleteInitialization(controller);
+            var strikes = new List<LightningStrikeEvent>();
+            var thunder = new List<ThunderAudioRequest>();
+            controller.LightningOccurred += strikes.Add;
+            controller.ThunderRequested += thunder.Add;
             Assert.That(
                 controller.DevTryTriggerAmbientLightningAtListener(
                     out EnvironmentPresentationStatus status,
@@ -367,6 +413,67 @@ namespace MSC.Tests.EditMode.WeatherProduction
             Assert.That(
                 adapter.LastFrame.LightningVisual.WorldPosition,
                 Is.EqualTo(cameraObject.transform.position));
+            Assert.That(strikes, Has.Count.EqualTo(1));
+            Assert.That(thunder, Has.Count.EqualTo(1));
+            Assert.That(strikes[0].Kind, Is.EqualTo(LightningEventKind.AmbientVisual));
+            Assert.That(thunder[0].Sequence, Is.EqualTo(strikes[0].Sequence));
+            Assert.That(thunder[0].DelaySeconds, Is.Zero.Within(0.0001d));
+        }
+
+        [Test]
+        public void AmbientLightning_WithoutBoundListener_PublishesNoThunder()
+        {
+            CompleteInitialization(controller);
+            var strikes = new List<LightningStrikeEvent>();
+            var thunder = new List<ThunderAudioRequest>();
+            controller.LightningOccurred += strikes.Add;
+            controller.ThunderRequested += thunder.Add;
+
+            controller.TriggerAmbientLightning(
+                new Vector3(343f, 0f, 0f),
+                0.75f);
+
+            Assert.That(strikes, Has.Count.EqualTo(1));
+            Assert.That(strikes[0].Intensity01, Is.EqualTo(0.75f));
+            Assert.That(thunder, Is.Empty);
+        }
+
+        [Test]
+        public void GameplayLightning_PublishesExistingStrikeAndThunderOnce()
+        {
+            CompleteInitialization(controller);
+            controller.AuthoritativeLightning.Advance(21d);
+            var strikes = new List<LightningStrikeEvent>();
+            var thunder = new List<ThunderAudioRequest>();
+            controller.LightningOccurred += strikes.Add;
+            controller.ThunderRequested += thunder.Add;
+            var candidates = new[]
+            {
+                new LightningStrikeCandidate(
+                    "weather.lightning.audio-test",
+                    new Vector3(343f, 0f, 0f),
+                    1f,
+                    10f,
+                    0f,
+                    isProtected: false),
+            };
+
+            Assert.That(
+                controller.TryCreateGameplayLightning(
+                    candidates,
+                    Array.Empty<LightningProtectionVolume>(),
+                    Vector3.zero,
+                    0.8f,
+                    out GameplayLightningResult result),
+                Is.True);
+
+            Assert.That(strikes, Has.Count.EqualTo(1));
+            Assert.That(thunder, Has.Count.EqualTo(1));
+            Assert.That(strikes[0].Sequence, Is.EqualTo(result.StrikeEvent.Sequence));
+            Assert.That(thunder[0].Sequence, Is.EqualTo(result.Thunder.Sequence));
+            Assert.That(
+                thunder[0].DelaySeconds,
+                Is.EqualTo(1d).Within(0.0001d));
         }
 
         private static void CompleteInitialization(

@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4caaacce69629124faffbf8811b3d95b, type: 3}
+  m_Name: WwiseBackendNameMap
+  m_EditorClassIdentifier: MSC.Audio.Wwise::MSC.Audio.Wwise.WwiseBackendNameMap
+  entries:
+  - stableId: audio.switch.vehicle.surface
+    backendName: MSC_Vehicle_Surface
+  - stableId: audio.switch.vehicle.surface.unknown
+    backendName: Unknown
+  - stableId: audio.switch.vehicle.surface.paved
+    backendName: Paved
+  - stableId: audio.switch.vehicle.surface.gravel
+    backendName: Gravel
+  - stableId: audio.switch.vehicle.surface.dirt
+    backendName: Dirt
+  - stableId: audio.switch.vehicle.surface.grass
+    backendName: Grass
+  - stableId: audio.switch.vehicle.surface.mud_wet
+    backendName: MudWet
+  - stableId: audio.switch.weather.precipitation_type
+    backendName: MSC_Weather_PrecipitationType
+  - stableId: audio.switch.weather.precipitation_type.none
+    backendName: None_01
+  - stableId: audio.switch.weather.precipitation_type.drizzle
+    backendName: Drizzle
+  - stableId: audio.switch.weather.precipitation_type.rain
+    backendName: Rain
+  - stableId: audio.switch.weather.precipitation_type.snow
+    backendName: Snow
+  - stableId: audio.switch.interaction.material
+    backendName: MSC_Interaction_Material
+  - stableId: audio.switch.interaction.material.unknown
+    backendName: Unknown
+  - stableId: audio.switch.interaction.material.metal
+    backendName: Metal
+  - stableId: audio.switch.interaction.material.wood
+    backendName: Wood
+  - stableId: audio.switch.interaction.material.plastic
+    backendName: Plastic
+  - stableId: audio.switch.interaction.material.glass
+    backendName: Glass
+  - stableId: audio.switch.interaction.material.concrete
+    backendName: Concrete
+  - stableId: audio.switch.interaction.material.fabric
+    backendName: Fabric
+  - stableId: audio.switch.footstep.surface
+    backendName: MSC_Player_FootstepSurface
+  - stableId: audio.switch.footstep.surface.unknown
+    backendName: Unknown
+  - stableId: audio.switch.footstep.surface.paved
+    backendName: Paved
+  - stableId: audio.switch.footstep.surface.gravel
+    backendName: Gravel
+  - stableId: audio.switch.footstep.surface.dirt
+    backendName: Dirt
+  - stableId: audio.switch.footstep.surface.grass
+    backendName: Grass
+  - stableId: audio.switch.footstep.surface.wood
+    backendName: Wood
+  - stableId: audio.switch.footstep.surface.concrete
+    backendName: Concrete
+  - stableId: audio.switch.footstep.surface.metal
+    backendName: Metal
+  - stableId: audio.switch.footstep.surface.wet
+    backendName: Wet
+  - stableId: audio.state.environment
+    backendName: MSC_Environment
+  - stableId: audio.state.environment.exterior
+    backendName: Exterior
+  - stableId: audio.state.environment.sheltered
+    backendName: Sheltered
+  - stableId: audio.state.environment.interior
+    backendName: Interior
+  - stableId: audio.state.environment.vehicle_interior
+    backendName: VehicleInterior
+  - stableId: audio.state.day_phase
+    backendName: MSC_Time_DayPhase
+  - stableId: audio.state.day_phase.dawn
+    backendName: Dawn
+  - stableId: audio.state.day_phase.day
+    backendName: Day
+  - stableId: audio.state.day_phase.evening
+    backendName: Evening
+  - stableId: audio.state.day_phase.night
+    backendName: Night
+  - stableId: audio.state.vehicle.engine
+    backendName: MSC_Vehicle_EngineState
+  - stableId: audio.state.vehicle.engine.off
+    backendName: Off
+  - stableId: audio.state.vehicle.engine.cranking
+    backendName: Cranking
+  - stableId: audio.state.vehicle.engine.running
+    backendName: Running
+  - stableId: audio.state.vehicle.engine.stalled
+    backendName: Stalled

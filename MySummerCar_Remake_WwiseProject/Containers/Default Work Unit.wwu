@@ -1,0 +1,1965 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}" SchemaVersion="133">
+	<Containers>
+		<WorkUnit Name="Default Work Unit" ID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}" PersistMode="Standalone">
+			<ChildrenList>
+				<PropertyContainer Name="MSC_Prototype" ID="{626DCD9C-B242-4CBF-BE44-03D5FA40585F}" ShortID="812905469">
+					<Comment>Milestone 08 private prototype. Donor media is TemporaryDirectImport and excluded from Git.</Comment>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="MSC_Master" ID="{311C6899-788D-4729-B58F-F26AB1289CE5}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<PropertyContainer Name="Vehicle" ID="{A5282DBF-B60E-44C0-8E5C-93EA003202C1}" ShortID="360025683">
+							<Comment>Vehicle prototype layers.</Comment>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Vehicle" ID="{96FEE9E9-CD84-4334-B3F0-A46E2157F736}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<PropertyContainer Name="Engine_Layers" ID="{0FA96497-8C07-40D0-BF13-2F4FE10CF69B}" ShortID="775487800">
+									<Comment>Layered engine prototype target.</Comment>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Vehicle" ID="{96FEE9E9-CD84-4334-B3F0-A46E2157F736}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Engine_Intake" ID="{BE756F25-CFED-42E2-B1CE-069DB9556BAB}" ShortID="969181391">
+											<Comment>TemporaryDirectImport; private prototype only; source=850_mid3.ogg; SHA256=EF0F7E94F7FB08B1D8F1EA16AEE7BDDE5A27F54FB12FB6357A26DB11493F1FA5</Comment>
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="OverridePositioning" Type="bool" Value="True"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Vehicle" ID="{96FEE9E9-CD84-4334-B3F0-A46E2157F736}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="850_mid3-EF0F7E94F7FB" ID="{ABE3ED9D-7E2B-466E-AC77-F9E86511F4AD}">
+													<Comment>TemporaryDirectImport; private prototype only; source=850_mid3.ogg; SHA256=EF0F7E94F7FB08B1D8F1EA16AEE7BDDE5A27F54FB12FB6357A26DB11493F1FA5</Comment>
+													<Language>SFX</Language>
+													<AudioFile>TempDonorPrototype\Vehicle\850_mid3-EF0F7E94F7FB.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="298683176"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<RTPC Name="" ID="{A1F86FF2-46A1-4D8B-AAEE-5D229D0E4FC4}" ShortID="351275981">
+														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="MSC_Vehicle_RPM_Normalized" ID="{7A35FF34-8EE1-4061-AEC1-39608F5BB7A4}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{B7129FF8-DB63-46C0-8F06-005DB3A3D926}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-14</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>0.3</XPos>
+																				<YPos>-4</YPos>
+																				<Flags>0</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>1</XPos>
+																				<YPos>0</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+													<RTPC Name="" ID="{4191B7DE-0165-4707-8033-12E7D246A43F}" ShortID="261574803">
+														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Pitch"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="MSC_Vehicle_RPM_Normalized" ID="{7A35FF34-8EE1-4061-AEC1-39608F5BB7A4}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{850D7078-026C-4AA6-A641-7E57FB1D8CDB}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="65537"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-300</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>1</XPos>
+																				<YPos>500</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="850_mid3-EF0F7E94F7FB" ID="{ABE3ED9D-7E2B-466E-AC77-F9E86511F4AD}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Engine_Exhaust" ID="{C300D5C4-E798-4B99-86EB-66CDC4860C27}" ShortID="282606361">
+											<Comment>TemporaryDirectImport; private prototype only; source=850_mid13.ogg; SHA256=464DA9DBCE2219040522A18B481B4E5C1C285303152F56975D167E5F54044480</Comment>
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="OverridePositioning" Type="bool" Value="True"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Vehicle" ID="{96FEE9E9-CD84-4334-B3F0-A46E2157F736}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="850_mid13-464DA9DBCE22" ID="{3BEE7A2F-DF4E-4484-B741-4FD440B672D7}">
+													<Comment>TemporaryDirectImport; private prototype only; source=850_mid13.ogg; SHA256=464DA9DBCE2219040522A18B481B4E5C1C285303152F56975D167E5F54044480</Comment>
+													<Language>SFX</Language>
+													<AudioFile>TempDonorPrototype\Vehicle\850_mid13-464DA9DBCE22.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="195756213"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<RTPC Name="" ID="{E1FEBFAB-75DF-4717-B33B-4221FEE16031}" ShortID="372189699">
+														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="MSC_Vehicle_RPM_Normalized" ID="{7A35FF34-8EE1-4061-AEC1-39608F5BB7A4}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{1D6DBCD6-0599-4FA3-945C-BB9EFFC180E1}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-18</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>0.35</XPos>
+																				<YPos>-5</YPos>
+																				<Flags>0</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>1</XPos>
+																				<YPos>2</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+													<RTPC Name="" ID="{D5706592-8F7C-44F6-A1CD-6EC1A6F531F9}" ShortID="1031251337">
+														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Pitch"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="MSC_Vehicle_RPM_Normalized" ID="{7A35FF34-8EE1-4061-AEC1-39608F5BB7A4}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{8BED61AF-C8F0-4BA0-8C6B-668BFC678809}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="65537"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-250</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>1</XPos>
+																				<YPos>450</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="850_mid13-464DA9DBCE22" ID="{3BEE7A2F-DF4E-4484-B741-4FD440B672D7}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Engine_Mechanical" ID="{498214D8-7625-4B47-95D3-99F8E3926B3E}" ShortID="552195778">
+											<Comment>TemporaryDirectImport; private prototype only; source=850_idle5.ogg; SHA256=41296478D8828AF8E7840FE66F9FE2C9A0F05D78127B2BFB20ED35C403894CF9</Comment>
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+												<Property Name="OverridePositioning" Type="bool" Value="True"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Vehicle" ID="{96FEE9E9-CD84-4334-B3F0-A46E2157F736}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="850_idle5-41296478D882" ID="{467D2E55-D074-4D3B-8930-8A700658B8A5}">
+													<Comment>TemporaryDirectImport; private prototype only; source=850_idle5.ogg; SHA256=41296478D8828AF8E7840FE66F9FE2C9A0F05D78127B2BFB20ED35C403894CF9</Comment>
+													<Language>SFX</Language>
+													<AudioFile>TempDonorPrototype\Vehicle\850_idle5-41296478D882.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="552252053"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<RTPC Name="" ID="{C494E062-0EBA-4988-AA5C-39B1747C5700}" ShortID="520567328">
+														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="MSC_Vehicle_RPM_Normalized" ID="{7A35FF34-8EE1-4061-AEC1-39608F5BB7A4}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{F5C04171-AF49-4707-B821-3BD071F662A5}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>0</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>1</XPos>
+																				<YPos>-8</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+													<RTPC Name="" ID="{6A0C0126-B5BE-42E9-8927-53FC31EABA3A}" ShortID="75146798">
+														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Pitch"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="MSC_Vehicle_RPM_Normalized" ID="{7A35FF34-8EE1-4061-AEC1-39608F5BB7A4}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{49A47951-931C-454E-B361-9F7BA3B952B9}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="65537"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>-100</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>1</XPos>
+																				<YPos>250</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="850_idle5-41296478D882" ID="{467D2E55-D074-4D3B-8930-8A700658B8A5}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</PropertyContainer>
+								<RandomSequenceContainer Name="Engine_Start" ID="{2C33A154-0842-48A1-A5ED-BFA838F9A8BD}" ShortID="350730939">
+									<Comment>Temporary donor start variations.</Comment>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Vehicle" ID="{96FEE9E9-CD84-4334-B3F0-A46E2157F736}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Motor_Start_1" ID="{39D8D642-F3A7-490A-A9D8-4F639F8FF083}" ShortID="816174607">
+											<Comment>TemporaryDirectImport; private prototype only; source=motor_start_1.ogg; SHA256=5F9EEB889C660E7AE1F08F9474951ECB3938878AE2A5C13038952A6DDD5892AE</Comment>
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="OverridePositioning" Type="bool" Value="True"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Vehicle" ID="{96FEE9E9-CD84-4334-B3F0-A46E2157F736}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="motor_start_1-5F9EEB889C66" ID="{737B38AD-626B-4E74-834E-D0B49D0F4A63}">
+													<Comment>TemporaryDirectImport; private prototype only; source=motor_start_1.ogg; SHA256=5F9EEB889C660E7AE1F08F9474951ECB3938878AE2A5C13038952A6DDD5892AE</Comment>
+													<Language>SFX</Language>
+													<AudioFile>TempDonorPrototype\Vehicle\motor_start_1-5F9EEB889C66.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="89540882"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="motor_start_1-5F9EEB889C66" ID="{737B38AD-626B-4E74-834E-D0B49D0F4A63}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Motor_Start_2" ID="{BBD49B80-7C21-4F30-935C-F8F6DBDEFF4B}" ShortID="807691824">
+											<Comment>TemporaryDirectImport; private prototype only; source=motor_start_2.ogg; SHA256=854EA1EECC2E9DBFC37674CA0968F3FFACE2F75AE8B85A73F06C40FD1198F5AB</Comment>
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="OverridePositioning" Type="bool" Value="True"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Vehicle" ID="{96FEE9E9-CD84-4334-B3F0-A46E2157F736}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="motor_start_2-854EA1EECC2E" ID="{39B214CE-BD3A-4050-8C17-AB19D4CBFA95}">
+													<Comment>TemporaryDirectImport; private prototype only; source=motor_start_2.ogg; SHA256=854EA1EECC2E9DBFC37674CA0968F3FFACE2F75AE8B85A73F06C40FD1198F5AB</Comment>
+													<Language>SFX</Language>
+													<AudioFile>TempDonorPrototype\Vehicle\motor_start_2-854EA1EECC2E.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="665088710"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="motor_start_2-854EA1EECC2E" ID="{39B214CE-BD3A-4050-8C17-AB19D4CBFA95}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Motor_Start_3" ID="{F1E8132E-8D9E-4978-9E0E-C4E6751C579E}" ShortID="788282658">
+											<Comment>TemporaryDirectImport; private prototype only; source=motor_start_3.ogg; SHA256=9D9ABE53A8C253E8C571FE1E99B8B34509B2944D6428FBFCA8412413FE551CD2</Comment>
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="OverridePositioning" Type="bool" Value="True"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Vehicle" ID="{96FEE9E9-CD84-4334-B3F0-A46E2157F736}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="motor_start_3-9D9ABE53A8C2" ID="{F5D20DD2-512B-4BFF-A4C5-BDB83CDE51BD}">
+													<Comment>TemporaryDirectImport; private prototype only; source=motor_start_3.ogg; SHA256=9D9ABE53A8C253E8C571FE1E99B8B34509B2944D6428FBFCA8412413FE551CD2</Comment>
+													<Language>SFX</Language>
+													<AudioFile>TempDonorPrototype\Vehicle\motor_start_3-9D9ABE53A8C2.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="718808434"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="motor_start_3-9D9ABE53A8C2" ID="{F5D20DD2-512B-4BFF-A4C5-BDB83CDE51BD}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+								<Sound Name="Starter_Whine" ID="{F453E213-F732-44AF-9922-DB2904778625}" ShortID="979073251">
+									<Comment>TemporaryDirectImport; private prototype only; source=starter_whine.ogg; SHA256=215329D05D5C5C1BE5F0AE1B831AA20E01A02DD0418856C56808DE52CD310CE3</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Vehicle" ID="{96FEE9E9-CD84-4334-B3F0-A46E2157F736}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="starter_whine-215329D05D5C" ID="{96F43834-1CCC-403F-8658-6DB01113FD03}">
+											<Comment>TemporaryDirectImport; private prototype only; source=starter_whine.ogg; SHA256=215329D05D5C5C1BE5F0AE1B831AA20E01A02DD0418856C56808DE52CD310CE3</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\Vehicle\starter_whine-215329D05D5C.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="418635922"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="starter_whine-215329D05D5C" ID="{96F43834-1CCC-403F-8658-6DB01113FD03}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Engine_Stall_Proxy" ID="{1BA2841F-351D-4E08-AA22-742AC10162B8}" ShortID="7779014">
+									<Comment>TemporaryDirectImport; private prototype only; source=motor_start_3.ogg; SHA256=9D9ABE53A8C253E8C571FE1E99B8B34509B2944D6428FBFCA8412413FE551CD2</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Vehicle" ID="{96FEE9E9-CD84-4334-B3F0-A46E2157F736}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="motor_start_3-9D9ABE53A8C2" ID="{BD38C7ED-6DCF-42EE-BB1F-E52B641D9152}">
+											<Comment>TemporaryDirectImport; private prototype only; source=motor_start_3.ogg; SHA256=9D9ABE53A8C253E8C571FE1E99B8B34509B2944D6428FBFCA8412413FE551CD2</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\Vehicle\motor_start_3-9D9ABE53A8C2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="718808434"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="motor_start_3-9D9ABE53A8C2" ID="{BD38C7ED-6DCF-42EE-BB1F-E52B641D9152}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Tire_Roll" ID="{54213805-E2CC-448D-B74F-825425EC7CCE}" ShortID="495194120">
+									<Comment>TemporaryDirectImport; private prototype only; source=gravel3.ogg; SHA256=6EC82A76855E124AE1BE6535FDA14942C1A7D8EA8ABE1F2CE67BAA56ACED8EE4</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Vehicle" ID="{96FEE9E9-CD84-4334-B3F0-A46E2157F736}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="gravel3-6EC82A76855E" ID="{6AF27620-CC4A-4FD4-9E24-C093F5016566}">
+											<Comment>TemporaryDirectImport; private prototype only; source=gravel3.ogg; SHA256=6EC82A76855E124AE1BE6535FDA14942C1A7D8EA8ABE1F2CE67BAA56ACED8EE4</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\Vehicle\gravel3-6EC82A76855E.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="112088675"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<RTPC Name="" ID="{BC3A25FA-5336-403C-9123-301CF04A2297}" ShortID="1006620880">
+												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="MSC_Vehicle_Speed" ID="{8A3F8E6C-714A-488D-AFA9-2BAA08FCBD6D}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{63976642-6052-4DB8-B08B-89BB8E8148D6}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-96</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>2</XPos>
+																		<YPos>-18</YPos>
+																		<Flags>0</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>40</XPos>
+																		<YPos>0</YPos>
+																		<Flags>0</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>80</XPos>
+																		<YPos>2</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+											<RTPC Name="" ID="{855AF0E4-147D-4169-9761-88278AE2C2EB}" ShortID="836627633">
+												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Pitch"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="MSC_Vehicle_Speed" ID="{8A3F8E6C-714A-488D-AFA9-2BAA08FCBD6D}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{A37BF28C-8FF8-4062-9862-76376E87116C}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="65537"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-350</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>80</XPos>
+																		<YPos>350</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</ObjectList>
+									</ObjectLists>
+									<ActiveSourceList>
+										<ActiveSource Name="gravel3-6EC82A76855E" ID="{6AF27620-CC4A-4FD4-9E24-C093F5016566}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</PropertyContainer>
+						<PropertyContainer Name="Weather" ID="{78C8BDB9-C7D1-4682-8909-94E269C03D36}" ShortID="333621024">
+							<Comment>Weather prototype layers.</Comment>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<RandomSequenceContainer Name="Thunder" ID="{75459BCE-2B42-46E7-AEE7-944342CA1073}" ShortID="558220511">
+									<Comment>Temporary donor lightning variations.</Comment>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Lightning_Strike_1" ID="{F4E2E439-522D-4415-B988-190B1FD7C38B}" ShortID="690361746">
+											<Comment>TemporaryDirectImport; private prototype only; source=lightning_strike_1.ogg; SHA256=931BEE61E93477E06D9430C0EC44ADFA78B68A07DA25B4BE84D6051002927279</Comment>
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="OverridePositioning" Type="bool" Value="True"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="lightning_strike_1-931BEE61E934" ID="{EABE9A5B-1861-49A6-89BA-F0A94A3D3178}">
+													<Comment>TemporaryDirectImport; private prototype only; source=lightning_strike_1.ogg; SHA256=931BEE61E93477E06D9430C0EC44ADFA78B68A07DA25B4BE84D6051002927279</Comment>
+													<Language>SFX</Language>
+													<AudioFile>TempDonorPrototype\Weather\lightning_strike_1-931BEE61E934.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="919753253"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<RTPC Name="" ID="{DEA30BDA-63F8-478D-99EF-4D86511C1B36}" ShortID="991742013">
+														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="MSC_Environment_Shelter" ID="{0A1BCA8C-D9D3-4A6E-B879-E338C9DA4547}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{189B4C65-BF14-4F39-BED1-C5EE5A581F85}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>0</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>1</XPos>
+																				<YPos>-14</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="lightning_strike_1-931BEE61E934" ID="{EABE9A5B-1861-49A6-89BA-F0A94A3D3178}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Lightning_Strike_2" ID="{2EFE4DF5-4D8B-44E9-BD3F-F571F6906375}" ShortID="212766765">
+											<Comment>TemporaryDirectImport; private prototype only; source=lightning_strike_2.ogg; SHA256=04BF02D9A038630AA39502C8768CBEA2C042D0FEA3C7F92A018433617681275E</Comment>
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="OverridePositioning" Type="bool" Value="True"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="lightning_strike_2-04BF02D9A038" ID="{B0F2FDE2-AFF7-4B5D-AF96-7AE86E5E2CF6}">
+													<Comment>TemporaryDirectImport; private prototype only; source=lightning_strike_2.ogg; SHA256=04BF02D9A038630AA39502C8768CBEA2C042D0FEA3C7F92A018433617681275E</Comment>
+													<Language>SFX</Language>
+													<AudioFile>TempDonorPrototype\Weather\lightning_strike_2-04BF02D9A038.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="1001044473"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<RTPC Name="" ID="{A2CB5396-9200-4ED7-9827-C9C2528AD5A2}" ShortID="441777576">
+														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="MSC_Environment_Shelter" ID="{0A1BCA8C-D9D3-4A6E-B879-E338C9DA4547}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{AFCC7096-FFE0-4C3C-A8B3-0785534678DF}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>0</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>1</XPos>
+																				<YPos>-14</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="lightning_strike_2-04BF02D9A038" ID="{B0F2FDE2-AFF7-4B5D-AF96-7AE86E5E2CF6}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Lightning_Strike_3" ID="{9E5B1D32-FBC1-4A07-BC2F-452885348F30}" ShortID="876053867">
+											<Comment>TemporaryDirectImport; private prototype only; source=lightning_strike_3.ogg; SHA256=6B4E6708DADC61B1A638AC365A3B9029F8B98A5F3B2CE7E26C3123F0C5222A22</Comment>
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="OverridePositioning" Type="bool" Value="True"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="lightning_strike_3-6B4E6708DADC" ID="{16980FDF-AFE9-4829-906B-AEAD6D3B3BEA}">
+													<Comment>TemporaryDirectImport; private prototype only; source=lightning_strike_3.ogg; SHA256=6B4E6708DADC61B1A638AC365A3B9029F8B98A5F3B2CE7E26C3123F0C5222A22</Comment>
+													<Language>SFX</Language>
+													<AudioFile>TempDonorPrototype\Weather\lightning_strike_3-6B4E6708DADC.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="839263385"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<RTPC Name="" ID="{5EA09049-D7C6-446B-B1D1-9D72A3495B64}" ShortID="842771257">
+														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="MSC_Environment_Shelter" ID="{0A1BCA8C-D9D3-4A6E-B879-E338C9DA4547}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{0A5F3581-C1F6-4E18-B550-93CEA013FCB4}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>0</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>1</XPos>
+																				<YPos>-14</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="lightning_strike_3-6B4E6708DADC" ID="{16980FDF-AFE9-4829-906B-AEAD6D3B3BEA}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Lightning_Strike_4" ID="{3CFDBC73-64DB-40A1-9DB7-4E0D6E08455B}" ShortID="334793326">
+											<Comment>TemporaryDirectImport; private prototype only; source=lightning_strike_4.ogg; SHA256=FB5543AAA0CEEE0504C0762CC63DA95E1C445C27CB216279AA0B595301D2C4C0</Comment>
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="OverridePositioning" Type="bool" Value="True"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="lightning_strike_4-FB5543AAA0CE" ID="{107DE8A6-5B46-4B86-8E79-148B31B9F0BE}">
+													<Comment>TemporaryDirectImport; private prototype only; source=lightning_strike_4.ogg; SHA256=FB5543AAA0CEEE0504C0762CC63DA95E1C445C27CB216279AA0B595301D2C4C0</Comment>
+													<Language>SFX</Language>
+													<AudioFile>TempDonorPrototype\Weather\lightning_strike_4-FB5543AAA0CE.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="46642291"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ObjectLists>
+												<ObjectList Name="RTPC">
+													<RTPC Name="" ID="{1A61D931-AC4F-44CD-8DD5-C8427A737012}" ShortID="749092440">
+														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+														<PropertyList>
+															<Property Name="PropertyName" Type="string" Value="Volume"/>
+														</PropertyList>
+														<ReferenceList>
+															<Reference Name="ControlInput">
+																<ObjectRef Name="MSC_Environment_Shelter" ID="{0A1BCA8C-D9D3-4A6E-B879-E338C9DA4547}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+															</Reference>
+															<Reference Name="Curve">
+																<Custom>
+																	<Curve Name="" ID="{D6C583F8-FBE5-4584-8862-62C3408BDF81}">
+																		<PropertyList>
+																			<Property Name="Flags" Type="int32" Value="3"/>
+																		</PropertyList>
+																		<PointList>
+																			<Point>
+																				<XPos>0</XPos>
+																				<YPos>0</YPos>
+																				<Flags>5</Flags>
+																			</Point>
+																			<Point>
+																				<XPos>1</XPos>
+																				<YPos>-14</YPos>
+																				<Flags>37</Flags>
+																			</Point>
+																		</PointList>
+																	</Curve>
+																</Custom>
+															</Reference>
+														</ReferenceList>
+													</RTPC>
+												</ObjectList>
+											</ObjectLists>
+											<ActiveSourceList>
+												<ActiveSource Name="lightning_strike_4-FB5543AAA0CE" ID="{107DE8A6-5B46-4B86-8E79-148B31B9F0BE}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<RTPC Name="" ID="{C1DBF532-4ADA-43D0-B8E4-DDB051CFBB40}" ShortID="978169481">
+												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="MSC_Lightning_Intensity" ID="{7A53E2AD-A37C-49DE-B937-7F23CB08F1FB}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{9DB5BAE8-B269-48F9-BAA8-3CD49BB9FF3A}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-24</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>1</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</ObjectList>
+									</ObjectLists>
+								</RandomSequenceContainer>
+								<Sound Name="Rain_Exterior" ID="{02950850-7FD8-40F3-BD19-401A41134255}" ShortID="133453705">
+									<Comment>TemporaryDirectImport; private prototype only; source=rain_3.ogg; SHA256=4FF5D5EA549419624B25A5936116B936121B582AFDCD70196ACDA6EE71E83E66</Comment>
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="rain_3-4FF5D5EA5494" ID="{084B6707-4128-4E12-AA83-DDB913B9BEEA}">
+											<Comment>TemporaryDirectImport; private prototype only; source=rain_3.ogg; SHA256=4FF5D5EA549419624B25A5936116B936121B582AFDCD70196ACDA6EE71E83E66</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\Weather\rain_3-4FF5D5EA5494.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="47665881"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<RTPC Name="" ID="{78644A0A-B49E-44D2-8148-961D55047630}" ShortID="309078440">
+												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="MSC_Weather_Precipitation" ID="{ADC88D2A-88DC-49F3-ADDC-826D2ED70718}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{A8851258-46FB-4046-926E-B80A2B1D918F}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-96</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>0.1</XPos>
+																		<YPos>-16</YPos>
+																		<Flags>0</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>1</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</ObjectList>
+									</ObjectLists>
+									<ActiveSourceList>
+										<ActiveSource Name="rain_3-4FF5D5EA5494" ID="{084B6707-4128-4E12-AA83-DDB913B9BEEA}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Rain_Sheltered" ID="{48FBF039-996D-40B8-9542-31B0E4CF42E1}" ShortID="851754181">
+									<Comment>TemporaryDirectImport; private prototype only; source=rain_3.ogg; SHA256=4FF5D5EA549419624B25A5936116B936121B582AFDCD70196ACDA6EE71E83E66</Comment>
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-8</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="rain_3-4FF5D5EA5494" ID="{A64C06C2-E5B1-48AD-8E44-371AD0B6E7FC}">
+											<Comment>TemporaryDirectImport; private prototype only; source=rain_3.ogg; SHA256=4FF5D5EA549419624B25A5936116B936121B582AFDCD70196ACDA6EE71E83E66</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\Weather\rain_3-4FF5D5EA5494.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="47665881"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<RTPC Name="" ID="{1F53F246-6DAB-4904-8E28-603F3C4DC648}" ShortID="194957445">
+												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="MSC_Weather_Precipitation" ID="{ADC88D2A-88DC-49F3-ADDC-826D2ED70718}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{FB8C2543-58F2-48E4-806F-907DB2503138}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-96</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>0.1</XPos>
+																		<YPos>-16</YPos>
+																		<Flags>0</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>1</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</ObjectList>
+									</ObjectLists>
+									<ActiveSourceList>
+										<ActiveSource Name="rain_3-4FF5D5EA5494" ID="{A64C06C2-E5B1-48AD-8E44-371AD0B6E7FC}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Rain_Interior" ID="{824431BD-8602-4F57-B19C-E9AEC5D4EF94}" ShortID="184625302">
+									<Comment>TemporaryDirectImport; private prototype only; source=rain_3.ogg; SHA256=4FF5D5EA549419624B25A5936116B936121B582AFDCD70196ACDA6EE71E83E66</Comment>
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-16</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="rain_3-4FF5D5EA5494" ID="{1456B32F-7F0C-46C3-B402-12864B5C2033}">
+											<Comment>TemporaryDirectImport; private prototype only; source=rain_3.ogg; SHA256=4FF5D5EA549419624B25A5936116B936121B582AFDCD70196ACDA6EE71E83E66</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\Weather\rain_3-4FF5D5EA5494.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="47665881"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<RTPC Name="" ID="{A9E53EE6-49E1-44F3-8CD3-C27AF4209E33}" ShortID="772360590">
+												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="MSC_Weather_Precipitation" ID="{ADC88D2A-88DC-49F3-ADDC-826D2ED70718}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{0CE4A625-B11F-4065-BF1E-872C0551B833}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-96</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>0.1</XPos>
+																		<YPos>-16</YPos>
+																		<Flags>0</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>1</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</ObjectList>
+									</ObjectLists>
+									<ActiveSourceList>
+										<ActiveSource Name="rain_3-4FF5D5EA5494" ID="{1456B32F-7F0C-46C3-B402-12864B5C2033}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wind" ID="{F9F18587-60AD-4840-85D8-FA22EB0C4D82}" ShortID="854143352">
+									<Comment>TemporaryDirectImport; private prototype only; source=wind.ogg; SHA256=696394DE0C2E2DF9A911D9D159E7FF788F001E7BD03B2245A9E80E663CEE256A</Comment>
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="wind-696394DE0C2E" ID="{4648FF8A-DA3C-4ADE-B916-3C1A05784991}">
+											<Comment>TemporaryDirectImport; private prototype only; source=wind.ogg; SHA256=696394DE0C2E2DF9A911D9D159E7FF788F001E7BD03B2245A9E80E663CEE256A</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\Weather\wind-696394DE0C2E.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="858917060"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ObjectLists>
+										<ObjectList Name="RTPC">
+											<RTPC Name="" ID="{E8592B81-37B2-446B-A1DD-661F1C4CBE62}" ShortID="823129405">
+												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="MSC_Weather_Wind" ID="{B78416C1-83BE-44AD-8CFC-9E27910AB237}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{70C90E26-82AB-46C9-AAE6-9C01385844F5}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-96</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>0.1</XPos>
+																		<YPos>-20</YPos>
+																		<Flags>0</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>1</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+											<RTPC Name="" ID="{52468CAF-BC63-4C1A-AD51-EBA18C3CEA0A}" ShortID="1070740545">
+												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
+												<PropertyList>
+													<Property Name="PropertyName" Type="string" Value="Volume"/>
+												</PropertyList>
+												<ReferenceList>
+													<Reference Name="ControlInput">
+														<ObjectRef Name="MSC_Environment_Shelter" ID="{0A1BCA8C-D9D3-4A6E-B879-E338C9DA4547}" WorkUnitID="{714894C3-C8A0-4BA3-83AB-B69A8A76F901}"/>
+													</Reference>
+													<Reference Name="Curve">
+														<Custom>
+															<Curve Name="" ID="{A239AABD-CAE6-4C12-BF16-4FF9B2ABC4DB}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>0</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>1</XPos>
+																		<YPos>-24</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</Custom>
+													</Reference>
+												</ReferenceList>
+											</RTPC>
+										</ObjectList>
+									</ObjectLists>
+									<ActiveSourceList>
+										<ActiveSource Name="wind-696394DE0C2E" ID="{4648FF8A-DA3C-4ADE-B916-3C1A05784991}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</PropertyContainer>
+						<PropertyContainer Name="World" ID="{4DD6F505-6AA5-4A47-A5A8-464E35A07776}" ShortID="784435934">
+							<Comment>World ambience prototype layers.</Comment>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="Forest_Ambience" ID="{0BF4191E-C987-4C18-A3F4-A800CE1F9C4A}" ShortID="508077714">
+									<Comment>TemporaryDirectImport; private prototype only; source=birds_day.ogg; SHA256=1AFB133150F2784CA947B4A10D347813A2CF6F3C348D219DB84F0B924ABAC1FC</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="birds_day-1AFB133150F2" ID="{82CA8582-31FA-402E-B4E4-6AF54D8472B7}">
+											<Comment>TemporaryDirectImport; private prototype only; source=birds_day.ogg; SHA256=1AFB133150F2784CA947B4A10D347813A2CF6F3C348D219DB84F0B924ABAC1FC</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\birds_day-1AFB133150F2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="91915302"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="birds_day-1AFB133150F2" ID="{82CA8582-31FA-402E-B4E4-6AF54D8472B7}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Lake_Ambience" ID="{BF5CA20C-14D6-45F2-87CD-D2DD2EF05528}" ShortID="1013578236">
+									<Comment>TemporaryDirectImport; private prototype only; source=lake_water.ogg; SHA256=5E3391C19D430E24E17F796F62A92B87E61B85D128AF57C0975A0E7A1039360D</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="lake_water-5E3391C19D43" ID="{7E8119F3-1299-4836-AE7F-D77526906D8A}">
+											<Comment>TemporaryDirectImport; private prototype only; source=lake_water.ogg; SHA256=5E3391C19D430E24E17F796F62A92B87E61B85D128AF57C0975A0E7A1039360D</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\lake_water-5E3391C19D43.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1051251371"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="lake_water-5E3391C19D43" ID="{7E8119F3-1299-4836-AE7F-D77526906D8A}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</PropertyContainer>
+						<PropertyContainer Name="Interaction" ID="{EC41F243-E880-49FF-AA09-EB1EF8C59399}" ShortID="619043140">
+							<Comment>Interaction prototype one-shots.</Comment>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<RandomSequenceContainer Name="Mount_Handoff" ID="{C3F09C76-A2EB-4803-93F1-00A7F60E2B96}" ShortID="370652356">
+									<Comment>Temporary proxy using door movement clips.</Comment>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Door_Open_Proxy" ID="{3F57C54B-8737-4D45-AF32-AD6052F85567}" ShortID="548501091">
+											<Comment>TemporaryDirectImport; private prototype only; source=door_open.ogg; SHA256=479EE67743160F6E6EC0BF411FE6B5AE611DFAD65D29208117D9A2FB7A5B92B5</Comment>
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="OverridePositioning" Type="bool" Value="True"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="door_open-479EE6774316" ID="{C48244A6-5C56-4E49-8E69-C5DED86D62F0}">
+													<Comment>TemporaryDirectImport; private prototype only; source=door_open.ogg; SHA256=479EE67743160F6E6EC0BF411FE6B5AE611DFAD65D29208117D9A2FB7A5B92B5</Comment>
+													<Language>SFX</Language>
+													<AudioFile>TempDonorPrototype\Interaction\door_open-479EE6774316.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="141812589"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="door_open-479EE6774316" ID="{C48244A6-5C56-4E49-8E69-C5DED86D62F0}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="Door_Close_Proxy" ID="{3C849821-EC65-49EF-B5C3-4AB8358528C8}" ShortID="376753320">
+											<Comment>TemporaryDirectImport; private prototype only; source=door_close.ogg; SHA256=4137C8D90BB2F91C00A4F9383C970097BDB6F4BFF429D6658A70537594CB01C6</Comment>
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="OverridePositioning" Type="bool" Value="True"/>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="door_close-4137C8D90BB2" ID="{D44B35FF-9596-4BAE-8240-B50385AE3846}">
+													<Comment>TemporaryDirectImport; private prototype only; source=door_close.ogg; SHA256=4137C8D90BB2F91C00A4F9383C970097BDB6F4BFF429D6658A70537594CB01C6</Comment>
+													<Language>SFX</Language>
+													<AudioFile>TempDonorPrototype\Interaction\door_close-4137C8D90BB2.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="668646853"/>
+													</MediaIDList>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="door_close-4137C8D90BB2" ID="{D44B35FF-9596-4BAE-8240-B50385AE3846}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+								<Sound Name="Pickup" ID="{9D3FD35F-AAEC-4AB9-AC4F-15EE87729686}" ShortID="195712654">
+									<Comment>TemporaryDirectImport; private prototype only; source=wood_hit1.ogg; SHA256=B63AD587ADAC6D919E4694C14074122FE5595C3C9BD5B03E12C8F805B3F87984</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="wood_hit1-B63AD587ADAC" ID="{71B803CB-9E7A-4A97-96B1-40BAE9FA12A8}">
+											<Comment>TemporaryDirectImport; private prototype only; source=wood_hit1.ogg; SHA256=B63AD587ADAC6D919E4694C14074122FE5595C3C9BD5B03E12C8F805B3F87984</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\Interaction\wood_hit1-B63AD587ADAC.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="873862960"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="wood_hit1-B63AD587ADAC" ID="{71B803CB-9E7A-4A97-96B1-40BAE9FA12A8}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Drop" ID="{AAA4883B-5B64-4E69-84EB-93F87954239A}" ShortID="787673773">
+									<Comment>TemporaryDirectImport; private prototype only; source=player_impact.ogg; SHA256=A69DAA29D7869CEAD28911B91657A63173A638C2FF02C0E2F2DF4DEC072EC2CE</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="player_impact-A69DAA29D786" ID="{B160C037-F5B1-45A5-8768-470511DAC22C}">
+											<Comment>TemporaryDirectImport; private prototype only; source=player_impact.ogg; SHA256=A69DAA29D7869CEAD28911B91657A63173A638C2FF02C0E2F2DF4DEC072EC2CE</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\Interaction\player_impact-A69DAA29D786.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="240775144"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="player_impact-A69DAA29D786" ID="{B160C037-F5B1-45A5-8768-470511DAC22C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Throw" ID="{DDCB41AE-CE62-48B6-8465-A719886D27BE}" ShortID="315173354">
+									<Comment>TemporaryDirectImport; private prototype only; source=player_impact.ogg; SHA256=A69DAA29D7869CEAD28911B91657A63173A638C2FF02C0E2F2DF4DEC072EC2CE</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="player_impact-A69DAA29D786" ID="{1DA85AE4-F89E-4EBC-9F21-B934B4859BAC}">
+											<Comment>TemporaryDirectImport; private prototype only; source=player_impact.ogg; SHA256=A69DAA29D7869CEAD28911B91657A63173A638C2FF02C0E2F2DF4DEC072EC2CE</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\Interaction\player_impact-A69DAA29D786.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="240775144"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="player_impact-A69DAA29D786" ID="{1DA85AE4-F89E-4EBC-9F21-B934B4859BAC}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Place" ID="{CBEFAB9F-B37D-4BBB-83E7-0E33F2241021}" ShortID="278548173">
+									<Comment>TemporaryDirectImport; private prototype only; source=wood_hit1.ogg; SHA256=B63AD587ADAC6D919E4694C14074122FE5595C3C9BD5B03E12C8F805B3F87984</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="wood_hit1-B63AD587ADAC" ID="{2F2DA606-A23D-49F4-BC30-805277607713}">
+											<Comment>TemporaryDirectImport; private prototype only; source=wood_hit1.ogg; SHA256=B63AD587ADAC6D919E4694C14074122FE5595C3C9BD5B03E12C8F805B3F87984</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\Interaction\wood_hit1-B63AD587ADAC.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="873862960"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="wood_hit1-B63AD587ADAC" ID="{2F2DA606-A23D-49F4-BC30-805277607713}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<SwitchContainer Name="MSC_Player_Footsteps" ID="{0FE04640-CBF7-4FD2-A61D-12FCDC0D3593}" ShortID="395906140">
+									<Comment>Temporary donor footstep prototype selected by project-owned surface metadata.</Comment>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+										<Reference Name="SwitchGroupOrStateGroup">
+											<ObjectRef Name="MSC_Player_FootstepSurface" ID="{11E6C20B-D94C-4BF6-BDEF-3BACF4D9E468}" WorkUnitID="{49A3DD60-93CC-420A-997C-9516EA1DFF6A}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<RandomSequenceContainer Name="Concrete" ID="{A69C0140-E9C1-4C87-846D-242FA07D5577}" ShortID="734993211">
+											<Comment>Temporary donor Concrete footstep variations.</Comment>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<Sound Name="Footstep_Concrete_1" ID="{18EDC8F8-8F49-41D6-A9E9-FDA3FAC4AF50}" ShortID="790895773">
+													<Comment>TemporaryDirectImport; private prototype only; source=footstep_concrete1.wav; SHA256=22B266CC541C05A7F79E760FAF2A3136EADEED5E3075460E4D3C4D90685088AE</Comment>
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="OverridePositioning" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="footstep_concrete1-22B266CC541C" ID="{DAF807C1-B3EC-44CB-8404-6B34F8D469BE}">
+															<Comment>TemporaryDirectImport; private prototype only; source=footstep_concrete1.wav; SHA256=22B266CC541C05A7F79E760FAF2A3136EADEED5E3075460E4D3C4D90685088AE</Comment>
+															<Language>SFX</Language>
+															<AudioFile>TempDonorPrototype\Interaction\Footsteps\footstep_concrete1-22B266CC541C.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="540208921"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="footstep_concrete1-22B266CC541C" ID="{DAF807C1-B3EC-44CB-8404-6B34F8D469BE}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="Footstep_Concrete_2" ID="{F98077B6-2275-4EE0-9120-EE473BD4F2A0}" ShortID="97605906">
+													<Comment>TemporaryDirectImport; private prototype only; source=footstep_concrete2.wav; SHA256=DCC9FC0EF4CF4D7D3474443CCBC764673146C67E6F16781F28D0EF4CB47768E7</Comment>
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="OverridePositioning" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="footstep_concrete2-DCC9FC0EF4CF" ID="{E6654B4A-A145-4AC0-BBAD-2B60E11D49E5}">
+															<Comment>TemporaryDirectImport; private prototype only; source=footstep_concrete2.wav; SHA256=DCC9FC0EF4CF4D7D3474443CCBC764673146C67E6F16781F28D0EF4CB47768E7</Comment>
+															<Language>SFX</Language>
+															<AudioFile>TempDonorPrototype\Interaction\Footsteps\footstep_concrete2-DCC9FC0EF4CF.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="628551974"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="footstep_concrete2-DCC9FC0EF4CF" ID="{E6654B4A-A145-4AC0-BBAD-2B60E11D49E5}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+											</ChildrenList>
+										</RandomSequenceContainer>
+										<RandomSequenceContainer Name="Forest" ID="{51FB4F44-739E-478B-A9C9-A19762FEB919}" ShortID="613327111">
+											<Comment>Temporary donor Forest footstep variations.</Comment>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<Sound Name="Footstep_Forest_1" ID="{0897F48E-6DD0-4598-8156-F7B8EC02571A}" ShortID="75040021">
+													<Comment>TemporaryDirectImport; private prototype only; source=footstep_forest1.wav; SHA256=B0E31207705A17EEECFC13044D6B642FAED242CF289BB59EFDB9A4E085AE2E3A</Comment>
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="OverridePositioning" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="footstep_forest1-B0E31207705A" ID="{ED75B933-9AB2-4D6B-AC4F-8723FA39EC72}">
+															<Comment>TemporaryDirectImport; private prototype only; source=footstep_forest1.wav; SHA256=B0E31207705A17EEECFC13044D6B642FAED242CF289BB59EFDB9A4E085AE2E3A</Comment>
+															<Language>SFX</Language>
+															<AudioFile>TempDonorPrototype\Interaction\Footsteps\footstep_forest1-B0E31207705A.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="265294677"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="footstep_forest1-B0E31207705A" ID="{ED75B933-9AB2-4D6B-AC4F-8723FA39EC72}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="Footstep_Forest_2" ID="{0C202A78-007D-4ADD-BB9D-76C2BB7B9BBE}" ShortID="52280299">
+													<Comment>TemporaryDirectImport; private prototype only; source=footstep_forest2.wav; SHA256=24DE22386D6F6A61EF141FD5186BF23B151C7322797680667395433B9EF62D10</Comment>
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="OverridePositioning" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="footstep_forest2-24DE22386D6F" ID="{0F5F0D24-0DD8-4BFB-8704-D9126670C721}">
+															<Comment>TemporaryDirectImport; private prototype only; source=footstep_forest2.wav; SHA256=24DE22386D6F6A61EF141FD5186BF23B151C7322797680667395433B9EF62D10</Comment>
+															<Language>SFX</Language>
+															<AudioFile>TempDonorPrototype\Interaction\Footsteps\footstep_forest2-24DE22386D6F.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="550813554"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="footstep_forest2-24DE22386D6F" ID="{0F5F0D24-0DD8-4BFB-8704-D9126670C721}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+											</ChildrenList>
+										</RandomSequenceContainer>
+										<RandomSequenceContainer Name="Gravel" ID="{E7FB83C4-2254-471A-84B5-862D11EA99C5}" ShortID="143881136">
+											<Comment>Temporary donor Gravel footstep variations.</Comment>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<Sound Name="Footstep_Gravel_1" ID="{9E563293-97A3-44EF-AD53-F4917D46DD45}" ShortID="494539082">
+													<Comment>TemporaryDirectImport; private prototype only; source=footstep_gravel1.wav; SHA256=007258BF82F12CE026178D26C23FDD6D8B9D6826F7525B418533424CC2DCFEE6</Comment>
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="OverridePositioning" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="footstep_gravel1-007258BF82F1" ID="{27DC35FA-17B8-420B-B1BC-77824B205237}">
+															<Comment>TemporaryDirectImport; private prototype only; source=footstep_gravel1.wav; SHA256=007258BF82F12CE026178D26C23FDD6D8B9D6826F7525B418533424CC2DCFEE6</Comment>
+															<Language>SFX</Language>
+															<AudioFile>TempDonorPrototype\Interaction\Footsteps\footstep_gravel1-007258BF82F1.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="430577832"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="footstep_gravel1-007258BF82F1" ID="{27DC35FA-17B8-420B-B1BC-77824B205237}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="Footstep_Gravel_2" ID="{74C0962F-09E3-4A55-82C2-CD2F7F6C8F4C}" ShortID="295600876">
+													<Comment>TemporaryDirectImport; private prototype only; source=footstep_gravel2.wav; SHA256=DF3A61DEFA1FCC32DC21608E03D7C829C6F28B6EA025B0036A39E2B37523B26D</Comment>
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="OverridePositioning" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="footstep_gravel2-DF3A61DEFA1F" ID="{DFE7AFDC-DF85-4810-9DAC-C3B1AF90EF5F}">
+															<Comment>TemporaryDirectImport; private prototype only; source=footstep_gravel2.wav; SHA256=DF3A61DEFA1FCC32DC21608E03D7C829C6F28B6EA025B0036A39E2B37523B26D</Comment>
+															<Language>SFX</Language>
+															<AudioFile>TempDonorPrototype\Interaction\Footsteps\footstep_gravel2-DF3A61DEFA1F.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="17621577"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="footstep_gravel2-DF3A61DEFA1F" ID="{DFE7AFDC-DF85-4810-9DAC-C3B1AF90EF5F}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+											</ChildrenList>
+										</RandomSequenceContainer>
+										<RandomSequenceContainer Name="Wet" ID="{A8EC8E86-A5C0-48A5-88EF-F4B9732B7B65}" ShortID="718932219">
+											<Comment>Temporary donor Wet footstep variations.</Comment>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<Sound Name="Footstep_Wet_1" ID="{519FA380-2A12-4084-8106-34AE56D4A588}" ShortID="823140291">
+													<Comment>TemporaryDirectImport; private prototype only; source=footstep_wet1.wav; SHA256=5E0039C24D5A39883D4E4124AB67C236CAEE3E6A597269A3EA67DBD032BD0C2C</Comment>
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="OverridePositioning" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="footstep_wet1-5E0039C24D5A" ID="{DE9C8FED-4BBE-43D6-8847-F83C5ED013CA}">
+															<Comment>TemporaryDirectImport; private prototype only; source=footstep_wet1.wav; SHA256=5E0039C24D5A39883D4E4124AB67C236CAEE3E6A597269A3EA67DBD032BD0C2C</Comment>
+															<Language>SFX</Language>
+															<AudioFile>TempDonorPrototype\Interaction\Footsteps\footstep_wet1-5E0039C24D5A.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="603812179"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="footstep_wet1-5E0039C24D5A" ID="{DE9C8FED-4BBE-43D6-8847-F83C5ED013CA}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="Footstep_Wet_2" ID="{6C22F27F-0C79-4298-AE23-51348987AAC0}" ShortID="403452696">
+													<Comment>TemporaryDirectImport; private prototype only; source=footstep_wet2.wav; SHA256=0ACC6429C97509A4FA7CD147B1BE106E88EF2F4A5D812E9C18706C8294448024</Comment>
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="OverridePositioning" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="footstep_wet2-0ACC6429C975" ID="{E507D045-3E35-47A6-B465-13CFD9121521}">
+															<Comment>TemporaryDirectImport; private prototype only; source=footstep_wet2.wav; SHA256=0ACC6429C97509A4FA7CD147B1BE106E88EF2F4A5D812E9C18706C8294448024</Comment>
+															<Language>SFX</Language>
+															<AudioFile>TempDonorPrototype\Interaction\Footsteps\footstep_wet2-0ACC6429C975.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="519554909"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="footstep_wet2-0ACC6429C975" ID="{E507D045-3E35-47A6-B465-13CFD9121521}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+											</ChildrenList>
+										</RandomSequenceContainer>
+										<RandomSequenceContainer Name="Wood" ID="{36AEC55F-45AF-4B92-962E-80C3BC1635B2}" ShortID="77178400">
+											<Comment>Temporary donor Wood footstep variations.</Comment>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<Sound Name="Footstep_Wood_1" ID="{5A73DB8C-075F-49C0-A21F-723958FDF92F}" ShortID="851068064">
+													<Comment>TemporaryDirectImport; private prototype only; source=footstep_wood1.wav; SHA256=8A7588F57D5797612E09775F478CFF706B942CE91FD2B2EB718CB133E28C688D</Comment>
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="OverridePositioning" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="footstep_wood1-8A7588F57D57" ID="{8FD48260-E0E7-4825-8430-3AB86864E3FC}">
+															<Comment>TemporaryDirectImport; private prototype only; source=footstep_wood1.wav; SHA256=8A7588F57D5797612E09775F478CFF706B942CE91FD2B2EB718CB133E28C688D</Comment>
+															<Language>SFX</Language>
+															<AudioFile>TempDonorPrototype\Interaction\Footsteps\footstep_wood1-8A7588F57D57.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="327490322"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="footstep_wood1-8A7588F57D57" ID="{8FD48260-E0E7-4825-8430-3AB86864E3FC}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+												<Sound Name="Footstep_Wood_2" ID="{2D259404-2921-4566-91B6-C454BB685735}" ShortID="79095515">
+													<Comment>TemporaryDirectImport; private prototype only; source=footstep_wood2.wav; SHA256=5E549B0B4365677D12C17F9863CC628C85387B7C7DEC423ECEF12760367AE073</Comment>
+													<PropertyList>
+														<Property Name="3DSpatialization" Type="int16" Value="1"/>
+														<Property Name="OverridePositioning" Type="bool" Value="True"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Effects" ID="{DD97F73C-2905-4015-94E5-0089E4C726D1}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="footstep_wood2-5E549B0B4365" ID="{92364E1F-39F1-4CD8-AEF6-8797CD8DCB5E}">
+															<Comment>TemporaryDirectImport; private prototype only; source=footstep_wood2.wav; SHA256=5E549B0B4365677D12C17F9863CC628C85387B7C7DEC423ECEF12760367AE073</Comment>
+															<Language>SFX</Language>
+															<AudioFile>TempDonorPrototype\Interaction\Footsteps\footstep_wood2-5E549B0B4365.wav</AudioFile>
+															<MediaIDList>
+																<MediaID ID="971787186"/>
+															</MediaIDList>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="footstep_wood2-5E549B0B4365" ID="{92364E1F-39F1-4CD8-AEF6-8797CD8DCB5E}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+											</ChildrenList>
+										</RandomSequenceContainer>
+									</ChildrenList>
+									<GroupingInfo>
+										<GroupingBehaviorList>
+											<GroupingBehavior>
+												<ItemRef Name="Concrete" ID="{A69C0140-E9C1-4C87-846D-242FA07D5577}"/>
+											</GroupingBehavior>
+											<GroupingBehavior>
+												<ItemRef Name="Forest" ID="{51FB4F44-739E-478B-A9C9-A19762FEB919}"/>
+											</GroupingBehavior>
+											<GroupingBehavior>
+												<ItemRef Name="Wood" ID="{36AEC55F-45AF-4B92-962E-80C3BC1635B2}"/>
+											</GroupingBehavior>
+											<GroupingBehavior>
+												<ItemRef Name="Wet" ID="{A8EC8E86-A5C0-48A5-88EF-F4B9732B7B65}"/>
+											</GroupingBehavior>
+											<GroupingBehavior>
+												<ItemRef Name="Gravel" ID="{E7FB83C4-2254-471A-84B5-862D11EA99C5}"/>
+											</GroupingBehavior>
+										</GroupingBehaviorList>
+										<GroupingList>
+											<Grouping>
+												<SwitchRef Name="Grass" ID="{D46B3708-DD07-42DD-A7BD-1E61CB73A9F0}"/>
+												<ItemList>
+													<ItemRef Name="Forest" ID="{51FB4F44-739E-478B-A9C9-A19762FEB919}"/>
+												</ItemList>
+											</Grouping>
+											<Grouping>
+												<SwitchRef Name="Unknown" ID="{5DDBD909-2B30-479D-9D1F-3323FAF065D1}"/>
+												<ItemList>
+													<ItemRef Name="Concrete" ID="{A69C0140-E9C1-4C87-846D-242FA07D5577}"/>
+												</ItemList>
+											</Grouping>
+											<Grouping>
+												<SwitchRef Name="Concrete" ID="{5592520B-1F3F-4119-83DB-7784569E507C}"/>
+												<ItemList>
+													<ItemRef Name="Concrete" ID="{A69C0140-E9C1-4C87-846D-242FA07D5577}"/>
+												</ItemList>
+											</Grouping>
+											<Grouping>
+												<SwitchRef Name="Wet" ID="{A7E06A32-83A2-475E-9ABE-2D79E7D21F8A}"/>
+												<ItemList>
+													<ItemRef Name="Wet" ID="{A8EC8E86-A5C0-48A5-88EF-F4B9732B7B65}"/>
+												</ItemList>
+											</Grouping>
+											<Grouping>
+												<SwitchRef Name="Wood" ID="{3BDA2843-BD42-4133-AAF1-B9510E5CA7CA}"/>
+												<ItemList>
+													<ItemRef Name="Wood" ID="{36AEC55F-45AF-4B92-962E-80C3BC1635B2}"/>
+												</ItemList>
+											</Grouping>
+											<Grouping>
+												<SwitchRef Name="Metal" ID="{490B624D-EF06-418B-9F89-FC95DE9098C3}"/>
+												<ItemList>
+													<ItemRef Name="Concrete" ID="{A69C0140-E9C1-4C87-846D-242FA07D5577}"/>
+												</ItemList>
+											</Grouping>
+											<Grouping>
+												<SwitchRef Name="Dirt" ID="{0EF1C2E3-D773-45B6-9299-85CBF129328E}"/>
+												<ItemList>
+													<ItemRef Name="Forest" ID="{51FB4F44-739E-478B-A9C9-A19762FEB919}"/>
+												</ItemList>
+											</Grouping>
+											<Grouping>
+												<SwitchRef Name="Gravel" ID="{929AA4EE-8BD2-43E7-B453-B8BAB808A2CB}"/>
+												<ItemList>
+													<ItemRef Name="Gravel" ID="{E7FB83C4-2254-471A-84B5-862D11EA99C5}"/>
+												</ItemList>
+											</Grouping>
+											<Grouping>
+												<SwitchRef Name="Paved" ID="{71BE9FF7-CC66-429E-8AEA-FE37918B94BF}"/>
+												<ItemList>
+													<ItemRef Name="Concrete" ID="{A69C0140-E9C1-4C87-846D-242FA07D5577}"/>
+												</ItemList>
+											</Grouping>
+										</GroupingList>
+									</GroupingInfo>
+								</SwitchContainer>
+							</ChildrenList>
+						</PropertyContainer>
+						<PropertyContainer Name="Music" ID="{EEF081BA-33A8-47A7-A737-21D560B026A4}" ShortID="656717538">
+							<Comment>Reserved project music routing root; no Milestone 08 media.</Comment>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Music" ID="{968BD6EF-4C07-47A8-A7A9-F0392A2FB8E0}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+								</Reference>
+							</ReferenceList>
+						</PropertyContainer>
+						<PropertyContainer Name="UI" ID="{BE228B65-3F36-4E32-B7F7-6544764C9C01}" ShortID="833467744">
+							<Comment>Reserved project UI routing root; no donor gameplay media.</Comment>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="UI" ID="{A7F43629-595F-4151-8E6F-E89C7C3DC4A6}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+								</Reference>
+							</ReferenceList>
+						</PropertyContainer>
+					</ChildrenList>
+				</PropertyContainer>
+			</ChildrenList>
+		</WorkUnit>
+	</Containers>
+</WwiseDocument>

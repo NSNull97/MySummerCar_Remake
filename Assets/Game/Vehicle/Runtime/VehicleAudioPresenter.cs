@@ -1,3 +1,4 @@
+using System;
 using MSC.Audio;
 using MSC.Vehicle.Simulation;
 using UnityEngine;
@@ -14,11 +15,21 @@ namespace MSC.Vehicle
     {
         [SerializeField] private VehicleSimulationHost simulationHost;
         [SerializeField] private MonoBehaviour backendComponent;
+        [Header("Suspension impact mapping")]
+        [SerializeField, Min(0f)] private float impactLoadRiseStartNewtons = 1000f;
+        [SerializeField, Min(0f)] private float impactLoadRiseFullNewtons = 6000f;
+        [SerializeField, Range(0f, 1f)] private float impactCompressionRiseStart = 0.04f;
+        [SerializeField, Range(0f, 1f)] private float impactCompressionRiseFull = 0.3f;
+        [SerializeField, Min(0f)] private float impactReleasePerSecond = 5f;
 
         private IVehicleAudioBackend backend;
         private VehicleSimulationHost subscribedResetHost;
         private VehicleEngineStatus previousEngineStatus;
         private bool hasPreviousEngineStatus;
+        private float[] previousWheelLoads = Array.Empty<float>();
+        private float[] previousWheelCompressions = Array.Empty<float>();
+        private bool hasPreviousWheelSample;
+        private float suspensionImpact01;
 
         public VehicleSimulationHost SimulationHost => simulationHost;
 
@@ -46,8 +57,11 @@ namespace MSC.Vehicle
             }
 
             float maximumWheelSlip = 0f;
+            float aggregateWheelSpeed = 0f;
             float greatestContactLoad = -1f;
             VehicleAudioSurface dominantSurface = VehicleAudioSurface.Unknown;
+            EnsureWheelTrackingCapacity(telemetry.WheelCount);
+            float impactTarget = 0f;
             for (int wheelIndex = 0; wheelIndex < telemetry.WheelCount; wheelIndex++)
             {
                 VehicleWheelTelemetry wheel = telemetry.GetWheel(wheelIndex);
@@ -55,12 +69,61 @@ namespace MSC.Vehicle
                     Mathf.Abs(wheel.LongitudinalSlip),
                     Mathf.Abs(wheel.LateralSlip));
                 maximumWheelSlip = Mathf.Max(maximumWheelSlip, wheelSlip);
+                aggregateWheelSpeed += Mathf.Abs(wheel.AngularSpeedRadiansPerSecond);
                 if (wheel.HasContact && wheel.NormalLoadNewtons > greatestContactLoad)
                 {
                     greatestContactLoad = wheel.NormalLoadNewtons;
                     dominantSurface = MapSurface(wheel.Surface);
                 }
+
+                float currentLoad = wheel.HasContact ? Mathf.Max(0f, wheel.NormalLoadNewtons) : 0f;
+                float currentCompression = wheel.HasContact
+                    ? Mathf.Clamp01(wheel.SuspensionCompression01)
+                    : 0f;
+                if (hasPreviousWheelSample)
+                {
+                    float loadRise = Mathf.Max(0f, currentLoad - previousWheelLoads[wheelIndex]);
+                    float compressionRise = Mathf.Max(
+                        0f,
+                        currentCompression - previousWheelCompressions[wheelIndex]);
+                    impactTarget = Mathf.Max(
+                        impactTarget,
+                        Mathf.Max(
+                            NormalizeRise(
+                                loadRise,
+                                impactLoadRiseStartNewtons,
+                                impactLoadRiseFullNewtons),
+                            NormalizeRise(
+                                compressionRise,
+                                impactCompressionRiseStart,
+                                impactCompressionRiseFull)));
+                }
+
+                previousWheelLoads[wheelIndex] = currentLoad;
+                previousWheelCompressions[wheelIndex] = currentCompression;
             }
+
+            hasPreviousWheelSample = true;
+            aggregateWheelSpeed = telemetry.WheelCount > 0
+                ? aggregateWheelSpeed / telemetry.WheelCount
+                : 0f;
+            float fixedStepSeconds = Mathf.Max(0f, telemetry.FixedStepSeconds);
+            suspensionImpact01 = Mathf.Max(
+                impactTarget,
+                Mathf.MoveTowards(
+                    suspensionImpact01,
+                    0f,
+                    impactReleasePerSecond * fixedStepSeconds));
+
+            VehicleInputState input = simulationHost.LastInput;
+            var supplemental = new VehicleAudioSupplementalParameters(
+                input.IgnitionOn,
+                input.StarterRequested,
+                state.EngineStatus == VehicleEngineStatus.Cranking,
+                telemetry.Brake01,
+                aggregateWheelSpeed,
+                telemetry.VehicleSpeedMetersPerSecond,
+                suspensionImpact01);
 
             var parameters = new VehicleAudioParameters(
                 MapEngineState(state.EngineStatus),
@@ -74,7 +137,8 @@ namespace MSC.Vehicle
                 maximumWheelSlip,
                 dominantSurface,
                 telemetry.BatteryVoltage,
-                telemetry.EngineTemperatureCelsius);
+                telemetry.EngineTemperatureCelsius,
+                supplemental);
             backend.SetVehicleParameters(in parameters);
             PublishStateTransition(state.EngineStatus);
         }
@@ -93,6 +157,7 @@ namespace MSC.Vehicle
             }
 
             hasPreviousEngineStatus = false;
+            ResetSuspensionTracking();
         }
 
         public void Configure(VehicleSimulationHost host, MonoBehaviour audioBackend)
@@ -102,6 +167,7 @@ namespace MSC.Vehicle
             backendComponent = audioBackend;
             backend = null;
             hasPreviousEngineStatus = false;
+            ResetSuspensionTracking();
             if (isActiveAndEnabled)
             {
                 SubscribeToSimulationReset();
@@ -122,6 +188,9 @@ namespace MSC.Vehicle
                 failure = "The serialized backend component does not implement IVehicleAudioBackend.";
                 return false;
             }
+
+            VehicleTelemetry telemetry = simulationHost.Telemetry;
+            EnsureWheelTrackingCapacity(telemetry != null ? telemetry.WheelCount : 0);
 
             failure = string.Empty;
             return true;
@@ -154,6 +223,7 @@ namespace MSC.Vehicle
         {
             backend?.PostVehicleEvent(VehicleAudioEvent.Reset);
             hasPreviousEngineStatus = false;
+            ResetSuspensionTracking();
         }
 
         private void PublishStateTransition(VehicleEngineStatus current)
@@ -225,6 +295,36 @@ namespace MSC.Vehicle
                 case VehicleSurfaceType.MudWet: return VehicleAudioSurface.MudWet;
                 default: return VehicleAudioSurface.Unknown;
             }
+        }
+
+        private void EnsureWheelTrackingCapacity(int wheelCount)
+        {
+            wheelCount = Mathf.Max(0, wheelCount);
+            if (previousWheelLoads.Length == wheelCount &&
+                previousWheelCompressions.Length == wheelCount)
+            {
+                return;
+            }
+
+            previousWheelLoads = new float[wheelCount];
+            previousWheelCompressions = new float[wheelCount];
+            hasPreviousWheelSample = false;
+            suspensionImpact01 = 0f;
+        }
+
+        private void ResetSuspensionTracking()
+        {
+            Array.Clear(previousWheelLoads, 0, previousWheelLoads.Length);
+            Array.Clear(previousWheelCompressions, 0, previousWheelCompressions.Length);
+            hasPreviousWheelSample = false;
+            suspensionImpact01 = 0f;
+        }
+
+        private static float NormalizeRise(float value, float start, float full)
+        {
+            start = Mathf.Max(0f, start);
+            full = Mathf.Max(start + 0.0001f, full);
+            return Mathf.Clamp01((value - start) / (full - start));
         }
     }
 }

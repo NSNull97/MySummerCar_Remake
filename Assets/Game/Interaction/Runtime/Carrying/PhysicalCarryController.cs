@@ -1,10 +1,13 @@
+using System;
+using MSC.Core.Identity;
 using MSC.Interaction.Capabilities;
+using MSC.Interaction.Notifications;
 using UnityEngine;
 
 namespace MSC.Interaction.Carrying
 {
     [DisallowMultipleComponent]
-    public sealed class PhysicalCarryController : MonoBehaviour
+    public sealed class PhysicalCarryController : MonoBehaviour, IInteractionActionSource
     {
         private readonly Collider[] overlapBuffer = new Collider[24];
 
@@ -34,6 +37,8 @@ namespace MSC.Interaction.Carrying
         private Collider[] heldColliders;
         private RigidbodyState originalState;
         private Quaternion targetRotation;
+
+        public event Action<InteractionActionCompleted> ActionCompleted;
 
         public bool HasHeldObject => heldBody != null && IsAlive(heldTarget);
 
@@ -65,6 +70,10 @@ namespace MSC.Interaction.Carrying
 
             SetPlayerCollisionIgnored(true);
             target.NotifyPickedUp(context);
+            PublishCompletedAction(
+                InteractionActionKind.Pickup,
+                target.StableId,
+                heldBody.position);
             return true;
         }
 
@@ -75,7 +84,17 @@ namespace MSC.Interaction.Carrying
                 return false;
             }
 
+            StableEntityId targetStableId = heldTarget.StableId;
+            Vector3 worldPosition = heldBody.position;
             Release(reason);
+            if (reason == PickupReleaseReason.Dropped)
+            {
+                PublishCompletedAction(
+                    InteractionActionKind.Drop,
+                    targetStableId,
+                    worldPosition);
+            }
+
             return true;
         }
 
@@ -87,8 +106,13 @@ namespace MSC.Interaction.Carrying
             }
 
             Rigidbody body = heldBody;
+            StableEntityId targetStableId = heldTarget.StableId;
             Release(PickupReleaseReason.Thrown);
             body.AddForce(direction.normalized * throwImpulse, ForceMode.Impulse);
+            PublishCompletedAction(
+                InteractionActionKind.Throw,
+                targetStableId,
+                body.position);
             return true;
         }
 
@@ -125,9 +149,15 @@ namespace MSC.Interaction.Carrying
                 }
             }
 
-            heldBody.position = position;
-            heldBody.rotation = targetRotation;
+            Rigidbody placedBody = heldBody;
+            StableEntityId targetStableId = heldTarget.StableId;
+            placedBody.position = position;
+            placedBody.rotation = targetRotation;
             Release(PickupReleaseReason.Placed);
+            PublishCompletedAction(
+                InteractionActionKind.Place,
+                targetStableId,
+                placedBody.position);
             return true;
         }
 
@@ -139,8 +169,15 @@ namespace MSC.Interaction.Carrying
             }
 
             IPickupTarget releasedTarget = heldTarget;
+            StableEntityId targetStableId = releasedTarget.StableId;
+            Vector3 releasePosition = heldBody.position;
             Release(PickupReleaseReason.MountHandoff);
             mountTarget.Accept(releasedTarget, context);
+            Rigidbody acceptedBody = releasedTarget.Body;
+            PublishCompletedAction(
+                InteractionActionKind.MountHandoff,
+                targetStableId,
+                acceptedBody != null ? acceptedBody.position : releasePosition);
             return true;
         }
 
@@ -259,6 +296,37 @@ namespace MSC.Interaction.Carrying
             }
 
             Release(PickupReleaseReason.TargetLost);
+        }
+
+        private void PublishCompletedAction(
+            InteractionActionKind action,
+            StableEntityId targetStableId,
+            Vector3 worldPosition)
+        {
+            Action<InteractionActionCompleted> handler = ActionCompleted;
+            if (handler == null)
+            {
+                return;
+            }
+
+            var notification = new InteractionActionCompleted(
+                action,
+                targetStableId,
+                worldPosition);
+            Delegate[] subscribers = handler.GetInvocationList();
+            for (int index = 0; index < subscribers.Length; index++)
+            {
+                try
+                {
+                    ((Action<InteractionActionCompleted>)subscribers[index]).Invoke(notification);
+                }
+                catch (Exception exception)
+                {
+                    // Presentation listeners must never roll back a completed
+                    // interaction or suppress later observers.
+                    Debug.LogException(exception, this);
+                }
+            }
         }
 
         private Bounds CalculateHeldBounds()

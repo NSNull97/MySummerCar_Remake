@@ -1,0 +1,19 @@
+{
+  "name": "MSC.Audio.PlayerIntegration.Tests.PlayMode",
+  "rootNamespace": "MSC.Tests.PlayMode.AudioPlayerIntegration",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Audio.PlayerIntegration",
+    "MSC.Player.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": ["TestAssemblies"]
+}

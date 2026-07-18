@@ -1,0 +1,19 @@
+{
+  "name": "MSC.Audio.VehicleIntegration",
+  "rootNamespace": "MSC.Audio.VehicleIntegration",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Audio.Composition",
+    "MSC.Vehicle.Runtime",
+    "MSC.Vehicle.Simulation"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

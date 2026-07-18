@@ -8,6 +8,7 @@
     "MSC.Weather.Runtime",
     "MSC.Weather.Production.Runtime",
     "MSC.Audio.Runtime",
+    "MSC.Audio.Composition",
     "MSC.Save.Runtime"
   ],
   "includePlatforms": [],

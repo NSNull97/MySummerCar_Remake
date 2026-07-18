@@ -1,0 +1,17 @@
+{
+  "name": "MSC.Audio.PlayerIntegration",
+  "rootNamespace": "MSC.Audio.PlayerIntegration",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Player.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

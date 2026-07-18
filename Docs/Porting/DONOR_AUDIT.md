@@ -1,8 +1,8 @@
-# Donor Audit — Milestone 0 baseline through Milestone 07C night/dawn follow-up
+# Donor Audit — Milestone 0 baseline through Milestone 08 audio prototype
 
-Audit dates: 2026-07-13 baseline; 2026-07-14 Milestones 3–05A updates; 2026-07-15 Milestones 05B–06 updates; 2026-07-16 M06 diagnostic-audio, M06B1 sanitation and M06B2 cellization addenda; 2026-07-18 Milestone 07C provenance, second visual-remediation and night/dawn follow-up addenda
+Audit dates: 2026-07-13 baseline; 2026-07-14 Milestones 3–05A updates; 2026-07-15 Milestones 05B–06 updates; 2026-07-16 M06 diagnostic-audio, M06B1 sanitation and M06B2 cellization addenda; 2026-07-18 Milestone 07C provenance/night-dawn follow-up and Milestone 08 audio addenda
 
-Scope: read-only filesystem, binary-header, log, file-hash, reflection-only managed metadata inspection, audited use of previously staged references, and a user-authorized local-only Satsuma diagnostic-audio mapping from frozen external staging
+Scope: read-only filesystem, binary-header, log, file-hash, reflection-only managed metadata inspection, audited use of previously staged references, and user-authorized local-only hash-ledgered donor gameplay-audio prototypes from frozen external staging
 
 Donor root: `D:\SteamLibrary\steamapps\common\My Summer Car`
 
@@ -598,3 +598,43 @@ interior coverage, Development Player performance or the whole 07C milestone;
 those gates remain `PENDING`. Neither the Enviro vendor payload nor frozen donor
 world was modified by this follow-up, and the material-contract failure above
 remains open.
+
+## Milestone 08 audio provenance addendum
+
+Milestone 08 does not port donor `MasterAudio`, `EventSounds`, `SoundController`,
+PlayMaker actions, mixer graphs or runtime assemblies. The backend contracts,
+router, emitter/listener/zone metadata, vehicle/weather/interaction adapters,
+Unity fallback and official-Wwise boundary are clean-room `Reimplemented` code.
+Audiokinetic Wwise Authoring/SDK `2025.1.9.9197` and Unity Integration bundle
+`2025.1.9.4241` are third-party tooling/dependencies, not donor transfers.
+
+The seven previous vehicle diagnostics and twenty-three selected M08 prototype
+sources each have an individual source hash/ledger row and keep
+`TemporaryDirectImport` classification. They stay in external staging or the
+ignored local `Originals/**/TempDonorPrototype` subtree, outside Git and
+public/distributable builds. Putting a clip in a local Wwise project does not
+promote it to `ProductionReady`. Final gameplay and ambience audio is newly
+authored/mixed; later menu/UI sounds are explicitly a different newly authored
+set.
+
+The Wwise project and generated banks do not contain donor code or create a
+donor runtime dependency. Six ignored Windows banks total `26,115,951 B`; exact
+per-bank hashes are recorded in `Docs/Audio/WWISE_SETUP.md`. Authoring validates
+52 events, 32 RTPCs, 4 switch groups, 3 state groups, 6 mixer buses/Volume
+curves, 7 routed roots and exact child routing `52/52`. Footsteps validate 10
+sounds, 5 random pairs and `9/9` switch assignments; generated output contains
+30 embedded media objects and no loose WEM. Source/runtime bank copies
+hash-match, and the user confirms Wwise backend / 6 banks / 0 missing at
+runtime. The post-remediation private Windows Development build passes at
+`844,040,197 B` (`844,257,747 B` complete folder), packages matching banks and
+initializes Wwise in native boot. Headless output suspension leaves audibility
+and real-device Wwise Profiler audio-thread CPU as manual evidence. The user
+accepted the bounded Milestone 08 baseline on 2026-07-18; fine-grained audio
+zone and mix tuning is explicitly deferred to polishing without promoting any
+temporary donor media to production status.
+The latest full EditMode baseline is 350/356 with exactly six unrelated
+Garage/World failures and is not claimed as a full-suite pass. Full PlayMode is
+68/70: one unrelated VehiclePhysicsValidation GarageExit failure and one
+environment-gated performance skip; the explicit performance run passes 1/1,
+and the exact vehicle-route failure passes 1/1 in 8.696 s in isolation. This is
+an order-dependent/flaky non-audio baseline; full PlayMode is not a pass.
