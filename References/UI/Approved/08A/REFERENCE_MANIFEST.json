@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "milestone": "08A",
+  "authority": "UserApprovedVisualSpecification",
+  "canonicalViewport": {
+    "width": 1672,
+    "height": 941,
+    "aspect": "16:9"
+  },
+  "runtimeUsageAllowed": false,
+  "references": [
+    {
+      "file": "01_MAIN_MENU_APPROVED.png",
+      "role": "MainMenu",
+      "sha256": "cd04e5d9ea7b60989a99d92c640b27ddca856994bf26a25730c0e1b3e33054c0",
+      "sizeBytes": 2816093,
+      "width": 1672,
+      "height": 941,
+      "authoritative": true
+    },
+    {
+      "file": "02_GRAPHICS_SETTINGS_APPROVED.png",
+      "role": "GraphicsSettings",
+      "sha256": "b18e04937bd0e7b9eb1819242a5e27363011a3b6a8423bc9c5a9c2500f14e641",
+      "sizeBytes": 2713994,
+      "width": 1672,
+      "height": 941,
+      "authoritative": true
+    },
+    {
+      "file": "03_AUDIO_SETTINGS_APPROVED.png",
+      "role": "AudioSettings",
+      "sha256": "e2189dcc8b382080ff6dffedad5488c361242d8ff542e6f7cba4659532e33de5",
+      "sizeBytes": 2662277,
+      "width": 1672,
+      "height": 941,
+      "authoritative": true
+    },
+    {
+      "file": "04_CONTROLS_SETTINGS_APPROVED.png",
+      "role": "ControlsSettings",
+      "sha256": "0db5b2cbfdb5c6169bf8ca69627ca53e8408826ed1bd4d1f34c02a3d37ee4052",
+      "sizeBytes": 2513739,
+      "width": 1672,
+      "height": 941,
+      "authoritative": true
+    },
+    {
+      "file": "05_GAMEPLAY_SETTINGS_APPROVED.png",
+      "role": "GameplaySettings",
+      "sha256": "7c1870cb4852d881ee8d0f60eb10ddf2337a1f9e74ea1724ae14e63139601eb7",
+      "sizeBytes": 2659707,
+      "width": 1672,
+      "height": 941,
+      "authoritative": true
+    },
+    {
+      "file": "06_INGAME_HUD_APPROVED.png",
+      "role": "DefaultInGameHUD",
+      "sha256": "088d2f9448b921c92cb0ad818af100975649c97eaa65a0126c26d6e427b9515f",
+      "sizeBytes": 3184415,
+      "width": 1672,
+      "height": 941,
+      "authoritative": true
+    }
+  ]
+}

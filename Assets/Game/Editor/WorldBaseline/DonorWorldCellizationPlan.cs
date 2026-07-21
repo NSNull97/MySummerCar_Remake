@@ -38,13 +38,29 @@ namespace MSC.Editor.WorldBaseline
         public string ObjectName { get; internal set; } = string.Empty;
         public string ColliderType { get; internal set; } = string.Empty;
         public string MeshGuid { get; internal set; } = string.Empty;
+        public long MeshFileId { get; internal set; }
         public Vector3 Center { get; internal set; }
         public Vector3 Size { get; internal set; }
         public float Radius { get; internal set; }
         public float Height { get; internal set; }
         public int Direction { get; internal set; }
+        public bool SourceEnabled { get; internal set; }
+        public bool SourceIsTrigger { get; internal set; }
+        public bool Convex { get; internal set; }
+        public bool RuntimeConvex => false;
+        public bool SourceHasRigidbodyInAncestry { get; internal set; }
+        public bool EffectiveActive { get; internal set; }
+        public string SemanticCategory { get; internal set; } = string.Empty;
+        public string Disposition { get; internal set; } = string.Empty;
+        public string CollisionLayerName { get; internal set; } = string.Empty;
+        public string PhysicsMaterialAssetPath { get; internal set; } =
+            string.Empty;
+        public bool IsSafetyCritical { get; internal set; }
         public string OwnershipPolicy { get; internal set; } = string.Empty;
         public string Reason { get; internal set; } = string.Empty;
+        public bool IsIncluded => Disposition.StartsWith(
+            "Included",
+            StringComparison.Ordinal);
     }
 
     public sealed class DonorWorldCellizationPlan
@@ -53,17 +69,24 @@ namespace MSC.Editor.WorldBaseline
         public const int ExpectedGlobalEntityCount = 88;
         public const int ExpectedCellEntityCount = 3754;
         public const int ExpectedCellCount = 49;
-        public const int ExpectedColliderCount = 32;
-        public const int ExpectedMeshColliderCount = 20;
-        public const int ExpectedBoxColliderCount = 12;
+        public const int ExpectedSourceColliderDispositionCount = 1488;
+        public const int ExpectedSourceRigidbodyAncestryColliderCount = 415;
+        public const int ExpectedSafetyCriticalColliderCount = 32;
+        public const int ExpectedColliderCount = 586;
+        public const int ExpectedMeshColliderCount = 276;
+        public const int ExpectedBoxColliderCount = 279;
+        public const int ExpectedCapsuleColliderCount = 31;
+        public const int ExpectedSphereColliderCount = 0;
 
         private DonorWorldCellizationPlan(
             DonorWorldCellizationAssignment[] assignments,
             DonorWorldSafeColliderRecord[] colliders,
+            DonorWorldSafeColliderRecord[] colliderDispositions,
             string ownershipFingerprint)
         {
             Assignments = assignments;
             SafeColliders = colliders;
+            ColliderDispositions = colliderDispositions;
             OwnershipFingerprintSha256 = ownershipFingerprint;
         }
 
@@ -76,6 +99,12 @@ namespace MSC.Editor.WorldBaseline
         {
             get;
         }
+
+        public IReadOnlyList<DonorWorldSafeColliderRecord> SolidColliders =>
+            SafeColliders;
+
+        public IReadOnlyList<DonorWorldSafeColliderRecord>
+            ColliderDispositions { get; }
 
         public string OwnershipFingerprintSha256 { get; }
 
@@ -131,9 +160,12 @@ namespace MSC.Editor.WorldBaseline
         {
             IReadOnlyList<WorldBaselineSanitationEntry> sanitation =
                 WorldBaselineSanitationPlan.Load();
+            DonorWorldSolidCollisionPlanData collisionPlan =
+                DonorWorldSolidCollisionPolicy.Load(sanitation);
             DonorWorldSafeColliderRecord[] colliders =
-                LoadSafeColliders(sanitation);
-            HashSet<string> collisionOwnerIds = colliders
+                collisionPlan.Included.ToArray();
+            HashSet<string> safetyCriticalOwnerIds = colliders
+                .Where(record => record.IsSafetyCritical)
                 .Select(record => record.EntityStableId)
                 .ToHashSet(StringComparer.Ordinal);
 
@@ -142,7 +174,7 @@ namespace MSC.Editor.WorldBaseline
                 {
                     string reason = ResolveOwnershipReason(
                         entry,
-                        collisionOwnerIds);
+                        safetyCriticalOwnerIds);
                     string ownerId = reason == string.Empty
                         ? entry.Placement.CellId
                         : "global";
@@ -167,13 +199,33 @@ namespace MSC.Editor.WorldBaseline
                     StringComparer.Ordinal)
                 .ToArray();
 
-            ValidateCounts(assignments, colliders);
+            Dictionary<string, DonorWorldCellizationAssignment>
+                assignmentByEntity = assignments.ToDictionary(
+                    assignment =>
+                        assignment.SanitationEntry.Placement.StableId,
+                    StringComparer.Ordinal);
+            foreach (DonorWorldSafeColliderRecord collider in colliders)
+            {
+                if (!collider.IsSafetyCritical)
+                {
+                    collider.OwnershipPolicy =
+                        assignmentByEntity[collider.EntityStableId].IsGlobal
+                            ? "TrulyGlobalLegacy"
+                            : "CellLegacy";
+                }
+            }
+
+            DonorWorldSafeColliderRecord[] dispositions =
+                collisionPlan.Dispositions.ToArray();
+            ValidateCounts(assignments, colliders, dispositions);
             string fingerprint = ComputeFingerprint(
                 assignments,
-                colliders);
+                colliders,
+                dispositions);
             return new DonorWorldCellizationPlan(
                 assignments,
                 colliders,
+                dispositions,
                 fingerprint);
         }
 
@@ -206,7 +258,7 @@ namespace MSC.Editor.WorldBaseline
 
         private static string ResolveOwnershipReason(
             WorldBaselineSanitationEntry entry,
-            ISet<string> collisionOwnerIds)
+            ISet<string> safetyCriticalOwnerIds)
         {
             WorldEntityPlacement placement = entry.Placement;
             if (string.Equals(
@@ -232,9 +284,9 @@ namespace MSC.Editor.WorldBaseline
                 return "ExplicitCrossCellTraversalGlobal";
             }
 
-            if (collisionOwnerIds.Contains(placement.StableId))
+            if (safetyCriticalOwnerIds.Contains(placement.StableId))
             {
-                return "BootstrapSpawnOrTraversalCollisionGlobal";
+                return "SafetyCriticalCollisionGlobal";
             }
 
             return string.Empty;
@@ -487,7 +539,8 @@ namespace MSC.Editor.WorldBaseline
 
         private static void ValidateCounts(
             IReadOnlyCollection<DonorWorldCellizationAssignment> assignments,
-            IReadOnlyCollection<DonorWorldSafeColliderRecord> colliders)
+            IReadOnlyCollection<DonorWorldSafeColliderRecord> colliders,
+            IReadOnlyCollection<DonorWorldSafeColliderRecord> dispositions)
         {
             int global = assignments.Count(assignment =>
                 assignment.IsGlobal);
@@ -505,30 +558,52 @@ namespace MSC.Editor.WorldBaseline
                 collider.ColliderType == "MeshCollider");
             int boxColliders = colliders.Count(collider =>
                 collider.ColliderType == "BoxCollider");
+            int capsuleColliders = colliders.Count(collider =>
+                collider.ColliderType == "CapsuleCollider");
+            int sphereColliders = colliders.Count(collider =>
+                collider.ColliderType == "SphereCollider");
+            int sourceRigidbodyAncestryColliders = dispositions.Count(
+                collider => collider.SourceHasRigidbodyInAncestry);
+            int safetyCriticalColliders = colliders.Count(collider =>
+                collider.IsSafetyCritical);
             if (assignments.Count != ExpectedEntityCount ||
                 global != ExpectedGlobalEntityCount ||
                 cellOwned != ExpectedCellEntityCount ||
                 cells != ExpectedCellCount ||
+                dispositions.Count !=
+                    ExpectedSourceColliderDispositionCount ||
+                sourceRigidbodyAncestryColliders !=
+                    ExpectedSourceRigidbodyAncestryColliderCount ||
                 colliders.Count != ExpectedColliderCount ||
                 meshColliders != ExpectedMeshColliderCount ||
-                boxColliders != ExpectedBoxColliderCount)
+                boxColliders != ExpectedBoxColliderCount ||
+                capsuleColliders != ExpectedCapsuleColliderCount ||
+                sphereColliders != ExpectedSphereColliderCount ||
+                safetyCriticalColliders !=
+                    ExpectedSafetyCriticalColliderCount)
             {
                 throw new InvalidDataException(
                     "06B2 cellization count drift: " +
                     $"entities={assignments.Count}, global={global}, " +
                     $"cellOwned={cellOwned}, cells={cells}, " +
+                    $"dispositions={dispositions.Count}, " +
                     $"colliders={colliders.Count}, mesh={meshColliders}, " +
-                    $"box={boxColliders}.");
+                    $"box={boxColliders}, capsule={capsuleColliders}, " +
+                    $"sphere={sphereColliders}, " +
+                    $"safetyCritical={safetyCriticalColliders}.");
             }
         }
 
         private static string ComputeFingerprint(
             IEnumerable<DonorWorldCellizationAssignment> assignments,
-            IEnumerable<DonorWorldSafeColliderRecord> colliders)
+            IEnumerable<DonorWorldSafeColliderRecord> colliders,
+            IEnumerable<DonorWorldSafeColliderRecord> dispositions)
         {
             var builder = new StringBuilder();
             builder.Append("GENERATOR|")
                 .Append(WorldBaseline06B2Paths.GeneratorVersion)
+                .Append('|')
+                .Append(DonorWorldSolidCollisionPolicy.PolicyVersion)
                 .Append('\n')
                 .Append("SOURCE|")
                 .Append(WorldBaselinePaths.SourceRevisionId)
@@ -562,7 +637,27 @@ namespace MSC.Editor.WorldBaseline
                     .Append(collider.EntityStableId).Append('|')
                     .Append(collider.ColliderType).Append('|')
                     .Append(collider.MeshGuid).Append('|')
-                    .Append(collider.OwnershipPolicy).Append('\n');
+                    .Append(collider.Convex ? '1' : '0').Append('|')
+                    .Append(collider.RuntimeConvex ? '1' : '0').Append('|')
+                    .Append(collider.SourceHasRigidbodyInAncestry ? '1' : '0')
+                    .Append('|')
+                    .Append(collider.OwnershipPolicy).Append('|')
+                    .Append(collider.CollisionLayerName).Append('|')
+                    .Append(collider.PhysicsMaterialAssetPath).Append('\n');
+            }
+
+            foreach (DonorWorldSafeColliderRecord disposition in
+                     dispositions.OrderBy(
+                         value => value.ColliderStableId,
+                         StringComparer.Ordinal))
+            {
+                builder.Append("DISPOSITION|")
+                    .Append(disposition.ColliderStableId).Append('|')
+                    .Append(disposition.EntityStableId).Append('|')
+                    .Append(disposition.Disposition).Append('|')
+                    .Append(disposition.SemanticCategory).Append('|')
+                    .Append(disposition.SourceHasRigidbodyInAncestry ? '1' : '0')
+                    .Append('\n');
             }
 
             return DonorWorldBaselineManifest.Sha256Text(

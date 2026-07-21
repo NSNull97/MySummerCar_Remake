@@ -1,12 +1,19 @@
 using UnityEngine;
+using MSC.Core.Lifecycle;
 
 namespace MSC.Player
 {
     [DisallowMultipleComponent]
-    public sealed class CrossdotPresenter : MonoBehaviour
+    public sealed class CrossdotPresenter : MonoBehaviour, IUiVisibilityGate
     {
         [SerializeField]
         private bool visible = true;
+
+        [SerializeField]
+        private PlayerInteractionController interactionController;
+
+        [SerializeField]
+        private bool showOnlyWithCandidate = true;
 
         [SerializeField]
         [Min(1f)]
@@ -24,7 +31,11 @@ namespace MSC.Player
 
         private Texture2D crossdotTexture;
 
+        private bool uiSuppressed;
+
         public bool Visible => visible;
+
+        public bool IsUiSuppressed => uiSuppressed;
 
         public float DotDiameterPixels => dotDiameterPixels;
 
@@ -43,6 +54,16 @@ namespace MSC.Player
             RebuildTexture();
         }
 
+        public void SetVisible(bool value)
+        {
+            visible = value;
+        }
+
+        public void SetUiSuppressed(bool suppressed)
+        {
+            uiSuppressed = suppressed;
+        }
+
         public static Rect CalculateCenteredRect(
             float screenWidth,
             float screenHeight,
@@ -58,6 +79,11 @@ namespace MSC.Player
 
         private void OnEnable()
         {
+            if (interactionController == null)
+            {
+                interactionController = GetComponent<PlayerInteractionController>();
+            }
+
             RebuildTexture();
         }
 
@@ -78,7 +104,10 @@ namespace MSC.Player
 
         private void OnGUI()
         {
-            if (!visible || crossdotTexture == null || Event.current.type != EventType.Repaint)
+            if (!visible || uiSuppressed || crossdotTexture == null ||
+                (showOnlyWithCandidate &&
+                 (interactionController == null || !interactionController.HasCandidate)) ||
+                Event.current.type != EventType.Repaint)
             {
                 return;
             }

@@ -69,7 +69,22 @@ namespace MSC.Tests.PlayMode.WeatherProduction
             Assert.That(installer.IsReady, Is.True);
             Assert.That(owner.IsWorldRevealReady, Is.True);
             Assert.That(owner.WasRestoreAppliedBeforeReveal, Is.True);
+            Assert.That(installer.IsGameplayPrepared, Is.True);
+            Assert.That(installer.IsGameplayActive, Is.False);
+            Assert.That(owner.IsSimulationActive, Is.False);
+            Camera deferredCamera = installer.SpawnedPlayer
+                .GetComponentInChildren<Camera>(true);
+            Assert.That(deferredCamera, Is.Not.Null);
+            Assert.That(deferredCamera.enabled, Is.False);
+            Assert.That(
+                installer.TryActivateGameplay(out string activationFailure),
+                Is.True,
+                activationFailure);
+            yield return null;
+
+            Assert.That(installer.IsGameplayActive, Is.True);
             Assert.That(owner.IsSimulationActive, Is.True);
+            Assert.That(deferredCamera.enabled, Is.True);
             Assert.That(owner.PresentationStatus.IsOperational, Is.True);
             Assert.That(installer.SpawnedPlayer.activeSelf, Is.True);
             AudioListenerContextPresenter audioListener =
@@ -100,6 +115,22 @@ namespace MSC.Tests.PlayMode.WeatherProduction
             Assert.That(
                 enviroAdapter.HasIsolatedRuntimeVolumeTargets,
                 Is.True);
+            Assert.That(
+                float.IsFinite(enviroAdapter.ActiveExposureEv),
+                Is.True);
+            Assert.That(
+                enviroAdapter.ActiveIndirectDiffuseMultiplier,
+                Is.InRange(
+                    Enviro3ProductionVisualPolicy
+                        .NeutralIndirectLightingMultiplier,
+                    Enviro3ProductionVisualPolicy
+                        .ExteriorDaylightIndirectDiffuseMultiplier));
+            Assert.That(
+                enviroAdapter.ActiveIndirectReflectionMultiplier,
+                Is.EqualTo(
+                        Enviro3ProductionVisualPolicy
+                            .IndirectReflectionLightingMultiplier)
+                    .Within(0.0001f));
             Assert.That(enviroAdapter.IsCustomHeightFogDisabled, Is.True);
             Assert.That(
                 enviroAdapter.ActiveFogMeanFreePathMeters,
@@ -273,8 +304,18 @@ namespace MSC.Tests.PlayMode.WeatherProduction
 
             GameCompositionRoot establishedRoot =
                 GameCompositionRoot.ActiveRoot;
+            ProductionWorldStreamingInstaller establishedInstaller =
+                Object.FindFirstObjectByType<ProductionWorldStreamingInstaller>(
+                    FindObjectsInactive.Include);
             ProductionEnvironmentController establishedEnvironment =
                 ProductionEnvironmentController.ActiveOwner;
+            Assert.That(establishedInstaller, Is.Not.Null);
+            Assert.That(
+                establishedInstaller.TryActivateGameplay(
+                    out string activationFailure),
+                Is.True,
+                activationFailure);
+            yield return null;
             Assert.That(establishedEnvironment, Is.Not.Null);
 
             AsyncOperation duplicateLoad = SceneManager.LoadSceneAsync(

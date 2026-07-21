@@ -1,4 +1,5 @@
 using System;
+using MSC.Core.Lifecycle;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,7 +7,7 @@ namespace MSC.Player
 {
     [DefaultExecutionOrder(-100)]
     [DisallowMultipleComponent]
-    public sealed class PlayerInputRouter : MonoBehaviour
+    public sealed class PlayerInputRouter : MonoBehaviour, IGameplayInputGate
     {
         private const string PlayerMapName = "Player";
 
@@ -42,6 +43,14 @@ namespace MSC.Player
         public InputActionAsset InputActions => inputActions;
 
         public bool IsReady => playerMap != null;
+
+        public bool IsGameplayInputEnabled =>
+            enabled && playerMap != null && playerMap.enabled;
+
+        public void SetGameplayInputEnabled(bool value)
+        {
+            enabled = value;
+        }
 
         public void Configure(
             InputActionAsset actions,

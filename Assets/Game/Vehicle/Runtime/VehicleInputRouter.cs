@@ -1,4 +1,5 @@
 using System;
+using MSC.Core.Lifecycle;
 using MSC.Vehicle.Simulation;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,7 +12,8 @@ namespace MSC.Vehicle
     /// </summary>
     [DefaultExecutionOrder(-40)]
     [DisallowMultipleComponent]
-    public sealed class VehicleInputRouter : MonoBehaviour, IVehicleInputSource
+    public sealed class VehicleInputRouter : MonoBehaviour, IVehicleInputSource,
+        IGameplayInputGate
     {
         [SerializeField] private InputActionAsset inputActions;
         [SerializeField] private string actionMapName = "Vehicle";
@@ -44,6 +46,14 @@ namespace MSC.Vehicle
         public string ActionMapName => actionMapName;
 
         public bool IgnitionOn => ignitionOn;
+
+        public bool IsGameplayInputEnabled =>
+            enabled && vehicleMap != null && vehicleMap.enabled;
+
+        public void SetGameplayInputEnabled(bool value)
+        {
+            enabled = value;
+        }
 
         public void Configure(
             InputActionAsset actions,

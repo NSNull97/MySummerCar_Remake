@@ -534,10 +534,13 @@ PlayMaker state, lighting logic, audio logic or save data. Project time,
 calendar, weather fronts, wetness, lightning, exposure and save DTOs remain
 clean-room `Reimplemented` systems. Enviro 3 is a separately licensed,
 read-only third-party presentation dependency and is not donor content. Its
-accepted installation remains identified by `538` files, `305967931` bytes and
+accepted installation is now identified by `538` files, `305968075` bytes and
 SHA-256 fingerprint
-`8e376fa2748162157975fbdd8b1045e021b810fea40f01d99eafe22a4d30bd44`;
-the 07C vendor-file diff is zero.
+`a22883eaea25d7dca37c50429c59cff7e8cb6a61cd0686463801e10123d9f040`.
+The audited migration from the 07C fingerprint is limited to Unity metadata
+reserialization of one unused URP sample material; shader, textures, values,
+runtime bindings and Build Settings references are unchanged. The vendor file
+itself was not edited by the project remediation.
 
 The only donor-derived 07C measurements are the bounded home-house and
 home-garage static renderer AABBs from the already frozen world baseline. They
@@ -545,8 +548,11 @@ are classified `DimensionalReference`; the generated runtime volumes use the
 project-owned stable IDs
 `weather.shelter.home.house.interior.v1` and
 `weather.shelter.home.garage.interior.v1`. The measurement evidence pins the
-normalized source SHA-256
-`6253afec3050187d41bab2d7417238a61341d86c55898c185eab319d85fee3e8`.
+selected-geometry fingerprint
+`508b155f7df7c04622952b2b1e63dadcce1a043030c022c271930a54e5dea400`.
+The normalized full-scene SHA-256 is retained as audit metadata only so a
+bounded renderer/material/collision regeneration cannot invalidate unchanged
+shelter geometry.
 No donor hierarchy path or instance ID becomes runtime identity.
 
 The frozen `DonorWorldBaseline-v001`, active profile
@@ -638,3 +644,43 @@ Garage/World failures and is not claimed as a full-suite pass. Full PlayMode is
 environment-gated performance skip; the explicit performance run passes 1/1,
 and the exact vehicle-route failure passes 1/1 in 8.696 s in isolation. This is
 an order-dependent/flaky non-audio baseline; full PlayMode is not a pass.
+
+## Milestone 08A1 donor-world baseline hardening addendum
+
+The 08A1 work reuses the frozen canonical donor-world extraction and does not
+read from, write to or regenerate the installed donor game. It produces local
+candidate `DonorWorldBaseline-v002` from the same recorded source revision.
+The candidate is `NotPromoted / HumanAcceptancePending`; it is active in the
+main local workspace only for the next manual playtest. The previously accepted
+`DonorWorldBaseline-v001` remains the accepted record and has an external
+rollback copy labelled
+`DonorWorldBaseline-v001_before_08A1_20260720`.
+
+The generated material path remains temporary private Phase 1 presentation.
+Generator `06B2-v5.2-08A1` and project-owned compatibility policy
+`08A1-temporary-hdrp-compatibility-v2` validate HDRP material ownership, cap
+metallic/smoothness/emission response, correct two-sided normals and apply
+explicit renderer shadow compatibility without importing donor shader code.
+The resulting 2,605 renderer bindings remain `TemporaryDirectImport`; the
+selection, conversion and renderer policy are clean-room `Reimplemented`
+tooling. No material is promoted to `ProductionReady`.
+
+The collision review covers all 1,488 frozen source collider records. Policy
+`08A1.6` admits 586 traversal solids: 32 existing safety-critical global
+colliders plus 554 ordinary cell-owned static solids. The runtime shape split is
+276 non-convex static mesh, 279 box and 31 capsule colliders. Actors, triggers,
+inactive/disabled objects, dynamic Rigidbody ancestry and unresolved dynamic
+vehicles remain excluded. All 79 door records are deliberately excluded and
+remain pass-through until a project-owned door binding/mechanic is implemented.
+The selected donor-derived collision shapes are `TemporaryDirectImport`; the
+disposition manifest, stable ownership and generation policy are
+`Reimplemented`. Gameplay does not address donor hierarchy names or instance
+IDs.
+
+The bounded daylight/indirect-lighting adjustment is project-authored
+presentation configuration through the existing Enviro boundary and HDRP
+`IndirectLightingController`; it is not donor `ConfigurationTransferred`.
+Automated candidate evidence passes focused EditMode `41/41` and PlayMode
+`14/14`. After local activation, the protected 08A UI regression suites also
+pass EditMode `33/33` and PlayMode `11/11`. Human traversal, material, shadow
+and collision acceptance remains pending and is not inferred from automation.

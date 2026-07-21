@@ -1,25 +1,28 @@
-# Baseline visual completeness — Milestone 06B2 v5.1
+# Baseline visual completeness — 08A.1 candidate v002 remediation
 
-Automated status: **PASS**.
+Automated structural status: **PASS (candidate only)**.
+Human visual acceptance: **PENDING after deterministic regeneration**.
 
 06B3 gate: **GO / accepted; milestone not started**.
 
 ## Automated closure
 
-- Generator: `1.1.0-06B2-v5.1.5`.
+- Generator: `1.1.0-06B2-v5.2-08A1`.
 - Renderers: 2605.
 - Declared source material slots: 2744.
 - Resolved donor materials: 292.
 - Built-in reviewed fallback renderers: 2.
 - Referenced source images: 265 (0 missing).
-- Imported role-specific texture variants: 268.
+- Imported role-specific texture variants: 273.
 - Packed detail-normal variants: 8; assigned materials: 22 (detail-only: 20).
+- Packed detail-albedo variants: 5; assigned legacy road/ground materials: 8.
+- Material compatibility policy: `08A1-temporary-hdrp-compatibility-v3`; all outputs finalized by HDRP validation.
 - Alpha-cutout materials: 14.
 - Transparent/water materials: 15.
 - Emissive materials: 5.
-- Presentation fingerprint: `e337f9d1b5a0344473bd0f096cdb9e0dbf8da321ecb428ebc17da4f7dd8831fd`.
+- Presentation fingerprint: `0b4ca8479be4c53eaf3e13cabf62f2dc395f7186ff1c8e14ea383cbb89bb5160`.
 - Material/texture manifest SHA-256:
-  `cfbce4faf14eac19658cbad7117b9a794de3009a664f438d3faa28a80ecc4192`.
+  `2aa87907f3e557a0d0e22a988c52b43ee433f44b9113b179a639f415a94cd9ca`.
 
 Water-fix closure:
 

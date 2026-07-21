@@ -1,0 +1,23 @@
+{
+  "name": "MSC.UI.Editor.Tests.EditMode",
+  "rootNamespace": "MSC.Tests.EditMode.UIEditor",
+  "references": [
+    "MSC.UI.Editor",
+    "MSC.UI.Runtime",
+    "Unity.InputSystem"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

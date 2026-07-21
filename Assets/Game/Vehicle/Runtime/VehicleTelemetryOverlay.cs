@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+using MSC.Core.Lifecycle;
 using MSC.Vehicle.Simulation;
 using UnityEngine;
 
@@ -8,11 +9,13 @@ namespace MSC.Vehicle
     /// <summary>Development-only immediate telemetry view for the M06 prototype.</summary>
     [DefaultExecutionOrder(210)]
     [DisallowMultipleComponent]
-    public sealed class VehicleTelemetryOverlay : MonoBehaviour
+    public sealed class VehicleTelemetryOverlay : MonoBehaviour, IUiVisibilityGate
     {
         [SerializeField] private VehicleSimulationHost host;
         [SerializeField] private bool visible = true;
         [SerializeField] private Rect screenRect = new Rect(12f, 12f, 470f, 430f);
+
+        private bool uiSuppressed;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private readonly StringBuilder textBuffer = new StringBuilder(2048);
@@ -22,6 +25,13 @@ namespace MSC.Vehicle
         public VehicleSimulationHost Host => host;
 
         public bool Visible => visible;
+
+        public bool IsUiSuppressed => uiSuppressed;
+
+        public void SetUiSuppressed(bool suppressed)
+        {
+            uiSuppressed = suppressed;
+        }
 
         private void Awake()
         {
@@ -58,7 +68,7 @@ namespace MSC.Vehicle
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
-            if (!visible || host == null || host.Telemetry == null)
+            if (!visible || uiSuppressed || host == null || host.Telemetry == null)
             {
                 return;
             }

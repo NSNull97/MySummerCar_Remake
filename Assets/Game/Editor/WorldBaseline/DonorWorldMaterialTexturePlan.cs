@@ -28,7 +28,8 @@ namespace MSC.Editor.WorldBaseline
         Normal = 1,
         Linear = 2,
         CubemapExcluded = 3,
-        DetailNormalPacked = 4
+        DetailNormalPacked = 4,
+        DetailAlbedoPacked = 5
     }
 
     public sealed class DonorWorldTextureTransform
@@ -220,6 +221,8 @@ namespace MSC.Editor.WorldBaseline
             Role == DonorWorldTextureRole.Normal;
         public bool IsPackedDetailNormal =>
             Role == DonorWorldTextureRole.DetailNormalPacked;
+        public bool IsPackedDetailAlbedo =>
+            Role == DonorWorldTextureRole.DetailAlbedoPacked;
 
         public static string BuildKey(
             string sourceGuid,
@@ -229,7 +232,7 @@ namespace MSC.Editor.WorldBaseline
 
     public sealed class DonorWorldMaterialTexturePlan
     {
-        public const string ConverterVersion = "06B2-v5.1.5";
+        public const string ConverterVersion = "06B2-v5.2-08A1";
         public const string BuiltInFallbackGuid =
             "0000000000000000f000000000000000";
         public const int ExpectedRendererCount = 2605;
@@ -237,8 +240,8 @@ namespace MSC.Editor.WorldBaseline
         public const int ExpectedUniqueMaterialGuidCount = 293;
         public const int ExpectedResolvedMaterialCount = 292;
         public const int ExpectedTextureSourceCount = 265;
-        public const int ExpectedTextureConversionCount = 269;
-        public const int ExpectedImportedTextureConversionCount = 268;
+        public const int ExpectedTextureConversionCount = 274;
+        public const int ExpectedImportedTextureConversionCount = 273;
         public const int ExpectedBuiltInFallbackRendererCount = 2;
 
         private const string ExtractedAssetsRelativePath =
@@ -437,6 +440,30 @@ namespace MSC.Editor.WorldBaseline
 
                     accumulator.Add(texture.PropertyName);
                 }
+
+                if (DonorWorldMaterialTexturePipeline
+                    .TryGetExpectedDetailAlbedoTexture(
+                        material,
+                        out DonorWorldTextureEnvironment detailAlbedo))
+                {
+                    string key =
+                        DonorWorldTextureConversion.BuildKey(
+                            detailAlbedo.TextureGuid,
+                            DonorWorldTextureRole.DetailAlbedoPacked);
+                    if (!textureUses.TryGetValue(
+                            key,
+                            out TextureUseAccumulator accumulator))
+                    {
+                        accumulator = new TextureUseAccumulator(
+                            detailAlbedo.TextureGuid,
+                            DonorWorldTextureRole.DetailAlbedoPacked);
+                        textureUses.Add(key, accumulator);
+                    }
+
+                    accumulator.Add(
+                        detailAlbedo.PropertyName +
+                        " (HDRP detail-albedo compatibility)");
+                }
             }
 
             var textures =
@@ -470,6 +497,8 @@ namespace MSC.Editor.WorldBaseline
                 string fingerprint =
                     DonorWorldBaselineManifest.Sha256Text(
                         ConverterVersion + "|" +
+                        DonorWorldMaterialTexturePipeline
+                            .CompatibilityPolicyVersion + "|" +
                         use.SourceGuid + "|" +
                         sourceHash + "|" +
                         metaHash + "|" +
@@ -1106,6 +1135,8 @@ namespace MSC.Editor.WorldBaseline
         {
             var builder = new StringBuilder();
             builder.Append(ConverterVersion).Append('\n')
+                .Append(DonorWorldMaterialTexturePipeline
+                    .CompatibilityPolicyVersion).Append('\n')
                 .Append(WorldBaselinePaths.SourceRevisionId).Append('\n')
                 .Append(WorldBaselinePaths.SourceSceneSha256).Append('\n');
             foreach (WorldBaselineSanitationEntry entry in rendererEntries)

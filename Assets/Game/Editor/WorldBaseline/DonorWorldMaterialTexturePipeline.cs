@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using MSC.LegacyImport;
@@ -10,6 +11,9 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
+
+[assembly: InternalsVisibleTo("MSC.Tests.EditMode")]
 
 namespace MSC.Editor.WorldBaseline
 {
@@ -104,7 +108,33 @@ namespace MSC.Editor.WorldBaseline
     public static class DonorWorldMaterialTexturePipeline
     {
         private const float DefaultSmoothness = 0.18f;
+        private const float DoubleSidedNormalFlip = 0f;
+        private const float DoubleSidedNormalNone = 2f;
+        internal const string CompatibilityPolicyVersion =
+            "08A1-temporary-hdrp-compatibility-v3";
         private const string MaterialPrefix = "M06B2_";
+
+        private static readonly HashSet<string>
+            LegacyDiffuseDetailSurfaceMaterialGuids =
+                new HashSet<string>(StringComparer.Ordinal)
+                {
+                    // ROAD, LANDFILL_PILES, GRAVEL, GRASS, ROADSIDE,
+                    // DIRTROAD, TRACKFIELD_track, TERRAIN and ROCKS from
+                    // the frozen 04A1 donor source revision.
+                    "2b8378937c6afb64390d5474f4bcd14a",
+                    "5c3c46f13bd5de54bae979b1ee3f87a7",
+                    "5cc44389f1f10bf4cabee6d33feb1551",
+                    "7a19fb2d522ee4c44a2ae61c01a064fa",
+                    "a1ac98c6256c9324c9937bf44cd37a32",
+                    "bee65a18eecc0bc409361e160d6b1aca",
+                    "d7de8061a89f3cf4d9be04e0cf719f9f",
+                    "da5bc03c62a0f174197555e90357aac9",
+                    "ebf3d2234b1ae464498b463feec76368"
+                };
+
+        internal static IReadOnlyCollection<string>
+            LegacyDiffuseDetailSurfaceGuids =>
+                LegacyDiffuseDetailSurfaceMaterialGuids;
 
         [MenuItem(
             "Tools/MSC Remake/World Baseline 06B2/" +
@@ -242,6 +272,9 @@ namespace MSC.Editor.WorldBaseline
                         conversion.IsPackedDetailNormal
                             ? BuildPackedDetailNormalPng(
                                 conversion.SourceAbsolutePath)
+                            : conversion.IsPackedDetailAlbedo
+                                ? BuildPackedDetailAlbedoPng(
+                                    conversion.SourceAbsolutePath)
                             : null;
                     string expectedSha256 =
                         generatedBytes == null
@@ -284,10 +317,55 @@ namespace MSC.Editor.WorldBaseline
                 ? ComputeSha256(
                     BuildPackedDetailNormalPng(
                         conversion.SourceAbsolutePath))
+                : conversion.IsPackedDetailAlbedo
+                    ? ComputeSha256(
+                        BuildPackedDetailAlbedoPng(
+                            conversion.SourceAbsolutePath))
                 : conversion.SourceSha256;
 
         internal static byte[] BuildPackedDetailNormalPng(
             string sourcePath)
+        {
+            return BuildPackedDetailMapPng(
+                sourcePath,
+                pixel => new Color32(
+                    128,
+                    pixel.g,
+                    128,
+                    pixel.r),
+                "donor detail normal");
+        }
+
+        internal static byte[] BuildPackedDetailAlbedoPng(
+            string sourcePath)
+        {
+            return BuildPackedDetailMapPng(
+                sourcePath,
+                pixel => new Color32(
+                    GetPackedDetailAlbedoLuminance(pixel),
+                    128,
+                    128,
+                    128),
+                "donor detail albedo");
+        }
+
+        internal static byte GetPackedDetailAlbedoLuminance(
+            Color32 pixel)
+        {
+            // HDRP consumes detail R as a perceptual signed value around
+            // 0.5. Preserve the donor sRGB-domain brightness relationship
+            // rather than applying a second gamma conversion.
+            int weighted =
+                54 * pixel.r +
+                183 * pixel.g +
+                19 * pixel.b;
+            return (byte)((weighted + 128) >> 8);
+        }
+
+        private static byte[] BuildPackedDetailMapPng(
+            string sourcePath,
+            Func<Color32, Color32> packPixel,
+            string sourceLabel)
         {
             var source = new Texture2D(
                 2,
@@ -304,7 +382,7 @@ namespace MSC.Editor.WorldBaseline
                         markNonReadable: false))
                 {
                     throw new InvalidDataException(
-                        "Could not decode donor detail normal: " +
+                        "Could not decode " + sourceLabel + ": " +
                         sourcePath);
                 }
 
@@ -312,12 +390,7 @@ namespace MSC.Editor.WorldBaseline
                 var packedPixels = new Color32[sourcePixels.Length];
                 for (int index = 0; index < sourcePixels.Length; index++)
                 {
-                    Color32 pixel = sourcePixels[index];
-                    packedPixels[index] = new Color32(
-                        128,
-                        pixel.g,
-                        128,
-                        pixel.r);
+                    packedPixels[index] = packPixel(sourcePixels[index]);
                 }
 
                 packed = new Texture2D(
@@ -579,27 +652,34 @@ namespace MSC.Editor.WorldBaseline
             }
 
             if (!IsUnlit(source) &&
-                TryGetExpectedDetailNormalTexture(
+                TryGetExpectedDetailTexture(
                     source,
-                    out DonorWorldTextureEnvironment detailNormalTexture))
+                    out DonorWorldTextureEnvironment detailTexture,
+                    out DonorWorldTextureRole detailRole))
             {
                 Texture texture = RequireTexture(
                     textures,
-                    detailNormalTexture.TextureGuid,
-                    DonorWorldTextureRole.DetailNormalPacked);
+                    detailTexture.TextureGuid,
+                    detailRole);
                 SetTextureWithTransform(
                     material,
                     "_DetailMap",
                     texture,
-                    detailNormalTexture);
+                    detailTexture);
                 SetFloatIfPresent(
                     material,
                     "_DetailAlbedoScale",
-                    0f);
+                    detailRole ==
+                        DonorWorldTextureRole.DetailAlbedoPacked
+                            ? GetExpectedDetailAlbedoScale(source)
+                            : 0f);
                 SetFloatIfPresent(
                     material,
                     "_DetailNormalScale",
-                    GetExpectedDetailNormalScale(source));
+                    detailRole ==
+                        DonorWorldTextureRole.DetailNormalPacked
+                            ? GetExpectedDetailNormalScale(source)
+                            : 0f);
                 SetFloatIfPresent(
                     material,
                     "_DetailSmoothnessScale",
@@ -622,30 +702,16 @@ namespace MSC.Editor.WorldBaseline
                     "_NORMALMAP_TANGENT_SPACE");
             }
 
-            if (IsEmissive(source))
-            {
-                SetColorIfPresent(
-                    material,
-                    "_EmissiveColor",
-                    GetExpectedEmissionColor(source));
-                if (TryGetExpectedEmissionTexture(
-                        source,
-                        out DonorWorldTextureEnvironment emissionTexture))
-                {
-                    Texture texture = RequireTexture(
-                        textures,
-                        emissionTexture.TextureGuid,
-                        DonorWorldTextureRole.Color);
-                    SetTextureWithTransform(
-                        material,
-                        "_EmissiveColorMap",
-                        texture,
-                        emissionTexture);
-                    material.EnableKeyword("_EMISSIVE_COLOR_MAP");
-                }
-            }
+            // The donor's static world export contains stateful "on" and
+            // "off" variants, but no project-owned gameplay state capable of
+            // selecting them yet. Emission therefore stays disabled in the
+            // temporary world baseline. Later gameplay presenters may enable
+            // it explicitly without changing the compatibility material.
+            DisableTemporaryWorldEmission(material);
 
             ConfigureSurface(source, material);
+            ValidateHdrpMaterial(material, source.SourceGuid);
+            ApplyFinalTemporaryMaterialBounds(source, material);
         }
 
         private static void ConfigureSurface(
@@ -671,6 +737,14 @@ namespace MSC.Editor.WorldBaseline
                 material,
                 "_DoubleSidedEnable",
                 source.DoubleSided ? 1f : 0f);
+            SetFloatIfPresent(
+                material,
+                "_DoubleSidedNormalMode",
+                GetExpectedDoubleSidedNormalMode(source));
+            SetVectorIfPresent(
+                material,
+                "_DoubleSidedConstants",
+                GetExpectedDoubleSidedConstants(source));
             SetFloatIfPresent(
                 material,
                 "_CullMode",
@@ -743,6 +817,9 @@ namespace MSC.Editor.WorldBaseline
             SetColorIfPresent(material, "_BaseColor", fallback);
             material.renderQueue = (int)RenderQueue.Geometry;
             material.enableInstancing = true;
+            ValidateHdrpMaterial(
+                material,
+                DonorWorldMaterialTexturePlan.BuiltInFallbackGuid);
             EditorUtility.SetDirty(material);
             return material;
         }
@@ -800,14 +877,103 @@ namespace MSC.Editor.WorldBaseline
         }
 
         internal static float GetExpectedMetallic(
-            DonorWorldSourceMaterial source) =>
-            Mathf.Clamp01(source.GetFloat("_Metallic", 0f));
+            DonorWorldSourceMaterial source)
+        {
+            // Exact Standard-shader identity is not evidence that a donor
+            // surface is actually metal. The frozen export contains windows,
+            // signs, bottles and dirt-like props with non-zero metallic values.
+            // Keep the Phase 1 world baseline dielectric until reviewed
+            // per-material metal identities are introduced.
+            return 0f;
+        }
 
         internal static float GetExpectedSmoothness(
-            DonorWorldSourceMaterial source) =>
-            Mathf.Clamp01(source.GetFloat(
+            DonorWorldSourceMaterial source)
+        {
+            float donorSmoothness = Mathf.Clamp01(source.GetFloat(
                 "_Glossiness",
                 source.GetFloat("_Shininess", DefaultSmoothness)));
+            return Mathf.Min(
+                donorSmoothness,
+                GetTemporarySmoothnessCap(source));
+        }
+
+        internal static bool UsesStandardMetallicWorkflow(
+            DonorWorldSourceMaterial source) =>
+            source.CompatibilityClass ==
+                DonorWorldCompatibilityClass.OpaqueLit &&
+            string.Equals(
+                source.SourceShaderIdentity,
+                "Standard",
+                StringComparison.Ordinal);
+
+        internal static bool IsLegacyDiffuseFamily(
+            DonorWorldSourceMaterial source) =>
+            string.Equals(
+                source.SourceShaderIdentity,
+                "BuiltIn/7",
+                StringComparison.Ordinal) ||
+            source.SourceShaderIdentity.IndexOf(
+                "Diffuse",
+                StringComparison.OrdinalIgnoreCase) >= 0 ||
+            IsFoliage(source);
+
+        internal static bool IsSpecularWorkflow(
+            DonorWorldSourceMaterial source) =>
+            source.SourceShaderIdentity.IndexOf(
+                "Specular",
+                StringComparison.OrdinalIgnoreCase) >= 0;
+
+        internal static bool IsFoliage(
+            DonorWorldSourceMaterial source) =>
+            source.DoubleSided ||
+            source.SourceShaderIdentity.IndexOf(
+                "Leaves",
+                StringComparison.OrdinalIgnoreCase) >= 0;
+
+        internal static float GetTemporarySmoothnessCap(
+            DonorWorldSourceMaterial source)
+        {
+            if (IsUnlit(source))
+            {
+                return 0f;
+            }
+            if (source.CompatibilityClass ==
+                DonorWorldCompatibilityClass.TemporaryWater)
+            {
+                return 0.18f;
+            }
+            if (IsTransparent(source))
+            {
+                return 0.18f;
+            }
+            if (IsEmissive(source))
+            {
+                return 0f;
+            }
+            if (IsFoliage(source))
+            {
+                return 0.04f;
+            }
+            if (TryGetExpectedDetailAlbedoTexture(source, out _))
+            {
+                return 0f;
+            }
+            if (IsLegacyDiffuseFamily(source))
+            {
+                return 0.08f;
+            }
+            if (IsSpecularWorkflow(source))
+            {
+                return 0.18f;
+            }
+            if (UsesStandardMetallicWorkflow(source))
+            {
+                return 0.18f;
+            }
+
+            return 0.12f;
+        }
 
         internal static float GetExpectedNormalScale(
             DonorWorldSourceMaterial source) =>
@@ -823,6 +989,12 @@ namespace MSC.Editor.WorldBaseline
                 0f,
                 2f);
 
+        internal static float GetExpectedDetailAlbedoScale(
+            DonorWorldSourceMaterial source) =>
+            TryGetExpectedDetailAlbedoTexture(source, out _)
+                ? 1f
+                : 0f;
+
         internal static int GetExpectedDetailUv(
             DonorWorldSourceMaterial source) =>
             source.GetFloat("_UVSec", 0f) >= 0.5f ? 1 : 0;
@@ -834,14 +1006,40 @@ namespace MSC.Editor.WorldBaseline
                 : new Color(1f, 0f, 0f, 0f);
 
         internal static Color GetExpectedEmissionColor(
-            DonorWorldSourceMaterial source)
+            DonorWorldSourceMaterial source) => Color.black;
+
+        private static void DisableTemporaryWorldEmission(Material material)
         {
-            Color emission = source.GetColor(
-                "_EmissionColor",
-                Color.white);
-            return emission.maxColorComponent <= 0.001f
-                ? Color.white
-                : emission;
+            SetColorIfPresent(material, "_EmissiveColor", Color.black);
+            SetFloatIfPresent(material, "_UseEmissiveIntensity", 0f);
+            SetFloatIfPresent(material, "_EmissiveIntensity", 0f);
+            SetFloatIfPresent(material, "_AlbedoAffectEmissive", 0f);
+            if (material.HasProperty("_EmissiveColorMap"))
+            {
+                material.SetTexture("_EmissiveColorMap", null);
+            }
+            material.DisableKeyword("_EMISSIVE_COLOR_MAP");
+        }
+
+        private static void ApplyFinalTemporaryMaterialBounds(
+            DonorWorldSourceMaterial source,
+            Material material)
+        {
+            // HDMaterial validation normalizes a number of defaults and may
+            // restore smoothness/detail/SSR values. Re-apply the bounded Phase
+            // 1 policy afterwards so regenerated files cannot silently regain
+            // glossy or emissive defaults.
+            SetFloatIfPresent(material, "_Metallic", GetExpectedMetallic(source));
+            SetFloatIfPresent(material, "_Smoothness", GetExpectedSmoothness(source));
+            SetFloatIfPresent(material, "_DetailSmoothnessScale", 0f);
+            DisableTemporaryWorldEmission(material);
+
+            if (LegacyDiffuseDetailSurfaceMaterialGuids.Contains(
+                    source.SourceGuid))
+            {
+                SetFloatIfPresent(material, "_ReceivesSSR", 0f);
+                SetFloatIfPresent(material, "_ReceivesSSRTransparent", 0f);
+            }
         }
 
         internal static bool TryGetExpectedBaseTexture(
@@ -898,6 +1096,56 @@ namespace MSC.Editor.WorldBaseline
                 transform.Offset);
             return true;
         }
+
+        internal static bool TryGetExpectedDetailAlbedoTexture(
+            DonorWorldSourceMaterial source,
+            out DonorWorldTextureEnvironment texture)
+        {
+            if (!LegacyDiffuseDetailSurfaceMaterialGuids.Contains(
+                    source.SourceGuid) ||
+                !string.Equals(
+                    source.SourceShaderIdentity,
+                    "Legacy Shaders/Diffuse Detail",
+                    StringComparison.Ordinal))
+            {
+                texture = null;
+                return false;
+            }
+
+            return source.TryGetTexture(out texture, "_Detail");
+        }
+
+        internal static bool TryGetExpectedDetailTexture(
+            DonorWorldSourceMaterial source,
+            out DonorWorldTextureEnvironment texture,
+            out DonorWorldTextureRole role)
+        {
+            if (TryGetExpectedDetailNormalTexture(source, out texture))
+            {
+                role = DonorWorldTextureRole.DetailNormalPacked;
+                return true;
+            }
+            if (TryGetExpectedDetailAlbedoTexture(source, out texture))
+            {
+                role = DonorWorldTextureRole.DetailAlbedoPacked;
+                return true;
+            }
+
+            role = default;
+            return false;
+        }
+
+        internal static float GetExpectedDoubleSidedNormalMode(
+            DonorWorldSourceMaterial source) =>
+            source.DoubleSided
+                ? DoubleSidedNormalFlip
+                : DoubleSidedNormalNone;
+
+        internal static Vector4 GetExpectedDoubleSidedConstants(
+            DonorWorldSourceMaterial source) =>
+            source.DoubleSided
+                ? new Vector4(-1f, -1f, -1f, 0f)
+                : new Vector4(1f, 1f, 1f, 0f);
 
         internal static bool TryGetExpectedEmissionTexture(
             DonorWorldSourceMaterial source,
@@ -966,6 +1214,29 @@ namespace MSC.Editor.WorldBaseline
             if (material.HasProperty(propertyName))
             {
                 material.SetFloat(propertyName, value);
+            }
+        }
+
+        private static void SetVectorIfPresent(
+            Material material,
+            string propertyName,
+            Vector4 value)
+        {
+            if (material.HasProperty(propertyName))
+            {
+                material.SetVector(propertyName, value);
+            }
+        }
+
+        private static void ValidateHdrpMaterial(
+            Material material,
+            string sourceGuid)
+        {
+            if (!HDMaterial.ValidateMaterial(material))
+            {
+                throw new InvalidOperationException(
+                    "Generated material is not backed by a supported " +
+                    "HDRP shader: " + sourceGuid + ".");
             }
         }
 
@@ -1119,6 +1390,7 @@ namespace MSC.Editor.WorldBaseline
                 string fingerprint =
                     DonorWorldBaselineManifest.Sha256Text(
                         DonorWorldMaterialTexturePlan.ConverterVersion +
+                        "|" + CompatibilityPolicyVersion +
                         "|" + material.SourceGuid + "|" +
                         material.SourceSha256 + "|" +
                         material.SourceShaderIdentity + "|" +
@@ -1156,8 +1428,9 @@ namespace MSC.Editor.WorldBaseline
                     string.Empty,
                     "TemporaryDirectImport",
                     "Converted",
-                    "Project-owned HDRP compatibility material; donor " +
-                    "shader code is not imported.");
+                    "Project-owned shader-aware HDRP compatibility " +
+                    "material (" + CompatibilityPolicyVersion + "); " +
+                    "donor shader code is not imported.");
             }
 
             AppendCsvRow(
@@ -1172,6 +1445,7 @@ namespace MSC.Editor.WorldBaseline
                 WorldBaselinePaths.UnsupportedMaterial,
                 DonorWorldBaselineManifest.Sha256Text(
                     DonorWorldMaterialTexturePlan.ConverterVersion +
+                    "|" + CompatibilityPolicyVersion +
                     "|builtin-10302|fallback-orange"),
                 assets.Plan.MaterialReferenceCounts[
                         DonorWorldMaterialTexturePlan.BuiltInFallbackGuid]
@@ -1261,8 +1535,14 @@ namespace MSC.Editor.WorldBaseline
                               "normal packed deterministically as HDRP " +
                               "R=0.5,G=Y,B=0.5,A=X; linear Default import; " +
                               "Read/Write off; CompressedHQ; shared across cells."
-                            : "Source dimensions preserved; Read/Write off; " +
-                              "CompressedHQ; shared across cells.")
+                            : conversion.IsPackedDetailAlbedo
+                                ? "Source dimensions preserved; frozen donor " +
+                                  "Diffuse Detail luminance packed deterministically " +
+                                  "as HDRP R=luma,G=0.5,B=0.5,A=0.5; linear " +
+                                  "Default import; Read/Write off; CompressedHQ; " +
+                                  "shared across cells."
+                                : "Source dimensions preserved; Read/Write off; " +
+                                  "CompressedHQ; shared across cells.")
                         : "Donor reflection/night-gradient cubemap is not " +
                           "mapped because donor sky/reflection runtime is " +
                           "outside 06B2.");
@@ -1277,10 +1557,13 @@ namespace MSC.Editor.WorldBaseline
             DonorWorldMaterialTexturePlan plan)
         {
             var markdown = new StringBuilder();
-            markdown.AppendLine("# Material shader mapping — Milestone 06B2 v5.1")
+            markdown.AppendLine("# Material shader mapping — 08A.1 candidate v002 remediation")
                 .AppendLine()
                 .AppendLine(
                     "Status: deterministic project-owned HDRP compatibility mapping.")
+                .AppendLine(
+                    "Compatibility policy: `" +
+                    CompatibilityPolicyVersion + "`.")
                 .AppendLine()
                 .AppendLine(
                     "Donor `.shader` files are read only for identity/classification. " +
@@ -1316,7 +1599,8 @@ namespace MSC.Editor.WorldBaseline
                     .Append(EscapeMarkdown(mappings))
                     .Append(" | Source tint/UV are retained except for the " +
                             "documented project-owned water RGB override; " +
-                            "modern PBR channels use explicit neutral defaults. |")
+                            "temporary PBR channels follow the bounded " +
+                            "shader-aware compatibility policy. |")
                     .AppendLine();
             }
             markdown.AppendLine()
@@ -1327,11 +1611,19 @@ namespace MSC.Editor.WorldBaseline
                 .AppendLine(
                     "- Alpha-test/tree-wall/foliage -> `HDRP/Lit`, alpha clipping, reviewed double-sided intent.")
                 .AppendLine(
-                    "- Transparent/glass -> bounded `HDRP/Lit` transparent mode.")
+                    "- The temporary Phase 1 world baseline is dielectric: donor `_Metallic` is not inherited until a material identity is explicitly reviewed as metal.")
+                .AppendLine(
+                    "- Smoothness is conservatively capped by source semantics: detail ground and disabled emissive `0`, foliage `0.04`, legacy diffuse `0.08`, generic `0.12`, water/transparent/specular/Standard `0.18`.")
+                .AppendLine(
+                    "- Transparent/glass -> bounded non-metallic `HDRP/Lit` transparent mode.")
                 .AppendLine(
                     "- Screen/unlit source families -> `HDRP/Unlit`.")
                 .AppendLine(
-                    "- Emission -> HDRP emissive color/map when source data exists.")
+                    "- Static donor emission is disabled. Stateful lights/screens must later be enabled by project-owned gameplay presenters instead of frozen donor material variants.")
+                .AppendLine(
+                    "- Frozen road/ground `Legacy Shaders/Diffuse Detail` GUIDs -> deterministic HDRP Detail Map packing (`R=luminance`, neutral normal/smoothness channels), original detail UV transform, and SSR disabled.")
+                .AppendLine(
+                    "- HDRP double-sided mode uses Flip normals (`0`, constants `-1,-1,-1`) for reviewed foliage/tree-wall sources and None (`2`, constants `1,1,1`) otherwise; every generated material is finalized through `HDMaterial.ValidateMaterial`.")
                 .AppendLine(
                     "- Water -> temporary project-owned transparent HDRP material with RGB `(0.08, 0.22, 0.28)` and preserved/clamped donor `_BaseColor.a`; donor shore foam is not misused as the full-surface base map, and donor water runtime is excluded.")
                 .AppendLine(
@@ -1342,7 +1634,7 @@ namespace MSC.Editor.WorldBaseline
                 .AppendLine(
                     "- AssetRipper shader text does not prove original Cull/Tags/blend implementation; double-sided/culling intent is a bounded shader/material-name heuristic. The representative v5.1 visual review was accepted on 2026-07-16 as temporary legacy visual debt, not production parity.")
                 .AppendLine(
-                    "- Donor detail normals are deterministically channel-packed into HDRP Detail Maps; donor detail UV selection/transform and strength are preserved while detail albedo/smoothness influence remains neutral. Specular/metallic legacy maps remain audit-only where semantics are ambiguous.")
+                    "- Donor detail normals and allowlisted legacy road/ground detail albedo are deterministically channel-packed into separate HDRP Detail Map variants. Specular/metallic legacy maps remain audit-only where semantics are ambiguous.")
                 .AppendLine(
                     "- Alpha cutout, glass, tree walls, water, emission and UV slot order were included in the manual baseline review. Corrected water is `PASS / HumanAccepted`; remaining legacy artifacts are accepted temporary visual debt and still require production replacement.");
             WriteProjectText(
@@ -1377,15 +1669,23 @@ namespace MSC.Editor.WorldBaseline
                         "_DetailNormalMap") &&
                     !material.Textures.ContainsKey("_BumpMap") &&
                     !material.Textures.ContainsKey("_NormalMap"));
+            int detailAlbedoMaterials = plan.Materials.Values.Count(
+                material =>
+                    TryGetExpectedDetailAlbedoTexture(
+                        material,
+                        out _));
             string manifestHash =
                 DonorWorldBaselineManifest.ComputeFileSha256(
                     WorldBaselinePaths.ToAbsoluteProjectPath(
                         WorldBaseline06B2Paths.MaterialTextureManifest));
             var markdown = new StringBuilder();
             markdown.AppendLine(
-                    "# Baseline visual completeness — Milestone 06B2 v5.1")
+                    "# Baseline visual completeness — 08A.1 candidate v002 remediation")
                 .AppendLine()
-                .AppendLine("Automated status: **PASS**.")
+                .AppendLine(
+                    "Automated structural status: **PASS (candidate only)**.")
+                .AppendLine(
+                    "Human visual acceptance: **PENDING after deterministic regeneration**.")
                 .AppendLine()
                 .AppendLine(
                     "06B3 gate: **GO / accepted; milestone not started**.")
@@ -1419,8 +1719,18 @@ namespace MSC.Editor.WorldBaseline
                     .Append("; assigned materials: ")
                     .Append(detailNormalMaterials)
                     .Append(" (detail-only: ")
-                    .Append(detailOnlyMaterials)
+                .Append(detailOnlyMaterials)
                     .AppendLine(").")
+                .Append("- Packed detail-albedo variants: ").Append(
+                    plan.Textures.Values.Count(value =>
+                        value.Role ==
+                        DonorWorldTextureRole.DetailAlbedoPacked))
+                    .Append("; assigned legacy road/ground materials: ")
+                    .Append(detailAlbedoMaterials)
+                    .AppendLine(".")
+                .Append("- Material compatibility policy: `")
+                    .Append(CompatibilityPolicyVersion)
+                    .AppendLine("`; all outputs finalized by HDRP validation.")
                 .Append("- Alpha-cutout materials: ").Append(cutout)
                     .AppendLine(".")
                 .Append("- Transparent/water materials: ").Append(transparent)
@@ -1560,7 +1870,7 @@ namespace MSC.Editor.WorldBaseline
                 assets.ConvertedTextures.Count;
             var markdown = new StringBuilder();
             markdown.AppendLine(
-                    "# Texture memory baseline — Milestone 06B2 v5.1")
+                    "# Texture memory baseline — 08A.1 candidate v002 remediation")
                 .AppendLine()
                 .AppendLine(
                     "Scope: deterministic imported-asset baseline in Unity Editor. " +
@@ -1611,6 +1921,8 @@ namespace MSC.Editor.WorldBaseline
                 .AppendLine(
                     "- Donor detail normals are channel-packed as `R=0.5, G=Y, B=0.5, A=X` for HDRP Detail Map semantics; source dimensions are unchanged.")
                 .AppendLine(
+                    "- Allowlisted frozen `Legacy Shaders/Diffuse Detail` road/ground textures are packed as `R=perceptual luminance, G=0.5, B=0.5, A=0.5`; the original detail UV transform is preserved and the packed variant is imported as linear data.")
+                .AppendLine(
                     "- Standalone import uses Unity `CompressedHQ`; signage/alpha remains a manual readability check.")
                 .AppendLine(
                     "- Source wrap/filter/aniso intent is carried into the project importer.")
@@ -1641,9 +1953,11 @@ namespace MSC.Editor.WorldBaseline
                         WorldBaseline06B2Paths.MaterialTextureManifest));
             var data = new PresentationManifestData
             {
-                schemaVersion = 1,
+                schemaVersion = 2,
                 generatorVersion =
                     DonorWorldMaterialTexturePlan.ConverterVersion,
+                materialCompatibilityPolicyVersion =
+                    CompatibilityPolicyVersion,
                 sourceRevisionId =
                     WorldBaselinePaths.SourceRevisionId,
                 sourceSceneSha256 =
@@ -1667,6 +1981,15 @@ namespace MSC.Editor.WorldBaseline
                 excludedTextureVariantCount =
                     assets.Plan.Textures.Values.Count(
                         value => !value.IsImported),
+                packedDetailNormalVariantCount =
+                    assets.Plan.Textures.Values.Count(
+                        value => value.Role ==
+                            DonorWorldTextureRole.DetailNormalPacked),
+                packedDetailAlbedoVariantCount =
+                    assets.Plan.Textures.Values.Count(
+                        value => value.Role ==
+                            DonorWorldTextureRole.DetailAlbedoPacked),
+                hdrpMaterialValidationRequired = true,
                 presentationFingerprintSha256 =
                     assets.Plan.PresentationFingerprintSha256,
                 materialTextureManifestSha256 = manifestHash,
@@ -1733,6 +2056,7 @@ namespace MSC.Editor.WorldBaseline
         {
             public int schemaVersion;
             public string generatorVersion = string.Empty;
+            public string materialCompatibilityPolicyVersion = string.Empty;
             public string sourceRevisionId = string.Empty;
             public string sourceSceneSha256 = string.Empty;
             public int rendererCount;
@@ -1742,6 +2066,9 @@ namespace MSC.Editor.WorldBaseline
             public int sourceTextureCount;
             public int importedTextureVariantCount;
             public int excludedTextureVariantCount;
+            public int packedDetailNormalVariantCount;
+            public int packedDetailAlbedoVariantCount;
+            public bool hdrpMaterialValidationRequired;
             public string presentationFingerprintSha256 = string.Empty;
             public string materialTextureManifestSha256 = string.Empty;
             public string classification = string.Empty;

@@ -279,8 +279,8 @@ namespace MSC.Editor.WorldBaseline
                 plan.GetOwnerEntries(ownerId);
             IReadOnlyList<DonorWorldSafeColliderRecord> ownerColliders =
                 plan.GetCollidersForOwner(ownerId);
-            Dictionary<string, DonorWorldSafeColliderRecord> colliderByEntity =
-                ownerColliders.ToDictionary(
+            ILookup<string, DonorWorldSafeColliderRecord> collidersByEntity =
+                ownerColliders.ToLookup(
                     collider => collider.EntityStableId,
                     StringComparer.Ordinal);
 
@@ -394,21 +394,19 @@ namespace MSC.Editor.WorldBaseline
                             "Could not apply LegacyTextured materials for " +
                             entry.Placement.StableId);
                     }
-                    renderer.shadowCastingMode =
-                        ShadowCastingMode.Off;
-                    renderer.receiveShadows = false;
-                    renderer.lightProbeUsage = LightProbeUsage.Off;
-                    renderer.reflectionProbeUsage =
-                        ReflectionProbeUsage.Off;
+                    DonorWorldRendererCompatibilityPolicy.Apply(
+                        renderer,
+                        entry,
+                        sourceMaterialSlots,
+                        presentation.Plan);
                     renderer.motionVectorGenerationMode =
                         MotionVectorGenerationMode.ForceNoMotion;
                     renderer.allowOcclusionWhenDynamic = true;
                     rendererCount++;
                 }
 
-                if (colliderByEntity.TryGetValue(
-                        entry.Placement.StableId,
-                        out DonorWorldSafeColliderRecord colliderRecord))
+                foreach (DonorWorldSafeColliderRecord colliderRecord in
+                         collidersByEntity[entry.Placement.StableId])
                 {
                     AddCollider(
                         entity.transform,
@@ -482,14 +480,37 @@ namespace MSC.Editor.WorldBaseline
         {
             var child = new GameObject(
                 "COLLIDER_" + record.ColliderStableId);
-            child.layer = 0;
+            int collisionLayer = LayerMask.NameToLayer(
+                record.CollisionLayerName);
+            if (collisionLayer < 0)
+            {
+                throw new InvalidDataException(
+                    "Required collision layer is missing: " +
+                    record.CollisionLayerName);
+            }
+            child.layer = collisionLayer;
             child.transform.SetParent(entity, false);
             child.AddComponent<DonorWorldBaselineColliderMetadata>()
                 .Configure(
                     record.ColliderStableId,
                     record.EntityStableId,
                     record.MeshGuid,
-                    record.ColliderType);
+                    record.ColliderType,
+                    record.Disposition,
+                    record.CollisionLayerName,
+                    record.PhysicsMaterialAssetPath,
+                    record.IsSafetyCritical);
+
+            PhysicsMaterial physicsMaterial =
+                AssetDatabase.LoadAssetAtPath<PhysicsMaterial>(
+                    record.PhysicsMaterialAssetPath);
+            if (physicsMaterial == null)
+            {
+                throw new FileNotFoundException(
+                    "Project-owned collision PhysicsMaterial is missing.",
+                    WorldBaselinePaths.ToAbsoluteProjectPath(
+                        record.PhysicsMaterialAssetPath));
+            }
 
             if (record.ColliderType == "MeshCollider")
             {
@@ -506,7 +527,8 @@ namespace MSC.Editor.WorldBaseline
                 MeshCollider collider =
                     child.AddComponent<MeshCollider>();
                 collider.sharedMesh = mesh;
-                collider.convex = false;
+                collider.convex = record.RuntimeConvex;
+                collider.sharedMaterial = physicsMaterial;
                 collider.isTrigger = false;
                 collider.enabled = true;
             }
@@ -516,6 +538,29 @@ namespace MSC.Editor.WorldBaseline
                     child.AddComponent<BoxCollider>();
                 collider.center = record.Center;
                 collider.size = record.Size;
+                collider.sharedMaterial = physicsMaterial;
+                collider.isTrigger = false;
+                collider.enabled = true;
+            }
+            else if (record.ColliderType == "CapsuleCollider")
+            {
+                CapsuleCollider collider =
+                    child.AddComponent<CapsuleCollider>();
+                collider.center = record.Center;
+                collider.radius = record.Radius;
+                collider.height = record.Height;
+                collider.direction = record.Direction;
+                collider.sharedMaterial = physicsMaterial;
+                collider.isTrigger = false;
+                collider.enabled = true;
+            }
+            else if (record.ColliderType == "SphereCollider")
+            {
+                SphereCollider collider =
+                    child.AddComponent<SphereCollider>();
+                collider.center = record.Center;
+                collider.radius = record.Radius;
+                collider.sharedMaterial = physicsMaterial;
                 collider.isTrigger = false;
                 collider.enabled = true;
             }
@@ -791,9 +836,19 @@ namespace MSC.Editor.WorldBaseline
             DonorWorldMaterialTexturePlan presentation)
         {
             Dictionary<string, string> colliderByEntity =
-                plan.SafeColliders.ToDictionary(
-                    collider => collider.EntityStableId,
-                    collider => collider.ColliderStableId,
+                plan.SafeColliders
+                    .GroupBy(
+                        collider => collider.EntityStableId,
+                        StringComparer.Ordinal)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => string.Join(
+                            ";",
+                            group.OrderBy(
+                                    collider => collider.ColliderStableId,
+                                    StringComparer.Ordinal)
+                                .Select(collider =>
+                                    collider.ColliderStableId)),
                     StringComparer.Ordinal);
             IReadOnlyDictionary<long, int[]> staticBatchSubsets =
                 WorldStaticBatchSubsetTable.ParseCommittedTable();
@@ -931,6 +986,61 @@ namespace MSC.Editor.WorldBaseline
             WriteProjectText(
                 WorldBaseline06B2Paths.OwnershipMatrix,
                 matrix.ToString());
+            WriteSolidColliderDispositionExport(plan);
+        }
+
+        private static void WriteSolidColliderDispositionExport(
+            DonorWorldCellizationPlan plan)
+        {
+            var manifest = new StringBuilder();
+            manifest.AppendLine(
+                "ColliderStableId,EntityStableId,SourceHierarchyPath," +
+                "ObjectName,SemanticCategory,ColliderType,SourceEnabled," +
+                "SourceIsTrigger,SourceConvex,RuntimeConvex," +
+                "SourceHasRigidbodyInAncestry,MeshGuid,MeshFileId," +
+                "EffectiveActive,Disposition,Included,OwnershipPolicy," +
+                "CollisionLayer,PhysicsMaterial,Reason,Classification," +
+                "SourceRevisionId,PolicyVersion");
+            foreach (DonorWorldSafeColliderRecord record in
+                     plan.ColliderDispositions)
+            {
+                AppendCsvRow(
+                    manifest,
+                    record.ColliderStableId,
+                    record.EntityStableId,
+                    record.HierarchyPath,
+                    record.ObjectName,
+                    record.SemanticCategory,
+                    record.ColliderType,
+                    record.SourceEnabled ? "1" : "0",
+                    record.SourceIsTrigger ? "1" : "0",
+                    record.Convex ? "1" : "0",
+                    record.RuntimeConvex ? "1" : "0",
+                    record.SourceHasRigidbodyInAncestry ? "1" : "0",
+                    record.MeshGuid,
+                    record.MeshFileId.ToString(
+                        CultureInfo.InvariantCulture),
+                    record.EffectiveActive ? "1" : "0",
+                    record.Disposition,
+                    record.IsIncluded ? "1" : "0",
+                    record.OwnershipPolicy,
+                    record.CollisionLayerName,
+                    record.PhysicsMaterialAssetPath,
+                    record.Reason,
+                    "TemporaryDirectImport",
+                    WorldBaselinePaths.SourceRevisionId,
+                    DonorWorldSolidCollisionPolicy.PolicyVersion);
+            }
+
+            string normalized = manifest.ToString().Replace("\r\n", "\n");
+            WriteProjectText(
+                WorldBaseline06B2Paths.SolidColliderDispositionManifest,
+                normalized);
+            string hash = DonorWorldBaselineManifest.Sha256Text(normalized);
+            WriteProjectText(
+                WorldBaseline06B2Paths
+                    .SolidColliderDispositionManifestSha256,
+                hash + "  LEGACY_SOLID_COLLIDER_DISPOSITIONS.csv\n");
         }
 
         private static string OwnershipReasonDescription(string rule) =>
@@ -946,10 +1056,10 @@ namespace MSC.Editor.WorldBaseline
                 "ExplicitCrossCellTraversalGlobal" =>
                     "Traversal geometry crosses or approaches a cell " +
                     "boundary and is not split in 06B2.",
-                "BootstrapSpawnOrTraversalCollisionGlobal" =>
-                    "The audited collider must exist before the focus cell " +
-                    "finishes loading or must remain continuous while " +
-                    "travelling.",
+                "SafetyCriticalCollisionGlobal" =>
+                    "The immutable 06B2 safety collider must exist before " +
+                    "the focus cell finishes loading or remain continuous " +
+                    "while travelling.",
                 "SourceCellDeterministic" =>
                     "Normal static content keeps the frozen source cell " +
                     "assignment; no geometry is moved or split.",

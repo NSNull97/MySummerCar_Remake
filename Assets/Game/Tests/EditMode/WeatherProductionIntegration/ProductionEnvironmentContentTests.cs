@@ -14,6 +14,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools.Utils;
 
@@ -88,6 +89,33 @@ namespace MSC.Tests.EditMode.WeatherProductionIntegration
                 AssetDatabase.GetAssetPath(
                     managers[0].volumeHDRP.sharedProfile),
                 Is.EqualTo(ProductionEnvironmentBuilder.VolumeProfilePath));
+            Assert.That(
+                managers[0].volumeHDRP.sharedProfile.TryGet(
+                    out IndirectLightingController indirectLighting),
+                Is.True);
+            Assert.That(indirectLighting.active, Is.True);
+            Assert.That(
+                indirectLighting.indirectDiffuseLightingMultiplier.overrideState,
+                Is.True);
+            Assert.That(
+                indirectLighting.indirectDiffuseLightingMultiplier.value,
+                Is.EqualTo(
+                        Enviro3ProductionVisualPolicy
+                            .NeutralIndirectLightingMultiplier)
+                    .Within(0.0001f));
+            Assert.That(
+                indirectLighting.reflectionLightingMultiplier.overrideState,
+                Is.True);
+            Assert.That(
+                indirectLighting.reflectionLightingMultiplier.value,
+                Is.EqualTo(1f).Within(0.0001f));
+            Assert.That(
+                indirectLighting
+                    .reflectionProbeIntensityMultiplier.overrideState,
+                Is.True);
+            Assert.That(
+                indirectLighting.reflectionProbeIntensityMultiplier.value,
+                Is.EqualTo(1f).Within(0.0001f));
         }
 
         [Test]
@@ -370,6 +398,95 @@ namespace MSC.Tests.EditMode.WeatherProductionIntegration
                 derived[1].extents,
                 Is.EqualTo(new Vector3(1.9f, 1.175f, 2.9f))
                     .Using(Vector3ComparerWithEqualsOperator.Instance));
+        }
+
+        [Test]
+        public void ShelterMeasurement_GeometryFingerprintIsStableAndDetectsBoundsDrift()
+        {
+            string json = File.ReadAllText(
+                ProductionShelterMeasurementTool.EvidenceAssetPath);
+            ProductionShelterMeasurementTool.MeasurementReport evidence =
+                JsonUtility.FromJson<
+                    ProductionShelterMeasurementTool.MeasurementReport>(json);
+            string expected =
+                ProductionShelterMeasurementTool
+                    .ExpectedSourceGeometryFingerprintSha256;
+
+            Assert.That(
+                ProductionShelterMeasurementTool
+                    .ComputeGeometryFingerprintSha256(evidence.records),
+                Is.EqualTo(expected));
+            Assert.That(
+                ProductionShelterMeasurementTool
+                    .ComputeGeometryFingerprintSha256(
+                        evidence.records.Reverse()),
+                Is.EqualTo(expected),
+                "Fingerprint ordering must not depend on scene traversal order.");
+
+            evidence.records[0].extents.x += 0.01f;
+            Assert.That(
+                ProductionShelterMeasurementTool
+                    .ComputeGeometryFingerprintSha256(evidence.records),
+                Is.Not.EqualTo(expected));
+
+            evidence = JsonUtility.FromJson<
+                ProductionShelterMeasurementTool.MeasurementReport>(json);
+            evidence.records[0].sourceHierarchyPath += "/drift";
+            Assert.That(
+                ProductionShelterMeasurementTool
+                    .ComputeGeometryFingerprintSha256(evidence.records),
+                Is.Not.EqualTo(expected));
+
+            evidence = JsonUtility.FromJson<
+                ProductionShelterMeasurementTool.MeasurementReport>(json);
+            evidence.records[0].stableId += ".drift";
+            Assert.That(
+                ProductionShelterMeasurementTool
+                    .ComputeGeometryFingerprintSha256(evidence.records),
+                Is.Not.EqualTo(expected));
+        }
+
+        [Test]
+        public void ShelterMeasurement_GeometryFingerprintRejectsIncompleteOrDuplicateRecords()
+        {
+            string json = File.ReadAllText(
+                ProductionShelterMeasurementTool.EvidenceAssetPath);
+            ProductionShelterMeasurementTool.MeasurementReport evidence =
+                JsonUtility.FromJson<
+                    ProductionShelterMeasurementTool.MeasurementReport>(json);
+
+            Assert.Throws<InvalidOperationException>(() =>
+                ProductionShelterMeasurementTool
+                    .ComputeGeometryFingerprintSha256(
+                        evidence.records.Take(
+                            evidence.records.Length - 1)));
+
+            ProductionShelterMeasurementTool.MeasurementRecord[] duplicate =
+                evidence.records.ToArray();
+            duplicate[0] = duplicate[1];
+            Assert.Throws<InvalidOperationException>(() =>
+                ProductionShelterMeasurementTool
+                    .DeriveSheltersOrThrow(duplicate));
+        }
+
+        [Test]
+        public void ShelterMeasurement_FullSceneShaIsAuditOnlyButMustBeWellFormed()
+        {
+            string json = File.ReadAllText(
+                ProductionShelterMeasurementTool.EvidenceAssetPath);
+            ProductionShelterMeasurementTool.MeasurementReport evidence =
+                JsonUtility.FromJson<
+                    ProductionShelterMeasurementTool.MeasurementReport>(json);
+
+            evidence.sourceSceneSha256 = new string('a', 64);
+            Assert.DoesNotThrow(() =>
+                ProductionShelterMeasurementTool
+                    .ValidateReportAgainstFrozenSourceOrThrow(evidence));
+
+            evidence.sourceSceneSha256 = "malformed";
+            Assert.Throws<InvalidOperationException>(() =>
+                ProductionShelterMeasurementTool
+                    .ValidateReportAgainstFrozenSourceOrThrow(evidence));
         }
 
         private static ProductionShelterMeasurementTool.MeasurementRecord Record(

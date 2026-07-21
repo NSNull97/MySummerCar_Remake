@@ -1,0 +1,24 @@
+{
+  "name": "MSC.UI.Presentation.Tests.PlayMode",
+  "rootNamespace": "MSC.Tests.PlayMode.UIPresentation",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Core.Runtime",
+    "MSC.UI.Runtime",
+    "MSC.UI.Presentation.Runtime",
+    "Unity.InputSystem",
+    "UnityEngine.UI"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "candidateRevisionId": "DonorWorldBaseline-v002",
+  "baseRevisionId": "DonorWorldBaseline-v001",
+  "recordedDate": "2026-07-20",
+  "lastMaterialLightingRemediationDate": "2026-07-21",
+  "materialLightingHumanAcceptanceDate": "2026-07-21",
+  "recordState": "Candidate",
+  "promotionState": "NotPromoted",
+  "acceptanceState": "HumanAcceptancePending",
+  "finalizationState": "HumanValidationPendingAfterMaterialLightingRemediation",
+  "localWorkspaceState": "ActiveForManualValidation",
+  "acceptedBaselineRecord": "DonorWorldBaseline-v001",
+  "rollbackBackupLabel": "DonorWorldBaseline-v001_before_08A1_20260720",
+  "classification": "TemporaryDirectImport",
+  "distributionPolicy": "PrivateLocalFeatureParityOnly",
+  "phase": "Phase1LegacyFeatureComplete",
+  "scope": "Bounded post-08A donor world baseline hardening; Milestone 08B not started",
+  "baseRevision": {
+    "revisionId": "DonorWorldBaseline-v001",
+    "freezeState": "Frozen",
+    "acceptanceState": "Accepted",
+    "sourceRevisionId": "msc-world-baseline-04a1.1-c3f2f337",
+    "sourceSceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4",
+    "ownershipFingerprintSha256": "1abf88e8047c2446e4ecdc1bdc894738171fac0f4ac9651be75470e985bbf28b",
+    "presentationFingerprintSha256": "e337f9d1b5a0344473bd0f096cdb9e0dbf8da321ecb428ebc17da4f7dd8831fd"
+  },
+  "sourceContract": {
+    "sourceRevisionId": "msc-world-baseline-04a1.1-c3f2f337",
+    "sourceSceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4",
+    "sourceFilesFingerprintSha256": "72567486f72bd9106eadc0ba87aadb290accefdcee9e6517ffe30c2218d5ceec",
+    "sourceManifestSha256": "e385298c0b6ef344ade8c3a5f1f7c5fd684b690a8114808d658aea5f7b15ec6a",
+    "unityVersion": "6000.3.11f1",
+    "coordinatesChanged": false,
+    "stableEntityIdsChanged": false,
+    "cellAssignmentsIntentionallyChanged": false,
+    "geometryReauthored": false
+  },
+  "tooling": {
+    "cellizationGeneratorVersion": "1.2.0-08A1",
+    "collisionPolicyVersion": "08A1.6",
+    "presentationGeneratorVersion": "06B2-v5.2-08A1",
+    "materialCompatibilityPolicyVersion": "08A1-temporary-hdrp-compatibility-v3",
+    "materialLightingRemediationPolicyVersion": "08A1-local-material-lighting-remediation-v1",
+    "productionEnvironmentBuilderVersion": "1.0.3",
+    "shelterEvidenceSchemaVersion": 2
+  },
+  "contentCounts": {
+    "eligibleEntities": 3842,
+    "globalEntities": 88,
+    "cellOwnedEntities": 3754,
+    "generatedSceneCount": 50,
+    "cellSceneCount": 49,
+    "renderers": 2605,
+    "gameplayAnchors": 15,
+    "sourceColliderRowsReviewed": 1488,
+    "sourceColliderRowsWithRigidbodyInAncestry": 415,
+    "safetyCriticalGlobalColliders": 32
+  },
+  "materialPresentation": {
+    "status": "GeneratedCandidate",
+    "resolvedMaterialCount": 292,
+    "sourceTextureCount": 265,
+    "importedTextureVariantCount": 273,
+    "excludedTextureVariantCount": 1,
+    "packedDetailNormalVariantCount": 8,
+    "packedDetailAlbedoVariantCount": 5,
+    "presentationFingerprintSha256": "0b4ca8479be4c53eaf3e13cabf62f2dc395f7186ff1c8e14ea383cbb89bb5160",
+    "materialTextureManifestSha256": "2aa87907f3e557a0d0e22a988c52b43ee433f44b9113b179a639f415a94cd9ca",
+    "presentationManifestSha256": "51f3c2dacece0293ed147ca8028bca51a03b1cbfc4bc2a2a68855f293d13ac50"
+  },
+  "materialLightingRemediation": {
+    "status": "HumanAccepted",
+    "policyVersion": "08A1-local-material-lighting-remediation-v1",
+    "generatedMeshCount": 2129,
+    "normalChannelsRepaired": 1683,
+    "tangentChannelsRepaired": 1693,
+    "rendererPoliciesApplied": 2605,
+    "automatedTestsRun": false,
+    "automatedTestDecision": "SkippedByExplicitUserDirectionForGraphicsIteration",
+    "unityBatchCompilationAndRegeneration": "SucceededWithExitCode0",
+    "humanAcceptanceSource": "DirectUserConfirmationInCodexTask",
+    "report": "Docs/WorldBaseline/08A1_MATERIAL_LIGHTING_REMEDIATION.md"
+  },
+  "collisionContract": {
+    "countState": "GeneratedAndValidated",
+    "generatedColliderCount": 586,
+    "generatedColliderTypes": {
+      "MeshCollider": 276,
+      "BoxCollider": 279,
+      "CapsuleCollider": 31,
+      "SphereCollider": 0
+    },
+    "generatedDispositions": {
+      "IncludedSafetyCriticalGlobal": 32,
+      "IncludedStaticWorldSolid": 554,
+      "ExcludedActorOrPlayer": 23,
+      "ExcludedBuiltinMeshRequiresMapping": 24,
+      "ExcludedCategory": 2,
+      "ExcludedDisabled": 32,
+      "ExcludedDoorRequiresBinding": 79,
+      "ExcludedDynamicRequiresPresenter": 108,
+      "ExcludedInactive": 212,
+      "ExcludedTrigger": 414,
+      "ExcludedVehicle": 7,
+      "ExcludedWeatherShelterVolume": 1
+    },
+    "reviewedSemanticOverrides": [
+      {
+        "kind": "Well",
+        "count": 2,
+        "expectedColliderType": "MeshCollider",
+        "reason": "Reviewed static world obstacle promoted from the broad donor Water category"
+      },
+      {
+        "kind": "CableReel",
+        "count": 2,
+        "expectedColliderType": "BoxCollider",
+        "reason": "Reviewed static world obstacle promoted from the broad donor Wire category"
+      }
+    ],
+    "doors": {
+      "sourceRows": 79,
+      "runtimeStaticColliders": 0,
+      "disposition": "ExcludedDoorRequiresBinding",
+      "decision": "IntentionalNoCollisionUntilProjectOwnedDoorMechanic",
+      "humanDecisionDate": "2026-07-20"
+    },
+    "runtimeLayers": [
+      "WorldSurface",
+      "WorldSolid"
+    ],
+    "physicsMaterials": [
+      "WorldSurfaceZeroBounce.physicMaterial",
+      "WorldSolidZeroBounce.physicMaterial"
+    ]
+  },
+  "preFinalAutomatedSnapshot": {
+    "status": "SupersededByFinalArtifact",
+    "generatedColliderCount": 582,
+    "generatedColliderTypes": {
+      "MeshCollider": 274,
+      "BoxCollider": 277,
+      "CapsuleCollider": 31,
+      "SphereCollider": 0
+    },
+    "ownershipFingerprintSha256": "b56e265d759663e0d6731437e23a48b2af842b8bf0e6801b0e77f6ef3aca6cf2",
+    "collisionDispositionSha256": "d22edc682a35c526c7e47031da9949253e6977fe1f05e61948478b50298a4e24",
+    "note": "This snapshot proved the policy and validation pipeline before the two wells and two cable reels were added. It is not the final v002 artifact."
+  },
+  "finalArtifactHashes": {
+    "ownershipFingerprintSha256": "82797c6818ed54ded649bb40fb04cbdcd3575f5d5194350e428854614f1b9b8d",
+    "collisionDispositionSha256": "0b3986725d1d88740639e5d660ea68208777c184ca6b0ceecf11e665896ad665",
+    "ownershipMatrixSha256": "70799431f81b52f4ad71ba7e527bd504d0340a8212f83fe45601408e7d5e0d67",
+    "legacyObjectCellManifestSha256": "59e3d804fa00eb81bacd07a2c5c3bce76adfe5a79be4ffecff12dc00d57169e6",
+    "automatedEvidenceBundleSha256": "4a9f506e50da6acbabda95abaaebe82b8abc1fec7772822220da6c1d3439ecb0"
+  },
+  "hardeningChanges": [
+    "Generated static-batch mesh copies now retain transformed normal channels and compatible tangent channels where the source topology permits it.",
+    "Temporary donor materials now use HDRP-compatible dielectric metallic, bounded smoothness and disabled static emission values.",
+    "Reviewed road and ground materials no longer receive SSR or reflection-probe sampling during the temporary baseline phase.",
+    "Legacy diffuse-detail luminance is packed as HDRP detail albedo instead of being interpreted as normal data.",
+    "Renderer shadow casting and receiving are selected by explicit material, category and geometry policy; roofs use two-sided compatibility where required.",
+    "Project-owned Enviro/HDRP indirect-lighting control raises exterior daylight diffuse contribution without increasing reflection ownership.",
+    "Reviewed static world obstacles receive deterministic generated collision while triggers, actors, dynamic ancestry, live vehicles and weather shelter volumes remain excluded.",
+    "Doors remain intentionally collision-free until a project-owned door-opening mechanic supplies authoritative bindings."
+  ],
+  "knownDifferences": [
+    {
+      "severity": "P2",
+      "id": "DONOR_COLLISION_AUDIENCE_LAYER_MAPPING",
+      "description": "Donor audience/layer distinctions such as PlayerOnlyColl, CollCar and TireCol are currently collapsed into project WorldSolid semantics.",
+      "impact": "Suitable for the current player-traversal candidate, but vehicle-specific collision audiences require a later explicit mapping."
+    },
+    {
+      "severity": "AcceptedTemporaryLimitation",
+      "id": "DOORS_WITHOUT_COLLISION",
+      "description": "Door meshes are pass-through by explicit user decision until the future project-owned door mechanic is implemented.",
+      "impact": "Doorways are not part of the static collision acceptance gate."
+    },
+    {
+      "severity": "TemporaryDirectImportDebt",
+      "id": "LEGACY_PRESENTATION_NOT_PRODUCTION_READY",
+      "description": "Donor-derived geometry, materials, textures and collision remain a private Phase 1 runtime baseline and must be replaced in Phase 2."
+    }
+  ],
+  "validation": {
+    "automatedStatus": "NotRerunAfterMaterialLightingRemediationByUserDirection",
+    "priorAutomatedStatus": "PassedFinalCandidateBeforeMaterialLightingRemediation",
+    "localActivationAutomatedStatus": "PreviousPassSupersededByMaterialLightingRemediation",
+    "localActivationEvidenceBundleSha256": "bca4221dce001ea9842c41bf91af53fa17d38f0f4ee7185282f1c8640a4792dc",
+    "materialLightingManualStatus": "HumanAccepted2026-07-21",
+    "manualStatus": "HumanAcceptancePending",
+    "manualResult": null,
+    "promotionAllowed": false,
+    "requiredBeforePromotion": [
+      "Complete the documented in-Editor traversal, shadow, material and streaming checklist.",
+      "Record explicit human acceptance."
+    ]
+  }
+}

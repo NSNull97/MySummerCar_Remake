@@ -195,7 +195,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.InteractionDebugOverlay
   interactionController: {fileID: 99254237992288729}
-  showDebugInformation: 1
+  showDebugInformation: 0
 --- !u!114 &7349811234567890123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,6 +209,8 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.CrossdotPresenter
   visible: 1
+  interactionController: {fileID: 99254237992288729}
+  showOnlyWithCandidate: 1
   dotDiameterPixels: 4
   outlineWidthPixels: 1
   dotColor: {r: 1, g: 1, b: 1, a: 1}

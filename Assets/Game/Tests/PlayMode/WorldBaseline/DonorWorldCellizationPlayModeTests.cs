@@ -104,10 +104,14 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                     .Distinct(StringComparer.Ordinal).Count(),
                 Is.EqualTo(colliderMetadata.Length));
             Assert.That(
-                colliderMetadata.Select(metadata =>
-                        metadata.EntityStableId)
-                    .Distinct(StringComparer.Ordinal).Count(),
-                Is.EqualTo(colliderMetadata.Length));
+                colliderMetadata
+                    .GroupBy(
+                        metadata => metadata.EntityStableId,
+                        StringComparer.Ordinal)
+                    .Any(group => group.Count() > 1),
+                Is.True,
+                "Multiple source colliders per static-world entity must " +
+                "survive generation.");
             Assert.That(
                 colliderMetadata.All(metadata =>
                     string.Equals(
@@ -115,6 +119,31 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                         "legacy-world:" + metadata.EntityStableId,
                         StringComparison.Ordinal)),
                 Is.True);
+            Assert.That(
+                colliderMetadata.All(metadata =>
+                {
+                    Collider collider = metadata.GetComponent<Collider>();
+                    return collider != null &&
+                           collider.enabled &&
+                           !collider.isTrigger &&
+                           (collider is not MeshCollider meshCollider ||
+                            !meshCollider.convex) &&
+                           collider.sharedMaterial != null &&
+                           collider.sharedMaterial.bounciness <= 0.0001f &&
+                           collider.gameObject.layer ==
+                               LayerMask.NameToLayer(
+                                   metadata.CollisionLayerName);
+                }),
+                Is.True,
+                "Generated solid colliders must use their reviewed layer " +
+                "and zero-bounce PhysicsMaterial.");
+            Scene homeScene = FindLoadedScene(HomeCellScenePath);
+            Assert.That(
+                GetSceneComponents<DonorWorldBaselineColliderMetadata>(
+                    homeScene),
+                Is.Not.Empty,
+                "Ordinary static-world collision must be owned by the " +
+                "loaded home cell rather than promoted globally.");
 
             yield return null;
             Assert.That(

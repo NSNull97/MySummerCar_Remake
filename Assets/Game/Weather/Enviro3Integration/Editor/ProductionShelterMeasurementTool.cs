@@ -28,10 +28,15 @@ namespace MSC.Weather.Enviro3Integration.Editor
             "Logs/M07C_ProductionShelterMeasurements.json";
         public const string SourceRevisionId =
             "msc-world-baseline-04a1.1-c3f2f337";
+        [Obsolete(
+            "Full scene SHA is audit metadata only. Use " +
+            "ExpectedSourceGeometryFingerprintSha256 for the acceptance gate.")]
         public const string ExpectedSourceSceneSha256 =
             "6253afec3050187d41bab2d7417238a61341d86c55898c185eab319d85fee3e8";
+        public const string ExpectedSourceGeometryFingerprintSha256 =
+            "508b155f7df7c04622952b2b1e63dadcce1a043030c022c271930a54e5dea400";
         public const string DerivationPolicy =
-            "frozen-renderer-aabb-inset-v1";
+            "frozen-renderer-aabb-inset-v2-geometry-fingerprint";
         public const string HomeHouseShelterStableId =
             "weather.shelter.home.house.interior.v1";
         public const string HomeGarageShelterStableId =
@@ -123,15 +128,6 @@ namespace MSC.Weather.Enviro3Integration.Editor
             }
 
             string currentSourceSha256 = ComputeSha256(fullSourcePath);
-            if (!string.Equals(
-                    currentSourceSha256,
-                    ExpectedSourceSceneSha256,
-                    StringComparison.OrdinalIgnoreCase))
-            {
-                throw new InvalidOperationException(
-                    "Frozen home donor-baseline cell hash drifted from the " +
-                    "pinned 07C shelter source.");
-            }
 
             Scene previousActiveScene = SceneManager.GetActiveScene();
             Scene scene = SceneManager.GetSceneByPath(HomeCellScenePath);
@@ -167,6 +163,50 @@ namespace MSC.Weather.Enviro3Integration.Editor
         private static MeasurementReport MeasureLoadedSceneOrThrow(
             Scene scene,
             string sourceSceneSha256)
+        {
+            MeasurementRecord[] records =
+                CollectMeasurementRecordsOrThrow(scene);
+            string sourceGeometryFingerprintSha256 =
+                ComputeGeometryFingerprintSha256(records);
+            if (!string.Equals(
+                    sourceGeometryFingerprintSha256,
+                    ExpectedSourceGeometryFingerprintSha256,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(
+                    "Frozen home shelter geometry fingerprint drifted from " +
+                    "the accepted selected-renderer bounds contract.");
+            }
+
+            ShelterMeasurementRecord[] shelters =
+                DeriveSheltersOrThrow(records);
+            var report = new MeasurementReport
+            {
+                schemaVersion = 2,
+                sourceRevisionId = SourceRevisionId,
+                sourceScene = HomeCellScenePath,
+                sourceSceneSha256 = sourceSceneSha256,
+                sourceGeometryFingerprintSha256 =
+                    sourceGeometryFingerprintSha256,
+                derivationPolicy = DerivationPolicy,
+                horizontalInsetMeters = HorizontalInsetMeters,
+                floorInsetMeters = FloorInsetMeters,
+                ceilingInsetMeters = CeilingInsetMeters,
+                records = records,
+                shelters = shelters,
+            };
+            ValidateReportAgainstFrozenSourceOrThrow(report);
+            WriteJson(LogOutputPath, report, importAsset: false);
+            WriteJson(EvidenceAssetPath, report, importAsset: true);
+            Debug.Log(
+                "M07C_PRODUCTION_SHELTER_MEASUREMENTS_OK " +
+                $"sources={records.Length} shelters={shelters.Length} " +
+                $"evidence={EvidenceAssetPath} log={LogOutputPath}");
+            return report;
+        }
+
+        private static MeasurementRecord[] CollectMeasurementRecordsOrThrow(
+            Scene scene)
         {
             DonorWorldBaselineEntityMetadata[] metadata = scene
                 .GetRootGameObjects()
@@ -223,29 +263,47 @@ namespace MSC.Weather.Enviro3Integration.Editor
                 });
             }
 
-            ShelterMeasurementRecord[] shelters =
-                DeriveSheltersOrThrow(records.ToArray());
-            var report = new MeasurementReport
+            return records.ToArray();
+        }
+
+        public static string ComputeGeometryFingerprintSha256(
+            IEnumerable<MeasurementRecord> records)
+        {
+            if (records == null)
             {
-                schemaVersion = 1,
-                sourceRevisionId = SourceRevisionId,
-                sourceScene = HomeCellScenePath,
-                sourceSceneSha256 = sourceSceneSha256,
-                derivationPolicy = DerivationPolicy,
-                horizontalInsetMeters = HorizontalInsetMeters,
-                floorInsetMeters = FloorInsetMeters,
-                ceilingInsetMeters = CeilingInsetMeters,
-                records = records.ToArray(),
-                shelters = shelters,
-            };
-            ValidateReportAgainstFrozenSourceOrThrow(report);
-            WriteJson(LogOutputPath, report, importAsset: false);
-            WriteJson(EvidenceAssetPath, report, importAsset: true);
-            Debug.Log(
-                "M07C_PRODUCTION_SHELTER_MEASUREMENTS_OK " +
-                $"sources={records.Count} shelters={shelters.Length} " +
-                $"evidence={EvidenceAssetPath} log={LogOutputPath}");
-            return report;
+                throw new ArgumentNullException(nameof(records));
+            }
+
+            MeasurementRecord[] ordered = records
+                .OrderBy(record => record?.stableId, StringComparer.Ordinal)
+                .ToArray();
+            if (ordered.Length != HomeCandidates.Length ||
+                ordered.Any(record => record == null))
+            {
+                throw new InvalidOperationException(
+                    "Shelter geometry fingerprint requires the complete " +
+                    "selected renderer set.");
+            }
+
+            var canonical = new StringBuilder(ordered.Length * 192);
+            for (int index = 0; index < ordered.Length; index++)
+            {
+                MeasurementRecord record = ordered[index];
+                ValidateMeasuredBounds(record);
+                canonical.Append(record.stableId);
+                canonical.Append('|');
+                canonical.Append(record.sourceHierarchyPath);
+                AppendCanonicalFloat(canonical, record.center.x);
+                AppendCanonicalFloat(canonical, record.center.y);
+                AppendCanonicalFloat(canonical, record.center.z);
+                AppendCanonicalFloat(canonical, record.extents.x);
+                AppendCanonicalFloat(canonical, record.extents.y);
+                AppendCanonicalFloat(canonical, record.extents.z);
+                canonical.Append('\n');
+            }
+
+            return ComputeSha256(
+                Encoding.UTF8.GetBytes(canonical.ToString()));
         }
 
         public static ShelterMeasurementRecord[] DeriveSheltersOrThrow(
@@ -317,7 +375,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
         public static void ValidateReportAgainstFrozenSourceOrThrow(
             MeasurementReport report)
         {
-            if (report == null || report.schemaVersion != 1 ||
+            if (report == null || report.schemaVersion != 2 ||
                 !string.Equals(
                     report.sourceRevisionId,
                     SourceRevisionId,
@@ -330,9 +388,10 @@ namespace MSC.Weather.Enviro3Integration.Editor
                     report.derivationPolicy,
                     DerivationPolicy,
                     StringComparison.Ordinal) ||
+                !IsSha256(report.sourceSceneSha256) ||
                 !string.Equals(
-                    report.sourceSceneSha256,
-                    ExpectedSourceSceneSha256,
+                    report.sourceGeometryFingerprintSha256,
+                    ExpectedSourceGeometryFingerprintSha256,
                     StringComparison.OrdinalIgnoreCase) ||
                 !Mathf.Approximately(
                     report.horizontalInsetMeters,
@@ -352,15 +411,28 @@ namespace MSC.Weather.Enviro3Integration.Editor
                     "Production shelter evidence has an invalid schema or scope.");
             }
 
-            string fullSourcePath = Path.GetFullPath(HomeCellScenePath);
-            if (!File.Exists(fullSourcePath) ||
-                !string.Equals(
-                    ExpectedSourceSceneSha256,
-                    ComputeSha256(fullSourcePath),
+            string recordedGeometryFingerprint =
+                ComputeGeometryFingerprintSha256(report.records);
+            if (!string.Equals(
+                    recordedGeometryFingerprint,
+                    ExpectedSourceGeometryFingerprintSha256,
                     StringComparison.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException(
-                    "Production shelter evidence does not match the frozen source scene hash.");
+                    "Production shelter evidence does not match the accepted " +
+                    "selected-renderer geometry fingerprint.");
+            }
+
+            string currentGeometryFingerprint =
+                ComputeCurrentSourceGeometryFingerprintOrThrow();
+            if (!string.Equals(
+                    currentGeometryFingerprint,
+                    recordedGeometryFingerprint,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(
+                    "Production shelter evidence is stale relative to the " +
+                    "current selected-renderer geometry.");
             }
 
             ShelterMeasurementRecord[] derived =
@@ -380,6 +452,45 @@ namespace MSC.Weather.Enviro3Integration.Editor
                     throw new InvalidOperationException(
                         "Production shelter evidence contains stale derived bounds for " +
                         expected.stableId);
+                }
+            }
+        }
+
+        private static string ComputeCurrentSourceGeometryFingerprintOrThrow()
+        {
+            if (!File.Exists(Path.GetFullPath(HomeCellScenePath)))
+            {
+                throw new FileNotFoundException(
+                    "Frozen home donor-baseline cell is unavailable.",
+                    HomeCellScenePath);
+            }
+
+            Scene previousActiveScene = SceneManager.GetActiveScene();
+            Scene scene = SceneManager.GetSceneByPath(HomeCellScenePath);
+            bool openedForValidation = !scene.IsValid() || !scene.isLoaded;
+            if (openedForValidation)
+            {
+                scene = EditorSceneManager.OpenScene(
+                    HomeCellScenePath,
+                    OpenSceneMode.Additive);
+            }
+
+            try
+            {
+                return ComputeGeometryFingerprintSha256(
+                    CollectMeasurementRecordsOrThrow(scene));
+            }
+            finally
+            {
+                if (openedForValidation && scene.IsValid() && scene.isLoaded)
+                {
+                    EditorSceneManager.CloseScene(scene, true);
+                }
+
+                if (previousActiveScene.IsValid() &&
+                    previousActiveScene.isLoaded)
+                {
+                    SceneManager.SetActiveScene(previousActiveScene);
                 }
             }
         }
@@ -522,7 +633,11 @@ namespace MSC.Weather.Enviro3Integration.Editor
             string canonicalText = File.ReadAllText(path, Encoding.UTF8)
                 .Replace("\r\n", "\n")
                 .Replace('\r', '\n');
-            byte[] payload = Encoding.UTF8.GetBytes(canonicalText);
+            return ComputeSha256(Encoding.UTF8.GetBytes(canonicalText));
+        }
+
+        private static string ComputeSha256(byte[] payload)
+        {
             using SHA256 sha256 = SHA256.Create();
             byte[] hash = sha256.ComputeHash(payload);
             var builder = new StringBuilder(hash.Length * 2);
@@ -533,6 +648,24 @@ namespace MSC.Weather.Enviro3Integration.Editor
 
             return builder.ToString();
         }
+
+        private static void AppendCanonicalFloat(
+            StringBuilder builder,
+            float value)
+        {
+            builder.Append('|');
+            builder.Append(value.ToString(
+                "R",
+                System.Globalization.CultureInfo.InvariantCulture));
+        }
+
+        private static bool IsSha256(string value) =>
+            !string.IsNullOrWhiteSpace(value) &&
+            value.Length == 64 &&
+            value.All(character =>
+                (character >= '0' && character <= '9') ||
+                (character >= 'a' && character <= 'f') ||
+                (character >= 'A' && character <= 'F'));
 
         private static bool Approximately(Vector3 left, Vector3 right) =>
             (left - right).sqrMagnitude <= 0.000001f;
@@ -566,6 +699,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
             public string sourceRevisionId = string.Empty;
             public string sourceScene = string.Empty;
             public string sourceSceneSha256 = string.Empty;
+            public string sourceGeometryFingerprintSha256 = string.Empty;
             public string derivationPolicy = string.Empty;
             public float horizontalInsetMeters;
             public float floorInsetMeters;

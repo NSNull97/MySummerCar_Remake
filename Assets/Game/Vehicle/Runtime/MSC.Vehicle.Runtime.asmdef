@@ -2,6 +2,7 @@
   "name": "MSC.Vehicle.Runtime",
   "rootNamespace": "MSC.Vehicle",
   "references": [
+    "MSC.Core.Runtime",
     "MSC.Audio.Runtime",
     "MSC.Vehicle.Simulation",
     "MSC.Vehicle.Assembly",

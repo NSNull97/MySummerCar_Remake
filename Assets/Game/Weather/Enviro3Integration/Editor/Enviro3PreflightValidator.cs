@@ -20,9 +20,9 @@ namespace MSC.Weather.Enviro3Integration.Editor
     public static class Enviro3PreflightValidator
     {
         public const int BaselineFileCount = 538;
-        public const long BaselineTotalBytes = 305967931L;
+        public const long BaselineTotalBytes = 305968075L;
         public const string BaselineFingerprint =
-            "8e376fa2748162157975fbdd8b1045e021b810fea40f01d99eafe22a4d30bd44";
+            "a22883eaea25d7dca37c50429c59cff7e8cb6a61cd0686463801e10123d9f040";
         public const string HdrpRendererRegistration =
             "Enviro.EnviroHDRPRenderer, Enviro3.Runtime";
 
@@ -35,8 +35,9 @@ namespace MSC.Weather.Enviro3Integration.Editor
         private const string ProductionIntegrationTestsBoundaryPrefix =
             "Assets/Game/Tests/EditMode/WeatherProductionIntegration/";
 
-        // The 07B baseline is the source-package prefab graph after canonical Unity
-        // 6000.3.11f1 serialization. See ENVIRO3_FINGERPRINT_MIGRATION_AUDIT_07B.md.
+        // The 08A1 baseline is the same vendor graph after Unity 6000.3.11f1
+        // canonically reserialized one unused URP sample material. See
+        // ENVIRO3_FINGERPRINT_MIGRATION_AUDIT_08A1.md.
         // Its manifest was captured under ru-RU; pin that comparer so the fingerprint
         // remains reproducible when Unity runs under a different host culture.
         private static readonly StringComparer VendorBaselinePathComparer =

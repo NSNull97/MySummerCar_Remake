@@ -1,24 +1,34 @@
 using UnityEngine;
+using MSC.Core.Lifecycle;
 
 namespace MSC.Player
 {
     [DisallowMultipleComponent]
-    public sealed class InteractionDebugOverlay : MonoBehaviour
+    public sealed class InteractionDebugOverlay : MonoBehaviour, IUiVisibilityGate
     {
         [SerializeField]
         private PlayerInteractionController interactionController;
 
         [SerializeField]
-        private bool showDebugInformation = true;
+        private bool showDebugInformation;
+
+        private bool uiSuppressed;
+
+        public bool IsUiSuppressed => uiSuppressed;
 
         public void Configure(PlayerInteractionController controller)
         {
             interactionController = controller;
         }
 
+        public void SetUiSuppressed(bool suppressed)
+        {
+            uiSuppressed = suppressed;
+        }
+
         private void OnGUI()
         {
-            if (!showDebugInformation || interactionController == null)
+            if (!showDebugInformation || uiSuppressed || interactionController == null)
             {
                 return;
             }

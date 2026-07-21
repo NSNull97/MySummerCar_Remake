@@ -9,7 +9,9 @@
     "MSC.Weather.Production.Runtime",
     "MSC.Audio.Runtime",
     "MSC.Audio.Composition",
-    "MSC.Save.Runtime"
+    "MSC.UI.Presentation.Runtime",
+    "MSC.Save.Runtime",
+    "Unity.InputSystem"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

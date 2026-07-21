@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "candidateRevisionId": "DonorWorldBaseline-v002",
+  "baseRevisionId": "DonorWorldBaseline-v001",
+  "recordedDate": "2026-07-20",
+  "recordState": "Candidate",
+  "promotionState": "NotPromoted",
+  "acceptanceState": "HumanAcceptancePending",
+  "localWorkspaceState": "ActiveForManualValidation",
+  "overallResult": "AutomatedPass_HumanValidationPending",
+  "scope": "Material, renderer shadow, lighting and static collision hardening only; Milestone 08B not started",
+  "preFinalEvidence": {
+    "artifactState": "SupersededByFinalArtifact",
+    "generatedColliderCount": 582,
+    "cellizationBuild": {
+      "result": "PassedForPreFinalSnapshot",
+      "log": "08A1_v002_CellizationBuild_r3.log",
+      "scenes": 50,
+      "entities": 3842,
+      "globalEntities": 88,
+      "cellOwnedEntities": 3754,
+      "colliders": 582,
+      "anchors": 15,
+      "ownershipFingerprintSha256": "b56e265d759663e0d6731437e23a48b2af842b8bf0e6801b0e77f6ef3aca6cf2"
+    },
+    "cellizationValidation": {
+      "result": "PassedForPreFinalSnapshot",
+      "log": "08A1_v002_CellizationValidation_r4.log",
+      "scenes": 50,
+      "entities": 3842,
+      "renderers": 2605,
+      "colliders": 582,
+      "anchors": 15
+    },
+    "productionEnvironmentBuild": {
+      "result": "PassedForPreFinalSnapshot",
+      "log": "08A1_v002_EnvironmentBuild_r4.log",
+      "builderVersion": "1.0.3",
+      "shelterEvidenceSchemaVersion": 2,
+      "selectedGeometryFingerprintSha256": "508b155f7df7c04622952b2b1e63dadcce1a043030c022c271930a54e5dea400"
+    },
+    "editMode": {
+      "result": "PassedAfterFocusedCorrectionForPreFinalSnapshot",
+      "combinedRun": {
+        "log": "08A1_v002_EditMode_r2.log",
+        "xml": "08A1_v002_EditMode_r2.xml",
+        "total": 37,
+        "passed": 36,
+        "failed": 1,
+        "failure": "The expected source Rigidbody-ancestry evidence count was stale (296 expected, 415 actual)."
+      },
+      "focusedCorrectedRerun": {
+        "log": "08A1_v002_CollisionPolicy_EditMode.log",
+        "xml": "08A1_v002_CollisionPolicy_EditMode.xml",
+        "total": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "interpretation": "All 37 focused cases were covered successfully across the original run and corrected focused rerun, but the final 586-collider payload still requires a fresh cohesive rerun."
+    },
+    "playMode": {
+      "result": "PassedForPreFinalSnapshot",
+      "log": "08A1_v002_PlayMode.log",
+      "xml": "08A1_v002_PlayMode.xml",
+      "total": 14,
+      "passed": 14,
+      "failed": 0
+    },
+    "dotnetBuilds": [
+      {
+        "project": "MSC.Editor.csproj",
+        "result": "Passed",
+        "errors": 0
+      },
+      {
+        "project": "MSC.Tests.EditMode.csproj",
+        "result": "Passed",
+        "errors": 0,
+        "note": "Existing non-blocking warnings were retained; zero-warning status is not claimed."
+      },
+      {
+        "project": "MSC.Tests.PlayMode.csproj",
+        "result": "Passed",
+        "errors": 0
+      },
+      {
+        "project": "MSC.Weather.Enviro3Integration.Editor.csproj",
+        "result": "Passed",
+        "errors": 0,
+        "note": "Existing vendor warnings were retained; zero-warning status is not claimed."
+      },
+      {
+        "project": "MSC.Weather.Production.Tests.PlayMode.csproj",
+        "result": "Passed",
+        "errors": 0
+      }
+    ]
+  },
+  "finalArtifact": {
+    "status": "GeneratedAndValidated",
+    "collisionPolicyVersion": "08A1.6",
+    "generatedColliderCount": 586,
+    "generatedColliderTypes": {
+      "MeshCollider": 276,
+      "BoxCollider": 279,
+      "CapsuleCollider": 31,
+      "SphereCollider": 0
+    },
+    "generatedDispositions": {
+      "IncludedSafetyCriticalGlobal": 32,
+      "IncludedStaticWorldSolid": 554,
+      "ExcludedCategory": 2,
+      "ExcludedDoorRequiresBinding": 79
+    },
+    "reviewedSemanticOverrides": [
+      "Two wells are static MeshCollider obstacles",
+      "Two cable reels are static BoxCollider obstacles"
+    ],
+    "ownershipFingerprintSha256": "82797c6818ed54ded649bb40fb04cbdcd3575f5d5194350e428854614f1b9b8d",
+    "collisionDispositionSha256": "0b3986725d1d88740639e5d660ea68208777c184ca6b0ceecf11e665896ad665",
+    "ownershipMatrixSha256": "70799431f81b52f4ad71ba7e527bd504d0340a8212f83fe45601408e7d5e0d67",
+    "legacyObjectCellManifestSha256": "59e3d804fa00eb81bacd07a2c5c3bce76adfe5a79be4ffecff12dc00d57169e6",
+    "presentationFingerprintSha256": "890ee927163a4fe310e97951580895e4abde6ea44011f358e75fa3a869725f31",
+    "materialTextureManifestSha256": "88da91f69976197c036435743de5a76c53523ab99b4753049152469f5dcfbb8b",
+    "automatedEvidenceBundleSha256": "4a9f506e50da6acbabda95abaaebe82b8abc1fec7772822220da6c1d3439ecb0"
+  },
+  "finalAutomatedGates": [
+    {
+      "gate": "Final candidate regeneration",
+      "result": "Passed",
+      "log": "08A1_v002_CellizationBuild_r6.log",
+      "colliders": 586
+    },
+    {
+      "gate": "Final deterministic count and fingerprint comparison",
+      "result": "Passed",
+      "ownershipFingerprintSha256": "82797c6818ed54ded649bb40fb04cbdcd3575f5d5194350e428854614f1b9b8d"
+    },
+    {
+      "gate": "Final cellization validator",
+      "result": "Passed",
+      "log": "08A1_v002_CellizationValidation_r6.log"
+    },
+    {
+      "gate": "Final focused EditMode suite",
+      "result": "Passed",
+      "xml": "08A1_v002_EditMode_r6.xml",
+      "total": 41,
+      "passed": 41,
+      "failed": 0
+    },
+    {
+      "gate": "Final focused PlayMode suite",
+      "result": "Passed",
+      "xml": "08A1_v002_PlayMode_r6.xml",
+      "total": 14,
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "gate": "Final production environment validation",
+      "result": "Passed",
+      "log": "08A1_v002_EnvironmentBuild_r6.log",
+      "builderVersion": "1.0.3"
+    }
+  ],
+  "localWorkspaceActivation": {
+    "result": "Passed",
+    "rollbackBackupLabel": "DonorWorldBaseline-v001_before_08A1_20260720",
+    "cellizationBuildLog": "08A1_MainLocalCandidate_CellizationBuild_r1.log",
+    "cellizationValidationLog": "08A1_MainLocalCandidate_CellizationValidation_r1.log",
+    "environmentBuildLog": "08A1_MainLocalCandidate_EnvironmentBuild_r1.log",
+    "editModeResult": "41/41 Passed",
+    "playModeResult": "14/14 Passed",
+    "uiEditModeResult": "33/33 Passed",
+    "uiPlayModeResult": "11/11 Passed",
+    "evidenceBundleSha256": "bca4221dce001ea9842c41bf91af53fa17d38f0f4ee7185282f1c8640a4792dc"
+  },
+  "manualValidation": {
+    "result": "HumanAcceptancePending",
+    "completed": false,
+    "doorsExpectedToBlockPlayer": false,
+    "requiredChecks": [
+      "No roof shadow/sky leakage in the house and garage under changing daylight.",
+      "Temporary terrain and road materials no longer look metallic, self-lit or incorrectly black under normal daylight.",
+      "Player collides with house and shop shells, windows, tree trunks, fences, utility poles, rocks, bridges, wells and cable reels.",
+      "Doors remain intentionally pass-through and do not become invisible static blockers.",
+      "NoRain and other weather shelter volumes do not become physical blockers.",
+      "Dynamic props, actors and live vehicles do not become frozen static colliders.",
+      "Cell boundary unload/reload preserves the expected obstacle set without duplicates or missing collision."
+    ],
+    "observations": [],
+    "approvedBy": null,
+    "approvedDate": null
+  },
+  "knownDifferences": [
+    {
+      "severity": "P2",
+      "id": "DONOR_COLLISION_AUDIENCE_LAYER_MAPPING",
+      "status": "OpenKnownDifference",
+      "description": "Donor PlayerOnlyColl, CollCar and TireCol audiences are collapsed into WorldSolid for this bounded candidate."
+    },
+    {
+      "severity": "AcceptedTemporaryLimitation",
+      "id": "DOORS_WITHOUT_COLLISION",
+      "status": "ExplicitlyAcceptedForCandidate",
+      "description": "Doors remain pass-through until the later project-owned door interaction mechanic."
+    }
+  ],
+  "promotionDecision": {
+    "result": "NotPromoted",
+    "reason": "The final 586-collider artifact and automated gates pass; explicit human playtest acceptance is still pending."
+  }
+}

@@ -314,6 +314,10 @@ Targeted combined suite
 DEV API tests, integration, legacy-wetness и authoring repeatability. Отдельный read-only shelter measurement tool доступен
 через `Measure Frozen Home Shelter Candidates` и пишет
 `Logs/M07C_ProductionShelterMeasurements.json`; он не редактирует donor scene.
+Shelter acceptance закреплён по каноническому fingerprint восьми выбранных
+renderer bounds. Полный SHA cell scene остаётся audit-only metadata, поэтому
+bounded regeneration материалов, теней и коллизий не требует ложной миграции
+shelter contract при неизменной геометрии дома и гаража.
 
 Gameplay-strike authoring, canonical anchor/route automation, performance
 capture, geometry diff и public shipping audit не подменяются этим окном и

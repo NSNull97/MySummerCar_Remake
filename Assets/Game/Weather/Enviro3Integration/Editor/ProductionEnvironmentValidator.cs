@@ -189,10 +189,31 @@ namespace MSC.Weather.Enviro3Integration.Editor
                     Enviro3ProductionVisualPolicy
                         .MinimumFogMeanFreePathMeters ||
                 !profile.TryGet(out Exposure exposure) ||
-                exposure.mode.value != ExposureMode.Fixed)
+                exposure.mode.value != ExposureMode.Fixed ||
+                !profile.TryGet(
+                    out IndirectLightingController indirectLighting) ||
+                !indirectLighting.active ||
+                !indirectLighting
+                    .indirectDiffuseLightingMultiplier.overrideState ||
+                !Mathf.Approximately(
+                    indirectLighting.indirectDiffuseLightingMultiplier.value,
+                    Enviro3ProductionVisualPolicy
+                        .NeutralIndirectLightingMultiplier) ||
+                !indirectLighting.reflectionLightingMultiplier.overrideState ||
+                !Mathf.Approximately(
+                    indirectLighting.reflectionLightingMultiplier.value,
+                    Enviro3ProductionVisualPolicy
+                        .IndirectReflectionLightingMultiplier) ||
+                !indirectLighting
+                    .reflectionProbeIntensityMultiplier.overrideState ||
+                !Mathf.Approximately(
+                    indirectLighting.reflectionProbeIntensityMultiplier.value,
+                    Enviro3ProductionVisualPolicy
+                        .IndirectReflectionProbeIntensityMultiplier))
             {
                 throw new InvalidOperationException(
-                    "Production HDRP profile has an invalid Enviro sky/fog/exposure stack.");
+                    "Production HDRP profile has an invalid " +
+                    "Enviro sky/fog/exposure/indirect-lighting stack.");
             }
         }
 

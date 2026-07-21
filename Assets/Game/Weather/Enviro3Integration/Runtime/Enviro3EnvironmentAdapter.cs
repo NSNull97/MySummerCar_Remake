@@ -71,6 +71,7 @@ namespace MSC.Weather.Enviro3Integration
         private VolumeProfile runtimeVolumeProfile;
         private Exposure runtimeExposure;
         private Fog runtimeFog;
+        private IndirectLightingController runtimeIndirectLighting;
         private EnviroWeatherType runtimeDrizzle;
         private EnviroWeatherType runtimeRain;
         private EnviroWeatherType runtimeHeavyRain;
@@ -130,11 +131,16 @@ namespace MSC.Weather.Enviro3Integration
 
         public bool HasIsolatedRuntimeVolumeTargets =>
             runtimeVolumeProfile != null &&
+            runtimeExposure != null &&
+            runtimeFog != null &&
+            runtimeIndirectLighting != null &&
             (runtimeVolumeProfile.hideFlags & HideFlags.DontSave) != 0 &&
             manager != null && manager.volumeHDRP != null &&
             manager.volumeHDRP.sharedProfile == runtimeVolumeProfile &&
             manager.Lighting != null &&
             manager.Lighting.exposureHDRP == runtimeExposure &&
+            manager.Lighting.indirectLightingHDRP ==
+                runtimeIndirectLighting &&
             manager.Fog != null && manager.Fog.fogHDRP == runtimeFog;
 
         public bool IsCustomHeightFogDisabled =>
@@ -143,6 +149,22 @@ namespace MSC.Weather.Enviro3Integration
 
         public float ActiveFogMeanFreePathMeters =>
             runtimeFog == null ? float.NaN : runtimeFog.meanFreePath.value;
+
+        public float ActiveExposureEv =>
+            runtimeExposure == null
+                ? float.NaN
+                : runtimeExposure.fixedExposure.value;
+
+        public float ActiveIndirectDiffuseMultiplier =>
+            runtimeIndirectLighting == null
+                ? float.NaN
+                : runtimeIndirectLighting
+                    .indirectDiffuseLightingMultiplier.value;
+
+        public float ActiveIndirectReflectionMultiplier =>
+            runtimeIndirectLighting == null
+                ? float.NaN
+                : runtimeIndirectLighting.reflectionLightingMultiplier.value;
 
         public float ActiveVolumetricLightDimmer =>
             manager == null || manager.Fog == null ||
@@ -1193,7 +1215,8 @@ namespace MSC.Weather.Enviro3Integration
             if (!hasAppliedVisualPolicy || manager == null ||
                 manager.Lighting == null || manager.Lighting.Settings == null ||
                 manager.Fog == null || manager.Fog.Settings == null ||
-                runtimeExposure == null || runtimeFog == null)
+                runtimeExposure == null || runtimeFog == null ||
+                runtimeIndirectLighting == null)
             {
                 return;
             }
@@ -1225,6 +1248,20 @@ namespace MSC.Weather.Enviro3Integration
             runtimeExposure.active = true;
             runtimeExposure.mode.Override(ExposureMode.Fixed);
             runtimeExposure.fixedExposure.Override(currentExposureEv);
+
+            runtimeIndirectLighting.active = true;
+            runtimeIndirectLighting.indirectDiffuseLightingMultiplier.Override(
+                Enviro3ProductionVisualPolicy
+                    .CalculateIndirectDiffuseMultiplier(
+                        manager.solarTime,
+                        lastExposureContext));
+            runtimeIndirectLighting.reflectionLightingMultiplier.Override(
+                Enviro3ProductionVisualPolicy
+                    .IndirectReflectionLightingMultiplier);
+            runtimeIndirectLighting
+                .reflectionProbeIntensityMultiplier.Override(
+                    Enviro3ProductionVisualPolicy
+                        .IndirectReflectionProbeIntensityMultiplier);
 
             float meanFreePath =
                 Enviro3ProductionVisualPolicy.CalculateFogMeanFreePathMeters(
@@ -1855,10 +1892,12 @@ namespace MSC.Weather.Enviro3Integration
             }
 
             if (!runtimeVolumeProfile.TryGet(out runtimeExposure) ||
-                !runtimeVolumeProfile.TryGet(out runtimeFog))
+                !runtimeVolumeProfile.TryGet(out runtimeFog) ||
+                !runtimeVolumeProfile.TryGet(out runtimeIndirectLighting))
             {
                 throw new InvalidOperationException(
-                    "The production HDRP volume requires Exposure and Fog components.");
+                    "The production HDRP volume requires Exposure, Fog, " +
+                    "and Indirect Lighting Controller components.");
             }
 
             manager.volumeHDRP.sharedProfile = runtimeVolumeProfile;
@@ -1867,7 +1906,8 @@ namespace MSC.Weather.Enviro3Integration
         private void RebindRuntimeVolumeTargets()
         {
             if (runtimeVolumeProfile == null || runtimeExposure == null ||
-                runtimeFog == null || manager == null)
+                runtimeFog == null || runtimeIndirectLighting == null ||
+                manager == null)
             {
                 return;
             }
@@ -1881,12 +1921,8 @@ namespace MSC.Weather.Enviro3Integration
             if (manager.Lighting != null)
             {
                 manager.Lighting.exposureHDRP = runtimeExposure;
-                manager.Lighting.indirectLightingHDRP = null;
-                if (runtimeVolumeProfile.TryGet(
-                        out IndirectLightingController indirectLighting))
-                {
-                    manager.Lighting.indirectLightingHDRP = indirectLighting;
-                }
+                manager.Lighting.indirectLightingHDRP =
+                    runtimeIndirectLighting;
             }
 
             if (manager.Fog != null)
@@ -2039,6 +2075,7 @@ namespace MSC.Weather.Enviro3Integration
             runtimeVolumeProfile = null;
             runtimeExposure = null;
             runtimeFog = null;
+            runtimeIndirectLighting = null;
             runtimeIsolationPrepared = false;
 
             if (hasPreviousRenderSettingsReflectionIntensity &&

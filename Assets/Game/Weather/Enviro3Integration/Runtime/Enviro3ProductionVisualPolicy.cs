@@ -18,6 +18,11 @@ namespace MSC.Weather.Enviro3Integration
         public const float MinimumNightExposureEv = 7.5f;
         public const float FullNightSolarTime = 0.43f;
         public const float DaylightSolarTime = 0.5f;
+        public const float NeutralIndirectLightingMultiplier = 1f;
+        public const float ExteriorDaylightIndirectDiffuseMultiplier = 1.15f;
+        public const float ShelteredIndirectDiffuseUpliftFraction = 0.5f;
+        public const float IndirectReflectionLightingMultiplier = 1f;
+        public const float IndirectReflectionProbeIntensityMultiplier = 1f;
 
         // Art-directed solar calibration for the approved summer clock. These
         // values target the visible cycle and are not an in-world GPS location.
@@ -97,6 +102,49 @@ namespace MSC.Weather.Enviro3Integration
                 visibilityMeters / VisibilityExtinctionCoefficient,
                 MinimumFogMeanFreePathMeters,
                 MaximumFogMeanFreePathMeters);
+        }
+
+        public static float CalculateIndirectDiffuseMultiplier(
+            float solarTime,
+            WeatherExposureContext context)
+        {
+            if (!float.IsFinite(solarTime))
+            {
+                throw new ArgumentOutOfRangeException(nameof(solarTime));
+            }
+
+            float daylightBlend = Mathf.InverseLerp(
+                FullNightSolarTime,
+                DaylightSolarTime,
+                solarTime);
+            float daylightWeight = Mathf.SmoothStep(
+                0f,
+                1f,
+                daylightBlend);
+            float contextUpliftFraction;
+            switch (context)
+            {
+                case WeatherExposureContext.Exterior:
+                    contextUpliftFraction = 1f;
+                    break;
+                case WeatherExposureContext.Sheltered:
+                    contextUpliftFraction =
+                        ShelteredIndirectDiffuseUpliftFraction;
+                    break;
+                case WeatherExposureContext.Interior:
+                    contextUpliftFraction = 0f;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(context));
+            }
+
+            float daylightUplift =
+                ExteriorDaylightIndirectDiffuseMultiplier -
+                NeutralIndirectLightingMultiplier;
+            return NeutralIndirectLightingMultiplier +
+                   daylightUplift *
+                   contextUpliftFraction *
+                   daylightWeight;
         }
 
         public static float GetExposureOffsetEv(

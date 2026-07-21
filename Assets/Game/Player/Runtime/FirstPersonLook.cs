@@ -1,9 +1,10 @@
+using MSC.Core.Lifecycle;
 using UnityEngine;
 
 namespace MSC.Player
 {
     [DisallowMultipleComponent]
-    public sealed class FirstPersonLook : MonoBehaviour
+    public sealed class FirstPersonLook : MonoBehaviour, IPlayerLookSettingsSink
     {
         [SerializeField]
         private Transform yawRoot;
@@ -24,6 +25,10 @@ namespace MSC.Player
         private bool lockCursorOnEnable = true;
 
         private float pitchDegrees;
+        private float mouseSensitivityMultiplier = 1f;
+        private float gamepadSensitivityMultiplier = 1f;
+        private bool invertMouseY;
+        private bool invertGamepadY;
 
         public void ApplyLook(Vector2 lookInput, bool isPointerDelta, float deltaTime)
         {
@@ -35,9 +40,15 @@ namespace MSC.Player
             Vector2 degrees = LookInputScaling.ToRotationDegrees(
                 lookInput,
                 isPointerDelta,
-                mouseSensitivityDegreesPerPixel,
-                gamepadSpeedDegreesPerSecond,
+                mouseSensitivityDegreesPerPixel * mouseSensitivityMultiplier,
+                gamepadSpeedDegreesPerSecond * gamepadSensitivityMultiplier,
                 deltaTime);
+
+            bool invertY = isPointerDelta ? invertMouseY : invertGamepadY;
+            if (invertY)
+            {
+                degrees.y = -degrees.y;
+            }
 
             yawRoot.Rotate(0f, degrees.x, 0f, Space.World);
             pitchDegrees = Mathf.Clamp(pitchDegrees - degrees.y, -pitchLimitDegrees, pitchLimitDegrees);
@@ -49,6 +60,24 @@ namespace MSC.Player
             yawRoot = root;
             pitchPivot = pivot;
             lockCursorOnEnable = shouldLockCursor;
+        }
+
+        public void ApplyLookSettings(
+            float configuredMouseSensitivityMultiplier,
+            bool configuredInvertMouseY,
+            float configuredGamepadSensitivityMultiplier,
+            bool configuredInvertGamepadY)
+        {
+            mouseSensitivityMultiplier = Mathf.Clamp(
+                configuredMouseSensitivityMultiplier,
+                0.05f,
+                10f);
+            invertMouseY = configuredInvertMouseY;
+            gamepadSensitivityMultiplier = Mathf.Clamp(
+                configuredGamepadSensitivityMultiplier,
+                0.05f,
+                10f);
+            invertGamepadY = configuredInvertGamepadY;
         }
 
         private void OnEnable()

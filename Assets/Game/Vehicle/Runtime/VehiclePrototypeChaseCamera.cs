@@ -60,7 +60,10 @@ namespace MSC.Vehicle
                 return;
             }
 
-            float deltaSeconds = Mathf.Max(0f, Time.unscaledDeltaTime);
+            // Presentation follows the gameplay clock so a UI pause freezes the
+            // camera together with vehicle physics instead of visibly settling
+            // while the pause menu is open.
+            float deltaSeconds = Mathf.Max(0f, Time.deltaTime);
             float positionBlend = 1f - Mathf.Exp(-positionSharpness * deltaSeconds);
             float rotationBlend = 1f - Mathf.Exp(-rotationSharpness * deltaSeconds);
             transform.position = Vector3.Lerp(transform.position, desiredPosition, positionBlend);

@@ -1,9 +1,10 @@
 {
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "sourceRevisionId": "msc-world-baseline-04a1.1-c3f2f337",
     "sourceScene": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_0_-3_Legacy.unity",
-    "sourceSceneSha256": "6253afec3050187d41bab2d7417238a61341d86c55898c185eab319d85fee3e8",
-    "derivationPolicy": "frozen-renderer-aabb-inset-v1",
+    "sourceSceneSha256": "cc99d2671f8beefe074a3cde693bf65d0bb7fa541fc72735e31dd43a8c6834c8",
+    "sourceGeometryFingerprintSha256": "508b155f7df7c04622952b2b1e63dadcce1a043030c022c271930a54e5dea400",
+    "derivationPolicy": "frozen-renderer-aabb-inset-v2-geometry-fingerprint",
     "horizontalInsetMeters": 0.10000000149011612,
     "floorInsetMeters": 0.05000000074505806,
     "ceilingInsetMeters": 0.10000000149011612,

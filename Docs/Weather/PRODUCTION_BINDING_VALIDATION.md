@@ -146,8 +146,13 @@ Builder теперь выводит два Interior AABB для home house/garag
 bounds frozen `World_Cell_0_-3_Legacy.unity` по восьми stable source IDs. Stable
 IDs: `weather.shelter.home.house.interior.v1` и
 `weather.shelter.home.garage.interior.v1`; policy
-`frozen-renderer-aabb-inset-v1`, XZ inset `0.10 m`, floor `+0.05 m`, ceiling
-`-0.10 m`. Evidence target:
+`frozen-renderer-aabb-inset-v2-geometry-fingerprint`, XZ inset `0.10 m`, floor
+`+0.05 m`, ceiling `-0.10 m`. Acceptance gate закрепляет канонический SHA-256
+восьми выбранных renderer records (`stableId`, provenance path, center и
+extents): `508b155f7df7c04622952b2b1e63dadcce1a043030c022c271930a54e5dea400`.
+Полный SHA сцены сохраняется только как audit metadata: регенерация материалов,
+теней или коллизий не инвалидирует shelter bounds, пока выбранная геометрия не
+изменилась. Evidence target:
 `Assets/Game/Weather/Enviro3Integration/Editor/Evidence/ProductionShelterAuthoringEvidence.json`.
 
 Builder `_13` и validator подтвердили ровно два saved authored volume, exact IDs,

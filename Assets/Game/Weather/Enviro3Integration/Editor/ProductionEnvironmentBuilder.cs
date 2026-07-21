@@ -22,7 +22,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
     /// </summary>
     public static class ProductionEnvironmentBuilder
     {
-        public const string BuilderVersion = "1.0.2";
+        public const string BuilderVersion = "1.0.3";
         public const string BootstrapScenePath =
             "Assets/Game/Bootstrap/Bootstrap.unity";
         public const string BindingsAssetPath =
@@ -279,6 +279,18 @@ namespace MSC.Weather.Enviro3Integration.Editor
             Exposure exposure = GetOrAddVolumeComponent<Exposure>(profile);
             exposure.mode.Override(ExposureMode.Fixed);
             exposure.fixedExposure.Override(10f);
+            IndirectLightingController indirectLighting =
+                GetOrAddVolumeComponent<IndirectLightingController>(profile);
+            indirectLighting.active = true;
+            indirectLighting.indirectDiffuseLightingMultiplier.Override(
+                Enviro3ProductionVisualPolicy
+                    .NeutralIndirectLightingMultiplier);
+            indirectLighting.reflectionLightingMultiplier.Override(
+                Enviro3ProductionVisualPolicy
+                    .IndirectReflectionLightingMultiplier);
+            indirectLighting.reflectionProbeIntensityMultiplier.Override(
+                Enviro3ProductionVisualPolicy
+                    .IndirectReflectionProbeIntensityMultiplier);
 
             for (int index = 0; index < profile.components.Count; index++)
             {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using MSC.Audio.Composition;
+using MSC.Core.Lifecycle;
 using MSC.Weather.Production;
 using MSC.Weather.Wetness;
 using MSC.World.Streaming;
@@ -19,7 +20,8 @@ namespace MSC.Bootstrap
     /// </summary>
     [DefaultExecutionOrder(100)]
     [DisallowMultipleComponent]
-    public sealed class ProductionWorldStreamingInstaller : MonoBehaviour
+    public sealed class ProductionWorldStreamingInstaller : MonoBehaviour,
+        IGameplaySessionGate
     {
         private const int MaximumEnvironmentBackendStartupFrames = 16;
 
@@ -35,7 +37,11 @@ namespace MSC.Bootstrap
         [SerializeField] private float outOfBoundsMinimumY = -64f;
 
         private GameObject spawnedPlayer;
+        private Camera spawnedPlayerCamera;
+        private bool spawnedPlayerCameraInitiallyEnabled;
         private WorldOutOfBoundsRecovery outOfBoundsRecovery;
+        private bool deferGameplayActivation;
+        private bool startupRoutineStarted;
 
         public GameCompositionRoot CompositionRoot => compositionRoot;
         public ProductionWorldStreamingService WorldStreaming => worldStreaming;
@@ -120,6 +126,108 @@ namespace MSC.Bootstrap
             outOfBoundsRecovery;
         public float OutOfBoundsMinimumY => outOfBoundsMinimumY;
         public bool IsReady { get; private set; }
+        public bool IsGameplayPrepared { get; private set; }
+        public bool IsGameplayActive { get; private set; }
+
+        /// <summary>
+        /// Configures the initial front-end policy after this installer's Awake
+        /// has created the player, but before Unity invokes Start. Without a UI
+        /// installer this is never called, preserving the established automatic
+        /// world reveal used by development and validation scenes.
+        /// </summary>
+        public void ConfigureGameplayActivationDeferred(bool deferred)
+        {
+            if (startupRoutineStarted || IsGameplayPrepared || IsGameplayActive)
+            {
+                throw new InvalidOperationException(
+                    "Gameplay activation policy must be configured before world startup begins.");
+            }
+
+            deferGameplayActivation = deferred;
+            if (deferred && spawnedPlayerCamera != null)
+            {
+                // Apply while the player hierarchy is still inactive so there
+                // cannot be a rendered gameplay frame behind the main menu.
+                spawnedPlayerCamera.enabled = false;
+            }
+        }
+
+        public bool TryActivateGameplay(out string failure)
+        {
+            if (IsGameplayActive)
+            {
+                failure = string.Empty;
+                return true;
+            }
+
+            if (!IsGameplayPrepared)
+            {
+                failure = "The production world is not prepared for gameplay activation.";
+                return false;
+            }
+
+            if (spawnedPlayer == null)
+            {
+                failure = "The prepared production player is missing.";
+                return false;
+            }
+
+            if (deferGameplayActivation && spawnedPlayerCamera == null)
+            {
+                failure = "The deferred production gameplay camera is missing.";
+                return false;
+            }
+
+            if (startupMode ==
+                    ProductionWorldStartupMode.ProductionEnvironmentRequired &&
+                (environment == null || !environment.IsWorldRevealReady))
+            {
+                failure = "The production environment is not ready for gameplay activation.";
+                return false;
+            }
+
+            bool environmentStartedHere = false;
+            try
+            {
+                if (!spawnedPlayer.activeSelf)
+                {
+                    spawnedPlayer.SetActive(true);
+                }
+
+                if (startupMode ==
+                        ProductionWorldStartupMode.ProductionEnvironmentRequired &&
+                    !environment.IsSimulationActive)
+                {
+                    environment.BeginSimulationAfterWorldReveal();
+                    environmentStartedHere = true;
+                }
+
+                if (spawnedPlayerCamera != null)
+                {
+                    spawnedPlayerCamera.enabled =
+                        spawnedPlayerCameraInitiallyEnabled;
+                }
+
+                IsGameplayActive = true;
+                failure = string.Empty;
+                return true;
+            }
+            catch (Exception exception)
+            {
+                if (spawnedPlayerCamera != null)
+                {
+                    spawnedPlayerCamera.enabled = false;
+                }
+
+                if (environmentStartedHere)
+                {
+                    environment.StopSimulation();
+                }
+
+                failure = "Gameplay activation failed: " + exception.Message;
+                return false;
+            }
+        }
 
 #if UNITY_EDITOR
         public void ConfigureForAuthoring(
@@ -212,6 +320,10 @@ namespace MSC.Bootstrap
                 PlayerSpawnRotation,
                 compositionRoot.transform);
             spawnedPlayer.SetActive(false);
+            spawnedPlayerCamera =
+                spawnedPlayer.GetComponentInChildren<Camera>(true);
+            spawnedPlayerCameraInitiallyEnabled =
+                spawnedPlayerCamera != null && spawnedPlayerCamera.enabled;
             outOfBoundsRecovery =
                 spawnedPlayer.GetComponent<WorldOutOfBoundsRecovery>();
             if (outOfBoundsRecovery == null)
@@ -228,9 +340,7 @@ namespace MSC.Bootstrap
             if (startupMode ==
                 ProductionWorldStartupMode.ProductionEnvironmentRequired)
             {
-                Camera playerCamera =
-                    spawnedPlayer.GetComponentInChildren<Camera>(true);
-                if (!environment.BindPresentationCamera(playerCamera))
+                if (!environment.BindPresentationCamera(spawnedPlayerCamera))
                 {
                     throw new InvalidOperationException(
                         "Production environment could not bind the spawned player camera: " +
@@ -264,6 +374,7 @@ namespace MSC.Bootstrap
 
         private IEnumerator Start()
         {
+            startupRoutineStarted = true;
             if (startupMode ==
                 ProductionWorldStartupMode.ProductionEnvironmentRequired)
             {
@@ -294,14 +405,22 @@ namespace MSC.Bootstrap
             }
 
             yield return worldStreaming.RefreshNow();
-            spawnedPlayer.SetActive(true);
-            if (startupMode ==
-                ProductionWorldStartupMode.ProductionEnvironmentRequired)
+            IsGameplayPrepared =
+                worldStreaming.HasFocus && !worldStreaming.IsStreaming;
+            if (!IsGameplayPrepared)
             {
-                environment.BeginSimulationAfterWorldReveal();
+                throw new InvalidOperationException(
+                    "Production world preparation completed without a valid streaming focus.");
             }
 
-            IsReady = worldStreaming.HasFocus && !worldStreaming.IsStreaming;
+            spawnedPlayer.SetActive(true);
+            if (!deferGameplayActivation &&
+                !TryActivateGameplay(out string activationFailure))
+            {
+                throw new InvalidOperationException(activationFailure);
+            }
+
+            IsReady = IsGameplayPrepared;
         }
 
         private void ValidateConfiguration()

@@ -4,7 +4,7 @@ namespace MSC.Editor.WorldBaseline
 {
     public static class WorldBaseline06B2Paths
     {
-        public const string GeneratorVersion = "1.1.0-06B2-v5.1";
+        public const string GeneratorVersion = "1.2.0-08A1";
         public const string ProfileId = "donor-feature-parity-06b2";
         public const string GameplayCatalogId =
             "project-gameplay-anchors-06b2";
@@ -46,6 +46,12 @@ namespace MSC.Editor.WorldBaseline
             "Docs/WorldBaseline/LEGACY_OBJECT_CELL_MANIFEST.csv";
         public const string OwnershipMatrix =
             "Docs/WorldBaseline/GLOBAL_AND_CELL_OWNERSHIP_MATRIX.csv";
+        public const string SolidColliderDispositionManifest =
+            "Docs/WorldBaseline/" +
+            "LEGACY_SOLID_COLLIDER_DISPOSITIONS.csv";
+        public const string SolidColliderDispositionManifestSha256 =
+            "Docs/WorldBaseline/" +
+            "LEGACY_SOLID_COLLIDER_DISPOSITIONS.sha256";
         public const string MaterialTextureManifest =
             "Docs/WorldBaseline/LEGACY_MATERIAL_TEXTURE_MANIFEST.csv";
         public const string MaterialShaderMapping =

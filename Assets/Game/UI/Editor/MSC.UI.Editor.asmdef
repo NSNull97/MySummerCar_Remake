@@ -1,0 +1,20 @@
+{
+  "name": "MSC.UI.Editor",
+  "rootNamespace": "MSC.UI.EditorTools",
+  "references": [
+    "MSC.Bootstrap.Runtime",
+    "MSC.UI.Presentation.Runtime",
+    "Unity.InputSystem"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

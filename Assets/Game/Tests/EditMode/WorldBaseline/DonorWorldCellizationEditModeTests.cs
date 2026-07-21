@@ -64,6 +64,21 @@ namespace MSC.Tests.EditMode.WorldBaseline
                     collider.ColliderType == "BoxCollider"),
                 Is.EqualTo(
                     DonorWorldCellizationPlan.ExpectedBoxColliderCount));
+            Assert.That(
+                first.SafeColliders.Count(collider =>
+                    collider.ColliderType == "CapsuleCollider"),
+                Is.EqualTo(
+                    DonorWorldCellizationPlan.ExpectedCapsuleColliderCount));
+            Assert.That(
+                first.SafeColliders.Count(collider =>
+                    collider.ColliderType == "SphereCollider"),
+                Is.EqualTo(
+                    DonorWorldCellizationPlan.ExpectedSphereColliderCount));
+            Assert.That(
+                first.ColliderDispositions.Count,
+                Is.EqualTo(
+                    DonorWorldCellizationPlan
+                        .ExpectedSourceColliderDispositionCount));
 
             Assert.That(
                 first.CellIds,
@@ -227,9 +242,6 @@ namespace MSC.Tests.EditMode.WorldBaseline
             string[] colliderIds = plan.SafeColliders
                 .Select(collider => collider.ColliderStableId)
                 .ToArray();
-            string[] colliderEntityIds = plan.SafeColliders
-                .Select(collider => collider.EntityStableId)
-                .ToArray();
             string[] globalEntityIds = plan.Assignments
                 .Where(assignment => assignment.IsGlobal)
                 .Select(assignment =>
@@ -246,14 +258,305 @@ namespace MSC.Tests.EditMode.WorldBaseline
                 colliderIds.Distinct(StringComparer.Ordinal).Count(),
                 Is.EqualTo(colliderIds.Length));
             Assert.That(
-                colliderEntityIds.Distinct(StringComparer.Ordinal).Count(),
-                Is.EqualTo(colliderEntityIds.Length));
+                plan.SafeColliders
+                    .GroupBy(
+                        collider => collider.EntityStableId,
+                        StringComparer.Ordinal)
+                    .Any(group => group.Count() > 1),
+                Is.True,
+                "The static-world pass must preserve multiple source " +
+                "colliders on one entity.");
             Assert.That(
-                colliderEntityIds.Except(
+                plan.SafeColliders
+                    .Where(collider => collider.IsSafetyCritical)
+                    .Select(collider => collider.EntityStableId)
+                    .Except(
                     globalEntityIds,
                     StringComparer.Ordinal),
                 Is.Empty,
-                "All allowlisted traversal colliders must remain global.");
+                "The immutable 32 safety-critical colliders must remain " +
+                "global.");
+            Assert.That(
+                plan.SafeColliders.Any(collider =>
+                    !collider.IsSafetyCritical &&
+                    !globalEntityIds.Contains(
+                        collider.EntityStableId,
+                        StringComparer.Ordinal)),
+                Is.True,
+                "Ordinary static-world colliders must remain cell-owned.");
+        }
+
+        [Test]
+        public void SolidCollisionPolicy_HasExplicitSafeDispositions()
+        {
+            DonorWorldCellizationPlan plan =
+                DonorWorldCellizationPlan.Load();
+
+            var expectedDispositionCounts =
+                new Dictionary<string, int>(StringComparer.Ordinal)
+                {
+                    ["ExcludedActorOrPlayer"] = 23,
+                    ["ExcludedBuiltinMeshRequiresMapping"] = 24,
+                    ["ExcludedCategory"] = 2,
+                    ["ExcludedDisabled"] = 32,
+                    ["ExcludedDoorRequiresBinding"] = 79,
+                    ["ExcludedDynamicRequiresPresenter"] = 108,
+                    ["ExcludedInactive"] = 212,
+                    ["ExcludedTrigger"] = 414,
+                    ["ExcludedVehicle"] = 7,
+                    ["ExcludedWeatherShelterVolume"] = 1,
+                    ["IncludedSafetyCriticalGlobal"] = 32,
+                    ["IncludedStaticWorldSolid"] = 554
+                };
+            Dictionary<string, int> actualDispositionCounts = plan
+                .ColliderDispositions
+                .GroupBy(record => record.Disposition, StringComparer.Ordinal)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group.Count(),
+                    StringComparer.Ordinal);
+            Assert.That(
+                actualDispositionCounts.Keys,
+                Is.EquivalentTo(expectedDispositionCounts.Keys));
+            foreach (KeyValuePair<string, int> expected in
+                     expectedDispositionCounts)
+            {
+                Assert.That(
+                    actualDispositionCounts[expected.Key],
+                    Is.EqualTo(expected.Value),
+                    expected.Key);
+            }
+
+            var expectedNewStaticObstacleCounts =
+                new Dictionary<string, int>(StringComparer.Ordinal)
+                {
+                    ["StaticProp"] = 67,
+                    ["UtilityPole"] = 12,
+                    ["Rock"] = 3,
+                    ["Landmark"] = 2
+                };
+            foreach (KeyValuePair<string, int> expected in
+                     expectedNewStaticObstacleCounts)
+            {
+                Assert.That(
+                    plan.SafeColliders.Count(collider =>
+                        !collider.IsSafetyCritical &&
+                        string.Equals(
+                            collider.SemanticCategory,
+                            expected.Key,
+                            StringComparison.Ordinal)),
+                    Is.EqualTo(expected.Value),
+                    expected.Key);
+            }
+
+            Dictionary<string, int> remainingExcludedCategories = plan
+                .ColliderDispositions
+                .Where(record => string.Equals(
+                    record.Disposition,
+                    "ExcludedCategory",
+                    StringComparison.Ordinal))
+                .GroupBy(
+                    record => record.SemanticCategory,
+                    StringComparer.Ordinal)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group.Count(),
+                    StringComparer.Ordinal);
+            Assert.That(
+                remainingExcludedCategories,
+                Is.EquivalentTo(new Dictionary<string, int>(
+                    StringComparer.Ordinal)
+                {
+                    ["InteractivePropCandidate"] = 2
+                }));
+
+            Assert.That(
+                plan.SafeColliders
+                    .Where(collider =>
+                        DonorWorldSolidCollisionPolicy
+                            .ReviewedStaticObstacleIds.Contains(
+                                collider.ColliderStableId))
+                    .Select(collider => new
+                    {
+                        collider.ColliderStableId,
+                        collider.SemanticCategory,
+                        collider.CollisionLayerName
+                    }),
+                Is.EquivalentTo(new[]
+                {
+                    new
+                    {
+                        ColliderStableId =
+                            "c278369891f09728f6be083a38529ade",
+                        SemanticCategory = "StaticProp",
+                        CollisionLayerName =
+                            DonorWorldSolidCollisionPolicy.WorldSolidLayer
+                    },
+                    new
+                    {
+                        ColliderStableId =
+                            "43903189d1d95d8161c3a2b2e0a9c329",
+                        SemanticCategory = "StaticProp",
+                        CollisionLayerName =
+                            DonorWorldSolidCollisionPolicy.WorldSolidLayer
+                    },
+                    new
+                    {
+                        ColliderStableId =
+                            "d583dc35d17cb2d7ea5b80aded288d46",
+                        SemanticCategory = "StaticProp",
+                        CollisionLayerName =
+                            DonorWorldSolidCollisionPolicy.WorldSolidLayer
+                    },
+                    new
+                    {
+                        ColliderStableId =
+                            "42a5b4862a5027c15b740ff3c6ba8588",
+                        SemanticCategory = "StaticProp",
+                        CollisionLayerName =
+                            DonorWorldSolidCollisionPolicy.WorldSolidLayer
+                    }
+                }),
+                "The four frozen reviewed scenery obstacles must bypass " +
+                "their broad donor Water/Wire categories as WorldSolid " +
+                "StaticProp colliders.");
+
+            Assert.That(
+                plan.SafeColliders.Count(collider =>
+                    collider.IsSafetyCritical),
+                Is.EqualTo(
+                    DonorWorldCellizationPlan
+                        .ExpectedSafetyCriticalColliderCount));
+            Assert.That(
+                plan.SafeColliders.All(collider =>
+                    collider.SourceEnabled &&
+                    !collider.SourceIsTrigger &&
+                    collider.EffectiveActive &&
+                    !string.IsNullOrWhiteSpace(
+                        collider.CollisionLayerName) &&
+                    !string.IsNullOrWhiteSpace(
+                        collider.PhysicsMaterialAssetPath)),
+                Is.True);
+            Assert.That(
+                plan.SafeColliders.Count(collider =>
+                    collider.ColliderType == "MeshCollider" &&
+                    collider.Convex),
+                Is.EqualTo(78),
+                "The donor source-convex evidence must remain audited.");
+            Assert.That(
+                plan.SafeColliders.All(collider =>
+                    !collider.SourceHasRigidbodyInAncestry),
+                Is.True,
+                "Donor Rigidbody descendants must not become frozen static " +
+                "world blockers.");
+            Assert.That(
+                plan.ColliderDispositions.Count(record =>
+                    record.SourceHasRigidbodyInAncestry &&
+                    record.Disposition ==
+                    "ExcludedDynamicRequiresPresenter"),
+                Is.EqualTo(108));
+            Assert.That(
+                plan.ColliderDispositions.Count(record =>
+                    record.SourceHasRigidbodyInAncestry),
+                Is.EqualTo(
+                    DonorWorldCellizationPlan
+                        .ExpectedSourceRigidbodyAncestryColliderCount),
+                "All source Rigidbody ancestry evidence must remain " +
+                "exported even when an earlier semantic exclusion wins.");
+            Assert.That(
+                plan.ColliderDispositions.Single(record =>
+                    record.ColliderStableId ==
+                    "a66a36c2b13188e125848cbb6c51e4ff")
+                    .Disposition,
+                Is.EqualTo("ExcludedDynamicRequiresPresenter"));
+            Assert.That(
+                plan.ColliderDispositions.Single(record =>
+                    record.ColliderStableId ==
+                    "01edf1c72b36d5862cddb4294bf25e1a")
+                    .Disposition,
+                Is.EqualTo("ExcludedDynamicRequiresPresenter"));
+            Assert.That(
+                plan.ColliderDispositions.Single(record =>
+                    record.ColliderStableId ==
+                    "1eb95efde812a3d7e245026c86bf4b1a")
+                    .Disposition,
+                Is.EqualTo("ExcludedWeatherShelterVolume"));
+            Assert.That(
+                plan.SafeColliders
+                    .Where(collider =>
+                        collider.ColliderType == "MeshCollider")
+                    .All(collider => !collider.RuntimeConvex),
+                Is.True,
+                "Static world meshes must remain non-convex at runtime so " +
+                "PhysX does not silently reject meshes above its convex " +
+                "cooking limit.");
+            Assert.That(
+                plan.SafeColliders.Single(collider =>
+                    collider.ColliderStableId ==
+                    "db8f7c3ab9163a68b6d7cb01bf32f415")
+                    .SemanticCategory,
+                Is.EqualTo("BuildingInterior"),
+                "The sauna indoor walls token must not be classified as a door.");
+            Assert.That(
+                plan.SafeColliders
+                    .Where(collider =>
+                        DonorWorldSolidCollisionPolicy
+                            .ReviewedStaticVehicleObstacleIds.Contains(
+                                collider.ColliderStableId))
+                    .Select(collider => collider.ColliderStableId),
+                Is.EquivalentTo(
+                    DonorWorldSolidCollisionPolicy
+                        .ReviewedStaticVehicleObstacleIds),
+                "Reviewed frozen wrecks and parked vehicles without a donor " +
+                "Rigidbody must remain physical static obstacles.");
+            Assert.That(
+                plan.ColliderDispositions
+                    .Where(record => record.Disposition ==
+                        "ExcludedVehicle")
+                    .All(record =>
+                        record.SourceHasRigidbodyInAncestry),
+                Is.True,
+                "The seven dynamic vehicle rows must remain owned by the " +
+                "future project vehicle presenters.");
+            Assert.That(
+                plan.ColliderDispositions.Any(record =>
+                    record.Disposition ==
+                    "ExcludedDoorRequiresBinding"),
+                Is.True);
+            Assert.That(
+                plan.ColliderDispositions.Any(record =>
+                    record.Disposition ==
+                    "ExcludedBuiltinMeshRequiresMapping"),
+                Is.True);
+            Assert.That(
+                plan.ColliderDispositions
+                    .Where(record =>
+                        record.Disposition is
+                            "ExcludedDoorRequiresBinding" or
+                            "ExcludedActorOrPlayer" or
+                            "ExcludedVehicle" or
+                            "ExcludedDisabled" or
+                            "ExcludedTrigger")
+                    .Any(record => record.IsIncluded),
+                Is.False);
+            Assert.That(
+                LayerMask.NameToLayer(
+                    DonorWorldSolidCollisionPolicy.WorldSurfaceLayer),
+                Is.GreaterThanOrEqualTo(0));
+            Assert.That(
+                LayerMask.NameToLayer(
+                    DonorWorldSolidCollisionPolicy.WorldSolidLayer),
+                Is.GreaterThanOrEqualTo(0));
+            Assert.That(
+                AssetDatabase.LoadAssetAtPath<PhysicsMaterial>(
+                    DonorWorldSolidCollisionPolicy
+                        .WorldSurfacePhysicsMaterial),
+                Is.Not.Null);
+            Assert.That(
+                AssetDatabase.LoadAssetAtPath<PhysicsMaterial>(
+                    DonorWorldSolidCollisionPolicy
+                        .WorldSolidPhysicsMaterial),
+                Is.Not.Null);
         }
 
         [Test]
@@ -297,6 +600,11 @@ namespace MSC.Tests.EditMode.WorldBaseline
                     DonorWorldTextureRole.DetailNormalPacked),
                 Is.EqualTo(8));
             Assert.That(
+                first.Textures.Values.Count(texture =>
+                    texture.Role ==
+                    DonorWorldTextureRole.DetailAlbedoPacked),
+                Is.EqualTo(5));
+            Assert.That(
                 first.PresentationFingerprintSha256,
                 Is.EqualTo(
                     second.PresentationFingerprintSha256));
@@ -315,14 +623,19 @@ namespace MSC.Tests.EditMode.WorldBaseline
         }
 
         [Test]
-        public void GeneratedAuditReports_PreserveAccepted06B2Gate()
+        public void GeneratedAuditReports_Declare08A1CandidateMaterialGate()
         {
             string visualReport = File.ReadAllText(
                 WorldBaselinePaths.ToAbsoluteProjectPath(
                     WorldBaseline06B2Paths.VisualCompletenessReport));
             Assert.That(
                 visualReport,
-                Does.Contain("Automated status: **PASS**."));
+                Does.Contain(
+                    "Automated structural status: **PASS (candidate only)**."));
+            Assert.That(
+                visualReport,
+                Does.Contain(
+                    "Human visual acceptance: **PENDING after deterministic regeneration**."));
             Assert.That(
                 visualReport,
                 Does.Contain(
@@ -348,6 +661,17 @@ namespace MSC.Tests.EditMode.WorldBaseline
             Assert.That(
                 shaderMapping,
                 Does.Contain("Known differences and review disposition"));
+            Assert.That(
+                shaderMapping,
+                Does.Contain(
+                    DonorWorldMaterialTexturePipeline
+                        .CompatibilityPolicyVersion));
+            Assert.That(
+                shaderMapping,
+                Does.Contain("HDMaterial.ValidateMaterial"));
+            Assert.That(
+                shaderMapping,
+                Does.Contain("R=luminance"));
             Assert.That(
                 shaderMapping,
                 Does.Contain("accepted temporary visual debt"));
@@ -667,6 +991,28 @@ namespace MSC.Tests.EditMode.WorldBaseline
                 new Vector2(100f, 60f),
                 0.5f,
                 "PAVEMENT");
+            Texture roadDetailAlbedo = assets.GetConvertedTexture(
+                "ae9770b97d98f9a4393059c619799111",
+                DonorWorldTextureRole.DetailAlbedoPacked);
+            AssertPackedDetailAlbedoChannels(
+                plan.GetTexture(
+                    "ae9770b97d98f9a4393059c619799111",
+                    DonorWorldTextureRole.DetailAlbedoPacked));
+            AssertPackedDetailAlbedo(
+                assets.GetTexturedMaterial(
+                    "bee65a18eecc0bc409361e160d6b1aca"),
+                roadDetailAlbedo,
+                new Vector2(3f, 1f),
+                "DIRTROAD");
+            Texture terrainDetailAlbedo = assets.GetConvertedTexture(
+                "666f9dd8a5e12da439fb91ec437c7283",
+                DonorWorldTextureRole.DetailAlbedoPacked);
+            AssertPackedDetailAlbedo(
+                assets.GetTexturedMaterial(
+                    "da5bc03c62a0f174197555e90357aac9"),
+                terrainDetailAlbedo,
+                new Vector2(800f, 500f),
+                "TERRAIN");
             AssertTemporaryWater(
                 plan.GetMaterial(
                     "bc4c85b54ac6054428d76e49914801cc"),
@@ -763,6 +1109,51 @@ namespace MSC.Tests.EditMode.WorldBaseline
             Assert.That(
                 material.GetTexture("_NormalMap"),
                 Is.Null,
+                label);
+            Assert.That(
+                material.IsKeywordEnabled("_DETAIL_MAP"),
+                Is.True,
+                label);
+            Assert.That(
+                material.IsKeywordEnabled("_NORMALMAP"),
+                Is.True,
+                label);
+        }
+
+        private static void AssertPackedDetailAlbedo(
+            Material material,
+            Texture expectedTexture,
+            Vector2 expectedScale,
+            string label)
+        {
+            Assert.That(material, Is.Not.Null, label);
+            Assert.That(
+                material.GetTexture("_DetailMap"),
+                Is.SameAs(expectedTexture),
+                label);
+            Assert.That(
+                Vector2.Distance(
+                    material.GetTextureScale("_DetailMap"),
+                    expectedScale),
+                Is.LessThan(0.0001f),
+                label);
+            Assert.That(
+                Vector2.Distance(
+                    material.GetTextureOffset("_DetailMap"),
+                    Vector2.zero),
+                Is.LessThan(0.0001f),
+                label);
+            Assert.That(
+                material.GetFloat("_DetailAlbedoScale"),
+                Is.EqualTo(1f).Within(0.0001f),
+                label);
+            Assert.That(
+                material.GetFloat("_DetailNormalScale"),
+                Is.EqualTo(0f).Within(0.0001f),
+                label);
+            Assert.That(
+                material.GetFloat("_DetailSmoothnessScale"),
+                Is.EqualTo(0f).Within(0.0001f),
                 label);
             Assert.That(
                 material.IsKeywordEnabled("_DETAIL_MAP"),
@@ -892,6 +1283,322 @@ namespace MSC.Tests.EditMode.WorldBaseline
                 UnityEngine.Object.DestroyImmediate(source);
                 UnityEngine.Object.DestroyImmediate(packed);
             }
+        }
+
+        private static void AssertPackedDetailAlbedoChannels(
+            DonorWorldTextureConversion conversion)
+        {
+            var source = new Texture2D(
+                2,
+                2,
+                TextureFormat.RGBA32,
+                mipChain: false,
+                linear: true);
+            var packed = new Texture2D(
+                2,
+                2,
+                TextureFormat.RGBA32,
+                mipChain: false,
+                linear: true);
+            try
+            {
+                Assert.That(
+                    ImageConversion.LoadImage(
+                        source,
+                        File.ReadAllBytes(
+                            conversion.SourceAbsolutePath),
+                        markNonReadable: false),
+                    Is.True);
+                Assert.That(
+                    ImageConversion.LoadImage(
+                        packed,
+                        File.ReadAllBytes(
+                            WorldBaselinePaths
+                                .ToAbsoluteProjectPath(
+                                    conversion.GeneratedAssetPath)),
+                        markNonReadable: false),
+                    Is.True);
+                Assert.That(packed.width, Is.EqualTo(source.width));
+                Assert.That(packed.height, Is.EqualTo(source.height));
+
+                Color32[] sourcePixels = source.GetPixels32();
+                Color32[] packedPixels = packed.GetPixels32();
+                int[] samples =
+                {
+                    0,
+                    sourcePixels.Length / 2,
+                    sourcePixels.Length - 1
+                };
+                foreach (int index in samples.Distinct())
+                {
+                    Assert.That(
+                        packedPixels[index].r,
+                        Is.EqualTo(
+                            DonorWorldMaterialTexturePipeline
+                                .GetPackedDetailAlbedoLuminance(
+                                    sourcePixels[index])));
+                    Assert.That(packedPixels[index].g, Is.EqualTo(128));
+                    Assert.That(packedPixels[index].b, Is.EqualTo(128));
+                    Assert.That(packedPixels[index].a, Is.EqualTo(128));
+                }
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(source);
+                UnityEngine.Object.DestroyImmediate(packed);
+            }
+        }
+    }
+
+    public sealed class DonorWorldMaterialCompatibilityPolicyEditModeTests
+    {
+        [Test]
+        public void SurfaceDetailAllowlist_ResolvesEveryFrozenMaterialGuid()
+        {
+            DonorWorldMaterialTexturePlan plan =
+                DonorWorldMaterialTexturePlan.Load();
+            IReadOnlyCollection<string> allowlist =
+                DonorWorldMaterialTexturePipeline
+                    .LegacyDiffuseDetailSurfaceGuids;
+
+            Assert.That(allowlist.Count, Is.EqualTo(9));
+            Assert.That(
+                allowlist.Where(guid =>
+                    !plan.Materials.ContainsKey(guid)),
+                Is.Empty,
+                "Every shader-compatibility allowlist GUID must resolve " +
+                "against the frozen material source set.");
+        }
+
+        [Test]
+        public void ShaderAwarePolicy_DoesNotPromoteLegacyOrSpecularFloats()
+        {
+            DonorWorldSourceMaterial legacy = CreateSource(
+                "legacy",
+                "Legacy Shaders/Bumped Diffuse",
+                DonorWorldCompatibilityClass.OpaqueLit,
+                metallic: 1f,
+                smoothness: 0.9f);
+            DonorWorldSourceMaterial specular = CreateSource(
+                "specular",
+                "Standard (Specular setup)",
+                DonorWorldCompatibilityClass.OpaqueLit,
+                metallic: 0.9f,
+                smoothness: 0.9f);
+            DonorWorldSourceMaterial standard = CreateSource(
+                "standard",
+                "Standard",
+                DonorWorldCompatibilityClass.OpaqueLit,
+                metallic: 0.75f,
+                smoothness: 0.9f);
+
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedMetallic(legacy),
+                Is.Zero);
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedSmoothness(legacy),
+                Is.EqualTo(0.18f).Within(0.0001f));
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedMetallic(specular),
+                Is.Zero);
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedSmoothness(specular),
+                Is.EqualTo(0.35f).Within(0.0001f));
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedMetallic(standard),
+                Is.EqualTo(0.75f).Within(0.0001f));
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedSmoothness(standard),
+                Is.EqualTo(0.55f).Within(0.0001f));
+        }
+
+        [Test]
+        public void SurfaceDetailPolicy_IsFrozenGuidAndShaderBound()
+        {
+            DonorWorldSourceMaterial dirtRoad = CreateSource(
+                "bee65a18eecc0bc409361e160d6b1aca",
+                "Legacy Shaders/Diffuse Detail",
+                DonorWorldCompatibilityClass.OpaqueLit,
+                metallic: 1f,
+                smoothness: 0.9f,
+                detailTextureGuid:
+                    "ae9770b97d98f9a4393059c619799111");
+            DonorWorldSourceMaterial unrelated = CreateSource(
+                "unrelated",
+                "Legacy Shaders/Diffuse Detail",
+                DonorWorldCompatibilityClass.OpaqueLit,
+                metallic: 1f,
+                smoothness: 0.9f,
+                detailTextureGuid:
+                    "ae9770b97d98f9a4393059c619799111");
+
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .TryGetExpectedDetailTexture(
+                        dirtRoad,
+                        out DonorWorldTextureEnvironment texture,
+                        out DonorWorldTextureRole role),
+                Is.True);
+            Assert.That(
+                texture.TextureGuid,
+                Is.EqualTo("ae9770b97d98f9a4393059c619799111"));
+            Assert.That(
+                role,
+                Is.EqualTo(DonorWorldTextureRole.DetailAlbedoPacked));
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedDetailAlbedoScale(dirtRoad),
+                Is.EqualTo(1f));
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedSmoothness(dirtRoad),
+                Is.EqualTo(0.12f).Within(0.0001f));
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .TryGetExpectedDetailAlbedoTexture(
+                        unrelated,
+                        out _),
+                Is.False);
+        }
+
+        [Test]
+        public void FoliageAndEmissionPolicy_IsBoundedAndHdrpConsistent()
+        {
+            DonorWorldSourceMaterial foliage = CreateSource(
+                "foliage",
+                "Nature/Tree Creator Leaves",
+                DonorWorldCompatibilityClass.AlphaClipLit,
+                metallic: 1f,
+                smoothness: 1f,
+                doubleSided: true);
+            DonorWorldSourceMaterial emissive = CreateSource(
+                "emissive",
+                "Car/LightsEmmissive",
+                DonorWorldCompatibilityClass.EmissiveLit,
+                metallic: 1f,
+                smoothness: 1f,
+                emission: new Color(4f, 2f, 1f, 1f));
+
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedMetallic(foliage),
+                Is.Zero);
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedSmoothness(foliage),
+                Is.EqualTo(0.08f).Within(0.0001f));
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedDoubleSidedNormalMode(foliage),
+                Is.EqualTo(0f));
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedDoubleSidedConstants(foliage),
+                Is.EqualTo(new Vector4(-1f, -1f, -1f, 0f)));
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedMetallic(emissive),
+                Is.Zero);
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedSmoothness(emissive),
+                Is.EqualTo(0.2f).Within(0.0001f));
+            Color boundedEmission =
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedEmissionColor(emissive);
+            Assert.That(
+                Mathf.Max(
+                    boundedEmission.r,
+                    Mathf.Max(
+                        boundedEmission.g,
+                        boundedEmission.b)),
+                Is.EqualTo(0.6f).Within(0.0001f));
+        }
+
+        [Test]
+        public void DetailAlbedoLuminance_UsesDeterministicPerceptualWeights()
+        {
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetPackedDetailAlbedoLuminance(
+                        new Color32(255, 0, 0, 255)),
+                Is.EqualTo(54));
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetPackedDetailAlbedoLuminance(
+                        new Color32(0, 255, 0, 255)),
+                Is.EqualTo(182));
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetPackedDetailAlbedoLuminance(
+                        new Color32(0, 0, 255, 255)),
+                Is.EqualTo(19));
+            Assert.That(
+                DonorWorldMaterialTexturePipeline
+                    .GetPackedDetailAlbedoLuminance(
+                        new Color32(128, 128, 128, 255)),
+                Is.EqualTo(128));
+        }
+
+        private static DonorWorldSourceMaterial CreateSource(
+            string guid,
+            string shader,
+            DonorWorldCompatibilityClass compatibilityClass,
+            float metallic,
+            float smoothness,
+            bool doubleSided = false,
+            string detailTextureGuid = null,
+            Color? emission = null)
+        {
+            var textures =
+                new Dictionary<string, DonorWorldTextureEnvironment>(
+                    StringComparer.Ordinal);
+            if (!string.IsNullOrWhiteSpace(detailTextureGuid))
+            {
+                textures.Add(
+                    "_Detail",
+                    new DonorWorldTextureEnvironment(
+                        "_Detail",
+                        detailTextureGuid,
+                        new Vector2(3f, 1f),
+                        Vector2.zero));
+            }
+            var colors = new Dictionary<string, Color>(
+                StringComparer.Ordinal);
+            if (emission.HasValue)
+            {
+                colors.Add("_EmissionColor", emission.Value);
+            }
+
+            return new DonorWorldSourceMaterial(
+                guid,
+                "test/" + guid + ".mat",
+                "test/" + guid + ".mat",
+                new string('0', 64),
+                guid,
+                "shader-guid",
+                shader,
+                "test.shader",
+                new string('1', 64),
+                string.Empty,
+                -1,
+                textures,
+                new Dictionary<string, DonorWorldTextureTransform>(
+                    StringComparer.Ordinal),
+                new Dictionary<string, float>(StringComparer.Ordinal)
+                {
+                    { "_Metallic", metallic },
+                    { "_Glossiness", smoothness }
+                },
+                colors,
+                compatibilityClass,
+                doubleSided);
         }
     }
 }

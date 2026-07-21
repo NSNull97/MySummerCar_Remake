@@ -390,6 +390,19 @@ MonoBehaviour:
   opacity:
     m_OverrideState: 1
     m_Value: 1
+--- !u!114 &-7711822669036758065
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2f1f84926178344e86b6d5fe65e258f, type: 3}
+  m_Name: EnviroHDRPRenderer
+  m_EditorClassIdentifier: Enviro3.Runtime::Enviro.EnviroHDRPRenderer
+  active: 1
 --- !u!114 &-7342553522648369241
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -547,6 +560,49 @@ MonoBehaviour:
   m_SampleCount:
     m_OverrideState: 1
     m_Value: 8
+--- !u!114 &-6886293834776066274
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23fe585513df7b448c20370fa8a8671, type: 3}
+  m_Name: EnviroHDRPSky
+  m_EditorClassIdentifier: Enviro3.Runtime::UnityEngine.Rendering.HighDefinition.EnviroHDRPSky
+  active: 1
+  rotation:
+    m_OverrideState: 1
+    m_Value: 0
+  skyIntensityMode:
+    m_OverrideState: 1
+    m_Value: 0
+  exposure:
+    m_OverrideState: 1
+    m_Value: 0
+  multiplier:
+    m_OverrideState: 1
+    m_Value: 1
+  upperHemisphereLuxValue:
+    m_OverrideState: 1
+    m_Value: 1
+  upperHemisphereLuxColor:
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0, z: 0}
+  desiredLuxValue:
+    m_OverrideState: 1
+    m_Value: 20000
+  updateMode:
+    m_OverrideState: 1
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 1
+    m_Value: 0
+  includeSunInBaking:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &-6727285650611918693
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1441,6 +1497,8 @@ MonoBehaviour:
   - {fileID: -6153209378566648665}
   - {fileID: -517279007885979241}
   - {fileID: -6719769394068205946}
+  - {fileID: -7711822669036758065}
+  - {fileID: -6886293834776066274}
 --- !u!114 &448115243408767295
 MonoBehaviour:
   m_ObjectHideFlags: 3

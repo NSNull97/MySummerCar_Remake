@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "diffId": "DonorWorldBaseline-v001__DonorWorldBaseline-v002",
+  "recordedDate": "2026-07-20",
+  "diffState": "DraftCandidateDiff",
+  "from": {
+    "revisionId": "DonorWorldBaseline-v001",
+    "freezeState": "Frozen",
+    "acceptanceState": "Accepted",
+    "promotionState": "ActiveAcceptedBaseline"
+  },
+  "to": {
+    "revisionId": "DonorWorldBaseline-v002",
+    "recordState": "Candidate",
+    "promotionState": "NotPromoted",
+    "acceptanceState": "HumanAcceptancePending",
+    "finalizationState": "AutomatedValidationPassed",
+    "localWorkspaceState": "ActiveForManualValidation"
+  },
+  "sourceIdentity": {
+    "changed": false,
+    "sourceRevisionId": "msc-world-baseline-04a1.1-c3f2f337",
+    "sourceSceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4",
+    "sourceFilesFingerprintSha256": "72567486f72bd9106eadc0ba87aadb290accefdcee9e6517ffe30c2218d5ceec"
+  },
+  "invariants": {
+    "eligibleEntities": {
+      "v001": 3842,
+      "v002Expected": 3842
+    },
+    "globalEntities": {
+      "v001": 88,
+      "v002Expected": 88
+    },
+    "cellOwnedEntities": {
+      "v001": 3754,
+      "v002Expected": 3754
+    },
+    "renderers": {
+      "v001": 2605,
+      "v002Expected": 2605
+    },
+    "cellScenes": {
+      "v001": 49,
+      "v002Expected": 49
+    },
+    "gameplayAnchors": {
+      "v001": 15,
+      "v002Expected": 15
+    },
+    "coordinatesChanged": false,
+    "worldBoundsChanged": false,
+    "stableEntityIdsChanged": false,
+    "replacementKeysChanged": false,
+    "donorHierarchyMadeAuthoritative": false
+  },
+  "toolVersionChanges": {
+    "cellizationGenerator": {
+      "from": "1.1.0-06B2-v5.1",
+      "to": "1.2.0-08A1"
+    },
+    "presentationGenerator": {
+      "from": "06B2-v5.1.5",
+      "to": "06B2-v5.2-08A1"
+    },
+    "materialCompatibilityPolicy": {
+      "from": "Legacy v5.1.5 compatibility mapping",
+      "to": "08A1-temporary-hdrp-compatibility-v2"
+    },
+    "collisionPolicy": {
+      "from": "32-item safety allowlist",
+      "to": "08A1.6"
+    },
+    "productionEnvironmentBuilder": {
+      "from": "1.0.2-or-earlier accepted profile",
+      "to": "1.0.3"
+    }
+  },
+  "presentationChanges": {
+    "presentationFingerprint": {
+      "from": "e337f9d1b5a0344473bd0f096cdb9e0dbf8da321ecb428ebc17da4f7dd8831fd",
+      "to": "890ee927163a4fe310e97951580895e4abde6ea44011f358e75fa3a869725f31"
+    },
+    "materialTextureManifestSha256": {
+      "from": "cfbce4faf14eac19658cbad7117b9a794de3009a664f438d3faa28a80ecc4192",
+      "to": "88da91f69976197c036435743de5a76c53523ab99b4753049152469f5dcfbb8b"
+    },
+    "changes": [
+      "Bounded metallic, smoothness and emission conversion for temporary donor materials.",
+      "Correct HDRP detail-albedo packing for legacy diffuse-detail luminance.",
+      "Explicit renderer shadow cast/receive policy and two-sided roof compatibility.",
+      "Light probe usage on lit temporary renderers.",
+      "Neutral reflection ownership with a bounded exterior daylight indirect-diffuse uplift."
+    ]
+  },
+  "collisionChanges": {
+    "countState": "GeneratedAndValidated",
+    "v001ColliderCount": 32,
+    "v002ExpectedColliderCount": 586,
+    "expectedDelta": 554,
+    "v002ExpectedTypes": {
+      "MeshCollider": 276,
+      "BoxCollider": 279,
+      "CapsuleCollider": 31,
+      "SphereCollider": 0
+    },
+    "v002ExpectedDispositions": {
+      "IncludedSafetyCriticalGlobal": 32,
+      "IncludedStaticWorldSolid": 554,
+      "ExcludedActorOrPlayer": 23,
+      "ExcludedBuiltinMeshRequiresMapping": 24,
+      "ExcludedCategory": 2,
+      "ExcludedDisabled": 32,
+      "ExcludedDoorRequiresBinding": 79,
+      "ExcludedDynamicRequiresPresenter": 108,
+      "ExcludedInactive": 212,
+      "ExcludedTrigger": 414,
+      "ExcludedVehicle": 7,
+      "ExcludedWeatherShelterVolume": 1
+    },
+    "reviewedPolicyDeltaFromPreFinal582Snapshot": [
+      "Add two reviewed wells as static MeshCollider obstacles.",
+      "Add two reviewed cable reels as static BoxCollider obstacles.",
+      "Move four rows from ExcludedCategory to IncludedStaticWorldSolid."
+    ],
+    "doors": {
+      "v001": "No complete door collision transfer",
+      "v002": "All 79 door-like rows explicitly excluded from static collision",
+      "decision": "IntentionalNoCollisionUntilProjectOwnedDoorMechanic",
+      "acceptanceDate": "2026-07-20"
+    },
+    "dynamicSafety": [
+      "Full ParentObjectId ancestry is checked against the hash-locked placement graph.",
+      "All 108 would-be static rows under Rigidbody ancestry are excluded for later project-owned presenters.",
+      "NoRain is explicitly excluded as a weather shelter volume.",
+      "Static world MeshColliders are generated non-convex; source convex state remains auditable."
+    ]
+  },
+  "hashes": {
+    "ownershipFingerprintV001": "1abf88e8047c2446e4ecdc1bdc894738171fac0f4ac9651be75470e985bbf28b",
+    "ownershipFingerprintV002": "82797c6818ed54ded649bb40fb04cbdcd3575f5d5194350e428854614f1b9b8d",
+    "collisionDispositionSha256V002": "0b3986725d1d88740639e5d660ea68208777c184ca6b0ceecf11e665896ad665",
+    "ownershipMatrixSha256V002": "70799431f81b52f4ad71ba7e527bd504d0340a8212f83fe45601408e7d5e0d67",
+    "legacyObjectCellManifestSha256V002": "59e3d804fa00eb81bacd07a2c5c3bce76adfe5a79be4ffecff12dc00d57169e6",
+    "automatedEvidenceBundleSha256V002": "4a9f506e50da6acbabda95abaaebe82b8abc1fec7772822220da6c1d3439ecb0"
+  },
+  "preFinalSnapshot": {
+    "status": "SupersededByFinalArtifact",
+    "colliderCount": 582,
+    "ownershipFingerprintSha256": "b56e265d759663e0d6731437e23a48b2af842b8bf0e6801b0e77f6ef3aca6cf2",
+    "collisionDispositionSha256": "d22edc682a35c526c7e47031da9949253e6977fe1f05e61948478b50298a4e24"
+  },
+  "knownDifferences": [
+    {
+      "severity": "P2",
+      "id": "DONOR_COLLISION_AUDIENCE_LAYER_MAPPING",
+      "description": "Donor PlayerOnlyColl, CollCar and TireCol distinctions are collapsed into WorldSolid."
+    },
+    {
+      "severity": "AcceptedTemporaryLimitation",
+      "id": "DOORS_WITHOUT_COLLISION",
+      "description": "Doors are intentionally pass-through pending the later project-owned door mechanic."
+    },
+    {
+      "severity": "TemporaryDirectImportDebt",
+      "id": "LEGACY_PRESENTATION_NOT_PRODUCTION_READY",
+      "description": "The hardened baseline remains temporary private Phase 1 donor presentation, not production art."
+    }
+  ],
+  "validation": {
+    "automatedResult": "PassedFinalCandidate",
+    "localWorkspaceActivationResult": "Passed",
+    "localWorkspaceEvidenceBundleSha256": "bca4221dce001ea9842c41bf91af53fa17d38f0f4ee7185282f1c8640a4792dc",
+    "manualResult": "HumanAcceptancePending",
+    "promotionDecision": "NotPromoted"
+  }
+}

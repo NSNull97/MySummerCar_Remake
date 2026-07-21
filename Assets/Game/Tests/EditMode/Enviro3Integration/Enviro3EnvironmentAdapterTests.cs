@@ -125,6 +125,74 @@ namespace MSC.Tests.EditMode.Enviro3Integration
         }
 
         [Test]
+        public void ProductionVisualPolicy_RaisesOnlyDaylightDiffuseIndirectByContext()
+        {
+            float fullNightExterior =
+                Enviro3ProductionVisualPolicy
+                    .CalculateIndirectDiffuseMultiplier(
+                        0.4f,
+                        WeatherExposureContext.Exterior);
+            float twilightExterior =
+                Enviro3ProductionVisualPolicy
+                    .CalculateIndirectDiffuseMultiplier(
+                        0.465f,
+                        WeatherExposureContext.Exterior);
+            float daylightExterior =
+                Enviro3ProductionVisualPolicy
+                    .CalculateIndirectDiffuseMultiplier(
+                        0.5f,
+                        WeatherExposureContext.Exterior);
+            float daylightSheltered =
+                Enviro3ProductionVisualPolicy
+                    .CalculateIndirectDiffuseMultiplier(
+                        0.5f,
+                        WeatherExposureContext.Sheltered);
+            float daylightInterior =
+                Enviro3ProductionVisualPolicy
+                    .CalculateIndirectDiffuseMultiplier(
+                        0.5f,
+                        WeatherExposureContext.Interior);
+
+            Assert.That(
+                fullNightExterior,
+                Is.EqualTo(
+                        Enviro3ProductionVisualPolicy
+                            .NeutralIndirectLightingMultiplier)
+                    .Within(0.0001f));
+            Assert.That(
+                twilightExterior,
+                Is.EqualTo(1.075f).Within(0.0001f));
+            Assert.That(
+                daylightExterior,
+                Is.EqualTo(
+                        Enviro3ProductionVisualPolicy
+                            .ExteriorDaylightIndirectDiffuseMultiplier)
+                    .Within(0.0001f));
+            Assert.That(
+                daylightSheltered,
+                Is.EqualTo(1.075f).Within(0.0001f));
+            Assert.That(
+                daylightInterior,
+                Is.EqualTo(
+                        Enviro3ProductionVisualPolicy
+                            .NeutralIndirectLightingMultiplier)
+                    .Within(0.0001f));
+            Assert.That(
+                Enviro3ProductionVisualPolicy
+                    .IndirectReflectionLightingMultiplier,
+                Is.EqualTo(1f));
+            Assert.That(
+                Enviro3ProductionVisualPolicy
+                    .IndirectReflectionProbeIntensityMultiplier,
+                Is.EqualTo(1f));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                Enviro3ProductionVisualPolicy
+                    .CalculateIndirectDiffuseMultiplier(
+                        float.NaN,
+                        WeatherExposureContext.Exterior));
+        }
+
+        [Test]
         public void AttachWithoutRuntimeOrReferences_FaultsClosedWithDiagnostic()
         {
             GameObject gameObject = new GameObject("Enviro3 Missing References Test");
@@ -240,6 +308,12 @@ namespace MSC.Tests.EditMode.Enviro3Integration
             Assert.That(observations.PresentationCameraApplied, Is.True);
             Assert.That(observations.RuntimeConfigurationIsolated, Is.True);
             Assert.That(observations.RequiredModulesIsolated, Is.True);
+            Assert.That(
+                observations.RuntimeIndirectLightingIsolatedAndRebound,
+                Is.True);
+            Assert.That(
+                observations.RuntimeIndirectLightingPolicyApplied,
+                Is.True);
             Assert.That(observations.MutableSettingsIsolated, Is.True);
             Assert.That(observations.SourceConfigurationGraphUnchanged, Is.True);
             Assert.That(observations.SourceAutonomyUnchanged, Is.True);
@@ -425,6 +499,7 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 volumeProfile.name = "Production HDRP Volume Test Double";
                 volumeProfile.Add<Fog>(true);
                 volumeProfile.Add<Exposure>(true);
+                volumeProfile.Add<IndirectLightingController>(true);
                 Volume volume = managerGameObject.AddComponent<Volume>();
                 volume.isGlobal = true;
                 volume.sharedProfile = volumeProfile;
@@ -652,6 +727,18 @@ namespace MSC.Tests.EditMode.Enviro3Integration
 
             public bool RequiredModulesIsolated { get; private set; }
 
+            public bool RuntimeIndirectLightingIsolatedAndRebound
+            {
+                get;
+                private set;
+            }
+
+            public bool RuntimeIndirectLightingPolicyApplied
+            {
+                get;
+                private set;
+            }
+
             public bool MutableSettingsIsolated { get; private set; }
 
             public bool SourceConfigurationGraphUnchanged { get; private set; }
@@ -747,6 +834,12 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 EnviroWeatherType runtimeStorm = GetPrivateField<EnviroWeatherType>(adapter, "runtimeStorm");
                 Lightning runtimeLightningPrefab =
                     GetPrivateField<Lightning>(adapter, "runtimeLightningPrefab");
+                IndirectLightingController runtimeIndirectLighting =
+                    GetPrivateField<IndirectLightingController>(
+                        adapter,
+                        "runtimeIndirectLighting");
+                manager.volumeHDRP.sharedProfile.TryGet(
+                    out IndirectLightingController reboundIndirectLighting);
 
                 RuntimeObservations observations = new RuntimeObservations
                 {
@@ -758,6 +851,12 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     RuntimeConfigurationIsolated =
                         manager.configuration != null && manager.configuration != source,
                     RequiredModulesIsolated = AreRequiredModulesIsolated(manager, source),
+                    RuntimeIndirectLightingIsolatedAndRebound =
+                        runtimeIndirectLighting != null &&
+                        reboundIndirectLighting == runtimeIndirectLighting &&
+                        manager.Lighting.indirectLightingHDRP ==
+                            runtimeIndirectLighting &&
+                        adapter.HasIsolatedRuntimeVolumeTargets,
                     MutableSettingsIsolated = AreMutableSettingsIsolated(
                         manager,
                         source,
@@ -1024,6 +1123,39 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     typeof(Enviro3EnvironmentAdapter).GetMethod(
                         "LateUpdate",
                         BindingFlags.Instance | BindingFlags.NonPublic) != null;
+
+                manager.solarTime = 1f;
+                InvokePrivate(adapter, "LateUpdate");
+                float daylightDiffuse =
+                    adapter.ActiveIndirectDiffuseMultiplier;
+                float daylightReflection =
+                    adapter.ActiveIndirectReflectionMultiplier;
+                float daylightProbe = runtimeIndirectLighting
+                    .reflectionProbeIntensityMultiplier.value;
+                manager.solarTime = 0.4f;
+                InvokePrivate(adapter, "LateUpdate");
+                float nightDiffuse =
+                    adapter.ActiveIndirectDiffuseMultiplier;
+                observations.RuntimeIndirectLightingPolicyApplied =
+                    float.IsFinite(adapter.ActiveExposureEv) &&
+                    Mathf.Approximately(
+                        daylightDiffuse,
+                        Enviro3ProductionVisualPolicy
+                            .ExteriorDaylightIndirectDiffuseMultiplier) &&
+                    Mathf.Approximately(
+                        daylightReflection,
+                        Enviro3ProductionVisualPolicy
+                            .IndirectReflectionLightingMultiplier) &&
+                    Mathf.Approximately(
+                        daylightProbe,
+                        Enviro3ProductionVisualPolicy
+                            .IndirectReflectionProbeIntensityMultiplier) &&
+                    Mathf.Approximately(
+                        nightDiffuse,
+                        Enviro3ProductionVisualPolicy
+                            .NeutralIndirectLightingMultiplier);
+                manager.solarTime = 1f;
+                InvokePrivate(adapter, "LateUpdate");
 
                 InvokePrivate(adapter, "CastLightningVisual");
                 Material firstLightningMaterial =

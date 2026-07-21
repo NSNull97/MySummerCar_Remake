@@ -58,6 +58,8 @@ namespace MSC.Editor.WorldBaseline
                 typeof(MeshRenderer),
                 typeof(MeshCollider),
                 typeof(BoxCollider),
+                typeof(CapsuleCollider),
+                typeof(SphereCollider),
                 typeof(DonorWorldStreamingSceneMetadata),
                 typeof(DonorWorldBaselineEntityMetadata),
                 typeof(DonorWorldBaselineColliderMetadata),
@@ -187,9 +189,10 @@ namespace MSC.Editor.WorldBaseline
                 "lighting/weather/water systems remain intentionally " +
                 "excluded.");
             result.Warnings.Add(
-                "The 32-collider allowlist is deliberately narrow; doors, " +
-                "windows, dynamic props, NPCs and trigger volumes remain " +
-                "excluded pending their gameplay milestones.");
+                "The immutable 32-collider safety allowlist remains global; " +
+                "reviewed ordinary static solids are cell-owned. Doors, " +
+                "actors, vehicles, disabled objects and triggers remain " +
+                "explicitly excluded by the 08A1 disposition manifest.");
             return result;
         }
 
@@ -1028,16 +1031,18 @@ namespace MSC.Editor.WorldBaseline
 
             Texture expectedDetailTexture = null;
             DonorWorldTextureEnvironment detailEnvironment = null;
+            DonorWorldTextureRole detailRole = default;
             if (!unlit &&
                 DonorWorldMaterialTexturePipeline
-                    .TryGetExpectedDetailNormalTexture(
+                    .TryGetExpectedDetailTexture(
                         source,
-                        out detailEnvironment))
+                        out detailEnvironment,
+                        out detailRole))
             {
                 expectedDetailTexture =
                     presentation.GetConvertedTexture(
                         detailEnvironment.TextureGuid,
-                        DonorWorldTextureRole.DetailNormalPacked);
+                        detailRole);
             }
             bool hasDetailProperty = ValidateTextureProperty(
                 material,
@@ -1057,14 +1062,21 @@ namespace MSC.Editor.WorldBaseline
                 ValidateFloatProperty(
                     material,
                     "_DetailAlbedoScale",
-                    0f,
+                    detailRole ==
+                        DonorWorldTextureRole.DetailAlbedoPacked
+                            ? DonorWorldMaterialTexturePipeline
+                                .GetExpectedDetailAlbedoScale(source)
+                            : 0f,
                     label,
                     result);
                 ValidateFloatProperty(
                     material,
                     "_DetailNormalScale",
-                    DonorWorldMaterialTexturePipeline
-                        .GetExpectedDetailNormalScale(source),
+                    detailRole ==
+                        DonorWorldTextureRole.DetailNormalPacked
+                            ? DonorWorldMaterialTexturePipeline
+                                .GetExpectedDetailNormalScale(source)
+                            : 0f,
                     label,
                     result);
                 ValidateFloatProperty(
@@ -1173,6 +1185,20 @@ namespace MSC.Editor.WorldBaseline
                 material,
                 "_DoubleSidedEnable",
                 source.DoubleSided ? 1f : 0f,
+                label,
+                result);
+            ValidateFloatProperty(
+                material,
+                "_DoubleSidedNormalMode",
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedDoubleSidedNormalMode(source),
+                label,
+                result);
+            ValidateVectorProperty(
+                material,
+                "_DoubleSidedConstants",
+                DonorWorldMaterialTexturePipeline
+                    .GetExpectedDoubleSidedConstants(source),
                 label,
                 result);
             ValidateFloatProperty(
@@ -1336,6 +1362,28 @@ namespace MSC.Editor.WorldBaseline
             return true;
         }
 
+        private static bool ValidateVectorProperty(
+            Material material,
+            string propertyName,
+            Vector4 expected,
+            string label,
+            DonorWorldCellizationValidationResult result)
+        {
+            if (!material.HasProperty(propertyName))
+            {
+                return false;
+            }
+
+            Vector4 actual = material.GetVector(propertyName);
+            if (!Approximately(actual, expected))
+            {
+                result.Errors.Add(
+                    label + " vector mapping drifted for " +
+                    propertyName + ".");
+            }
+            return true;
+        }
+
         private static bool ValidateTextureProperty(
             Material material,
             string propertyName,
@@ -1421,6 +1469,9 @@ namespace MSC.Editor.WorldBaseline
 
         private static bool Approximately(Vector2 left, Vector2 right) =>
             Vector2.SqrMagnitude(left - right) <= 0.00000001f;
+
+        private static bool Approximately(Vector4 left, Vector4 right) =>
+            Vector4.SqrMagnitude(left - right) <= 0.00000001f;
 
         private static void ValidateGeneratedScenes(
             DonorWorldCellizationPlan plan,
@@ -1940,6 +1991,27 @@ namespace MSC.Editor.WorldBaseline
             Material[] expectedTextured =
                 presentation.ResolveTexturedMaterials(
                     expectedSourceSlots);
+            DonorWorldRendererCompatibilityPolicy.Settings
+                expectedLighting =
+                    DonorWorldRendererCompatibilityPolicy.Evaluate(
+                        expected,
+                        expectedSourceSlots,
+                        presentation.Plan);
+            if (renderer.shadowCastingMode !=
+                    expectedLighting.ShadowCastingMode ||
+                renderer.receiveShadows !=
+                    expectedLighting.ReceiveShadows ||
+                renderer.lightProbeUsage !=
+                    expectedLighting.LightProbeUsage ||
+                renderer.reflectionProbeUsage !=
+                    expectedLighting.ReflectionProbeUsage ||
+                renderer.motionVectorGenerationMode !=
+                    MotionVectorGenerationMode.ForceNoMotion)
+            {
+                result.Errors.Add(
+                    prefix +
+                    "temporary HDRP renderer lighting policy drifted.");
+            }
             string expectedDiagnosticPath =
                 WorldBaselinePaths.CategoryMaterial(
                     expected.Placement.Category);
@@ -2036,7 +2108,20 @@ namespace MSC.Editor.WorldBaseline
                 !string.Equals(
                     metadata.SourceColliderType,
                     record.ColliderType,
-                    StringComparison.Ordinal))
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    metadata.CollisionDisposition,
+                    record.Disposition,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    metadata.CollisionLayerName,
+                    record.CollisionLayerName,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    metadata.PhysicsMaterialAssetPath,
+                    record.PhysicsMaterialAssetPath,
+                    StringComparison.Ordinal) ||
+                metadata.SafetyCritical != record.IsSafetyCritical)
             {
                 result.Errors.Add(
                     prefix + "metadata differs from the allowlist.");
@@ -2065,10 +2150,20 @@ namespace MSC.Editor.WorldBaseline
             }
             Collider[] colliders =
                 metadata.GetComponents<Collider>();
+            int expectedLayer = LayerMask.NameToLayer(
+                record.CollisionLayerName);
             if (colliders.Length != 1 ||
                 !colliders[0].enabled ||
                 colliders[0].isTrigger ||
-                colliders[0].gameObject.layer != 0)
+                expectedLayer < 0 ||
+                colliders[0].gameObject.layer != expectedLayer ||
+                colliders[0].sharedMaterial == null ||
+                !string.Equals(
+                    AssetDatabase.GetAssetPath(
+                        colliders[0].sharedMaterial),
+                    record.PhysicsMaterialAssetPath,
+                    StringComparison.Ordinal) ||
+                colliders[0].sharedMaterial.bounciness > 0.0001f)
             {
                 result.Errors.Add(
                     prefix + "runtime collider contract is invalid.");
@@ -2084,7 +2179,7 @@ namespace MSC.Editor.WorldBaseline
                     : AssetDatabase.GetAssetPath(
                         collider.sharedMesh);
                 if (collider == null ||
-                    collider.convex ||
+                    collider.convex != record.RuntimeConvex ||
                     !string.Equals(
                         path,
                         WorldBaseline06B2Paths.CollisionMesh(
@@ -2126,7 +2221,7 @@ namespace MSC.Editor.WorldBaseline
                     }
                 }
             }
-            else
+            else if (record.ColliderType == "BoxCollider")
             {
                 BoxCollider collider =
                     colliders[0] as BoxCollider;
@@ -2141,6 +2236,41 @@ namespace MSC.Editor.WorldBaseline
                     result.Errors.Add(
                         prefix + "BoxCollider shape drifted.");
                 }
+            }
+            else if (record.ColliderType == "CapsuleCollider")
+            {
+                CapsuleCollider collider =
+                    colliders[0] as CapsuleCollider;
+                if (collider == null ||
+                    Vector3.Distance(
+                        collider.center,
+                        record.Center) > 0.0001f ||
+                    Mathf.Abs(collider.radius - record.Radius) > 0.0001f ||
+                    Mathf.Abs(collider.height - record.Height) > 0.0001f ||
+                    collider.direction != record.Direction)
+                {
+                    result.Errors.Add(
+                        prefix + "CapsuleCollider shape drifted.");
+                }
+            }
+            else if (record.ColliderType == "SphereCollider")
+            {
+                SphereCollider collider =
+                    colliders[0] as SphereCollider;
+                if (collider == null ||
+                    Vector3.Distance(
+                        collider.center,
+                        record.Center) > 0.0001f ||
+                    Mathf.Abs(collider.radius - record.Radius) > 0.0001f)
+                {
+                    result.Errors.Add(
+                        prefix + "SphereCollider shape drifted.");
+                }
+            }
+            else
+            {
+                result.Errors.Add(
+                    prefix + "unsupported collider type entered runtime.");
             }
         }
 
@@ -2358,6 +2488,9 @@ namespace MSC.Editor.WorldBaseline
             {
                 WorldBaseline06B2Paths.OwnershipManifest,
                 WorldBaseline06B2Paths.OwnershipMatrix,
+                WorldBaseline06B2Paths.SolidColliderDispositionManifest,
+                WorldBaseline06B2Paths
+                    .SolidColliderDispositionManifestSha256,
                 WorldBaseline06B2Paths.MaterialTextureManifest,
                 WorldBaseline06B2Paths.MaterialShaderMapping,
                 WorldBaseline06B2Paths.VisualCompletenessReport,
@@ -2385,6 +2518,7 @@ namespace MSC.Editor.WorldBaseline
 
             ValidateOwnershipManifest(plan, result);
             ValidateOwnershipMatrix(plan, result);
+            ValidateSolidColliderDispositionManifest(plan, result);
         }
 
         private static void ValidateOwnershipManifest(
@@ -2425,10 +2559,20 @@ namespace MSC.Editor.WorldBaseline
                         assignment.SanitationEntry.Placement.StableId,
                     StringComparer.Ordinal);
             Dictionary<string, string> colliderByEntity =
-                plan.SafeColliders.ToDictionary(
-                    collider => collider.EntityStableId,
-                    collider => collider.ColliderStableId,
-                    StringComparer.Ordinal);
+                plan.SafeColliders
+                    .GroupBy(
+                        collider => collider.EntityStableId,
+                        StringComparer.Ordinal)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => string.Join(
+                            ";",
+                            group.OrderBy(
+                                    collider => collider.ColliderStableId,
+                                    StringComparer.Ordinal)
+                                .Select(collider =>
+                                    collider.ColliderStableId)),
+                        StringComparer.Ordinal);
             IReadOnlyDictionary<long, int[]> staticBatchSubsets =
                 WorldStaticBatchSubsetTable.ParseCommittedTable();
             var seen = new HashSet<string>(StringComparer.Ordinal);
@@ -2701,6 +2845,168 @@ namespace MSC.Editor.WorldBaseline
             {
                 result.Errors.Add(
                     "Ownership matrix rule set differs from the " +
+                    "deterministic plan.");
+            }
+        }
+
+        private static void ValidateSolidColliderDispositionManifest(
+            DonorWorldCellizationPlan plan,
+            DonorWorldCellizationValidationResult result)
+        {
+            string manifestPath =
+                WorldBaselinePaths.ToAbsoluteProjectPath(
+                    WorldBaseline06B2Paths
+                        .SolidColliderDispositionManifest);
+            string manifestText = File.ReadAllText(manifestPath)
+                .Replace("\r\n", "\n");
+            string expectedHash =
+                DonorWorldBaselineManifest.Sha256Text(manifestText);
+            string hashPath = WorldBaselinePaths.ToAbsoluteProjectPath(
+                WorldBaseline06B2Paths
+                    .SolidColliderDispositionManifestSha256);
+            string hashLine = File.ReadAllText(hashPath).Trim();
+            string[] hashParts = hashLine.Split(
+                new[] { ' ', '\t' },
+                StringSplitOptions.RemoveEmptyEntries);
+            string recordedHash = hashParts.Length > 0
+                ? hashParts[0]
+                : string.Empty;
+            if (!string.Equals(
+                    recordedHash,
+                    expectedHash,
+                    StringComparison.Ordinal))
+            {
+                result.Errors.Add(
+                    "Solid-collider disposition manifest SHA-256 drifted.");
+            }
+
+            using var reader = new StringReader(manifestText);
+            List<string> headers = WorldEntityTable.ParseRow(
+                reader.ReadLine() ?? string.Empty);
+            string[] required =
+            {
+                "ColliderStableId", "EntityStableId",
+                "SourceHierarchyPath", "ObjectName",
+                "SemanticCategory", "ColliderType", "SourceEnabled",
+                "SourceIsTrigger", "SourceConvex", "RuntimeConvex",
+                "SourceHasRigidbodyInAncestry", "MeshGuid",
+                "MeshFileId", "EffectiveActive", "Disposition",
+                "Included", "OwnershipPolicy", "CollisionLayer",
+                "PhysicsMaterial", "Reason", "Classification",
+                "SourceRevisionId", "PolicyVersion"
+            };
+            Dictionary<string, int> indices = BuildColumnIndices(
+                headers,
+                required,
+                "solid collider disposition manifest",
+                result);
+            if (indices.Count == 0)
+            {
+                return;
+            }
+
+            Dictionary<string, DonorWorldSafeColliderRecord> expected =
+                plan.ColliderDispositions.ToDictionary(
+                    record => record.ColliderStableId,
+                    StringComparer.Ordinal);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            string line;
+            int lineNumber = 1;
+            while ((line = reader.ReadLine()) != null)
+            {
+                lineNumber++;
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+
+                List<string> values = WorldEntityTable.ParseRow(line);
+                if (values.Count != headers.Count)
+                {
+                    result.Errors.Add(
+                        "Solid collider manifest line " + lineNumber +
+                        " has an invalid column count.");
+                    continue;
+                }
+
+                string Get(string column) => values[indices[column]];
+                string id = Get("ColliderStableId");
+                if (!seen.Add(id) ||
+                    !expected.TryGetValue(
+                        id,
+                        out DonorWorldSafeColliderRecord record))
+                {
+                    result.Errors.Add(
+                        "Solid collider manifest has an unexpected or " +
+                        "duplicate record at line " + lineNumber + ": " +
+                        id);
+                    continue;
+                }
+
+                string[] actual =
+                {
+                    Get("EntityStableId"),
+                    Get("SourceHierarchyPath"),
+                    Get("ObjectName"),
+                    Get("SemanticCategory"),
+                    Get("ColliderType"),
+                    Get("SourceEnabled"),
+                    Get("SourceIsTrigger"),
+                    Get("SourceConvex"),
+                    Get("RuntimeConvex"),
+                    Get("SourceHasRigidbodyInAncestry"),
+                    Get("MeshGuid"),
+                    Get("MeshFileId"),
+                    Get("EffectiveActive"),
+                    Get("Disposition"),
+                    Get("Included"),
+                    Get("OwnershipPolicy"),
+                    Get("CollisionLayer"),
+                    Get("PhysicsMaterial"),
+                    Get("Reason"),
+                    Get("Classification"),
+                    Get("SourceRevisionId"),
+                    Get("PolicyVersion")
+                };
+                string[] expectedValues =
+                {
+                    record.EntityStableId,
+                    record.HierarchyPath,
+                    record.ObjectName,
+                    record.SemanticCategory,
+                    record.ColliderType,
+                    record.SourceEnabled ? "1" : "0",
+                    record.SourceIsTrigger ? "1" : "0",
+                    record.Convex ? "1" : "0",
+                    record.RuntimeConvex ? "1" : "0",
+                    record.SourceHasRigidbodyInAncestry ? "1" : "0",
+                    record.MeshGuid,
+                    record.MeshFileId.ToString(
+                        CultureInfo.InvariantCulture),
+                    record.EffectiveActive ? "1" : "0",
+                    record.Disposition,
+                    record.IsIncluded ? "1" : "0",
+                    record.OwnershipPolicy,
+                    record.CollisionLayerName,
+                    record.PhysicsMaterialAssetPath,
+                    record.Reason,
+                    "TemporaryDirectImport",
+                    WorldBaselinePaths.SourceRevisionId,
+                    DonorWorldSolidCollisionPolicy.PolicyVersion
+                };
+                if (!actual.SequenceEqual(
+                        expectedValues,
+                        StringComparer.Ordinal))
+                {
+                    result.Errors.Add(
+                        "Solid collider manifest row drifted for " + id);
+                }
+            }
+
+            if (!seen.SetEquals(expected.Keys))
+            {
+                result.Errors.Add(
+                    "Solid collider manifest set differs from the " +
                     "deterministic plan.");
             }
         }
