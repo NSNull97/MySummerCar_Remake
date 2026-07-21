@@ -1,0 +1,22 @@
+﻿Order,Prompt,Purpose,Repeatable
+08B,08B_PHASE1_SCOPE_LOCK_AND_DONOR_FEATURE_PARITY_AUDIT.md,Lock donor version and exhaustive parity scope,No
+09A,09A_FULL_GAME_NATIVE_SAVE_FOUNDATION.md,Extensible native save foundation,No
+09B,09B_WORLD_ITEMS_CONSUMABLES_AND_CONTAINERS_PARITY.md,Physical items/consumables/containers,By approved batches
+09C,09C_PLAYER_NEEDS_HOME_SAUNA_AND_LIFE_LOOP_PARITY.md,Player life and domestic loop,By approved batches
+10A,10A_NPC_CHARACTER_RUNTIME_FOUNDATION.md,NPC architecture fixtures,No
+10B,10B_FULL_NPC_ROSTER_DIALOGUE_AND_SCHEDULE_PARITY.md,Complete donor NPC roster,By approved batches
+11A,11A_FULL_VEHICLE_ROSTER_AND_LEGACY_PRESENTATION.md,Complete vehicle roster,By approved batches
+11B,11B_TRAFFIC_PUBLIC_TRANSPORT_TRAIN_AND_ROUTE_AI.md,Traffic and transportation,By approved batches
+12A,12A_COMMERCE_PHONE_MAIL_SERVICES_AND_ECONOMY_PARITY.md,Economy/services/communications,By approved batches
+12B,12B_JOBS_REPEATABLE_ACTIVITIES_AND_WORLD_TASKS_PARITY.md,All jobs and activities,By approved batches
+13A,13A_STORY_RELATIONSHIPS_PROGRESSION_AND_EVENT_GRAPH_PARITY.md,Story/events/relationships,By approved batches
+13B,13B_INSPECTION_POLICE_RALLY_JAIL_HOSPITAL_AND_DEATH_PARITY.md,Authority/competition/consequences,By approved batches
+13C,13C_MEDIA_MINIGAMES_AND_REMAINING_DONOR_MECHANICS.md,Media/minigames/misc parity,By approved batches
+14A,14A_PHASE1_PARITY_GAP_AUDIT_AND_WAVE_PLAN.md,Read-only final gap audit,No
+14B,14B_PHASE1_PARITY_GAP_IMPLEMENTATION_WAVE.md,One approved gap wave,Yes
+14C,14C_LEGACY_PRESENTATION_COMPLETION.md,Visible/audible Legacy completeness,No
+14D,14D_FULL_GAME_SAVE_COVERAGE_AND_RECOVERY_HARDENING.md,Complete save coverage,No
+15A,15A_FULL_GAME_INTEGRATION_AND_PARITY_PLAYTHROUGH.md,End-to-end full-game integration,No
+15B,15B_FULL_GAME_OPTIMIZATION_CONTENT_AUDIT_AND_PRIVATE_BUILD.md,Full-game private build,No
+15C,15C_PHASE1_STABILIZATION_REGRESSION_AND_RC_GATE.md,Phase 1 RC gate,No
+16,16_PHASE2_PRODUCTION_REMASTER_AND_POLISH_PLANNING.md,Phase 2 plan only after approval,No

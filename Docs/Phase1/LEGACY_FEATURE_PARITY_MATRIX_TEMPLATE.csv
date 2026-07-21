@@ -1,0 +1,2 @@
+﻿FeatureId,Domain,FeatureName,Required,DonorVersionEvidence,DonorSources,PlayerVisibleBehavior,Dependencies,CurrentImplementation,Status,LegacyPresentation,SaveCoverage,UITelemetry,AudioCoverage,TestCoverage,KnownDifferences,OwnerMilestone,HumanDecision,Notes
+EXAMPLE.NPC.TEIMO,NPC,Example only — replace from donor audit,Yes,,,,,NotInspected,Unknown,,None,,None,None,,10B,,Delete example row after audit

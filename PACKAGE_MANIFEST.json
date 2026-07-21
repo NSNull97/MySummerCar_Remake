@@ -1,0 +1,178 @@
+{
+  "package": "MSC_Remake_Post_08A_Legacy_Feature_Parity_v1",
+  "version": "1.0.0",
+  "files": [
+    {
+      "path": "AGENTS_PHASE1_LEGACY_PARITY_ADDENDUM.md",
+      "size": 4865
+    },
+    {
+      "path": "AGENTS_PHASE1_LEGACY_PARITY_MERGE_GUIDE_RU.md",
+      "size": 1472
+    },
+    {
+      "path": "AGENTS_RECOMMENDED_POST_08A.md",
+      "size": 32800
+    },
+    {
+      "path": "CURRENT_STATE_AFTER_08A_TEMPLATE.md",
+      "size": 504
+    },
+    {
+      "path": "Docs/Phase1/LEGACY_FEATURE_PARITY_MATRIX_TEMPLATE.csv",
+      "size": 411
+    },
+    {
+      "path": "Docs/Phase1/PHASE1_DEFINITION_OF_DONE.md",
+      "size": 3384
+    },
+    {
+      "path": "Docs/Phase1/PHASE1_DOMAIN_CHECKLIST.md",
+      "size": 1529
+    },
+    {
+      "path": "Docs/Phase1/PHASE1_SCOPE_AND_TERMINOLOGY.md",
+      "size": 2803
+    },
+    {
+      "path": "MIGRATION_FROM_V5_RU.md",
+      "size": 1219
+    },
+    {
+      "path": "PROJECT_DESIGN_GUARDRAILS_PHASE1_ADDENDUM.md",
+      "size": 1862
+    },
+    {
+      "path": "PROMPT_SEQUENCE.csv",
+      "size": 2069
+    },
+    {
+      "path": "Patches/AGENTS_PHASE1_LEGACY_PARITY.patch",
+      "size": 7827
+    },
+    {
+      "path": "Prompts/08B_PHASE1_SCOPE_LOCK_AND_DONOR_FEATURE_PARITY_AUDIT.md",
+      "size": 5321
+    },
+    {
+      "path": "Prompts/09A_FULL_GAME_NATIVE_SAVE_FOUNDATION.md",
+      "size": 2864
+    },
+    {
+      "path": "Prompts/09B_WORLD_ITEMS_CONSUMABLES_AND_CONTAINERS_PARITY.md",
+      "size": 2155
+    },
+    {
+      "path": "Prompts/09C_PLAYER_NEEDS_HOME_SAUNA_AND_LIFE_LOOP_PARITY.md",
+      "size": 1993
+    },
+    {
+      "path": "Prompts/10A_NPC_CHARACTER_RUNTIME_FOUNDATION.md",
+      "size": 2201
+    },
+    {
+      "path": "Prompts/10B_FULL_NPC_ROSTER_DIALOGUE_AND_SCHEDULE_PARITY.md",
+      "size": 1896
+    },
+    {
+      "path": "Prompts/11A_FULL_VEHICLE_ROSTER_AND_LEGACY_PRESENTATION.md",
+      "size": 1676
+    },
+    {
+      "path": "Prompts/11B_TRAFFIC_PUBLIC_TRANSPORT_TRAIN_AND_ROUTE_AI.md",
+      "size": 1386
+    },
+    {
+      "path": "Prompts/12A_COMMERCE_PHONE_MAIL_SERVICES_AND_ECONOMY_PARITY.md",
+      "size": 1582
+    },
+    {
+      "path": "Prompts/12B_JOBS_REPEATABLE_ACTIVITIES_AND_WORLD_TASKS_PARITY.md",
+      "size": 1379
+    },
+    {
+      "path": "Prompts/13A_STORY_RELATIONSHIPS_PROGRESSION_AND_EVENT_GRAPH_PARITY.md",
+      "size": 1518
+    },
+    {
+      "path": "Prompts/13B_INSPECTION_POLICE_RALLY_JAIL_HOSPITAL_AND_DEATH_PARITY.md",
+      "size": 1488
+    },
+    {
+      "path": "Prompts/13C_MEDIA_MINIGAMES_AND_REMAINING_DONOR_MECHANICS.md",
+      "size": 1407
+    },
+    {
+      "path": "Prompts/14A_PHASE1_PARITY_GAP_AUDIT_AND_WAVE_PLAN.md",
+      "size": 1907
+    },
+    {
+      "path": "Prompts/14B_PHASE1_PARITY_GAP_IMPLEMENTATION_WAVE.md",
+      "size": 1403
+    },
+    {
+      "path": "Prompts/14C_LEGACY_PRESENTATION_COMPLETION.md",
+      "size": 1889
+    },
+    {
+      "path": "Prompts/14D_FULL_GAME_SAVE_COVERAGE_AND_RECOVERY_HARDENING.md",
+      "size": 1552
+    },
+    {
+      "path": "Prompts/15A_FULL_GAME_INTEGRATION_AND_PARITY_PLAYTHROUGH.md",
+      "size": 1857
+    },
+    {
+      "path": "Prompts/15B_FULL_GAME_OPTIMIZATION_CONTENT_AUDIT_AND_PRIVATE_BUILD.md",
+      "size": 1767
+    },
+    {
+      "path": "Prompts/15C_PHASE1_STABILIZATION_REGRESSION_AND_RC_GATE.md",
+      "size": 1777
+    },
+    {
+      "path": "Prompts/16_PHASE2_PRODUCTION_REMASTER_AND_POLISH_PLANNING.md",
+      "size": 1645
+    },
+    {
+      "path": "Prompts/97_CONTEXT_REFRESH.md",
+      "size": 696
+    },
+    {
+      "path": "Prompts/98_MILESTONE_CLOSEOUT.md",
+      "size": 1002
+    },
+    {
+      "path": "Prompts/99A_FIX_APPROVED_REVIEW_FINDINGS.md",
+      "size": 2116
+    },
+    {
+      "path": "Prompts/99B_CONTINUE_CURRENT_MILESTONE.md",
+      "size": 2066
+    },
+    {
+      "path": "Prompts/99_REVIEW.md",
+      "size": 890
+    },
+    {
+      "path": "Prompts/AFTER_08A_SEND_TO_CODEX_RU.md",
+      "size": 1560
+    },
+    {
+      "path": "Prompts/_TASK_TEMPLATE.md",
+      "size": 1746
+    },
+    {
+      "path": "README_RU.md",
+      "size": 3331
+    },
+    {
+      "path": "START_HERE_AFTER_08A_RU.md",
+      "size": 2746
+    },
+    {
+      "path": "VERSION.txt",
+      "size": 6
+    }
+  ]
+}

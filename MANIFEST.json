@@ -1,0 +1,12 @@
+{
+  "source_file": "AGENTS(2).md",
+  "source_sha256": "4cde30fc6d4b0a1e6fde00e54ada62a557e96206bce67c91ccc8b1fbc30ecbc0",
+  "patched_file": "AGENTS.md",
+  "patched_sha256": "1ecb18cf7307efae28ac9a86c5a5cfbd30ebe7698e1fb67391d17461ea206879",
+  "files": [
+    "AGENTS.md",
+    "AGENTS_Post08A_Phase1.patch",
+    "PATCH_NOTES_RU.md"
+  ],
+  "policy": "Preserve completed milestones 00-08A; extend project into full Phase 1 Legacy Feature Complete before Phase 2."
+}

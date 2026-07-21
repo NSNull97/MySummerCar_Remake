@@ -1,93 +1,175 @@
 /plan
 
-# MILESTONE 08A — MAIN MENU, SETTINGS, HUD, AND UI FOUNDATION
+# MILESTONE 08A — REFERENCE-LOCKED MAIN MENU, SETTINGS, HUD, AND UI FOUNDATION
 
 Read `AGENTS.md` completely before doing anything.
 
-Read `Prompts/CURRENT_STATE.md` and `Prompts/PROJECT_DESIGN_GUARDRAILS.md`.
-
 Read:
 
-- all reports through Milestone 08, including the complete 07A–07C weather sequence;
-- player/interaction, vehicle, weather, audio, save, and input documentation;
-- existing UI code and packages;
-- accessibility and localization documentation when present;
-- `References/UI/README.md`;
-- UI concept images under `References/UI`;
-- current Git status and diff.
+- `Prompts/CURRENT_STATE.md`;
+- `Prompts/PROJECT_DESIGN_GUARDRAILS.md`;
+- all milestone reports through Milestone 08, including 07A–07C;
+- player, interaction, vehicle, weather, audio, save, input, accessibility,
+  localization, and settings documentation;
+- all existing UI code, prefabs/documents, packages, tests, and current Git diff;
+- `References/UI/Approved/08A/REFERENCE_README.md`;
+- `References/UI/Approved/08A/REFERENCE_MANIFEST.json`;
+- every PNG under `References/UI/Approved/08A/`.
 
-## Objective
+If any approved reference is missing, unreadable, or does not match the manifest
+hash, stop and report the exact problem. Do not substitute another concept image.
 
-Implement a coherent modern UI foundation that remains recognizably connected
-to My Summer Car while matching the remake's new visual direction.
+---
 
-Required prototype screens and systems:
+## 1. Objective
 
-- boot/loading flow;
-- main menu;
-- continue/new game/load entry points;
-- pause menu;
-- settings;
-- controls/rebinding;
-- accessibility;
-- mods entry placeholder when supported by project scope;
-- gameplay HUD;
-- interaction prompts;
-- donor-faithful survival/status panel;
-- vehicle HUD/telemetry presentation;
-- held item/tool context indicator only when justified;
-- notifications;
-- save/load status;
-- confirmation dialogs;
-- controller/keyboard/mouse navigation.
+Implement the remake's UI foundation and the following screens so that their
+visual composition matches the approved reference images as closely as practical:
 
-The generated concept images are visual references, not final pixel-perfect
-specifications and not authoritative for text content.
+1. Main menu;
+2. Graphics settings;
+3. Audio settings;
+4. Controls settings;
+5. Gameplay settings;
+6. Default in-game HUD.
 
-## Donor-faithful UI guardrails
+This is a **fidelity implementation milestone**, not a free UI redesign.
 
-The default UI must not simplify the game into a modern guided experience.
+The approved screenshots are no longer loose mood references. They are the
+user-approved target for:
 
-Do not add as baseline features:
+- screen composition;
+- panel placement and proportions;
+- navigation placement;
+- spacing rhythm;
+- hierarchy;
+- color logic;
+- component density;
+- typography character;
+- icon treatment;
+- background treatment;
+- selected/hover/focus states;
+- default HUD contents.
 
-- permanent minimap/GPS;
-- route lines or world-space navigation markers;
-- quest tracker with objectives/checklists;
-- exact hidden survival percentages;
-- RPG inventory grid;
-- permanent tool hotbar/quick bar;
-- item rarity/color coding;
-- profile levels, XP, achievements, or trophy progress on the main menu;
-- modern phone/app metaphors.
+When a choice exists between a visually cleaner invention and closer reference
+fidelity, choose the reference.
 
-Development/debug UI may expose telemetry, numeric values, and quick-access
-controls, but it must be clearly separated and disabled in normal play.
+Do not reinterpret the layout merely because another arrangement is more common
+in modern games.
 
-## Technology decision
+---
 
-Inspect existing project UI.
+## 2. Source-of-truth hierarchy
 
-If a UI framework is already established and sound, preserve it.
+Use this order when resolving conflicts:
 
-If none exists, choose a first-party Unity solution suitable for Unity 6 and
-the project's needs. Prefer a single coherent runtime UI approach unless a
-documented reason justifies mixing systems.
+1. The six approved PNG references in `References/UI/Approved/08A/` for visual
+   layout and composition;
+2. Explicit user-approved UI rules in this milestone;
+3. Existing project architecture, actual supported capabilities, and correct
+   gameplay semantics;
+4. Original My Summer Car functionality where the references preserve it;
+5. Existing generic UI guidance.
 
-Do not install a third-party UI framework silently.
+The approved references supersede older generated UI/HUD concepts and the old
+statement that concepts are only loose inspiration.
 
-Create an ADR documenting:
+The references do **not** authorize copying their pixels into the game. Rebuild
+all UI with project-owned widgets, icons, materials, text, layout, and live scene
+content.
 
-- chosen UI technology;
-- why;
-- input/navigation strategy;
-- localization strategy;
-- scaling strategy;
-- testing strategy;
-- limitations.
+Do not reproduce obvious AI image artifacts, misspellings, impossible values, or
+incorrect control names. Preserve the intended function and exact visual slot,
+but use correct project terminology. For example, use `Map`, not an accidental
+`Mop` label.
 
-## Architecture
+---
 
-Create or align:
+## 3. Approved reference mapping
+
+The following files are authoritative:
+
+- `01_MAIN_MENU_APPROVED.png` — main menu;
+- `02_GRAPHICS_SETTINGS_APPROVED.png` — graphics page;
+- `03_AUDIO_SETTINGS_APPROVED.png` — audio page;
+- `04_CONTROLS_SETTINGS_APPROVED.png` — controls page;
+- `05_GAMEPLAY_SETTINGS_APPROVED.png` — gameplay page;
+- `06_INGAME_HUD_APPROVED.png` — default gameplay HUD.
+
+The canonical comparison viewport is the native reference size listed in the
+manifest: **1672 × 941**, 16:9. The implementation must also scale correctly to
+other resolutions and aspect ratios, but 16:9 at 100% UI scale is the visual
+fidelity target.
+
+The approved HUD reference in this directory is authoritative even if earlier
+concepts or conversation notes placed its blocks differently.
+
+---
+
+## 4. Mandatory pre-implementation decomposition
+
+Before implementing or changing UI, create:
+
+- `Docs/UI/APPROVED_REFERENCE_DECOMPOSITION.md`;
+- `Docs/UI/APPROVED_REFERENCE_COMPONENT_INVENTORY.md`;
+- `Docs/UI/APPROVED_REFERENCE_DEVIATIONS.md`.
+
+For each reference record:
+
+- native resolution and aspect ratio;
+- major panel bounds as normalized screen coordinates;
+- anchor and alignment strategy;
+- approximate spacing units;
+- panel opacity and border treatment;
+- corner radius family;
+- typography hierarchy;
+- selected, hover, pressed, disabled, and focus states;
+- icons required;
+- background-scene composition;
+- data that is live, placeholder, unsupported, or capability-driven;
+- any detected AI text artifact that must not be copied;
+- any unavoidable deviation and why.
+
+Do not start the final screen implementation until this decomposition is written.
+
+---
+
+## 5. Reference overlay and capture tooling
+
+Create Editor/development-only tooling that makes fidelity practical instead of
+subjective.
+
+Required capabilities:
+
+- choose one of the six approved reference images;
+- display it as a full-screen overlay at preserved aspect ratio;
+- adjustable opacity from 0–100%;
+- reference-only / implementation-only / blended modes;
+- optional safe-area and normalized guide display;
+- one-click capture at 1672 × 941;
+- no inclusion in shipping builds;
+- no runtime dependency from gameplay UI to reference PNGs.
+
+Suggested project-owned concept names:
+
+- `UIReferenceOverlayWindow`;
+- `UIReferenceOverlayController`;
+- `UIReferenceCaptureUtility`.
+
+Do not add an external image-diff package silently. A transparent overlay and
+side-by-side capture are sufficient for human approval.
+
+---
+
+## 6. Technology and architecture
+
+Inspect the established UI framework first. Preserve it when sound.
+
+If no coherent runtime framework exists, choose one first-party Unity approach
+appropriate for Unity 6. Do not silently install a third-party UI framework.
+Document the decision in `Docs/UI/UI_TECHNOLOGY_ADR.md`.
+
+Create or align project-owned boundaries such as:
 
 - `IUIScreenService`;
 - `IUIRouteService`;
@@ -102,407 +184,626 @@ Create or align:
 - `UIAudioHooks`;
 - `UIAccessibilitySettings`;
 - `HUDViewModel`;
-- `InteractionPromptViewModel`;
-- `VehicleHudViewModel`;
 - `PlayerStatusViewModel`;
+- `InteractionPromptViewModel` only for contextual use;
 - `NotificationQueue`;
 - `LoadingScreenController`;
 - `MenuFlowController`.
 
-Keep UI view logic separate from gameplay services.
+Keep views separate from gameplay state. Views must not search scenes by object
+name. Gameplay systems must not know concrete widgets.
 
-Do not make views search the scene for gameplay objects.
+---
 
-Do not let gameplay systems know concrete UI widgets.
+## 7. Centralized visual tokens
 
-## Visual language
+Create a single theme/token source for:
 
-Use the concept references as direction:
-
-- dark translucent panels;
-- restrained translucent panels with little or no expensive live blur;
-- warm amber/orange focus accent with donor-like colored status categories;
-- white/gray primary typography;
-- subtle industrial/automotive details;
-- Finnish rural/mechanic identity;
-- readable spacing;
-- practical rather than sci-fi;
-- modern but not sterile;
-- limited animation;
-- strong focus state.
-
-Avoid:
-
-- excessive blur;
-- tiny text;
-- unreadable low contrast;
-- constant noisy motion;
-- fake CRT effects;
-- giant cinematic bars;
-- excessive bloom;
-- copying generated image text errors.
-
-Create a reusable theme/token system for:
-
-- colors;
-- spacing;
-- typography;
+- panel colors and opacity;
+- amber/orange focus accent;
+- white and muted text;
+- warning/error/success colors;
+- survival-status colors;
+- line/border colors;
+- spacing scale;
 - corner radii;
-- borders;
-- panel opacity;
-- focus/hover/pressed/disabled;
-- warning/error/success;
-- animation durations;
-- icon sizes.
+- typography styles;
+- icon sizes;
+- row heights;
+- focus/hover/pressed/disabled states;
+- transition durations;
+- backdrop dimming.
 
-## Main menu
+Do not scatter literal styling values across views.
 
-Prototype:
+Match the references' visual language:
 
-- Continue;
-- New Game;
-- Load;
+- dark, translucent, rounded panels;
+- restrained borders;
+- warm amber/orange selection;
+- condensed, practical automotive typography;
+- high readability;
+- garage/mechanic identity;
+- minimal animation;
+- no sci-fi styling;
+- no expensive mandatory live blur.
+
+Use an already licensed/project-owned font closest to the reference character.
+Do not download or bundle an unapproved font. If no suitable font exists, use a
+clearly documented temporary fallback and list the font as manual art work.
+
+Use existing project-owned icons. If required icons are missing, author simple
+original vector icons in the project. Do not crop icons from the references or
+silently add a third-party icon pack.
+
+---
+
+## 8. Main menu — locked composition
+
+Reference:
+`References/UI/Approved/08A/01_MAIN_MENU_APPROVED.png`
+
+Reproduce the screen composition closely:
+
+- large My Summer Car Remake logo in the upper-left;
+- live garage background;
+- Satsuma hero vehicle centered/center-left with open hood;
+- right-side vertical primary menu stack;
+- greeting/smiley card in the upper-right;
+- wide lower information strip;
+- small utility navigation at lower-right;
+- version/build label at lower-left.
+
+Required primary actions and order:
+
+1. Continue;
+2. New Game;
+3. Load Game;
+4. Credits;
+5. Quit.
+
+Required lower information blocks:
+
+- car color selection;
+- interior/trunk preview;
+- performance graph/preview;
+- import music files.
+
+Required lower-right utility entries:
+
 - Settings;
-- Mods placeholder only when supported;
-- Credits;
-- Quit;
-- current save summary without levels/XP/achievement gamification;
-- version/build label;
-- lightweight background-scene integration using recognizable world/garage views;
-- controller/keyboard/mouse navigation;
-- confirmation dialogs.
+- Mods;
+- Developer Tools in development builds only.
 
-Do not hard-code fake save data.
+Functional rules:
 
-## Settings
+- `Continue` binds to actual latest-save metadata and is disabled when no valid
+  save exists;
+- `New Game` uses the project new-game flow;
+- `Load Game` uses actual save slots;
+- color selection preserves original functionality and must not mutate a save
+  until the new-game flow confirms it;
+- music import shows real state or a truthful unavailable state;
+- performance data must be measured/capability-driven or clearly marked as a
+  development preview; do not present fabricated production telemetry;
+- trunk/interior preview can use a project-owned render texture or documented
+  temporary image until the live preview is available;
+- Mods may remain a scope-approved placeholder;
+- Developer Tools is hidden outside development builds unless explicitly enabled.
 
-Implement a settings architecture with apply/cancel/default behavior.
+Do not replace this composition with a generic centered menu, card carousel, or
+flat launcher.
 
-Categories:
+Do not use the approved screenshot as the background. Recreate the garage camera,
+vehicle composition, lighting, and widgets with live/project-owned content.
 
-### Graphics
+---
 
-- display mode;
-- resolution;
-- refresh rate;
-- VSync;
-- frame limit;
-- HDR availability;
-- render scale/upscaler hooks;
-- quality preset;
-- textures;
-- shadows;
-- reflections;
-- volumetrics;
-- vegetation;
-- post-processing;
-- motion blur;
-- depth of field;
-- weather quality through project-owned settings/binding APIs, never direct Enviro widget access;
-- UI scale.
+## 9. Shared settings shell — locked composition
 
-Do not expose unsupported features as working.
+References:
 
-If DLSS/FSR/XeSS/frame generation/ray tracing are not integrated, represent
-them only through capability-driven hooks or omit them.
+- `02_GRAPHICS_SETTINGS_APPROVED.png`;
+- `03_AUDIO_SETTINGS_APPROVED.png`;
+- `04_CONTROLS_SETTINGS_APPROVED.png`;
+- `05_GAMEPLAY_SETTINGS_APPROVED.png`.
 
-### Audio
+All settings pages must share one consistent shell:
 
-Bind to the audio configuration:
+- logo upper-left;
+- left vertical category navigation;
+- large main settings panel;
+- optional right-side preview/summary panel where the reference has one;
+- garage/Satsuma background visible behind translucent UI;
+- greeting/smiley card upper-right;
+- Back action lower-left;
+- page actions along the lower edge;
+- version/build text lower-left.
 
-- master;
-- vehicle;
-- effects;
-- ambience;
-- music;
-- UI;
-- dynamic range;
-- mute-on-focus-loss;
-- captions/subtitles hooks.
+Left navigation order:
 
-### Controls
+1. Graphics;
+2. Audio;
+3. Controls;
+4. Gameplay;
+5. Accessibility;
+6. Mods.
 
-- action-map display;
-- rebinding;
-- conflict detection;
-- reset;
-- mouse sensitivity;
-- invert axes;
-- gamepad sensitivity;
-- dead zones;
-- steering/throttle/brake bindings;
-- hold/toggle options.
+The selected category uses the same amber/orange filled-outline treatment as the
+references.
 
-Use Unity Input System APIs and existing input architecture.
+Accessibility and Mods do not yet have approved page references. Keep them in the
+navigation. Implement only the smallest functional page consistent with the
+shared shell, with no speculative visual redesign. Mark them `ReferencePending`
+in documentation.
 
-### Gameplay
+---
 
-- units;
-- interaction behavior;
-- camera settings;
-- HUD detail;
-- optional help/manual visibility without waypoint guidance;
-- autosave policy hooks;
-- difficulty/design options only when implemented.
+## 10. Graphics settings — locked page
 
-### Accessibility
+Reference:
+`02_GRAPHICS_SETTINGS_APPROVED.png`
 
-- UI scale;
-- text size;
-- high contrast;
-- color-independent status cues;
-- subtitle/caption options;
-- reduced motion;
-- camera-shake reduction;
-- hold/toggle alternatives;
-- input remapping;
-- warning-flash reduction;
-- readable focus indicator.
+Match the page structure and row density closely.
 
-## Gameplay HUD
+Required rows, subject to capability validation:
 
-Build a restrained, configurable HUD inspired primarily by the approved compact
-vertical needs-panel direction.
+- Display Mode;
+- Resolution;
+- Refresh Rate;
+- V-Sync;
+- Upscaling / Sharpening;
+- Upscaler quality;
+- Sharpening;
+- Frame Generation;
+- Texture Quality;
+- Shadow Quality;
+- Reflection Quality;
+- Volumetric Quality;
+- Vegetation Density;
+- Post Processing;
+- Motion Blur;
+- Depth of Field;
+- Ray Tracing.
 
-Default presentation:
+Required right panel:
 
-- compact vertical needs/status panel;
-- dark translucent background or optional panel-less variant;
-- clear icons and bars;
-- distinct but restrained category colors;
-- no numeric percentages by default;
-- no permanent task/objective tracker;
-- no GPS/minimap;
-- time/day and money shown in a compact donor-recognizable form;
-- interaction prompt only while a valid interaction is targeted;
-- notifications used sparingly;
-- save/load status visible only when active;
-- no permanent held-item inventory strip.
+- performance preview image/render;
+- Average FPS;
+- 1% Low;
+- VRAM Usage;
+- horizontal VRAM meter;
+- small explanatory copy.
 
-Support view models for:
+Required actions:
 
-- time/day;
-- money;
-- thirst;
-- hunger;
-- fatigue;
-- stress;
-- urine;
-- dirtiness;
-- alcohol only when the approved design exposes it;
-- other project-approved needs;
-- interaction prompt;
-- held tool/item context where useful;
-- short contextual warning/feedback;
-- notifications;
-- save status.
+- Apply;
+- Reset to Defaults;
+- Revert Changes.
 
-Use smooth bars and qualitative warning states. Exact values belong in DEV tools
-or an explicitly enabled accessibility/debug option, not the default experience.
+Capability rule:
 
-Allow:
+Rows visible in the reference may remain visible for layout fidelity, but an
+unsupported feature must be disabled and labeled truthfully as unavailable. Do
+not fake DLSS, frame generation, ray tracing, HDR, or benchmark values.
 
-- compact/full/immersive HUD visibility modes;
-- panel opacity;
-- UI scale;
-- color-independent critical cues;
-- optional labels/icons;
-- critical-state pulse with reduced-motion alternative.
+Do not convert the page into tabs, accordion sections, or a generic vertical
+settings list.
 
-Do not show every panel permanently.
+---
 
-## Vehicle HUD
+## 11. Audio settings — locked page
 
-Support project-owned vehicle view models for:
+Reference:
+`03_AUDIO_SETTINGS_APPROVED.png`
 
-- speed/RPM/gear only when the physical dashboard is unavailable, unreadable, or
-  the player enables an accessibility/compact overlay;
-- fuel, coolant/temperature, voltage/electrical warning hooks;
-- warning indicators;
-- surface/traction telemetry only in development;
-- optional compact/full/accessibility modes.
+Required rows:
 
-The physical dashboard is primary. The default driving HUD must not duplicate
-every real gauge or add a modern navigation panel.
+- Master Volume;
+- Engine Volume;
+- Environment Volume;
+- Voice Volume;
+- Music Volume;
+- Radio Volume;
+- UI Sounds;
+- Weather Sounds;
+- Thunder Sounds;
+- Reverb / Ambience;
+- Dynamic Range;
+- Subtitles;
+- Audio Output.
 
-## Loading and async flow
+Required right panel:
 
-Provide:
+- Audio Test;
+- test action and truthful state;
+- Sound Profile summary;
+- explanatory helper text/tip.
 
-- loading screen;
-- progress source abstraction;
-- minimum fake progress avoidance;
-- error state;
-- cancellation only when safe;
-- scene/world-cell transition hooks;
-- input lock;
-- no blocking synchronous asset work on UI thread where avoidable.
+Required actions:
 
-## Localization readiness
+- Apply;
+- Reset;
+- Defaults.
 
-Even if only one language is currently authored:
+Bind through the project audio backend. Widgets must not call Wwise directly.
 
-- do not hard-code user-facing strings across scripts;
-- define string IDs/resources;
-- support plural/format parameters;
-- preserve Finnish names and labels correctly;
-- support Russian/English later;
-- document font/fallback needs.
+---
 
-Do not bundle unlicensed font files.
+## 12. Controls settings — locked page
 
-## Input and navigation
+Reference:
+`04_CONTROLS_SETTINGS_APPROVED.png`
 
-Validate:
+Required main table columns:
 
-- mouse;
-- keyboard;
-- gamepad;
-- focus restoration;
-- back/cancel;
-- no focus traps;
-- screen-reader hooks where feasible;
-- safe pause behavior;
-- input-mode switching;
-- rebinding persistence.
+- Action;
+- Primary;
+- Secondary.
 
-## UI audio
+Representative rows must include actual project action IDs for:
 
-Use audio-backend hooks for:
+- Steering Left;
+- Steering Right;
+- Throttle;
+- Brake;
+- Clutch;
+- Gear Up;
+- Gear Down;
+- Ignition;
+- Handbrake;
+- Interact;
+- Inventory when the project actually has it;
+- Map;
+- Journal;
+- Pause.
 
-- navigate;
-- confirm;
-- cancel;
-- error;
-- notification;
-- slider/toggle;
-- pause/open/close.
+Required right-side cards:
 
-Do not call Wwise directly from view widgets.
+- Mouse;
+- Gamepad;
+- Input Preview.
 
-## Settings persistence
+Required settings include:
 
-Create a versioned settings document separate from the world save where
-appropriate.
+- look sensitivity;
+- aiming/interaction sensitivity when supported;
+- invert Y;
+- vibration;
+- trigger dead zone;
+- controller layout;
+- controller support/input mode.
 
-Support:
+Required action:
 
-- defaults;
-- pending values;
-- apply;
-- cancel;
+- Reset to Defaults.
+
+Use the Unity Input System and existing action maps. Support conflict detection,
+cancel, and persistence. Do not invent bindings for systems that do not exist.
+
+---
+
+## 13. Gameplay settings — locked page
+
+Reference:
+`05_GAMEPLAY_SETTINGS_APPROVED.png`
+
+Required left/main content, where implemented or capability-driven:
+
+- Autosave Slots;
+- Save Confirmation;
+- Pause Behavior;
+- HUD Mode;
+- Mileage Units;
+- Language;
+- Difficulty Preset;
+- Fatigue Effects;
+- Alcohol Effects Intensity;
+- Hints;
+- Tutorial Prompts;
+- Interaction Outlines;
+- Camera Shake;
+- Developer Mode Visibility.
+
+Required right-side cards:
+
+- Profile;
+- Manage Profiles;
+- Immersion Level gauge;
+- Summary.
+
+Required actions:
+
+- Reset to Defaults;
+- Apply Changes.
+
+Do not let an `Immersion Level` gauge become a gameplay score. It is a concise
+summary of selected options only.
+
+Do not add route guidance, minimap, quest-tracker, RPG inventory, XP, or automatic
+mechanic assistance as a default gameplay setting.
+
+---
+
+## 14. Default in-game HUD — locked composition
+
+Reference:
+`06_INGAME_HUD_APPROVED.png`
+
+This image is the authoritative default HUD target.
+
+The default HUD contains only:
+
+- compact time/day/date block;
+- compact money block;
+- vertical needs/status panel containing:
+  - Thirst;
+  - Hunger;
+  - Stress;
+  - Urine;
+  - Fatigue;
+  - Dirtiness.
+
+Match closely:
+
+- upper-left placement;
+- stacked time/money block;
+- needs panel directly below with matching width;
+- icon/label/value alignment;
+- compact row height;
+- dark translucent panel treatment;
+- colored icon and short bar treatment;
+- numeric percentages visible as shown in this approved reference;
+- restrained spacing and no extra permanent widgets.
+
+The displayed percentage convention is an explicit user-approved exception to
+older generic guidance that hid exact values.
+
+Do **not** show by default:
+
+- GPS;
+- minimap;
+- quest/objective tracker;
+- route markers;
+- waypoint distance;
+- speedometer overlay;
+- tachometer overlay;
+- gear overlay;
+- fuel/coolant/battery overlay;
+- task checklist;
+- permanent interaction prompt;
+- permanent inventory/hotbar;
+- held-item strip;
+- tutorial hint;
+- headlight prompt;
+- modern notification clutter.
+
+The physical vehicle dashboard remains authoritative while driving.
+
+Contextual interaction prompts, save indicators, and critical warnings may appear
+only when relevant and must disappear promptly. They are not part of the
+persistent reference layout.
+
+Support UI scale and color-independent critical cues without changing the default
+composition at 100% scale.
+
+---
+
+## 15. Unreferenced required screens
+
+The existing milestone also requires functional:
+
+- boot/loading flow;
+- pause menu;
+- confirmation dialogs;
+- save/load status;
+- accessibility page;
+- minimal Mods placeholder when allowed.
+
+No approved exact reference exists for these screens. Extend the approved visual
+tokens and settings-shell language conservatively. Do not invent a new style or
+large new navigation structure. Mark each as `ReferencePending` and include it in
+the review captures separately from the six locked targets.
+
+---
+
+## 16. Settings, localization, input, and persistence
+
+Retain the sound technical requirements from the previous milestone specification:
+
+- pending/apply/cancel/default settings model;
 - capability validation;
-- migration;
-- command-line or safe-mode overrides where useful;
-- reset category;
-- reset all.
+- versioned settings persistence separate from world save;
+- migrations;
+- safe-mode overrides where useful;
+- keyboard, mouse, and gamepad navigation;
+- visible focus state;
+- focus restoration;
+- no focus traps;
+- localization-ready string IDs;
+- plural/format support;
+- font fallbacks;
+- UI scale;
+- high contrast;
+- reduced motion;
+- subtitle/caption hooks;
+- hold/toggle alternatives;
+- color-independent status cues.
 
-Do not overwrite gameplay saves to change graphics settings.
+Do not hard-code user-facing strings across scripts.
 
-## Tests
+---
 
-Add tests for:
+## 17. Performance requirements
+
+Measure and document:
+
+- layout/rebuild cost;
+- allocations;
+- panel/background cost;
+- live garage scene cost;
+- render-texture preview cost;
+- HUD update frequency;
+- controller-navigation latency.
+
+Do not update labels, bars, graphs, or previews every frame when their source has
+not changed.
+
+Do not require a real-time blur effect to match the translucent references.
+
+---
+
+## 18. Tests
+
+Add or update tests for:
 
 - route/navigation state;
 - focus behavior;
 - apply/cancel/default;
 - settings serialization/migration;
-- capability filtering;
-- input rebinding conflict;
+- capability filtering and truthful unavailable states;
+- input rebinding and conflicts;
+- keyboard/mouse/gamepad navigation;
 - UI scale;
 - reduced-motion behavior;
+- localization key validation;
 - HUD view-model mapping;
-- default HUD contains no numeric survival percentages;
-- default HUD contains no GPS/quest tracker/inventory bar;
-- interaction prompt state;
-- vehicle telemetry mapping;
-- loading/error state;
-- missing localization key reporting.
+- default HUD includes exactly the approved persistent categories;
+- default HUD includes numeric percentages as approved;
+- default HUD contains no GPS/minimap/quest tracker/vehicle telemetry/hotbar;
+- main menu action order;
+- development-only Developer Tools visibility;
+- loading and error states;
+- missing approved-reference detection in Editor tooling.
 
 Add PlayMode smoke tests for:
 
 - boot → main menu;
 - main menu → settings → back;
+- all four locked settings pages;
 - pause/resume;
-- keyboard navigation;
-- gamepad navigation;
 - settings persistence;
 - gameplay HUD;
-- resolution/UI scale changes where testable.
+- controller focus traversal;
+- UI scale at representative 16:9, 16:10, ultrawide, and 4:3 viewports where
+  practical.
 
-## Performance
+---
 
-Measure:
+## 19. Required review captures
 
-- layout/rebuild cost;
-- allocations;
-- blur/background cost;
-- HUD update frequency;
-- world-space/UI overlap if used;
-- menu background-scene cost;
-- controller navigation latency.
+Capture at the native reference comparison viewport, 1672 × 941, 100% UI scale:
 
-Do not update every text field every frame when values did not change.
+- `MainMenu_Implementation.png`;
+- `Graphics_Implementation.png`;
+- `Audio_Implementation.png`;
+- `Controls_Implementation.png`;
+- `Gameplay_Implementation.png`;
+- `HUD_Implementation.png`.
 
-## Documentation
+For each locked screen produce:
+
+- reference-only capture;
+- implementation-only capture;
+- 50% blended overlay capture;
+- short deviation note.
+
+Store under:
+
+`Docs/UI/Review/08A/`
+
+Do not claim visual fidelity from code inspection alone.
+
+Final user approval is required for the six locked screens. Codex may mark them
+`ImplementationComplete`, but not `VisuallyApproved`.
+
+---
+
+## 20. Documentation
 
 Create or update:
 
 - `Docs/UI/UI_ARCHITECTURE.md`;
 - `Docs/UI/UI_TECHNOLOGY_ADR.md`;
 - `Docs/UI/VISUAL_LANGUAGE.md`;
+- `Docs/UI/APPROVED_REFERENCE_DECOMPOSITION.md`;
+- `Docs/UI/APPROVED_REFERENCE_COMPONENT_INVENTORY.md`;
+- `Docs/UI/APPROVED_REFERENCE_DEVIATIONS.md`;
 - `Docs/UI/SCREEN_FLOW.md`;
 - `Docs/UI/SETTINGS_SCHEMA.md`;
 - `Docs/UI/HUD_SPEC.md`;
-- `Docs/UI/DONOR_FAITHFUL_UI_GUARDRAILS.md`;
 - `Docs/UI/ACCESSIBILITY_CHECKLIST.md`;
 - `Docs/UI/LOCALIZATION_READINESS.md`;
 - `Docs/UI/UI_TEST_MATRIX.md`;
 - `Docs/Milestones/MILESTONE_08A_REPORT.md`.
 
-## Non-goals
+---
 
-Do not implement:
+## 21. Explicit non-goals
 
+Do not implement or introduce:
+
+- a free redesign of approved screens;
+- a different information architecture for locked pages;
+- permanent minimap/GPS;
+- objective/quest tracker;
+- RPG inventory or mandatory hotbar;
+- route lines or world-space guidance;
+- levels, XP, battle-pass, store, news, or social panels;
 - a complete mod browser;
 - online profile services;
-- store/monetization UI;
-- final credits content;
-- unsupported graphics features;
-- permanent GPS/minimap/quest tracker;
-- RPG inventory or mandatory quick bar;
-- menu XP/levels/achievement gamification;
+- unsupported graphics/audio features presented as working;
+- full final credits content;
+- screenshot pixels baked into runtime UI;
+- external UI/font/icon packages without approval;
 - unrelated gameplay systems.
 
-## Definition of done
+---
 
-1. UI technology decision is documented.
-2. Main menu and pause flow work.
-3. Settings apply/cancel/default and persistence work.
-4. Keyboard/mouse/gamepad navigation works.
-5. HUD view models integrate without adding GPS, RPG inventory, or default numeric survival telemetry.
-6. Accessibility foundations exist.
-7. UI audio uses backend contracts.
-8. Tests exist and run when possible.
-9. UI remains readable and performant.
-10. The implementation uses concepts as reference without baking screenshots
-    into the UI.
+## 22. Definition of done
 
-## Final response
+Milestone 08A is technically complete only when:
+
+1. The six approved references are catalogued and decomposed.
+2. Reference overlay/capture tooling works in Editor/development only.
+3. Main menu composition closely matches its approved reference.
+4. Graphics, Audio, Controls, and Gameplay pages closely match their approved
+   references and share one settings shell.
+5. Default HUD closely matches its approved reference and contains no extra
+   permanent widgets.
+6. Settings apply/cancel/default and persistence work.
+7. Unsupported capabilities are represented truthfully.
+8. Keyboard, mouse, and gamepad navigation work.
+9. Accessibility and localization foundations exist.
+10. UI audio uses backend contracts.
+11. Relevant tests pass or are honestly reported.
+12. The six implementation and blended comparison captures are produced.
+13. No reference PNG is included as a runtime visual dependency.
+14. No screen is marked `VisuallyApproved` without user review.
+
+A screen that is functional and attractive but visibly departs from the approved
+layout is **not accepted**.
+
+---
+
+## 23. Final response
 
 Report:
 
-1. UI technology selected.
-2. Architecture.
-3. Screens implemented.
-4. Settings implemented.
-5. HUD implemented.
-6. Input/accessibility/localization.
-7. Tests.
-8. Performance.
-9. Files changed.
-10. Manual art/font/icon work.
-11. Known limitations.
-12. Readiness for save hardening.
+1. References inspected and hashes verified;
+2. UI technology selected/preserved;
+3. Architecture and theme tokens;
+4. Screens implemented;
+5. Settings implemented;
+6. HUD implemented;
+7. Input/accessibility/localization;
+8. Tests and actual results;
+9. Performance observations;
+10. Comparison-capture paths;
+11. Files changed;
+12. Manual icon/font/art work remaining;
+13. Known visual deviations;
+14. Readiness for user visual review.
 
-Stop after Milestone 08A.
+Stop after Milestone 08A and the required captures. Do not continue into save
+hardening or speculative UI expansion until the references are reviewed.

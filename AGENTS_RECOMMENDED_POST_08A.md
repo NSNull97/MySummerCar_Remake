@@ -51,52 +51,13 @@ The target is not a public release. Nevertheless, maintain clean provenance and 
 
 ### 3.1 Mandatory phase model
 
-**Phase 1 — Legacy Feature Complete:** recreate the complete selected donor
-version on the new runtime. The private Phase 1 build must contain every
-required donor-evidenced NPC, vehicle, item, mechanic, job, service,
-story/event chain, media/minigame, progression path and save domain. Temporary
-sanitized donor presentation may be used under sections 6.4 and 6.5. A vertical
-slice is not the Phase 1 completion target.
+**Phase 1 — Legacy Feature Complete:** recreate the complete selected donor version on the new runtime, including all donor-evidenced NPCs, vehicles, items, mechanics, jobs, services, story/event chains, media/minigames, progression and save domains. Temporary sanitized donor presentation may be used under sections 6.4 and 6.5. A vertical slice is not the Phase 1 completion target.
 
-**Phase 2 — Production Remaster and Polish:** begin only after the Phase 1 gate
-is explicitly approved by the user. Replace temporary donor presentation with
-newly authored production geometry, materials, textures, rigs, animations,
-audio, vegetation and collision; then perform final polish, optimization and
-approved remake-only extensions.
-
-Do not enter Phase 2 merely because the existing vertical slice, weather, UI or
-a small group of locations looks polished.
-
-### 3.2 Preservation of completed implementation through Milestone 08A
-
-All implemented and accepted work from milestones 00 through 08A is the
-integration baseline for later Phase 1 work. This includes established project
-architecture, stable IDs, scenes, streaming, interaction, vehicle systems,
-Enviro 3 integration, audio boundaries, save foundations, tests, tooling and the
-approved 08A UI reference lock.
-
-Mandatory rules:
-
-1. Inspect and reuse existing implementations before adding replacement systems.
-2. Do not rerun earlier milestone prompts as if the repository were empty.
-3. Prefer adapters, extensions and bounded migrations over broad rewrites.
-4. Do not rename, move, delete or replace established public APIs, serialized
-   fields, stable IDs, scenes, prefabs, registries or save DTOs without a
-   documented incompatibility, dependency audit, migration plan and regression
-   tests.
-5. A post-08A feature may bind real data into existing UI, weather, world,
-   vehicle and interaction surfaces, but must not redesign their accepted
-   presentation or silently change their behavior.
-6. Explicitly rejected prototypes, inactive fidelity experiments and assets
-   already classified `PrototypeOnly`, `Rejected` or `RejectedForFidelity` are
-   not protected implementation baselines.
-7. If a required parity feature exposes a genuine architectural blocker in
-   completed work, stop, document the blocker and propose the smallest compatible
-   change before modifying that foundation.
+**Phase 2 — Production Remaster and Polish:** only after explicit Phase 1 approval, replace temporary donor presentation with newly authored production assets, polish, optimization and remake-only extensions.
 
 ## 4. Current non-goals
 
-Until the Phase 1 Legacy Feature Complete build is stable and explicitly approved, do not implement:
+Until the Phase 1 Legacy Feature Complete build is stable, do not implement:
 
 - multiplayer or networking;
 - mod SDK;
@@ -142,7 +103,7 @@ Original meshes may be extracted and used as:
 - world-layout references;
 - temporary comparison geometry in development-only scenes.
 
-Original meshes must normally be replaced by newly authored production models. Sections 6.4 and 6.5 are explicit temporary private Phase 1 exceptions; they do not make donor meshes production-ready or remove the Phase 2 replacement requirement.
+Original meshes must normally be replaced by newly authored production models.
 
 For each production replacement:
 
@@ -172,7 +133,7 @@ Original textures may be inspected only as:
 - historical appearance references;
 - evidence for ambiguous model details.
 
-Original textures must not be used as final production textures. Sections 6.4 and 6.5 are explicit temporary private Phase 1 exceptions; they do not make donor textures production-ready or remove the Phase 2 replacement requirement.
+Original textures must not be used as final production textures.
 
 Do not treat AI-upscaled donor textures as finished assets. Upscaling may be used temporarily to read a label or inspect an unclear pattern. Final materials must be reauthored.
 
@@ -276,9 +237,7 @@ Mandatory rules:
 
 ### 6.5 Temporary donor gameplay presentation baseline
 
-During private Phase 1 development, sanitized donor-derived presentation content
-may be used as `TemporaryDirectImport` beyond the world baseline so that the
-complete Legacy build is visibly and audibly playable before Phase 2.
+During private Phase 1 development, sanitized donor-derived presentation content may be used as `TemporaryDirectImport` beyond the world baseline.
 
 Allowed generated paths include:
 
@@ -291,40 +250,20 @@ Assets/Game/LegacyImport/RuntimeBaseline/Audio/
 Assets/Game/LegacyImport/RuntimeBaseline/GameplayPresentation/
 ```
 
-This content may include donor-derived meshes, textures, materials, rigs,
-compatible animation clips, audio clips, icons, transforms, colliders and
-presentation metadata needed to make required Phase 1 features understandable
-and complete.
+This content may include donor-derived meshes, textures, materials, rigs, compatible animation clips, audio clips, icons, transforms, colliders and presentation metadata needed to make the private Phase 1 build visibly and audibly complete.
 
 Mandatory rules:
 
-1. Donor code, `MonoBehaviour`s, PlayMaker FSMs/controllers, runtime assemblies,
-   old `UnityEngine` references, Steam/platform/DRM logic, donor save/gameplay
-   managers and donor state machines remain forbidden.
-2. Project-owned definitions, controllers, stable IDs, DTOs, services and state
-   machines are authoritative.
-3. Every temporary presentation binding is owned by a project wrapper
-   prefab/presenter. Gameplay never searches donor hierarchy names, paths or
-   asset filenames.
-4. Record provenance, source hash when practical, `TemporaryDirectImport`
-   classification and a stable production replacement key.
-5. Raw extraction and generated donor payload remain outside Git. Commit only
-   project-owned tools, manifests, mappings, reports, metadata and code.
-6. This baseline is allowed only in explicitly private local Phase 1 builds and
-   is never `ProductionReady`.
-7. Temporary animation clips may drive project-owned Animators/presenters, but
-   donor AnimatorControllers, FSM logic and animation events are not runtime
-   authority.
-8. Temporary audio is routed only through `IAudioBackend` and project-owned event
-   IDs. Gameplay must not depend on donor clip filenames.
-9. Production replacement must preserve stable IDs, save schema, event identity,
-   gameplay coordinates and project-owned bindings.
-10. Missing production polish is acceptable in Phase 1; missing required donor
-    content, feedback or mechanics is not.
-11. Temporary presentation must remain removable or replaceable without changing
-    simulation state or requiring a new playthrough.
-12. The 08A UI is project-owned and remains governed by section 29A; donor UI
-    runtime, layouts and controllers are not permitted under this exception.
+1. Donor code, `MonoBehaviour`s, PlayMaker FSMs/controllers, runtime assemblies, old `UnityEngine` references, Steam/platform/DRM logic, donor save/gameplay managers and donor state machines remain forbidden.
+2. Project-owned definitions, controllers, stable IDs, DTOs, services and state machines are authoritative.
+3. Every temporary presentation binding is owned by a project wrapper prefab/presenter. Gameplay never searches donor hierarchy names or asset filenames.
+4. Record provenance, source hash when practical, `TemporaryDirectImport` classification and a production replacement key.
+5. Raw donor extraction and generated donor payload stay outside Git. Commit only project-owned tools, manifests, mappings, reports and code.
+6. This baseline is allowed only in explicitly private local Phase 1 builds and is never `ProductionReady`.
+7. Temporary animation clips may drive project-owned Animators/presenters, but donor AnimatorControllers/FSM logic are not runtime authority.
+8. Temporary audio is routed only through `IAudioBackend` and project-owned event IDs.
+9. Production replacement must preserve stable IDs, save schema, event identity and gameplay coordinates.
+10. Missing production polish is acceptable in Phase 1; missing required donor content or mechanics is not.
 
 ## 7. Donor transfer classifications
 
@@ -468,20 +407,10 @@ Assets/Game/
     Scheduling/
     Dialogue/
     Content/
-  Items/
-    Runtime/
-    Content/
-  Needs/
-    Runtime/
-    Content/
   Vehicle/
     Runtime/
     Simulation/
     Assembly/
-    Content/
-  Traffic/
-    Runtime/
-    Routes/
     Content/
   World/
     Runtime/
@@ -495,9 +424,6 @@ Assets/Game/
     UnityFallback/
     Wwise/
   Economy/
-    Runtime/
-    Content/
-  Services/
     Runtime/
     Content/
   Jobs/
@@ -542,15 +468,13 @@ Before changing code or assets:
 2. Read the relevant milestone prompt and supporting docs.
 3. Inspect the current repository state.
 4. Inspect existing implementations before adding new abstractions.
-5. Treat implemented and accepted milestones through 08A as existing dependencies; extend them rather than recreating them.
-6. State assumptions and blockers.
-7. Create a concrete scoped plan.
-8. Perform only the requested milestone.
+5. State assumptions and blockers.
+6. Create a concrete scoped plan.
+7. Perform only the requested milestone.
 
 During implementation:
 
 - make small verifiable changes;
-- preserve compatibility with completed 00–08A systems and add migrations when compatibility cannot be retained;
 - run the smallest relevant checks after each meaningful step;
 - update documentation and ledger records;
 - fix compile errors before continuing;
@@ -566,8 +490,7 @@ At completion:
 5. Report results honestly.
 6. List manual Unity steps still required.
 7. List limitations and risks.
-8. Report compatibility impact on completed milestones and any migrations added.
-9. Recommend exactly one next milestone.
+8. Recommend exactly one next milestone.
 
 ## 14. Unity operation rules
 
@@ -747,51 +670,17 @@ production override.
 
 ## 20A. Phase 1 full-game feature parity
 
-Lock one exact donor version and maintain these authoritative documents:
+Lock one exact donor version and maintain:
 
 ```text
-Docs/Phase1/DONOR_VERSION_LOCK.md
 Docs/Phase1/LEGACY_FEATURE_PARITY_MATRIX.csv
 Docs/Phase1/PHASE1_SCOPE_LOCK.md
-Docs/Phase1/PHASE1_EXECUTION_PLAN.md
 Docs/Phase1/PHASE2_BACKLOG.md
-Docs/Phase1/PHASE1_DEFINITION_OF_DONE.md
 ```
 
-The parity matrix is authoritative for Phase 1 scope. Prompt examples are
-feature-discovery categories, not an exhaustive donor-content list.
+The matrix is authoritative for Phase 1 scope. Every donor-evidenced feature requires source evidence, implementation status, save coverage, temporary presentation status, tests, known differences and an owning milestone. Prompt examples are categories, not an exhaustive content list.
 
-Every required donor-evidenced NPC, vehicle, item, mechanic, job, service,
-relationship, story/event chain, authority system, media/minigame, progression
-path and persistent state requires:
-
-- donor evidence tied to the locked version;
-- a project-owned stable `FeatureId`;
-- an owning milestone;
-- implementation status;
-- Legacy presentation status;
-- save/load coverage or an explicit evidence-backed non-persistent reason;
-- UI/audio feedback where player-visible;
-- test or executed comparison coverage;
-- documented and approved known differences.
-
-Do not mark a feature `Verified` because a similarly named class, prefab or scene
-exists. Verification requires an executed donor comparison, gameplay flow or
-other evidence defined by the matrix.
-
-Phase 1 scope control:
-
-- Preserve and integrate completed work through 08A; do not roll it back merely
-  to reproduce donor implementation details.
-- Do not add remake-only content during Phase 1 unless required for safety,
-  runtime independence, compatibility or testability.
-- Existing approved modern foundations through 08A, including Enviro 3 and the
-  locked UI, remain part of the project and must be wired to real Phase 1 data.
-- Put production reauthoring, expanded AI, new jobs, new map areas, seasons,
-  dynamic bodywork and other enhancements in `PHASE2_BACKLOG.md` unless they are
-  present in the locked donor version.
-- Do not enter Phase 2 while required rows are unknown, missing, blocked by an
-  internal issue or unverified.
+Do not begin Phase 2 while critical rows are unknown, missing or unverified. Do not add remake-only systems during Phase 1 unless required for safety, runtime independence or testability.
 
 ## 21. HDRP presentation and weather
 
@@ -887,8 +776,6 @@ Do not directly couple the new runtime to an undocumented donor save structure. 
 
 A failed migration must produce a clear report and preserve the original save file.
 
-During Phase 1, no required feature may be marked `Verified` until its persistent state has explicit save/load coverage or an evidence-backed reason why the donor feature is intentionally non-persistent. Save coverage must include unloaded streaming cells and replacement of temporary presentation assets.
-
 ## 25. Reverse engineering and code porting
 
 Managed code may be inspected and classified.
@@ -935,9 +822,7 @@ Use EditMode tests for:
 - stable-ID uniqueness;
 - import planning;
 - serialization and migration;
-- assembly graph rules;
-- parity-matrix schema, stable FeatureId and milestone ownership validation;
-- NPC schedules, economy calculations, job/event prerequisites and progression graph rules.
+- assembly graph rules.
 
 Use PlayMode tests for:
 
@@ -947,10 +832,6 @@ Use PlayMode tests for:
 - basic vehicle start/drive/stall;
 - save/load round trips;
 - weather transitions;
-- NPC schedule/dialogue flows and transport routes;
-- commerce, jobs, story/event progression and authority flows;
-- cross-domain save/load round trips;
-- representative new-game, mid-game and late-game smoke flows;
 - missing-reference validation.
 
 Use development validation tools for:
@@ -965,9 +846,7 @@ Use development validation tools for:
 - editor assemblies referenced by runtime assemblies;
 - missing meshes/materials;
 - invalid destination paths;
-- broken provenance records;
-- required parity rows without an owning milestone, save coverage, presentation binding or verification evidence;
-- temporary gameplay presentation leaking into distributable/public build profiles.
+- broken provenance records.
 
 ## 27. Performance
 
@@ -984,7 +863,7 @@ Initial targets:
 - world streaming and LOD from the beginning;
 - reference-only donor assets excluded from builds; temporary runtime baseline assets may appear only in explicitly private local feature-parity builds and must remain streamable and profiled.
 
-Maintain a performance capture for each major vertical slice and for representative full Phase 1 new-game, mid-game and late-game states. Phase 1 performance approval must be based on the populated game, not only an empty map or the original vertical slice.
+Maintain a performance capture for each major vertical slice.
 
 ## 28. Git workflow
 
@@ -1023,12 +902,6 @@ Keep these current:
 - system map;
 - porting ledger;
 - milestone reports;
-- `Docs/Phase1/DONOR_VERSION_LOCK.md`;
-- `Docs/Phase1/LEGACY_FEATURE_PARITY_MATRIX.csv`;
-- `Docs/Phase1/PHASE1_SCOPE_LOCK.md`;
-- `Docs/Phase1/PHASE1_EXECUTION_PLAN.md`;
-- `Docs/Phase1/PHASE2_BACKLOG.md`;
-- `Docs/Phase1/PHASE1_DEFINITION_OF_DONE.md`;
 - ADRs for decisions that are hard to reverse.
 
 A document is not complete if it only describes aspirations. Include concrete paths, interfaces, ownership, inputs, outputs, failure modes, and validation where relevant.
@@ -1067,28 +940,7 @@ Rules:
 
 ## 29B. Phase 1 completion gate
 
-Phase 1 is complete only when all of the following are true:
-
-- the exact donor version is locked and the parity matrix has no unresolved
-  required `Unknown` rows;
-- every required NPC, vehicle, item, mechanic, service, job, story/event chain,
-  progression path and media/minigame is playable in the new runtime;
-- all required player-visible features have usable Legacy visual/audio feedback;
-- fresh-game, mid-game and late-game states save and load across all domains;
-- a representative complete-game playthrough has no crash, data loss,
-  progression blocker, permanent softlock or critical missing content;
-- the populated full game has been profiled and validated in a private Windows
-  x64 build;
-- the build runs without donor executable, runtime assemblies or original
-  installation dependencies;
-- temporary donor presentation remains classified and replaceable through stable
-  replacement keys;
-- completed 00–08A systems and the locked 08A UI have no unresolved regression;
-- the user explicitly approves the Phase 1 gate.
-
-Until this gate is approved, missing production polish is acceptable; missing
-required donor content or mechanics is not. Phase 2 work must not be used to hide
-or defer Phase 1 parity gaps.
+Phase 1 is complete only when the parity matrix is closed, every required donor NPC/vehicle/mechanic/job/progression path is playable, full-game save/load coverage exists, a representative full-game playthrough has no critical blocker, a private Windows build runs independently from donor runtime files, and the user explicitly approves the gate.
 
 ## 30. Stop conditions
 
@@ -1097,11 +949,9 @@ Stop and report instead of guessing when:
 - a requested action might modify the donor installation;
 - an external tool/package must be installed;
 - a donor format is encrypted or access-controlled;
-- a direct import would contaminate normal production assets or violate the dedicated sanitized runtime-baseline rules in sections 6.4 or 6.5;
+- a direct import would contaminate normal production assets or violate the dedicated sanitized runtime-baseline rules in section 6.4;
 - the exact Unity/Wwise package version is unknown and material to the task;
 - a change would cross the current milestone boundary;
-- a prompt attempts to start Phase 2 before the Phase 1 gate is approved;
-- a change would broadly rewrite or invalidate accepted 00–08A work without a documented blocker, migration plan, regression tests and user approval;
 - tests cannot actually be executed;
 - the repository state conflicts with this document.
 
