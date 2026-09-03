@@ -164,8 +164,14 @@ outputs and HDRP materials:
 
 The implementation creates an HDRP Detail Map at runtime and applies it through
 renderer property blocks. It does not import the donor custom windshield shader
-or component. Donor wiper-clearing arcs are not wired yet because the separate
-wiper control/assembly mechanic is outside this body-material pass.
+or component. Donor wiper-clearing arcs are not wired yet because the wipers are
+a fixed, non-removable Satsuma mechanism owned by the vehicle electrical-consumer
+pass, not a detachable body-assembly part. In the locked donor, the Satsuma
+`ButtonWipers/Function` FSM requires both `Electrics/ElectricsOK` and
+`WiringSwitchLights/Data/Installed` before it drives the two wiper pivots and
+writes their positions into `windshield.wiper1Position` and
+`windshield.wiper2Position`. `ElectricsOK` is itself derived from the battery,
+both bolted battery terminals, ignition wiring, relay and usable battery charge.
 
 ### Follow-up: registration plates are not initial car equipment
 

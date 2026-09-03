@@ -3530,7 +3530,13 @@ Dynamic rain writes were found on the five window renderers through
 found in the locked donor. V55 therefore reimplements the 512-pixel glass atlas,
 three donor rain types, gravity 40 and front/cabin intensity split behind
 project-owned weather/HDRP boundaries. Generic whole-car wetness remains Phase
-2 and wiper clearing remains a separate follow-up. Builder V55 passed and the
+2. Wiper clearing remains a separate vehicle-electrics follow-up, not an
+assembly follow-up: the donor wipers are fixed/non-removable, and their
+`ButtonWipers/Function` FSM requires `Electrics/ElectricsOK` plus
+`WiringSwitchLights/Data/Installed` before moving both pivots and feeding their
+positions to `windshield.cs`. The donor `Electrics` FSM derives `ElectricsOK`
+from installed/connected battery and electrical parts plus usable charge.
+Builder V55 passed and the
 generated-content EditMode suite passed 37/37. Exact values, causes, boundaries
 and manual checks are recorded in
 `Docs/Phase1/SATSUMA_BODY_MATERIALS_AND_RAIN_PARITY_2026-09-02.md`.

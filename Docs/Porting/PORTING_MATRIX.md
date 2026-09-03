@@ -1385,7 +1385,7 @@ output.
 | Bootlid exterior handle/garnish | `TemporaryDirectImport;PivotSource` | Donor-active `bootlid_emblem` / `datsun_bootlid_001` remains at its exact direct-child local pose; it is the approximately `0.56 m` handle/garnish assembly and is no longer suppressed as optional emblem clutter |
 | Fender mudflaps | `BehavioralReference;Reimplemented` | Inactive donor `ActivateThis` copies are not baked into stock fenders; separate one-bolt mudflap parts remain usable, including on a loose fender |
 | Stock/GT rims | `ConfigurationTransferred;TemporaryDirectImport` | Four steel rims use rusty material; GT inner/outer split is rusty/metallic with legacy texture channels repacked for HDRP |
-| Glass and rain | `BehavioralReference;ConfigurationTransferred;Reimplemented` | Five transparent HDRP windows consume a project-owned 512 atlas with donor rain/gravity/intensity values and shelter gating; no donor runtime/shader ships. Wiper clearing is pending |
+| Glass and rain | `BehavioralReference;ConfigurationTransferred;Reimplemented` | Five transparent HDRP windows consume a project-owned 512 atlas with donor rain/gravity/intensity values and shelter gating; no donor runtime/shader ships. Wiper clearing is pending under vehicle electrics/controls: the donor arms are fixed/non-removable and require `ElectricsOK` plus installed `WiringSwitchLights` before their pivots drive the windshield clearing positions |
 | Automated evidence | `ImplementedAutomatedValidationPassedManualInGameAcceptancePending` | Current builder `11A-V1d.60` passed; generated-content EditMode 39/39 and physical hinge PlayMode 4/4 passed. Whole-body rain wetness is not donor-evidenced and remains Phase 2 |
 
 ### 2026-09-03 — Satsuma installed-panel lifetime correction

@@ -2360,7 +2360,12 @@ ProductionEnvironmentController outputs
 The rain presenter is transient presentation and adds no save DTO. Existing
 vehicle stable IDs, assembly graph, NWH/PhysX ownership and accepted UI remain
 unchanged. Donor wiper clearing and future Cheap Car Repair-style spray painting
-are separate bounded systems; project-wide dynamic body wetness is Phase 2.
+are separate bounded systems; project-wide dynamic body wetness is Phase 2. The
+wipers are fixed Satsuma equipment rather than installable body parts: their
+donor `ButtonWipers/Function` gate combines `Electrics/ElectricsOK` with
+`WiringSwitchLights/Data/Installed`, then animates both pivots and forwards their
+positions to the windshield rain component. Their implementation therefore
+belongs to vehicle electrics/controls plus glass presentation, not body assembly.
 
 ## 2026-09-02 — Installed Satsuma hinged-panel pose and collision ownership
 
