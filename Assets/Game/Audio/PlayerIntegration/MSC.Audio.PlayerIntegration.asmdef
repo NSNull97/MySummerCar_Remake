@@ -3,6 +3,9 @@
   "rootNamespace": "MSC.Audio.PlayerIntegration",
   "references": [
     "MSC.Audio.Runtime",
+    "MSC.Core.Runtime",
+    "MSC.Economy.Runtime",
+    "MSC.Needs.Runtime",
     "MSC.Player.Runtime"
   ],
   "includePlatforms": [],

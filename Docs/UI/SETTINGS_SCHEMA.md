@@ -1,6 +1,7 @@
-# Milestone 08A settings schema
+# UI settings schema
 
-Status: `SchemaV2Implemented / AdapterCoveragePartial / FocusedValidationPassed`
+Status: `SchemaV6Implemented / AntiAliasingAdapterImplemented /
+CameraAdapterImplemented / TargetedTestsPassed / VisualApprovalPending`
 
 Settings are versioned independently from world saves. The production path is:
 
@@ -8,7 +9,7 @@ Settings are versioned independently from world saves. The production path is:
 Application.persistentDataPath/Settings/ui-settings.json
 ```
 
-The current schema is `2` and is represented by `UiSettingsDocument`.
+The current schema is `6` and is represented by `UiSettingsDocument`.
 
 ## Transaction contract
 
@@ -40,12 +41,15 @@ Load outcomes are explicit:
 |---|---|
 | `Loaded` | valid current schema loaded |
 | `MissingCreatedDefaults` | no file existed; validated defaults were created |
-| `MigratedAndSaved` | schema v1 was migrated to v2 and rewritten |
+| `MigratedAndSaved` | an older supported schema was migrated to v6 and rewritten |
 | `CorruptQuarantinedDefaultsCreated` | invalid file moved to `.corrupt.<UTC timestamp>` and defaults created |
 
-Unknown schema versions are not guessed. The v1-to-v2 migration maps the old
-single binding override payload to player overrides, initializes vehicle
-overrides empty and adds accessibility defaults.
+Unknown schema versions are not guessed. Sequential compatibility covers
+schemas v1-v5. Older binding, accessibility, FPS-counter and DLSS additions are
+preserved. The v4-to-v5 step initializes camera FOV and far clip to the authored
+`120 degrees / 500 m` defaults. The v5-to-v6 step maps an enabled legacy DLSS
+selection to `TemporalUpscaler / Custom`, maps legacy DLAA to
+`MaximumQuality / Custom`, and otherwise selects the authored High/TAA default.
 
 ## Graphics
 
@@ -60,13 +64,31 @@ overrides empty and adds accessibility defaults.
 | `QualityLevel` | `2` | 0-64, then available-name check | Unity quality level |
 | `MotionBlur` | `false` | boolean | persisted; production Volume adapter pending |
 | `DepthOfField` | `false` | boolean | persisted; production Volume adapter pending |
+| `DlssEnabled` | `false` | boolean | compatibility mirror synchronized from the unified AA mode |
+| `DlssQuality` | `Balanced` | defined enum | quality passed to the central controller for DLSS |
+| `AntiAliasingMode` | `Taa` | defined enum | `AntiAliasingController`; Off/FXAA/SMAA/TAA/DLSS/Maximum |
+| `AntiAliasingPreset` | `High` | defined enum | central Low/Medium/High/Ultra profile; Custom for direct edits |
+| `AntiAliasingSharpening` | `0.28` | finite 0-0.75 | central controller; ignored where the active upscaler owns sharpening |
+| `HorizontalFieldOfViewDegrees` | `120` | 60-140 degrees | `IPlayerCameraSettingsSink`; aspect-correct horizontal FOV |
+| `CameraFarClipMeters` | `500` | 100-5000 m | `IPlayerCameraSettingsSink`; gameplay-camera far clip |
 
-DLSS/upscaler quality, sharpening, frame generation, ray tracing and granular
-texture/shadow/reflection/volumetric/vegetation controls are required visual
-slots but are not schema fields or working capabilities in 08A. They must be
-shown disabled/unavailable where retained. The right-side Graphics performance
-preview was removed from the live route by direct user correction; settings do
-not present average FPS, 1% low or VRAM.
+The Graphics route exposes AA mode, AA preset and sharpening as transactional
+controls. Changing mode or sharpening selects `Custom`; choosing an authored
+preset restores its mode and sharpening together. DLSS quality is interactive
+only when the hardware/pipeline capability check succeeds, and unsupported
+machines cannot cycle into DLSS or Maximum Quality from the menu. Apply updates
+the runtime controller and the same versioned JSON document without writing a
+second PlayerPrefs copy.
+
+Frame generation, ray tracing and granular texture/shadow/reflection/
+volumetric/vegetation controls remain disabled when no adapter exists. The
+right-side Graphics performance preview remains removed. Its former space now
+contains a compact functional camera card requested by the user; this does not
+restore average FPS, 1% low or VRAM diagnostics.
+
+`CameraFarClipMeters` deliberately controls only the gameplay camera's far clip.
+It does not silently alter world-streaming radii, LOD groups, terrain detail or
+vegetation culling, which remain owned by their respective systems.
 
 ## Audio
 
@@ -128,6 +150,7 @@ right-side live input-preview diagnostic was removed by direct user correction.
 | `InteractionOutlines` | `true` | interaction presentation adapter pending |
 | `CameraShakeIntensity01` | `0.75` | normalized; camera adapter pending |
 | `DevelopmentUiVisible` | `false` | development-only policy adapter pending |
+| `ShowFpsCounter` | `true` | toggles the optional minimal HUD FPS readout |
 
 Autosave slots, save confirmation, difficulty presets and profile management
 have no backing service and are not persisted as functioning options.

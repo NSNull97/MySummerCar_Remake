@@ -1,0 +1,387 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 941b12e388d3b2145a1f10300322cdf5, type: 3}
+  m_Name: NpcDialogueCatalog
+  m_EditorClassIdentifier: MSC.NPC.Runtime::MSC.NPC.NpcDialogueCatalog
+  definitions:
+  - dialogueId: dialogue.berryman.work
+    characterDefinitionId: character.berryman
+    lines:
+    - lineId: line.berryman.babble.01
+      localizationKey: npc.berryman.babble.01
+      fallbackSubtitle: Damn it will be dark before this field is done!
+      audioEventId: audio.npc.berryman.babble.01
+      cooldownGameSeconds: 0
+      conditions: []
+      emittedEventId: event.npc.berryman.job-interaction
+    - lineId: line.berryman.babble.02
+      localizationKey: npc.berryman.babble.02
+      fallbackSubtitle: Damn those strawberries will go rotten before you finish
+        that job!
+      audioEventId: audio.npc.berryman.babble.02
+      cooldownGameSeconds: 0
+      conditions: []
+      emittedEventId: event.npc.berryman.job-interaction
+    - lineId: line.berryman.babble.03
+      localizationKey: npc.berryman.babble.03
+      fallbackSubtitle: Damn, my mother who had fatality would have picked four boxes
+        in same time you pick one!
+      audioEventId: audio.npc.berryman.babble.03
+      cooldownGameSeconds: 0
+      conditions: []
+      emittedEventId: event.npc.berryman.job-interaction
+    - lineId: line.berryman.babble.04
+      localizationKey: npc.berryman.babble.04
+      fallbackSubtitle: I haven't slept for three weeks because of night frost warning!
+        Damn strawberries going bad!
+      audioEventId: audio.npc.berryman.babble.04
+      cooldownGameSeconds: 0
+      conditions: []
+      emittedEventId: event.npc.berryman.job-interaction
+  - dialogueId: dialogue.farmer.jobs
+    characterDefinitionId: character.farmer
+    lines:
+    - lineId: line.farmer.greeting.01
+      localizationKey: npc.farmer.greeting.01
+      fallbackSubtitle: Hello!
+      audioEventId: audio.npc.farmer.greeting.01
+      cooldownGameSeconds: 0
+      conditions: []
+      emittedEventId: event.npc.farmer.job-interaction
+  - dialogueId: dialogue.fixture.alpo
+    characterDefinitionId: character.fixture.scheduled-roaming
+    lines:
+    - lineId: line.alpo.foundation
+      localizationKey: npc.alpo.foundation
+      fallbackSubtitle: "\u0410\u043B\u044C\u043F\u043E \u043A\u0438\u0432\u0430\u0435\u0442
+        \u0438 \u043F\u0440\u043E\u0434\u043E\u043B\u0436\u0430\u0435\u0442 \u0441\u0432\u043E\u0439
+        \u043F\u0443\u0442\u044C."
+      audioEventId: audio.npc.alpo.foundation
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.alpo.dialogue-selected
+  - dialogueId: dialogue.fixture.latanen
+    characterDefinitionId: character.fixture.vehicle-linked
+    lines:
+    - lineId: line.latanen.foundation
+      localizationKey: npc.latanen.foundation
+      fallbackSubtitle: "\u0412\u043E\u0434\u0438\u0442\u0435\u043B\u044C \u0437\u0430\u043D\u044F\u0442
+        \u0440\u0435\u0439\u0441\u043E\u043C."
+      audioEventId: audio.npc.latanen.foundation
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.latanen.dialogue-selected
+  - dialogueId: dialogue.fleetari.service
+    characterDefinitionId: character.fleetari
+    lines:
+    - lineId: line.fleetari.greeting.01
+      localizationKey: npc.fleetari.greeting.01
+      fallbackSubtitle: Hello! What is on your mind young man?
+      audioEventId: audio.npc.fleetari.greeting.01
+      cooldownGameSeconds: 0
+      conditions: []
+      emittedEventId: event.npc.fleetari.service-interaction
+  - dialogueId: dialogue.r2.firewood-customer
+    characterDefinitionId: character.firewood-customer
+    lines:
+    - lineId: line.r2.firewood-customer.identity
+      localizationKey: npc.r2.firewood-customer.identity
+      fallbackSubtitle: "\u0417\u0430\u043A\u0430\u0437\u0447\u0438\u043A \u0434\u0440\u043E\u0432"
+      audioEventId: audio.npc.r2.firewood-customer.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.firewood-customer.interaction-selected
+  - dialogueId: dialogue.r2.grandmother
+    characterDefinitionId: character.grandmother
+    lines:
+    - lineId: line.r2.grandmother.identity
+      localizationKey: npc.r2.grandmother.identity
+      fallbackSubtitle: "\u0411\u0430\u0431\u0443\u0448\u043A\u0430"
+      audioEventId: audio.npc.r2.grandmother.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.grandmother.interaction-selected
+  - dialogueId: dialogue.r2.inspection-officer
+    characterDefinitionId: character.inspection-officer
+    lines:
+    - lineId: line.r2.inspection-officer.identity
+      localizationKey: npc.r2.inspection-officer.identity
+      fallbackSubtitle: "\u0418\u043D\u0441\u043F\u0435\u043A\u0442\u043E\u0440 \u0442\u0435\u0445\u043E\u0441\u043C\u043E\u0442\u0440\u0430"
+      audioEventId: audio.npc.r2.inspection-officer.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.inspection-officer.interaction-selected
+  - dialogueId: dialogue.r2.jani
+    characterDefinitionId: character.jani
+    lines:
+    - lineId: line.r2.jani.identity
+      localizationKey: npc.r2.jani.identity
+      fallbackSubtitle: "\u042F\u043D\u0438"
+      audioEventId: audio.npc.r2.jani.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.jani.interaction-selected
+  - dialogueId: dialogue.r2.jokke
+    characterDefinitionId: character.jokke
+    lines:
+    - lineId: line.r2.jokke.identity
+      localizationKey: npc.r2.jokke.identity
+      fallbackSubtitle: "\u0419\u043E\u043A\u043A\u0435"
+      audioEventId: audio.npc.r2.jokke.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.jokke.interaction-selected
+  - dialogueId: dialogue.r2.jokke-wife-state
+    characterDefinitionId: character.jokke-wife-state
+    lines:
+    - lineId: line.r2.jokke-wife-state.identity
+      localizationKey: npc.r2.jokke-wife-state.identity
+      fallbackSubtitle: "\u0421\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0435 \u043E\u0442\u043D\u043E\u0448\u0435\u043D\u0438\u0439
+        \u0441 \u0436\u0435\u043D\u043E\u0439 \u0419\u043E\u043A\u043A\u0435"
+      audioEventId: audio.npc.r2.jokke-wife-state.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.jokke-wife-state.interaction-selected
+  - dialogueId: dialogue.r2.petteri
+    characterDefinitionId: character.petteri
+    lines:
+    - lineId: line.r2.petteri.identity
+      localizationKey: npc.r2.petteri.identity
+      fallbackSubtitle: "\u041F\u0435\u0442\u0442\u0435\u0440\u0438"
+      audioEventId: audio.npc.r2.petteri.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.petteri.interaction-selected
+  - dialogueId: dialogue.r2.sewage-client-1
+    characterDefinitionId: character.sewage-client-1
+    lines:
+    - lineId: line.r2.sewage-client-1.identity
+      localizationKey: npc.r2.sewage-client-1.identity
+      fallbackSubtitle: "\u041A\u043B\u0438\u0435\u043D\u0442 \u0430\u0441\u0441\u0435\u043D\u0438\u0437\u0430\u0446\u0438\u0438
+        \u21161"
+      audioEventId: audio.npc.r2.sewage-client-1.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.sewage-client-1.interaction-selected
+  - dialogueId: dialogue.r2.sewage-client-2
+    characterDefinitionId: character.sewage-client-2
+    lines:
+    - lineId: line.r2.sewage-client-2.identity
+      localizationKey: npc.r2.sewage-client-2.identity
+      fallbackSubtitle: "\u041A\u043B\u0438\u0435\u043D\u0442 \u0430\u0441\u0441\u0435\u043D\u0438\u0437\u0430\u0446\u0438\u0438
+        \u21162"
+      audioEventId: audio.npc.r2.sewage-client-2.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.sewage-client-2.interaction-selected
+  - dialogueId: dialogue.r2.sewage-client-3
+    characterDefinitionId: character.sewage-client-3
+    lines:
+    - lineId: line.r2.sewage-client-3.identity
+      localizationKey: npc.r2.sewage-client-3.identity
+      fallbackSubtitle: "\u041A\u043B\u0438\u0435\u043D\u0442 \u0430\u0441\u0441\u0435\u043D\u0438\u0437\u0430\u0446\u0438\u0438
+        \u21163"
+      audioEventId: audio.npc.r2.sewage-client-3.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.sewage-client-3.interaction-selected
+  - dialogueId: dialogue.r2.sewage-client-4
+    characterDefinitionId: character.sewage-client-4
+    lines:
+    - lineId: line.r2.sewage-client-4.identity
+      localizationKey: npc.r2.sewage-client-4.identity
+      fallbackSubtitle: "\u041A\u043B\u0438\u0435\u043D\u0442 \u0430\u0441\u0441\u0435\u043D\u0438\u0437\u0430\u0446\u0438\u0438
+        \u21164"
+      audioEventId: audio.npc.r2.sewage-client-4.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.sewage-client-4.interaction-selected
+  - dialogueId: dialogue.r2.sewage-client-5
+    characterDefinitionId: character.sewage-client-5
+    lines:
+    - lineId: line.r2.sewage-client-5.identity
+      localizationKey: npc.r2.sewage-client-5.identity
+      fallbackSubtitle: "\u041A\u043B\u0438\u0435\u043D\u0442 \u0430\u0441\u0441\u0435\u043D\u0438\u0437\u0430\u0446\u0438\u0438
+        \u21165"
+      audioEventId: audio.npc.r2.sewage-client-5.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.sewage-client-5.interaction-selected
+  - dialogueId: dialogue.r2.suski
+    characterDefinitionId: character.suski
+    lines:
+    - lineId: line.r2.suski.identity
+      localizationKey: npc.r2.suski.identity
+      fallbackSubtitle: "\u0421\u0443\u0441\u043A\u0438"
+      audioEventId: audio.npc.r2.suski.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.suski.interaction-selected
+  - dialogueId: dialogue.r2.uncle-kesseli
+    characterDefinitionId: character.uncle-kesseli
+    lines:
+    - lineId: line.r2.uncle-kesseli.identity
+      localizationKey: npc.r2.uncle-kesseli.identity
+      fallbackSubtitle: "\u0414\u044F\u0434\u044F \u041A\u0435\u0441\u0441\u0435\u043B\u0438"
+      audioEventId: audio.npc.r2.uncle-kesseli.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.uncle-kesseli.interaction-selected
+  - dialogueId: dialogue.r2.ventti-pigman
+    characterDefinitionId: character.ventti-pigman
+    lines:
+    - lineId: line.r2.ventti-pigman.identity
+      localizationKey: npc.r2.ventti-pigman.identity
+      fallbackSubtitle: "\u0418\u0433\u0440\u043E\u043A \u0432 \u0432\u0435\u043D\u0442\u0442\u0438"
+      audioEventId: audio.npc.r2.ventti-pigman.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.ventti-pigman.interaction-selected
+  - dialogueId: dialogue.r2.wastewater-attendant
+    characterDefinitionId: character.wastewater-attendant
+    lines:
+    - lineId: line.r2.wastewater-attendant.identity
+      localizationKey: npc.r2.wastewater-attendant.identity
+      fallbackSubtitle: "\u0420\u0430\u0431\u043E\u0442\u043D\u0438\u043A \u043E\u0447\u0438\u0441\u0442\u043D\u044B\u0445
+        \u0441\u043E\u043E\u0440\u0443\u0436\u0435\u043D\u0438\u0439"
+      audioEventId: audio.npc.r2.wastewater-attendant.pending
+      cooldownGameSeconds: 20
+      conditions: []
+      emittedEventId: event.npc.r2.wastewater-attendant.interaction-selected
+  - dialogueId: dialogue.teimo.service
+    characterDefinitionId: character.fixture.stationary-service
+    lines:
+    - lineId: line.teimo.greeting.01
+      localizationKey: npc.teimo.greeting.01
+      fallbackSubtitle: Hello!
+      audioEventId: audio.npc.teimo.greeting.01
+      cooldownGameSeconds: 0
+      conditions:
+      - kind: 3
+        conditionId: schedule.teimo.shop
+        threshold: 0
+        expectedValue: 1
+      emittedEventId: event.npc.teimo.service-interaction
+    - lineId: line.teimo.greeting.02
+      localizationKey: npc.teimo.greeting.02
+      fallbackSubtitle: Good day!
+      audioEventId: audio.npc.teimo.greeting.02
+      cooldownGameSeconds: 0
+      conditions:
+      - kind: 3
+        conditionId: schedule.teimo.shop
+        threshold: 0
+        expectedValue: 1
+      emittedEventId: event.npc.teimo.service-interaction
+    - lineId: line.teimo.greeting.03
+      localizationKey: npc.teimo.greeting.03
+      fallbackSubtitle: Hey to the dishes and dishes to the dish washer!
+      audioEventId: audio.npc.teimo.greeting.03
+      cooldownGameSeconds: 0
+      conditions:
+      - kind: 3
+        conditionId: schedule.teimo.shop
+        threshold: 0
+        expectedValue: 1
+      emittedEventId: event.npc.teimo.service-interaction
+    - lineId: line.teimo.greeting.04
+      localizationKey: npc.teimo.greeting.04
+      fallbackSubtitle: Well good day, what brings you to the city?
+      audioEventId: audio.npc.teimo.greeting.04
+      cooldownGameSeconds: 0
+      conditions:
+      - kind: 3
+        conditionId: schedule.teimo.shop
+        threshold: 0
+        expectedValue: 1
+      emittedEventId: event.npc.teimo.service-interaction
+    - lineId: line.teimo.greeting.05
+      localizationKey: npc.teimo.greeting.05
+      fallbackSubtitle: 508... 509... Well hello! What can I do for you?
+      audioEventId: audio.npc.teimo.greeting.05
+      cooldownGameSeconds: 0
+      conditions:
+      - kind: 3
+        conditionId: schedule.teimo.shop
+        threshold: 0
+        expectedValue: 1
+      emittedEventId: event.npc.teimo.service-interaction
+    - lineId: line.teimo.greeting.06
+      localizationKey: npc.teimo.greeting.06
+      fallbackSubtitle: Well well... Good day for you too, glumpsy.
+      audioEventId: audio.npc.teimo.greeting.06
+      cooldownGameSeconds: 0
+      conditions:
+      - kind: 3
+        conditionId: schedule.teimo.shop
+        threshold: 0
+        expectedValue: 1
+      emittedEventId: event.npc.teimo.service-interaction
+    - lineId: line.teimo.greeting.07
+      localizationKey: npc.teimo.greeting.07
+      fallbackSubtitle: Welcome to the Teim... Oh it's you.
+      audioEventId: audio.npc.teimo.greeting.07
+      cooldownGameSeconds: 0
+      conditions:
+      - kind: 3
+        conditionId: schedule.teimo.shop
+        threshold: 0
+        expectedValue: 1
+      emittedEventId: event.npc.teimo.service-interaction
+    - lineId: line.teimo.pub.01
+      localizationKey: npc.teimo.pub.01
+      fallbackSubtitle: How about one bottle of Noble booze and asbestos gloves,
+        or tall friends?
+      audioEventId: audio.npc.teimo.pub.01
+      cooldownGameSeconds: 0
+      conditions:
+      - kind: 3
+        conditionId: schedule.teimo.pub
+        threshold: 0
+        expectedValue: 1
+      emittedEventId: event.npc.teimo.service-interaction
+    - lineId: line.teimo.pub.02
+      localizationKey: npc.teimo.pub.02
+      fallbackSubtitle: What would you like? Golden brown Nivalan Kalia together
+        with horrible day after ramifications?
+      audioEventId: audio.npc.teimo.pub.02
+      cooldownGameSeconds: 0
+      conditions:
+      - kind: 3
+        conditionId: schedule.teimo.pub
+        threshold: 0
+        expectedValue: 1
+      emittedEventId: event.npc.teimo.service-interaction
+    - lineId: line.teimo.pub.03
+      localizationKey: npc.teimo.pub.03
+      fallbackSubtitle: So, you too are here to make your brains forgot how depressing
+        is our life in here?
+      audioEventId: audio.npc.teimo.pub.03
+      cooldownGameSeconds: 0
+      conditions:
+      - kind: 3
+        conditionId: schedule.teimo.pub
+        threshold: 0
+        expectedValue: 1
+      emittedEventId: event.npc.teimo.service-interaction
+    - lineId: line.teimo.pub.04
+      localizationKey: npc.teimo.pub.04
+      fallbackSubtitle: Today we have a special offer! If you buy one beer, you are
+        able to buy second beer as well!
+      audioEventId: audio.npc.teimo.pub.04
+      cooldownGameSeconds: 0
+      conditions:
+      - kind: 3
+        conditionId: schedule.teimo.pub
+        threshold: 0
+        expectedValue: 1
+      emittedEventId: event.npc.teimo.service-interaction

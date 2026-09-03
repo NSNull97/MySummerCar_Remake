@@ -2,10 +2,13 @@
   "name": "MSC.Editor",
   "rootNamespace": "MSC.Editor",
   "references": [
+    "MSC.Characters.Runtime",
     "MSC.Core.Runtime",
+    "MSC.Economy.Runtime",
     "MSC.Bootstrap.Runtime",
     "MSC.Interaction.Runtime",
     "MSC.Player.Runtime",
+    "MSC.Presentation.InteractionOutline.EPO",
     "MSC.Vehicle.Runtime",
     "MSC.Vehicle.Simulation",
     "MSC.Vehicle.Assembly",
@@ -19,10 +22,13 @@
     "MSC.Save.Migration",
     "MSC.LegacyImport.Runtime",
     "MSC.LegacyImport.Editor",
+    "MSC.NPC.Runtime",
+    "MSC.Traffic.Runtime",
     "MSC.Development.Performance",
     "Unity.InputSystem",
     "Unity.RenderPipelines.Core.Runtime",
-    "Unity.RenderPipelines.HighDefinition.Runtime"
+    "Unity.RenderPipelines.HighDefinition.Runtime",
+    "EPO.Runtime"
   ],
   "includePlatforms": ["Editor"],
   "excludePlatforms": [],

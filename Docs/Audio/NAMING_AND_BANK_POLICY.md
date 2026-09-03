@@ -35,7 +35,7 @@ Backend names are authoring data in maps, not gameplay string constants:
 by `AudioProjectIds`. A row marked `DeferredHook` is not a claim that a runtime
 producer or final Wwise object/content already exists.
 
-Verified authoring contains 52 distinct events, 32 RTPCs, 4 switch groups and
+Verified authoring contains 65 distinct events, 32 RTPCs, 4 switch groups and
 3 state groups. Runtime aliases do not create duplicate Wwise events.
 
 ## Work Units
@@ -52,7 +52,7 @@ identity. Wwise XML diffs require normal code review.
 | `Init.bnk` | mandatory Wwise initialization metadata; session | generated/verified, `1,877 B` |
 | `MSC_Vehicle` | vehicle layers and transitions; vehicle/session | generated/verified, `1,992,969 B` |
 | `MSC_Weather` | rain, wind and thunder; session | generated/verified, `12,554,129 B` |
-| `MSC_World` | streamed ambience/room tones | generated/verified, `10,387,529 B`; production placement deferred |
+| `MSC_World` | streamed ambience/room tones | generated/verified, `93,600,920 B`; full donor phase ambience and local gameplay hooks imported; final bank streaming/compression pending |
 | `MSC_Interaction` | interaction one-shots, player footsteps and later surfaces/tools | generated/verified, `1,179,302 B` |
 | `MSC_UI` | later UI/menu events | generated empty reservation, `145 B`; no donor gameplay content |
 
@@ -71,11 +71,13 @@ originals. Record sizes/hashes as reports, not binaries.
 
 Project-authored `.wproj`/`.wwu` data and newly authored sources may be reviewed
 for version control separately from generated banks and the official vendor
-integration. The verified Windows bank total is `26,115,951 B`; per-file hashes
-are recorded in `WWISE_SETUP.md` and `PERFORMANCE_REPORT.md`.
+integration. The verified Windows bank total is `109,329,342 B`; current
+per-file hashes are recorded in `WWISE_SETUP.md`. `PERFORMANCE_REPORT.md`
+preserves the smaller accepted M08 performance baseline until the expanded
+world bank receives a new real-device profiling pass.
 
 Authoring also contains six mixer buses, exactly six normalized Volume RTPC
-curves, seven routed Actor-Mixer roots and explicit child routing `52/52`.
+curves, seven routed Actor-Mixer roots and explicit child routing `65/65`.
 The footstep Switch Container validates 10 sounds, 5 random pairs and `9/9`
 assignments. Generated output and caches remain ignored even though they are
 validated.

@@ -1,0 +1,26 @@
+{
+  "name": "MSC.Home.Tests.EditMode",
+  "rootNamespace": "MSC.Home.Tests.EditMode",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Bootstrap.Runtime",
+    "MSC.Core.Runtime",
+    "MSC.Home.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Needs.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

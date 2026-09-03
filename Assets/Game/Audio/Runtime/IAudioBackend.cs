@@ -40,4 +40,28 @@ namespace MSC.Audio
 
         AudioRuntimeSnapshot CaptureSnapshot();
     }
+
+    /// <summary>
+    /// Optional backend capability for removable, Resources-backed Phase 1
+    /// presentation libraries. Runtime gameplay remains coupled only to stable
+    /// audio event IDs and never receives the concrete library asset.
+    /// </summary>
+    public interface IAudioSupplementalContentBackend
+    {
+        bool TryLoadSupplementalEventLibrary(
+            string resourcesPath,
+            out string failure);
+    }
+
+    /// <summary>
+    /// Optional fallback capability for hash-locked, removable Phase 1 media
+    /// that intentionally replaces a primary placeholder while retaining the
+    /// same project-owned stable event ID.
+    /// </summary>
+    public interface IAudioOverrideContentBackend
+    {
+        bool TryLoadOverrideEventLibrary(
+            string resourcesPath,
+            out string failure);
+    }
 }

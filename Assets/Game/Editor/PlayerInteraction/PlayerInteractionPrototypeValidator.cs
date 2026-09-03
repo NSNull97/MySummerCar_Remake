@@ -7,6 +7,8 @@ using MSC.Interaction.Carrying;
 using MSC.Interaction.Prototype;
 using MSC.Interaction.Query;
 using MSC.Player;
+using MSC.Presentation.InteractionOutline.EPO;
+using EPOOutline;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -22,6 +24,10 @@ namespace MSC.Editor.PlayerInteraction
             "Move",
             "Look",
             "Crouch",
+            "Run",
+            "Jump",
+            "Zoom",
+            "ForwardLean",
             "Interact",
             "Drop",
             "Place",
@@ -143,6 +149,9 @@ namespace MSC.Editor.PlayerInteraction
             RequireComponent<PlayerInputRouter>(prefab, errors);
             RequireComponent<InteractionDebugOverlay>(prefab, errors);
             RequireComponent<CrossdotPresenter>(prefab, errors);
+            RequireComponent<InteractionOutlinePresenter>(prefab, errors);
+            RequireComponent<EpoInteractionOutlineAdapter>(prefab, errors);
+            RequireComponent<Outlinable>(prefab, errors);
 
             CrossdotPresenter crossdot = prefab.GetComponent<CrossdotPresenter>();
             if (crossdot != null &&
@@ -150,6 +159,60 @@ namespace MSC.Editor.PlayerInteraction
                  crossdot.OutlineWidthPixels < 0f))
             {
                 errors.Add("Player prefab has an invalid or hidden Crossdot configuration.");
+            }
+
+            InteractionOutlinePresenter outline =
+                prefab.GetComponent<InteractionOutlinePresenter>();
+            if (outline != null &&
+                (outline.OutlineWidthPixels < 0.5f ||
+                 outline.OutlineWidthPixels > 8f))
+            {
+                errors.Add(
+                    "Player prefab has an invalid interaction outline " +
+                    "configuration.");
+            }
+
+            EpoInteractionOutlineAdapter outlineAdapter =
+                prefab.GetComponent<EpoInteractionOutlineAdapter>();
+            if (outlineAdapter != null &&
+                (outlineAdapter.Presenter != outline ||
+                 outlineAdapter.Outlinable == null ||
+                 !Mathf.Approximately(
+                     outlineAdapter.GrowDurationSeconds,
+                     EpoInteractionOutlineAdapter.ReferenceGrowSeconds)))
+            {
+                errors.Add(
+                    "Player prefab has an invalid EPO interaction outline " +
+                    "adapter configuration.");
+            }
+
+            Camera firstPersonCamera =
+                prefab.GetComponentInChildren<Camera>(true);
+            HdrpOutliner outliner = firstPersonCamera != null
+                ? firstPersonCamera.GetComponent<HdrpOutliner>()
+                : null;
+            if (outliner == null ||
+                outliner.PrimaryBufferSizeMode != BufferSizeMode.Native ||
+                outliner.DilateIterations != 1 ||
+                outliner.BlurIterations != 0)
+            {
+                errors.Add(
+                    "Player camera has an invalid EPO Outliner " +
+                    "configuration.");
+            }
+
+            UnityEngine.Rendering.HighDefinition.CustomPassVolume passVolume =
+                firstPersonCamera != null
+                    ? firstPersonCamera.GetComponentInChildren<
+                        UnityEngine.Rendering.HighDefinition.CustomPassVolume>(
+                            true)
+                    : null;
+            if (passVolume == null ||
+                passVolume.customPasses.All(
+                    pass => !(pass is OutlineCustomPass)))
+            {
+                errors.Add(
+                    "Player camera has no EPO HDRP OutlineCustomPass.");
             }
 
             PlayerInputRouter input = prefab.GetComponent<PlayerInputRouter>();
@@ -161,6 +224,16 @@ namespace MSC.Editor.PlayerInteraction
             if (prefab.GetComponentInChildren<Camera>(true) == null)
             {
                 errors.Add("Player prefab has no first-person camera.");
+            }
+
+            if (prefab.GetComponentInChildren<FirstPersonCameraFieldOfView>(true) == null)
+            {
+                errors.Add("Player prefab has no horizontal-FOV controller.");
+            }
+
+            if (prefab.GetComponentInChildren<FirstPersonCameraMotion>(true) == null)
+            {
+                errors.Add("Player prefab has no restrained event camera motion.");
             }
         }
 

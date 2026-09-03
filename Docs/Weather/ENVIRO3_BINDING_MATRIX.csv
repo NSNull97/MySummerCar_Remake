@@ -1,11 +1,12 @@
 logical_state_id,presentation_binding_id,typed_source_asset,runtime_presentation_object,precipitation_emission_source,authority,status,known_limit
-weather.clear,weather.clear,Clear Sky.asset,direct typed asset,none,project domain,IMPLEMENTED,Enviro renders presentation only
-weather.partly_cloudy,weather.partly_cloudy,Cloudy 1.asset,direct typed asset,none,project domain,IMPLEMENTED,bounded base-package cloud preset
-weather.overcast,weather.overcast,Cloudy 3.asset,direct typed asset,none,project domain,IMPLEMENTED,Enviro exponential transition is approximate
+weather.clear,weather.clear,Clear Sky.asset,adapter-owned calibrated Clear clone,none,project domain,IMPLEMENTED,continuous project cloud coverage and restrained cirrus; source asset remains read-only
+weather.partly_cloudy,weather.partly_cloudy,Cloudy 1.asset,adapter-owned calibrated Partly Cloudy clone,none,project domain,IMPLEMENTED,continuous project cloud coverage; source asset remains read-only
+weather.overcast,weather.overcast,Cloudy 3.asset,adapter-owned calibrated Overcast clone,none,project domain,IMPLEMENTED,closed overcast target; Enviro exponential transition remains approximate
 weather.drizzle,weather.drizzle,Rain.asset,adapter-owned isolated Drizzle clone,frame PrecipitationIntensity01 dynamic Rain emission,project domain,IMPLEMENTED_WITH_APPROXIMATION,base Rain effect is reused
 weather.steady_rain,weather.rain,Rain.asset,adapter-owned isolated Rain clone,frame PrecipitationIntensity01 dynamic Rain emission,project domain,IMPLEMENTED,source asset remains read-only
 weather.heavy_rain,weather.heavy_rain,Rain.asset,adapter-owned isolated Heavy Rain clone,frame PrecipitationIntensity01 dynamic Rain emission,project domain,IMPLEMENTED_WITH_APPROXIMATION,base Rain effect is reused
 weather.thunderstorm,weather.storm_visual,Storm.asset,adapter-owned isolated Storm clone,frame PrecipitationIntensity01 dynamic Rain emission,project domain,IMPLEMENTED,autonomous Enviro lightning and audio disabled
-weather.morning_mist,weather.fog,Foggy.asset,direct typed asset,none,project domain,IMPLEMENTED,approved single fog owner strategy
+weather.morning_mist,weather.fog,Foggy.asset,adapter-owned calibrated Fog clone,none,project domain,IMPLEMENTED,approved single fog owner strategy
+weather.dense_fog,weather.dense_fog,Foggy.asset,adapter-owned calibrated Fog clone,none,project domain,IMPLEMENTED,strong fog uses project visibility target 80 m and the existing single volumetric fog owner
 quality.low,quality.low,Low.asset,direct typed quality asset,none,presentation adapter,IMPLEMENTED,production profiling pending
 quality.high,quality.high,High.asset,direct typed quality asset,none,presentation adapter,IMPLEMENTED,production profiling pending

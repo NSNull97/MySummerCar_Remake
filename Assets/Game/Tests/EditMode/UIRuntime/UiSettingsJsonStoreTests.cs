@@ -50,6 +50,11 @@ namespace MSC.Tests.EditMode.UIRuntime
             UiSettingsJsonStore store = new UiSettingsJsonStore(settingsPath);
             UiSettingsDocument document = UiSettingsDefaults.Create();
             document.Audio.Engine01 = 0.42f;
+            document.Graphics.AntiAliasingMode = UiAntiAliasingMode.Smaa;
+            document.Graphics.AntiAliasingPreset = UiAntiAliasingPreset.Custom;
+            document.Graphics.AntiAliasingSharpening = 0.17f;
+            document.Graphics.HorizontalFieldOfViewDegrees = 105f;
+            document.Graphics.CameraFarClipMeters = 1750f;
             document.Controls.PlayerBindingOverridesJson = "[{\"id\":\"player\"}]";
             document.Controls.VehicleBindingOverridesJson = "[{\"id\":\"vehicle\"}]";
 
@@ -91,10 +96,144 @@ namespace MSC.Tests.EditMode.UIRuntime
             Assert.That(result.Document.SchemaVersion, Is.EqualTo(UiSettingsDocument.CurrentSchemaVersion));
             Assert.That(result.Document.Controls.PlayerBindingOverridesJson, Is.EqualTo("[]"));
             Assert.That(result.Document.Controls.VehicleBindingOverridesJson, Is.Empty);
+            Assert.That(result.Document.Gameplay.ShowFpsCounter, Is.True);
             Assert.That(result.Document.Accessibility.ContentEquals(UiSettingsDefaults.Create().Accessibility), Is.True);
+            Assert.That(
+                result.Document.Graphics.AntiAliasingPreset,
+                Is.EqualTo(UiAntiAliasingPreset.High));
 
             UiSettingsDocument persisted = JsonUtility.FromJson<UiSettingsDocument>(File.ReadAllText(settingsPath));
             Assert.That(persisted.SchemaVersion, Is.EqualTo(UiSettingsDocument.CurrentSchemaVersion));
+        }
+
+        [Test]
+        public void VersionTwo_MigratesFpsCounterToEnabled()
+        {
+            Directory.CreateDirectory(directory);
+            File.WriteAllText(
+                settingsPath,
+                CreateVersionTwoJson(),
+                new UTF8Encoding(false));
+            UiSettingsJsonStore store =
+                new UiSettingsJsonStore(settingsPath);
+
+            UiSettingsLoadResult result = store.LoadOrCreate();
+
+            Assert.That(
+                result.Status,
+                Is.EqualTo(UiSettingsLoadStatus.MigratedAndSaved));
+            Assert.That(
+                result.Document.SchemaVersion,
+                Is.EqualTo(UiSettingsDocument.CurrentSchemaVersion));
+            Assert.That(result.Document.Gameplay.ShowFpsCounter, Is.True);
+            Assert.That(result.Document.Gameplay.LanguageId, Is.EqualTo("en-US"));
+            Assert.That(result.Document.Accessibility.UiScale, Is.EqualTo(0.9f));
+            Assert.That(
+                result.Document.Graphics.AntiAliasingMode,
+                Is.EqualTo(UiAntiAliasingMode.Taa));
+        }
+
+        [Test]
+        public void VersionThree_MigratesWithDlssDisabledAndBalanced()
+        {
+            UiSettingsDocument legacy = UiSettingsDefaults.Create();
+            legacy.SchemaVersion = 3;
+            legacy.Graphics.DlssEnabled = true;
+            legacy.Graphics.DlssQuality = UiDlssQuality.UltraPerformance;
+            Directory.CreateDirectory(directory);
+            File.WriteAllText(
+                settingsPath,
+                JsonUtility.ToJson(legacy, true),
+                new UTF8Encoding(false));
+            UiSettingsJsonStore store = new UiSettingsJsonStore(settingsPath);
+
+            UiSettingsLoadResult result = store.LoadOrCreate();
+
+            Assert.That(
+                result.Status,
+                Is.EqualTo(UiSettingsLoadStatus.MigratedAndSaved));
+            Assert.That(result.Document.Graphics.DlssEnabled, Is.False);
+            Assert.That(
+                result.Document.Graphics.DlssQuality,
+                Is.EqualTo(UiDlssQuality.Balanced));
+            Assert.That(
+                result.Document.Graphics.AntiAliasingPreset,
+                Is.EqualTo(UiAntiAliasingPreset.High));
+        }
+
+        [Test]
+        public void VersionFour_MigratesCameraSettingsToAuthoredDefaults()
+        {
+            UiSettingsDocument legacy = UiSettingsDefaults.Create();
+            legacy.SchemaVersion = 4;
+            legacy.Graphics.HorizontalFieldOfViewDegrees = 0f;
+            legacy.Graphics.CameraFarClipMeters = 0f;
+            Directory.CreateDirectory(directory);
+            File.WriteAllText(
+                settingsPath,
+                JsonUtility.ToJson(legacy, true),
+                new UTF8Encoding(false));
+            UiSettingsJsonStore store = new UiSettingsJsonStore(settingsPath);
+
+            UiSettingsLoadResult result = store.LoadOrCreate();
+
+            Assert.That(
+                result.Status,
+                Is.EqualTo(UiSettingsLoadStatus.MigratedAndSaved));
+            Assert.That(
+                result.Document.Graphics.HorizontalFieldOfViewDegrees,
+                Is.EqualTo(
+                    GraphicsSettingsDto.DefaultHorizontalFieldOfViewDegrees));
+            Assert.That(
+                result.Document.Graphics.CameraFarClipMeters,
+                Is.EqualTo(GraphicsSettingsDto.DefaultCameraFarClipMeters));
+        }
+
+        [TestCase(
+            UiDlssQuality.Balanced,
+            UiAntiAliasingMode.TemporalUpscaler,
+            true)]
+        [TestCase(
+            UiDlssQuality.Dlaa,
+            UiAntiAliasingMode.MaximumQuality,
+            false)]
+        public void VersionFive_MigratesLegacyDlssSelectionIntoUnifiedAntiAliasing(
+            UiDlssQuality legacyQuality,
+            UiAntiAliasingMode expectedMode,
+            bool expectedDlssEnabled)
+        {
+            UiSettingsDocument legacy = UiSettingsDefaults.Create();
+            legacy.SchemaVersion = 5;
+            legacy.Graphics.DlssEnabled = true;
+            legacy.Graphics.DlssQuality = legacyQuality;
+            legacy.Graphics.AntiAliasingMode = UiAntiAliasingMode.Off;
+            legacy.Graphics.AntiAliasingPreset = UiAntiAliasingPreset.Low;
+            legacy.Graphics.AntiAliasingSharpening = 0f;
+            Directory.CreateDirectory(directory);
+            File.WriteAllText(
+                settingsPath,
+                JsonUtility.ToJson(legacy, true),
+                new UTF8Encoding(false));
+            UiSettingsJsonStore store = new UiSettingsJsonStore(settingsPath);
+
+            UiSettingsLoadResult result = store.LoadOrCreate();
+
+            Assert.That(
+                result.Status,
+                Is.EqualTo(UiSettingsLoadStatus.MigratedAndSaved));
+            Assert.That(
+                result.Document.Graphics.AntiAliasingMode,
+                Is.EqualTo(expectedMode));
+            Assert.That(
+                result.Document.Graphics.AntiAliasingPreset,
+                Is.EqualTo(UiAntiAliasingPreset.Custom));
+            Assert.That(
+                result.Document.Graphics.DlssEnabled,
+                Is.EqualTo(expectedDlssEnabled));
+            Assert.That(
+                result.Document.Graphics.AntiAliasingSharpening,
+                Is.EqualTo(
+                    GraphicsSettingsDto.DefaultAntiAliasingSharpening));
         }
 
         private static string CreateVersionOneJson()
@@ -147,6 +286,16 @@ namespace MSC.Tests.EditMode.UIRuntime
     ""DevelopmentUiVisible"": false
   }
 }";
+        }
+
+        private static string CreateVersionTwoJson()
+        {
+            UiSettingsDocument document = UiSettingsDefaults.Create();
+            document.SchemaVersion = 2;
+            document.Gameplay.LanguageId = "en-US";
+            document.Gameplay.ShowFpsCounter = false;
+            document.Accessibility.UiScale = 0.9f;
+            return JsonUtility.ToJson(document, true);
         }
     }
 }

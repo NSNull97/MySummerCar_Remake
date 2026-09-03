@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-08-01T13:52:27+00:00",
+  "beforeBytes": 1082718,
+  "afterBytes": 6837598,
+  "deltaBytes": 5754880,
+  "growthRatio": 6.315215965745466,
+  "byCategory": {
+    "HDRP Mask Map": {
+      "before": 87384,
+      "after": 1398104,
+      "delta": 1310720
+    },
+    "Normal Map": {
+      "before": 21846,
+      "after": 349526,
+      "delta": 327680
+    },
+    "Base Color / Albedo": {
+      "before": 973488,
+      "after": 5089968,
+      "delta": 4116480
+    }
+  },
+  "top20": [
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Phase1JobLocations/Textures/3da72f11c3dccaf4094498d3342d2a01.png",
+      "category": "Base Color / Albedo",
+      "before": 699051,
+      "after": 2796203,
+      "delta": 2097152
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Characters/Source/Texture2D/char_face01.png",
+      "category": "Base Color / Albedo",
+      "before": 174763,
+      "after": 699051,
+      "delta": 524288
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_Mask.png",
+      "category": "HDRP Mask Map",
+      "before": 21846,
+      "after": 349526,
+      "delta": 327680
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Bark_Mask.png",
+      "category": "HDRP Mask Map",
+      "before": 21846,
+      "after": 349526,
+      "delta": 327680
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Concrete_Mask.png",
+      "category": "HDRP Mask Map",
+      "before": 21846,
+      "after": 349526,
+      "delta": 327680
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_Normal.png",
+      "category": "Normal Map",
+      "before": 21846,
+      "after": 349526,
+      "delta": 327680
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Foliage_BaseColor.png",
+      "category": "Base Color / Albedo",
+      "before": 21846,
+      "after": 349526,
+      "delta": 327680
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Foliage_Mask.png",
+      "category": "HDRP Mask Map",
+      "before": 21846,
+      "after": 349526,
+      "delta": 327680
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_BaseColor.png",
+      "category": "Base Color / Albedo",
+      "before": 21846,
+      "after": 349526,
+      "delta": 327680
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_148710e4d9642944fb00fe40cc63df59_color.png",
+      "category": "Base Color / Albedo",
+      "before": 21846,
+      "after": 349526,
+      "delta": 327680
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_26887fe73cb2f5446a4188d0810021e5_color.png",
+      "category": "Base Color / Albedo",
+      "before": 21846,
+      "after": 349526,
+      "delta": 327680
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_8dc4a3e69f40c0243ae94a3fa2d85461_color.png",
+      "category": "Base Color / Albedo",
+      "before": 5462,
+      "after": 87382,
+      "delta": 81920
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_ac6f5a6ba24f61c4486229c86c2fe0c3_color.png",
+      "category": "Base Color / Albedo",
+      "before": 5462,
+      "after": 87382,
+      "delta": 81920
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_1bb21905ad6633843889f4dc298b2c6c_color.png",
+      "category": "Base Color / Albedo",
+      "before": 1366,
+      "after": 21846,
+      "delta": 20480
+    }
+  ],
+  "note": "Editor-side estimate derived from source dimensions, mipmap policy and importer compression class; not measured GPU residency."
+}

@@ -28,12 +28,13 @@ namespace MSC.UI.Presentation
     }
 
     /// <summary>
-    /// Resolves a project-approved Windows system font without bundling an
-    /// external font file. Other platforms, or Windows machines without a known
-    /// family, explicitly use Unity's built-in LegacyRuntime font.
+    /// Resolves the project-bundled Latin/Cyrillic UI font. The Windows font
+    /// list remains a compatibility fallback for a missing or failed import.
     /// </summary>
     internal static class UiFontResolver
     {
+        private const string ProjectFontResourcePath = "Fonts/HelveticaNeueRoman";
+
         private const string RequiredUiGlyphs =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" +
             "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" +
@@ -41,14 +42,24 @@ namespace MSC.UI.Presentation
 
         private static readonly string[] PreferredWindowsFamilies =
         {
-            "Bahnschrift SemiCondensed",
-            "Bahnschrift",
-            "Arial Narrow",
+            "Helvetica Neue",
             "Segoe UI",
+            "Arial",
+            "Bahnschrift",
         };
 
         public static UiFontResolution Resolve()
         {
+            Font projectFont = Resources.Load<Font>(ProjectFontResourcePath);
+            if (projectFont != null && SupportsRequiredUiGlyphs(projectFont))
+            {
+                return new UiFontResolution(
+                    projectFont,
+                    "Bundled font: Helvetica Neue Roman (user-supplied)",
+                    ownsFont: false,
+                    usesLegacyRuntime: false);
+            }
+
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             UiFontResolution windowsResolution;
             if (TryResolveWindowsFont(out windowsResolution))
@@ -129,6 +140,7 @@ namespace MSC.UI.Presentation
 
             return false;
         }
+#endif
 
         private static bool SupportsRequiredUiGlyphs(Font font)
         {
@@ -143,6 +155,7 @@ namespace MSC.UI.Presentation
             return true;
         }
 
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
         private static void ReleaseRejectedFont(Font font)
         {
             if (Application.isPlaying)

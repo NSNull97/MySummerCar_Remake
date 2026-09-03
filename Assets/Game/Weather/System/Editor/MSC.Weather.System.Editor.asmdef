@@ -1,0 +1,31 @@
+{
+  "name": "MSC.Weather.System.Editor",
+  "rootNamespace": "MSC.Weather.System.Editor",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Weather.Enviro3Integration",
+    "MSC.Weather.Production.Runtime",
+    "MSC.Weather.System.Runtime",
+    "MSC.Weather.System.Local.Runtime",
+    "MSC.Weather.System.Audio.Runtime",
+    "MSC.Weather.System.EnviroLegacy.Runtime",
+    "MSC.Weather.System.NativeHDRP.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "ENVIRO_3",
+    "ENVIRO_HDRP"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

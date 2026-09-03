@@ -24,6 +24,20 @@ Never commit:
 
 Use Git LFS for newly authored production assets. Verify Git LFS is installed before committing large binaries.
 
+## Unity Editor with parallel coding sessions
+
+The production composition owns plain C# services and subscriptions that Unity
+cannot serialize across a live domain reload. Never use **Recompile And Continue
+Playing** for this project. `PlayModeCompilationGuard` repairs that unsafe
+preference to **Recompile After Finished Playing** when the Editor loads while
+preserving the stricter **Stop Playing And Recompile** choice.
+
+When another process changes C# during Play Mode, Unity therefore keeps the
+current compiled session intact and queues recompilation until Play Mode exits.
+If compilation is nevertheless started by an external tool or a changed
+preference, the guard stops Play Mode before unlocking assembly reload. Do not
+interpret a half-restored Play session as a valid gameplay or validation run.
+
 ## Commit quality
 
 A commit should have one coherent reason to exist. Include tests/docs with the feature they describe. Avoid dumping an entire milestone into one unreviewable mega-commit when smaller checkpoints are possible.

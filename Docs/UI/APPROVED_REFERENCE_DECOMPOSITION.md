@@ -1,6 +1,8 @@
 # Milestone 08A — approved reference decomposition
 
-Status: `ReferenceLocked / HashVerified / ImplementationComplete / VisuallyApproved`  
+Status: `ReferenceLocked / HashVerified`; five menu/settings screens remain
+`VisuallyApproved`; the `2026-08-05` HUD revision is `TargetedPlayModePassed /
+CaptureBlocked / VisualApprovalPending`
 Canonical viewport: `1672 × 941`, UI scale `100%`  
 Coordinate convention: `(x, y, width, height)` from the top-left of the
 canonical reference frame. Measurements have an expected tolerance of 2–6 px
@@ -135,25 +137,39 @@ shared `Apply / Reset / Cancel` transaction row.
 
 ## 06 — Default in-game HUD
 
-| Region | Pixel bounds | Normalized bounds |
+The original 08A source-reference measurements below remain historical:
+
+| Original region | Pixel bounds | Normalized bounds |
 |---|---:|---:|
 | Time and money | `30,37,196,165` | `0.0179,0.0393,0.1172,0.1753` |
 | Needs panel | `30,226,196,270` | `0.0179,0.2402,0.1172,0.2869` |
 | Typical need row | `40,234,176,42` | `0.0239,0.2487,0.1053,0.0446` |
 
-The persistent HUD is restricted to the two upper-left blocks. Time/day/date,
-money and six needs are the only permanent fields. Each need uses icon, label,
-bar and numeric percentage, so meaning never depends on colour alone. No GPS,
-minimap, objective tracker, vehicle telemetry, hotbar or permanent interaction
-prompt is permitted.
+`UI08A-DEV-028` supersedes their live geometry after the user's 2026-08-05
+correction:
+
+| Revised region | Pixel bounds | Normalized bounds |
+|---|---:|---:|
+| Clock | `1450,38,180,62` | `0.8672,0.0404,0.1077,0.0659` |
+| Money | `1450,104,180,34` | `0.8672,0.1105,0.1077,0.0361` |
+| Needs column | `42,38,144,284` | `0.0251,0.0404,0.0861,0.3018` |
+| Typical need group | `0,0,144,42`, vertical stride `46` | local to the needs column |
+
+Time/day/date, money and all six needs are still the only permanent fields.
+Each need uses an icon, label, thin fill track, numeric percentage and amber
+indicator. Text, icons and all thin graphics receive the shared dark shadow
+contract for bright-scene readability. The style reference's speedometer and
+gear cluster are explicitly excluded; no GPS, minimap, objective tracker,
+vehicle telemetry, hotbar or permanent interaction prompt is permitted.
 
 ## Responsive behaviour
 
 - At the canonical target, measured pixel bounds are authoritative.
-- Between 16:10 and 21:9, the canonical frame scales uniformly and remains
-  centred; extra horizontal area belongs to the active project-owned backdrop.
-- At narrower aspect ratios, safe-area clamping takes precedence over exact
-  outer margins while panel proportions and order remain unchanged.
+- At every aspect ratio, `CanvasScaler.Expand` contains one fixed centred
+  `1672 x 941` logical frame; no route receives a narrower coordinate space.
+- Narrower displays gain vertical backdrop area and wider displays gain
+  horizontal backdrop area while panel proportions, order and canonical
+  coordinates remain unchanged.
 - User UI scale is applied inside the safe frame and is capped to prevent
   clipping; 100% is always used for review captures.
 - The static menu plate is a separate full-canvas, aspect-preserved backdrop

@@ -1,0 +1,988 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-08-01T13:52:27+00:00",
+  "backupManifestPath": "E:\\GAYmDev_Studio\\MySummerCar_Remake\\Backups\\TextureUpscale\\20260801_185213\\manifest.json",
+  "validatedCount": 14,
+  "failureCount": 0,
+  "warningCount": 0,
+  "textures": [
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_Mask.png",
+      "category": "HDRP Mask Map",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "processedSize": [
+        256,
+        256
+      ],
+      "comparison": {
+        "ssimBlock8": 0.9932882826876556,
+        "psnr": 51.18107218764798,
+        "meanColorOriginal": [
+          159.06820678710938,
+          162.24899291992188,
+          176.8858642578125
+        ],
+        "meanColorProcessedDownsampled": [
+          158.94248962402344,
+          162.1916046142578,
+          176.85986328125
+        ],
+        "meanColorDelta": 0.0697021484375,
+        "histogramL1": 0.117431640625,
+        "alphaCoverageOriginal": 0.0,
+        "alphaCoverageProcessedDownsampled": 0.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 2.6245622634887695,
+          "vertical": 3.622253656387329,
+          "normalHorizontal": 3.330437183380127,
+          "normalVertical": 3.0514774322509766,
+          "normalized": 0.9875512567674914
+        },
+        "seamProcessed": {
+          "horizontal": 0.9744896292686462,
+          "vertical": 0.9989684224128723,
+          "normalHorizontal": 0.8925262689590454,
+          "normalVertical": 0.8312901258468628,
+          "normalized": 1.146770754800328
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.0,
+        "extrema": [
+          87,
+          111
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.0,
+        "extrema": [
+          85,
+          113
+        ]
+      },
+      "alphaCoverageDelta": 0.0,
+      "estimatedVramBytesBefore": 21846,
+      "estimatedVramBytesAfter": 349526
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Bark_Mask.png",
+      "category": "HDRP Mask Map",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "processedSize": [
+        512,
+        512
+      ],
+      "comparison": {
+        "ssimBlock8": 0.9947432867341615,
+        "psnr": 52.11611845806044,
+        "meanColorOriginal": [
+          104.0174560546875,
+          146.5481414794922,
+          150.9825439453125
+        ],
+        "meanColorProcessedDownsampled": [
+          104.02020263671875,
+          146.465576171875,
+          150.97979736328125
+        ],
+        "meanColorDelta": 0.02935282327234745,
+        "histogramL1": 0.039082845052083336,
+        "alphaCoverageOriginal": 0.0,
+        "alphaCoverageProcessedDownsampled": 0.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 3.5199902057647705,
+          "vertical": 1.9466403722763062,
+          "normalHorizontal": 2.0578112602233887,
+          "normalVertical": 1.789204716682434,
+          "normalized": 1.3992712677291093
+        },
+        "seamProcessed": {
+          "horizontal": 1.0987352132797241,
+          "vertical": 0.6467499732971191,
+          "normalHorizontal": 0.5457862615585327,
+          "normalVertical": 0.4666889011859894,
+          "normalized": 1.6994751946035307
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.0,
+        "extrema": [
+          36,
+          55
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.0,
+        "extrema": [
+          32,
+          59
+        ]
+      },
+      "alphaCoverageDelta": 0.0,
+      "estimatedVramBytesBefore": 21846,
+      "estimatedVramBytesAfter": 349526
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Concrete_Mask.png",
+      "category": "HDRP Mask Map",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "processedSize": [
+        512,
+        512
+      ],
+      "comparison": {
+        "ssimBlock8": 0.9921345702780832,
+        "psnr": 50.45459321347768,
+        "meanColorOriginal": [
+          95.77841186523438,
+          153.88870239257812,
+          159.22158813476562
+        ],
+        "meanColorProcessedDownsampled": [
+          95.77755737304688,
+          153.74497985839844,
+          159.22244262695312
+        ],
+        "meanColorDelta": 0.0484771728515625,
+        "histogramL1": 0.035054524739583336,
+        "alphaCoverageOriginal": 0.0,
+        "alphaCoverageProcessedDownsampled": 0.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 2.9503777027130127,
+          "vertical": 2.5843141078948975,
+          "normalHorizontal": 2.5733180046081543,
+          "normalVertical": 2.5581579208374023,
+          "normalized": 1.0783756400302367
+        },
+        "seamProcessed": {
+          "horizontal": 0.9343138337135315,
+          "vertical": 0.7777155041694641,
+          "normalHorizontal": 0.683358907699585,
+          "normalVertical": 0.6549205780029297,
+          "normalized": 1.277366635789041
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.0,
+        "extrema": [
+          58,
+          69
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.0,
+        "extrema": [
+          55,
+          72
+        ]
+      },
+      "alphaCoverageDelta": 0.0,
+      "estimatedVramBytesBefore": 21846,
+      "estimatedVramBytesAfter": 349526
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_Normal.png",
+      "category": "Normal Map",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "processedSize": [
+        256,
+        256
+      ],
+      "comparison": {
+        "ssimBlock8": 0.9839988319780809,
+        "psnr": 47.657776003719825,
+        "meanColorOriginal": [
+          127.543701171875,
+          127.53759765625,
+          255.0
+        ],
+        "meanColorProcessedDownsampled": [
+          127.5537109375,
+          127.540283203125,
+          255.0
+        ],
+        "meanColorDelta": 0.0042317709885537624,
+        "histogramL1": 0.11189778645833333,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 2.6979167461395264,
+          "vertical": 1.015625,
+          "normalHorizontal": 2.559523820877075,
+          "normalVertical": 3.095651388168335,
+          "normalized": 0.6910754933204927
+        },
+        "seamProcessed": {
+          "horizontal": 0.6848958134651184,
+          "vertical": 0.30078125,
+          "normalHorizontal": 0.5376021265983582,
+          "normalVertical": 0.6062142848968506,
+          "normalized": 0.8850729795396777
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "alphaCoverageDelta": 0.0,
+      "normal": {
+        "containsNaN": false,
+        "meanLength": 1.0002684593200684,
+        "meanLengthError": 0.0002683844941202551,
+        "minimumLength": 1.000015377998352,
+        "maximumLength": 1.0015519857406616,
+        "meanVector": [
+          0.0004256923566572368,
+          0.0003981739282608032,
+          1.0
+        ]
+      },
+      "estimatedVramBytesBefore": 21846,
+      "estimatedVramBytesAfter": 349526
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Foliage_BaseColor.png",
+      "category": "Base Color / Albedo",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "processedSize": [
+        512,
+        512
+      ],
+      "comparison": {
+        "ssimBlock8": 0.9929472484133838,
+        "psnr": 50.84352170805084,
+        "meanColorOriginal": [
+          19.554443359375,
+          46.0277099609375,
+          12.6588134765625
+        ],
+        "meanColorProcessedDownsampled": [
+          19.5577392578125,
+          46.03131103515625,
+          12.6595458984375
+        ],
+        "meanColorDelta": 0.0025431315880268812,
+        "histogramL1": 0.0345458984375,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 2.2942707538604736,
+          "vertical": 2.5052082538604736,
+          "normalHorizontal": 2.2363228797912598,
+          "normalVertical": 2.406783103942871,
+          "normalized": 1.033403510698454
+        },
+        "seamProcessed": {
+          "horizontal": 0.7330729365348816,
+          "vertical": 0.8151041865348816,
+          "normalHorizontal": 0.577862560749054,
+          "normalVertical": 0.6277621388435364,
+          "normalized": 1.2835111622720876
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "alphaCoverageDelta": 0.0,
+      "estimatedVramBytesBefore": 21846,
+      "estimatedVramBytesAfter": 349526
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Foliage_Mask.png",
+      "category": "HDRP Mask Map",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "processedSize": [
+        512,
+        512
+      ],
+      "comparison": {
+        "ssimBlock8": 0.9934077284273349,
+        "psnr": 51.53999520392464,
+        "meanColorOriginal": [
+          103.05413818359375,
+          145.56195068359375,
+          151.94586181640625
+        ],
+        "meanColorProcessedDownsampled": [
+          103.0528564453125,
+          145.43862915039062,
+          151.9471435546875
+        ],
+        "meanColorDelta": 0.041961669921875,
+        "histogramL1": 0.047526041666666664,
+        "alphaCoverageOriginal": 0.0,
+        "alphaCoverageProcessedDownsampled": 0.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 2.1971659660339355,
+          "vertical": 2.4217417240142822,
+          "normalHorizontal": 2.1620707511901855,
+          "normalVertical": 2.325047254562378,
+          "normalized": 1.028910198491365
+        },
+        "seamProcessed": {
+          "horizontal": 0.7249669432640076,
+          "vertical": 0.7770793437957764,
+          "normalHorizontal": 0.5720529556274414,
+          "normalVertical": 0.5989047288894653,
+          "normalized": 1.2824040818965239
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.0,
+        "extrema": [
+          43,
+          56
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.0,
+        "extrema": [
+          40,
+          58
+        ]
+      },
+      "alphaCoverageDelta": 0.0,
+      "estimatedVramBytesBefore": 21846,
+      "estimatedVramBytesAfter": 349526
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_1bb21905ad6633843889f4dc298b2c6c_color.png",
+      "category": "Base Color / Albedo",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        32,
+        32
+      ],
+      "processedSize": [
+        128,
+        128
+      ],
+      "comparison": {
+        "ssimBlock8": 1.0,
+        "psnr": 99.0,
+        "meanColorOriginal": [
+          127.5,
+          127.5,
+          127.5
+        ],
+        "meanColorProcessedDownsampled": [
+          127.5,
+          127.5,
+          127.5
+        ],
+        "meanColorDelta": 0.0,
+        "histogramL1": 0.0,
+        "alphaCoverageOriginal": 0.0,
+        "alphaCoverageProcessedDownsampled": 0.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.0,
+          "normalVertical": 0.0,
+          "normalized": 0.0
+        },
+        "seamProcessed": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.0,
+          "normalVertical": 0.0,
+          "normalized": 0.0
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.0,
+        "extrema": [
+          0,
+          0
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.0,
+        "extrema": [
+          0,
+          0
+        ]
+      },
+      "alphaCoverageDelta": 0.0,
+      "estimatedVramBytesBefore": 1366,
+      "estimatedVramBytesAfter": 21846
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Characters/Source/Texture2D/char_face01.png",
+      "category": "Base Color / Albedo",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        512,
+        256
+      ],
+      "processedSize": [
+        1024,
+        512
+      ],
+      "comparison": {
+        "ssimBlock8": 0.9860524565962128,
+        "psnr": 40.85194753932985,
+        "meanColorOriginal": [
+          200.603271484375,
+          148.8339080810547,
+          125.86774444580078
+        ],
+        "meanColorProcessedDownsampled": [
+          200.59576416015625,
+          148.8248291015625,
+          125.8866958618164
+        ],
+        "meanColorDelta": 0.011845906265079975,
+        "histogramL1": 0.120452880859375,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 5.3203125,
+          "vertical": 33.68359375,
+          "normalHorizontal": 8.016679763793945,
+          "normalVertical": 7.150265693664551,
+          "normalized": 2.6872362198967097
+        },
+        "seamProcessed": {
+          "horizontal": 3.23046875,
+          "vertical": 20.4736328125,
+          "normalHorizontal": 4.414484024047852,
+          "normalVertical": 3.9549782276153564,
+          "normalized": 2.9542312433739117
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "alphaCoverageDelta": 0.0,
+      "estimatedVramBytesBefore": 174763,
+      "estimatedVramBytesAfter": 699051
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Phase1JobLocations/Textures/3da72f11c3dccaf4094498d3342d2a01.png",
+      "category": "Base Color / Albedo",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        1024,
+        512
+      ],
+      "processedSize": [
+        2048,
+        1024
+      ],
+      "comparison": {
+        "ssimBlock8": 0.9927754063079378,
+        "psnr": 46.41034777467476,
+        "meanColorOriginal": [
+          128.32041931152344,
+          126.01322174072266,
+          120.48493194580078
+        ],
+        "meanColorProcessedDownsampled": [
+          128.27996826171875,
+          126.10940551757812,
+          120.4466323852539
+        ],
+        "meanColorDelta": 0.05831146240234375,
+        "histogramL1": 0.09325472513834636,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 42.703125,
+          "vertical": 29.7490234375,
+          "normalHorizontal": 4.173122406005859,
+          "normalVertical": 4.597364902496338,
+          "normalized": 8.351890610129573
+        },
+        "seamProcessed": {
+          "horizontal": 25.380859375,
+          "vertical": 18.10270118713379,
+          "normalHorizontal": 2.3687374591827393,
+          "normalVertical": 2.6001765727996826,
+          "normalized": 8.838517981465701
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "alphaCoverageDelta": 0.0,
+      "estimatedVramBytesBefore": 699051,
+      "estimatedVramBytesAfter": 2796203
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_8dc4a3e69f40c0243ae94a3fa2d85461_color.png",
+      "category": "Base Color / Albedo",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "processedSize": [
+        256,
+        256
+      ],
+      "comparison": {
+        "ssimBlock8": 0.987265230231178,
+        "psnr": 41.851990029561144,
+        "meanColorOriginal": [
+          255.0,
+          122.5107421875,
+          8.552490234375
+        ],
+        "meanColorProcessedDownsampled": [
+          255.0,
+          122.43505859375,
+          8.5888671875
+        ],
+        "meanColorDelta": 0.037353515625,
+        "histogramL1": 0.05419921875,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 1.4791666269302368,
+          "vertical": 40.18229293823242,
+          "normalHorizontal": 2.579695701599121,
+          "normalVertical": 0.6434358358383179,
+          "normalized": 31.511480308984517
+        },
+        "seamProcessed": {
+          "horizontal": 0.4973958432674408,
+          "vertical": 12.130208015441895,
+          "normalHorizontal": 0.802849292755127,
+          "normalVertical": 0.37521445751190186,
+          "normalized": 16.474135624459098
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "alphaCoverageDelta": 0.0,
+      "estimatedVramBytesBefore": 5462,
+      "estimatedVramBytesAfter": 87382
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_ac6f5a6ba24f61c4486229c86c2fe0c3_color.png",
+      "category": "Base Color / Albedo",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "processedSize": [
+        256,
+        256
+      ],
+      "comparison": {
+        "ssimBlock8": 0.9657002199028447,
+        "psnr": 41.02439805808389,
+        "meanColorOriginal": [
+          132.45703125,
+          132.38671875,
+          132.45703125
+        ],
+        "meanColorProcessedDownsampled": [
+          132.48577880859375,
+          132.40304565429688,
+          132.48577880859375
+        ],
+        "meanColorDelta": 0.02460733987390995,
+        "histogramL1": 0.09375,
+        "alphaCoverageOriginal": 0.0703125,
+        "alphaCoverageProcessedDownsampled": 0.0703125,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.5568783283233643,
+          "normalVertical": 0.6264880895614624,
+          "normalized": 0.0
+        },
+        "seamProcessed": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.26229575276374817,
+          "normalVertical": 0.29481208324432373,
+          "normalized": 0.0
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.0703125,
+        "extrema": [
+          0,
+          255
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.0703125,
+        "extrema": [
+          0,
+          255
+        ]
+      },
+      "alphaCoverageDelta": 0.0,
+      "estimatedVramBytesBefore": 5462,
+      "estimatedVramBytesAfter": 87382
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_BaseColor.png",
+      "category": "Base Color / Albedo",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "processedSize": [
+        256,
+        256
+      ],
+      "comparison": {
+        "ssimBlock8": 0.9901518426075139,
+        "psnr": 46.38027068477075,
+        "meanColorOriginal": [
+          97.4609375,
+          28.473876953125,
+          16.473876953125
+        ],
+        "meanColorProcessedDownsampled": [
+          97.526611328125,
+          28.476318359375,
+          16.5185546875
+        ],
+        "meanColorDelta": 0.03759765625,
+        "histogramL1": 0.10994466145833333,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 6.171875,
+          "vertical": 8.265625,
+          "normalHorizontal": 2.5230655670166016,
+          "normalVertical": 6.451636791229248,
+          "normalized": 1.8636740553859692
+        },
+        "seamProcessed": {
+          "horizontal": 1.5859375,
+          "vertical": 2.7903645038604736,
+          "normalHorizontal": 0.7646752595901489,
+          "normalVertical": 1.6727482080459595,
+          "normalized": 1.8710665688247548
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "alphaCoverageDelta": 0.0,
+      "estimatedVramBytesBefore": 21846,
+      "estimatedVramBytesAfter": 349526
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_148710e4d9642944fb00fe40cc63df59_color.png",
+      "category": "Base Color / Albedo",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "processedSize": [
+        512,
+        512
+      ],
+      "comparison": {
+        "ssimBlock8": 0.9978720063484058,
+        "psnr": 49.405594258490524,
+        "meanColorOriginal": [
+          36.9671630859375,
+          36.892822265625,
+          36.9581298828125
+        ],
+        "meanColorProcessedDownsampled": [
+          36.97607421875,
+          36.89337158203125,
+          36.968017578125
+        ],
+        "meanColorDelta": 0.0064493813551962376,
+        "histogramL1": 0.06254069010416667,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 10.864583015441895,
+          "vertical": 11.333333015441895,
+          "normalHorizontal": 4.424786567687988,
+          "normalVertical": 3.9005086421966553,
+          "normalized": 2.6804976509687775
+        },
+        "seamProcessed": {
+          "horizontal": 3.2565104961395264,
+          "vertical": 3.513671875,
+          "normalHorizontal": 1.3045830726623535,
+          "normalVertical": 1.1392070055007935,
+          "normalized": 2.7902608150944843
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 1.0,
+        "extrema": [
+          255,
+          255
+        ]
+      },
+      "alphaCoverageDelta": 0.0,
+      "estimatedVramBytesBefore": 21846,
+      "estimatedVramBytesAfter": 349526
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_26887fe73cb2f5446a4188d0810021e5_color.png",
+      "category": "Base Color / Albedo",
+      "status": "Pass",
+      "failures": [],
+      "warnings": [],
+      "sourceMode": "RGBA",
+      "processedMode": "RGBA",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "processedSize": [
+        512,
+        512
+      ],
+      "comparison": {
+        "ssimBlock8": 0.9645317279503555,
+        "psnr": 40.015821190840924,
+        "meanColorOriginal": [
+          126.57180786132812,
+          128.08837890625,
+          128.9438018798828
+        ],
+        "meanColorProcessedDownsampled": [
+          126.5518798828125,
+          128.11878967285156,
+          128.97723388671875
+        ],
+        "meanColorDelta": 0.027923583984375,
+        "histogramL1": 0.11079915364583333,
+        "alphaCoverageOriginal": 0.302734375,
+        "alphaCoverageProcessedDownsampled": 0.30267333984375,
+        "alphaCoverageDelta": 6.103515625e-05,
+        "seamOriginal": {
+          "horizontal": 4.625592231750488,
+          "vertical": 1.959712028503418,
+          "normalHorizontal": 2.7495250701904297,
+          "normalVertical": 2.8612873554229736,
+          "normalized": 1.18361489121351
+        },
+        "seamProcessed": {
+          "horizontal": 1.481635570526123,
+          "vertical": 0.6214933395385742,
+          "normalHorizontal": 1.127803921699524,
+          "normalVertical": 1.1765152215957642,
+          "normalized": 0.9209921867331653
+        }
+      },
+      "sourceAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.302734375,
+        "extrema": [
+          0,
+          255
+        ]
+      },
+      "processedAlpha": {
+        "hasAlpha": true,
+        "coverage": 0.3028984069824219,
+        "extrema": [
+          0,
+          255
+        ]
+      },
+      "alphaCoverageDelta": 0.000164031982421875,
+      "estimatedVramBytesBefore": 21846,
+      "estimatedVramBytesAfter": 349526
+    }
+  ]
+}

@@ -37,7 +37,20 @@ namespace MSC.Audio
             public static readonly AudioEventId WorldInteriorRoomTone = new AudioEventId("audio.event.world.interior.roomtone");
             public static readonly AudioEventId WorldDistantTraffic = new AudioEventId("audio.event.world.distant_traffic");
             public static readonly AudioEventId WorldBirds = new AudioEventId("audio.event.world.birds");
+            public static readonly AudioEventId WorldBirdsMorning = new AudioEventId("audio.event.world.birds.morning");
+            public static readonly AudioEventId WorldBirdsDay = new AudioEventId("audio.event.world.birds.day");
+            public static readonly AudioEventId WorldBirdsEvening = new AudioEventId("audio.event.world.birds.evening");
+            public static readonly AudioEventId WorldBirdsNight = new AudioEventId("audio.event.world.birds.night");
+            public static readonly AudioEventId WorldBirdsSwamp = new AudioEventId("audio.event.world.birds.swamp");
+            public static readonly AudioEventId WorldMeadow = new AudioEventId("audio.event.world.meadow");
+            public static readonly AudioEventId WorldDog = new AudioEventId("audio.event.world.dog");
+            public static readonly AudioEventId WorldChainsaw = new AudioEventId("audio.event.world.chainsaw");
             public static readonly AudioEventId WorldInsects = new AudioEventId("audio.event.world.insects");
+            public static readonly AudioEventId WorldWindChime = new AudioEventId("audio.event.world.wind_chime");
+            public static readonly AudioEventId WorldMosquito = new AudioEventId("audio.event.world.mosquito");
+            public static readonly AudioEventId WorldFly = new AudioEventId("audio.event.world.fly");
+            public static readonly AudioEventId WorldFlyVariant = new AudioEventId("audio.event.world.fly.variant");
+            public static readonly AudioEventId WorldWasp = new AudioEventId("audio.event.world.wasp");
             public static readonly AudioEventId InteractionPickup = new AudioEventId("audio.event.interaction.pickup");
             public static readonly AudioEventId InteractionDrop = new AudioEventId("audio.event.interaction.drop");
             public static readonly AudioEventId InteractionThrow = new AudioEventId("audio.event.interaction.throw");
@@ -52,16 +65,85 @@ namespace MSC.Audio
             public static readonly AudioEventId InteractionPartRemove = new AudioEventId("audio.event.interaction.part.remove");
             public static readonly AudioEventId InteractionDoorOpen = new AudioEventId("audio.event.interaction.door.open");
             public static readonly AudioEventId InteractionDoorClose = new AudioEventId("audio.event.interaction.door.close");
+            public static readonly AudioEventId VehicleBodyImpactLow01 = new AudioEventId("audio.event.vehicle.body.impact.low.01");
+            public static readonly AudioEventId VehicleBodyImpactLow02 = new AudioEventId("audio.event.vehicle.body.impact.low.02");
+            public static readonly AudioEventId VehicleBodyImpactHigh01 = new AudioEventId("audio.event.vehicle.body.impact.high.01");
+            public static readonly AudioEventId VehicleBodyImpactHigh02 = new AudioEventId("audio.event.vehicle.body.impact.high.02");
             public static readonly AudioEventId InteractionGateOpen = new AudioEventId("audio.event.interaction.gate.open");
             public static readonly AudioEventId InteractionGateClose = new AudioEventId("audio.event.interaction.gate.close");
             public static readonly AudioEventId InteractionWindowOpen = new AudioEventId("audio.event.interaction.window.open");
             public static readonly AudioEventId InteractionWindowClose = new AudioEventId("audio.event.interaction.window.close");
+            public static readonly AudioEventId BusDriverStuckCurse = new AudioEventId("audio.event.npc.latanen.bus-stuck-curse");
             public static readonly AudioEventId PlayerFootstep = new AudioEventId("audio.event.player.footstep");
+            private static readonly AudioEventId[] PlayerSwearVariants =
+            {
+                new AudioEventId("audio.event.player.swear.01"),
+                new AudioEventId("audio.event.player.swear.02"),
+                new AudioEventId("audio.event.player.swear.03"),
+                new AudioEventId("audio.event.player.swear.04"),
+                new AudioEventId("audio.event.player.swear.05"),
+                new AudioEventId("audio.event.player.swear.06"),
+                new AudioEventId("audio.event.player.swear.07"),
+                new AudioEventId("audio.event.player.swear.08"),
+                new AudioEventId("audio.event.player.swear.09"),
+                new AudioEventId("audio.event.player.swear.10"),
+                new AudioEventId("audio.event.player.swear.11"),
+                new AudioEventId("audio.event.player.swear.12"),
+                new AudioEventId("audio.event.player.swear.13"),
+                new AudioEventId("audio.event.player.swear.14"),
+                new AudioEventId("audio.event.player.swear.15"),
+                new AudioEventId("audio.event.player.swear.16"),
+            };
+            private static readonly AudioEventId[] PlayerMiddleFingerVariants =
+            {
+                new AudioEventId("audio.event.player.finger.01"),
+                new AudioEventId("audio.event.player.finger.02"),
+                new AudioEventId("audio.event.player.finger.03"),
+                new AudioEventId("audio.event.player.finger.04"),
+                new AudioEventId("audio.event.player.finger.05"),
+                new AudioEventId("audio.event.player.finger.06"),
+                new AudioEventId("audio.event.player.finger.07"),
+                new AudioEventId("audio.event.player.finger.08"),
+                new AudioEventId("audio.event.player.finger.09"),
+                new AudioEventId("audio.event.player.finger.10"),
+                new AudioEventId("audio.event.player.finger.11"),
+            };
             public static readonly AudioEventId UiNavigate = new AudioEventId("audio.event.ui.navigate");
             public static readonly AudioEventId UiConfirm = new AudioEventId("audio.event.ui.confirm");
             public static readonly AudioEventId UiCancel = new AudioEventId("audio.event.ui.cancel");
             public static readonly AudioEventId UiSaveFeedback = new AudioEventId("audio.event.ui.save.feedback");
             public static readonly AudioEventId UiLoadFeedback = new AudioEventId("audio.event.ui.load.feedback");
+
+            public static int PlayerSwearVariantCount =>
+                PlayerSwearVariants.Length;
+
+            public static AudioEventId GetPlayerSwearVariant(int zeroBasedIndex)
+            {
+                if (zeroBasedIndex < 0 ||
+                    zeroBasedIndex >= PlayerSwearVariants.Length)
+                {
+                    throw new System.ArgumentOutOfRangeException(
+                        nameof(zeroBasedIndex));
+                }
+
+                return PlayerSwearVariants[zeroBasedIndex];
+            }
+
+            public static int PlayerMiddleFingerVariantCount =>
+                PlayerMiddleFingerVariants.Length;
+
+            public static AudioEventId GetPlayerMiddleFingerVariant(
+                int zeroBasedIndex)
+            {
+                if (zeroBasedIndex < 0 ||
+                    zeroBasedIndex >= PlayerMiddleFingerVariants.Length)
+                {
+                    throw new System.ArgumentOutOfRangeException(
+                        nameof(zeroBasedIndex));
+                }
+
+                return PlayerMiddleFingerVariants[zeroBasedIndex];
+            }
         }
 
         public static class Parameters

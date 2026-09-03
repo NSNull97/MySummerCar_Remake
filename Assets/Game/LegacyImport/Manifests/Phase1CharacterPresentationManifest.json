@@ -1,0 +1,681 @@
+{
+  "schemaVersion": 8,
+  "manifestId": "phase1-character-presentation-10b-r3-v6",
+  "classification": "TemporaryDirectImport",
+  "source": {
+    "donorVersionAuthority": "Docs/Phase1/DONOR_VERSION_LOCK.md",
+    "stagingRootRelativePath": "raw/world/milestone-04a1/assetripper-unity-project/ExportedProject/Assets",
+    "sceneRelativePath": "_Scenes/GAME.unity",
+    "sceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4"
+  },
+  "generatedOutput": {
+    "boundary": "Assets/Game/LegacyImport/RuntimeBaseline/Characters",
+    "catalog": "Assets/Game/LegacyImport/RuntimeBaseline/Characters/Resources/Phase1Characters/CharacterPresentationCatalog.asset",
+    "gitPolicy": "ignored-private-phase1-payload"
+  },
+  "fixtures": [
+    {
+      "id": "stationary-service",
+      "bindingId": "presentation.character.fixture.stationary-service",
+      "productionReplacementKey": "presentation.character.fixture.stationary-service",
+      "geometryReplacementKey": "presentation.character.teimo.geometry",
+      "materialReplacementKey": "presentation.character.teimo.materials",
+      "animationReplacementKey": "presentation.character.teimo.animation",
+      "rootTransformFileId": 67949,
+      "animationTargetTransformFileId": 59524,
+      "rendererComponentFileIds": [101670],
+      "meshRole": "mesh.character.body.shared",
+      "materialRoles": ["material.char.shirt02", "material.char.pants02", "material.char.face01"],
+      "rootLocalPositionOverride": [0.0, 0.201, 0.0],
+      "accessories": [
+        { "rendererComponentFileId": 74452, "meshRole": "mesh.character.accessory.teimo-hat", "materialRoles": ["material.char.shirt02"] },
+        { "rendererComponentFileId": 77775, "meshRole": "mesh.character.accessory.eye-glasses", "materialRoles": ["material.char.glass", "material.char.metal-shiny"] }
+      ],
+      "stateBindings": [
+        { "activityState": "Idle", "clipRole": "clip.teimo.lean-table-in", "loop": false },
+        { "activityState": "Walking", "clipRole": "clip.fat.walk", "loop": true },
+        { "activityState": "Working", "clipRole": "clip.teimo.lean-table-in", "loop": false },
+        { "activityState": "Talking", "clipRole": "clip.teimo.lean-table-in", "loop": false }
+      ],
+      "actionBindings": [
+        { "actionId": "action.character.teimo.cash-register", "clipRole": "clip.teimo.cash-register", "loop": false },
+        { "actionId": "action.character.teimo.angry-in", "clipRole": "clip.teimo.angry-in", "loop": false },
+        { "actionId": "action.character.teimo.angry", "clipRole": "clip.teimo.angry", "loop": true },
+        { "actionId": "action.character.teimo.angry-out", "clipRole": "clip.teimo.angry-out", "loop": false },
+        { "actionId": "action.character.teimo.cook", "clipRole": "clip.teimo.cook", "loop": false },
+        { "actionId": "action.character.teimo.cook2", "clipRole": "clip.teimo.cook2", "loop": false },
+        { "actionId": "action.character.teimo.lean-table-out", "clipRole": "clip.teimo.lean-table-out", "loop": false },
+        { "actionId": "action.character.teimo.lean-table-in", "clipRole": "clip.teimo.lean-table-in", "loop": false },
+        { "actionId": "action.character.teimo.give-drink", "clipRole": "clip.teimo.give-drink", "loop": false },
+        { "actionId": "action.character.teimo.bring-food", "clipRole": "clip.teimo.bring-food", "loop": false },
+        { "actionId": "action.character.teimo.move-bar", "clipRole": "clip.teimo.move-bar", "loop": false },
+        { "actionId": "action.character.teimo.move-store", "clipRole": "clip.teimo.move-store", "loop": false },
+        { "actionId": "action.character.teimo.move-kitchen-in", "clipRole": "clip.teimo.move-kitchen-in", "loop": false },
+        { "actionId": "action.character.teimo.move-kitchen-out", "clipRole": "clip.teimo.move-kitchen-out", "loop": false },
+        { "actionId": "action.character.teimo.service-idle", "clipRole": "clip.fat.standing", "loop": true },
+        { "actionId": "action.character.teimo.service-walk", "clipRole": "clip.fat.walk", "loop": true },
+        { "actionId": "action.character.teimo.walk-hand-out", "clipRole": "clip.teimo.walk-hand-out", "loop": true },
+        { "actionId": "action.character.teimo.fridge-open", "clipRole": "clip.teimo.fridge-open", "loop": false },
+        { "actionId": "action.character.teimo.fridge-close", "clipRole": "clip.teimo.fridge-close", "loop": false },
+        { "actionId": "action.character.teimo.microwave-door", "clipRole": "clip.teimo.microwave-door", "loop": false }
+      ]
+    },
+    {
+      "id": "scheduled-roaming",
+      "bindingId": "presentation.character.fixture.scheduled-roaming",
+      "productionReplacementKey": "presentation.character.fixture.scheduled-roaming",
+      "geometryReplacementKey": "presentation.character.alpo.geometry",
+      "materialReplacementKey": "presentation.character.alpo.materials",
+      "animationReplacementKey": "presentation.character.alpo.animation",
+      "rootTransformFileId": 39796,
+      "animationTargetTransformFileId": 58101,
+      "rendererComponentFileIds": [101752],
+      "meshRole": "mesh.character.body.roaming",
+      "materialRoles": ["material.char.shirt15", "material.char.pants06", "material.char.face09"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "stateBindings": [
+        { "activityState": "Walking", "clipRole": "clip.fat.walk", "loop": true },
+        { "activityState": "Idle", "clipRole": "clip.fat.standing", "loop": true }
+      ]
+    },
+    {
+      "id": "teimo-bicycle",
+      "bindingId": "presentation.character.teimo-bicycle",
+      "productionReplacementKey": "presentation.character.teimo-bicycle",
+      "geometryReplacementKey": "presentation.character.teimo-bicycle.geometry",
+      "materialReplacementKey": "presentation.character.teimo-bicycle.materials",
+      "animationReplacementKey": "presentation.character.teimo-bicycle.animation",
+      "rootTransformFileId": 42325,
+      "animationTargetTransformFileId": 63350,
+      "rendererComponentFileIds": [101713],
+      "meshRole": "mesh.character.body.shared",
+      "materialRoles": ["material.char.shirt02", "material.char.pants02", "material.char.face01"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [0.0, 0.0, 0.0, 1.0],
+      "accessories": [
+        { "rendererComponentFileId": 72504, "meshRole": "mesh.character.accessory.teimo-hat", "materialRoles": ["material.char.shirt02"] },
+        { "rendererComponentFileId": 78400, "meshRole": "mesh.character.accessory.eye-glasses", "materialRoles": ["material.char.glass", "material.char.metal-shiny"] },
+        { "rendererComponentFileId": 80370, "meshRole": "mesh.vehicle.teimo-bicycle.frame", "materialRoles": ["material.vehicle.teimo-bicycle"] },
+        { "rendererComponentFileId": 75334, "meshRole": "mesh.vehicle.teimo-bicycle.pedals", "materialRoles": ["material.vehicle.teimo-bicycle"] },
+        { "rendererComponentFileId": 75111, "meshRole": "mesh.vehicle.teimo-bicycle.tire", "materialRoles": ["material.vehicle.teimo-bicycle"] },
+        { "rendererComponentFileId": 77306, "meshRole": "mesh.vehicle.teimo-bicycle.tire", "materialRoles": ["material.vehicle.teimo-bicycle"] },
+        { "rendererComponentFileId": 77540, "meshRole": "mesh.vehicle.teimo-bicycle.rim", "materialRoles": ["material.vehicle.teimo-bicycle"] },
+        { "rendererComponentFileId": 76523, "meshRole": "mesh.vehicle.teimo-bicycle.rim", "materialRoles": ["material.vehicle.teimo-bicycle"] }
+      ],
+      "stateBindings": [
+        { "activityState": "Talking", "clipRole": "clip.teimo.bicycle-wave", "loop": false }
+      ],
+      "bicycleMotion": {
+        "pedalsRendererComponentFileId": 75334,
+        "wheelRendererComponentFileIds": [75111, 77306],
+        "leftLegJointTransformFileIds": [37078, 38842, 71739],
+        "rightLegJointTransformFileIds": [43936, 63498, 59525],
+        "pedalHalfWidthMeters": 0.158972,
+        "pedalRadiusMeters": 0.180836,
+        "wheelDegreesPerMeter": 170.0,
+        "pedalSpeedDivisor": 3.5,
+        "greetingDistanceMeters": 5.0,
+        "maximumGroundCorrectionMeters": 0.25
+      }
+    },
+    {
+      "id": "vehicle-linked",
+      "bindingId": "presentation.character.fixture.vehicle-linked",
+      "productionReplacementKey": "presentation.character.fixture.vehicle-linked",
+      "geometryReplacementKey": "presentation.character.latanen.geometry",
+      "materialReplacementKey": "presentation.character.latanen.materials",
+      "animationReplacementKey": "presentation.character.latanen.animation",
+      "rootTransformFileId": 39489,
+      "animationTargetTransformFileId": 37455,
+      "rendererComponentFileIds": [101719],
+      "meshRole": "mesh.character.body.shared",
+      "materialRoles": ["material.char.shirt20", "material.char.pants06", "material.char.face03"],
+      "accessories": [
+        { "rendererComponentFileId": 81370, "meshRole": "mesh.character.accessory.busdriver-hat", "materialRoles": ["material.char.shirt20"] }
+      ],
+      "stateBindings": [
+        { "activityState": "Idle", "clipRole": "clip.fat.standing", "loop": true },
+        { "activityState": "Walking", "clipRole": "clip.fat.walk", "loop": true }
+      ]
+    },
+    {
+      "id": "fleetari",
+      "bindingId": "presentation.character.fleetari",
+      "productionReplacementKey": "presentation.character.fleetari",
+      "geometryReplacementKey": "presentation.character.fleetari.geometry",
+      "materialReplacementKey": "presentation.character.fleetari.materials",
+      "animationReplacementKey": "presentation.character.fleetari.animation",
+      "rootTransformFileId": 64672,
+      "animationTargetTransformFileId": 39079,
+      "rendererComponentFileIds": [101833],
+      "meshRole": "mesh.character.body.fat",
+      "materialRoles": ["material.char.shirt07", "material.char.pants01", "material.char.face02"],
+      "rootLocalPositionOverride": [-0.0202864, 0.47984046, -0.1293867],
+      "rootLocalRotationOverride": [-0.18221372, -0.7523851, -0.17260018, -0.6090358],
+      "accessories": [
+        { "rendererComponentFileId": 75489, "meshRole": "mesh.character.accessory.eye-glasses", "materialRoles": ["material.char.glass", "material.char.metal-shiny"] }
+      ],
+      "stateBindings": [
+        { "activityState": "Working", "clipRole": "clip.fleetari.breathe", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.fleetari.breathe", "loop": true }
+      ]
+    },
+    {
+      "id": "farmer",
+      "bindingId": "presentation.character.farmer",
+      "productionReplacementKey": "presentation.character.farmer",
+      "geometryReplacementKey": "presentation.character.farmer.geometry",
+      "materialReplacementKey": "presentation.character.farmer.materials",
+      "animationReplacementKey": "presentation.character.farmer.animation",
+      "rootTransformFileId": 49007,
+      "animationTargetTransformFileId": 66111,
+      "rendererComponentFileIds": [101903],
+      "meshRole": "mesh.character.body.fat",
+      "materialRoles": ["material.char.shirt18", "material.char.pants02", "material.char.face10"],
+      "accessories": [
+        { "rendererComponentFileId": 76292, "meshRole": "mesh.character.accessory.farmer-gifu-hat", "materialRoles": ["material.char.shirt03"] },
+        { "rendererComponentFileId": 76308, "meshRole": "mesh.character.accessory.eye-glasses-dark", "materialRoles": ["material.char.glass", "material.char.glasses-dark"] }
+      ],
+      "stateBindings": [
+        { "activityState": "Walking", "clipRole": "clip.fat.walk", "loop": true },
+        { "activityState": "Working", "clipRole": "clip.fat.standing", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.fat.standing", "loop": true }
+      ]
+    },
+    {
+      "id": "berryman",
+      "bindingId": "presentation.character.berryman",
+      "productionReplacementKey": "presentation.character.berryman",
+      "geometryReplacementKey": "presentation.character.berryman.geometry",
+      "materialReplacementKey": "presentation.character.berryman.materials",
+      "animationReplacementKey": "presentation.character.berryman.animation",
+      "rootTransformFileId": 70503,
+      "animationTargetTransformFileId": 54889,
+      "rendererComponentFileIds": [101702],
+      "meshRole": "mesh.character.body.berryman",
+      "materialRoles": ["material.char.shirt03", "material.char.pants03", "material.char.face03"],
+      "accessories": [
+        { "rendererComponentFileId": 73813, "meshRole": "mesh.character.accessory.berryman-hat", "materialRoles": ["material.char.pants04"] }
+      ],
+      "stateBindings": [
+        { "activityState": "Working", "clipRole": "clip.berryman.left-hand-loop", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.berryman.left-hand-loop", "loop": true }
+      ]
+    },
+    {
+      "id": "uncle-kesseli",
+      "bindingId": "presentation.character.uncle-kesseli",
+      "productionReplacementKey": "presentation.character.uncle-kesseli",
+      "geometryReplacementKey": "presentation.character.uncle-kesseli.geometry",
+      "materialReplacementKey": "presentation.character.uncle-kesseli.materials",
+      "animationReplacementKey": "presentation.character.uncle-kesseli.animation",
+      "rootTransformFileId": 46344,
+      "animationTargetTransformFileId": 37353,
+      "rendererComponentFileIds": [101882],
+      "meshRole": "mesh.character.body.berryman",
+      "materialRoles": ["material.char.shirt01", "material.char.pants02", "material.char.face09"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [0.0, 0.0, 0.0, 1.0],
+      "accessories": [
+        { "rendererComponentFileId": 80642, "meshRole": "mesh.character.accessory.farmer-gifu-hat", "materialRoles": ["material.char.shirt03"] },
+        { "rendererComponentFileId": 81050, "meshRole": "mesh.character.accessory.eye-glasses", "materialRoles": ["material.char.glass", "material.char.metal-shiny"] }
+      ],
+      "stateBindings": [
+        { "activityState": "Idle", "clipRole": "clip.uncle.upper-breath", "loop": true },
+        { "activityState": "Working", "clipRole": "clip.uncle.upper-breath", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.uncle.upper-breath", "loop": true }
+      ]
+    },
+    {
+      "id": "grandmother",
+      "bindingId": "presentation.character.grandmother",
+      "productionReplacementKey": "presentation.character.grandmother",
+      "geometryReplacementKey": "presentation.character.grandmother.geometry",
+      "materialReplacementKey": "presentation.character.grandmother.materials",
+      "animationReplacementKey": "presentation.character.grandmother.animation",
+      "rootTransformFileId": 41818,
+      "animationTargetTransformFileId": 58312,
+      "rendererComponentFileIds": [101681],
+      "meshRole": "mesh.character.body.granny",
+      "materialRoles": ["material.char.shirt01", "material.char.granny-dress", "material.char.face07-woman"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [-0.2512243, 0.0000003278255, 0.0000004097819, 0.9679289],
+      "accessories": [
+        { "rendererComponentFileId": 78476, "meshRole": "mesh.character.accessory.granny-hat", "materialRoles": ["material.char.granny-hat"] },
+        { "rendererComponentFileId": 77617, "meshRole": "mesh.character.prop.coffee-cup", "materialRoles": ["material.prop.groceries"] },
+        { "rendererComponentFileId": 73791, "meshRole": "mesh.character.prop.coffee-plate", "materialRoles": ["material.prop.groceries"] },
+        { "rendererComponentFileId": 76975, "meshRole": "mesh.character.prop.product-tray", "materialRoles": ["material.prop.product-tray"], "visibilityFlagId": "flag.grandmother.products-ordered" }
+      ],
+      "contextProps": [
+        { "rendererComponentFileId": 78520, "meshRole": "mesh.character.prop.garden-chair", "materialRoles": ["material.prop.garden-furniture"] },
+        { "rendererComponentFileId": 75350, "meshRole": "mesh.character.prop.garden-table", "materialRoles": ["material.prop.garden-furniture"] }
+      ],
+      "stateBindings": [
+        { "activityState": "Idle", "clipRole": "clip.granny.breathe", "loop": true },
+        { "activityState": "Working", "clipRole": "clip.granny.breathe", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.granny.breathe", "loop": true }
+      ]
+    },
+    {
+      "id": "jokke",
+      "bindingId": "presentation.character.jokke",
+      "productionReplacementKey": "presentation.character.jokke",
+      "geometryReplacementKey": "presentation.character.jokke.geometry",
+      "materialReplacementKey": "presentation.character.jokke.materials",
+      "animationReplacementKey": "presentation.character.jokke.animation",
+      "rootTransformFileId": 64652,
+      "animationTargetTransformFileId": 44084,
+      "rendererComponentFileIds": [101667],
+      "meshRole": "mesh.character.body.shared",
+      "materialRoles": ["material.char.shirt01", "material.char.pants01", "material.char.face01"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [-0.1375566, 0.0000001192093, -0.00000009313227, 0.990494],
+      "accessories": [
+        { "rendererComponentFileId": 79805, "meshRole": "mesh.character.prop.plastic-chair", "materialRoles": ["material.prop.chair-white"] }
+      ],
+      "contextProps": [
+        { "rendererComponentFileId": 74227, "meshRole": "mesh.character.prop.plastic-table", "materialRoles": ["material.prop.chair-white"] },
+        { "rendererComponentFileId": 78857, "meshRole": "mesh.character.prop.terrace-shade", "materialRoles": ["material.prop.terrace-shade"] }
+      ],
+      "stateBindings": [
+        { "activityState": "Idle", "clipRole": "clip.jokke.breathe", "loop": true },
+        { "activityState": "Working", "clipRole": "clip.jokke.breathe", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.jokke.breathe", "loop": true }
+      ]
+    },
+    {
+      "id": "suski",
+      "bindingId": "presentation.character.suski",
+      "productionReplacementKey": "presentation.character.suski",
+      "geometryReplacementKey": "presentation.character.suski.geometry",
+      "materialReplacementKey": "presentation.character.suski.materials",
+      "animationReplacementKey": "presentation.character.suski.animation",
+      "rootTransformFileId": 38562,
+      "animationTargetTransformFileId": 52821,
+      "rendererComponentFileIds": [101807],
+      "meshRole": "mesh.character.body.suski",
+      "materialRoles": ["material.char.shirt16", "material.char.pants06", "material.char.face11"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [0.0, 0.0, 0.0, 1.0],
+      "stateBindings": [
+        { "activityState": "Idle", "clipRole": "clip.woman.standing", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.woman.standing", "loop": true }
+      ]
+    },
+    {
+      "id": "sewage-client-1",
+      "bindingId": "presentation.character.sewage-client-1",
+      "productionReplacementKey": "presentation.character.sewage-client-1",
+      "geometryReplacementKey": "presentation.character.sewage-client-1.geometry",
+      "materialReplacementKey": "presentation.character.sewage-client-1.materials",
+      "animationReplacementKey": "presentation.character.sewage-client-1.animation",
+      "rootTransformFileId": 65943,
+      "animationTargetTransformFileId": 56680,
+      "rendererComponentFileIds": [101883],
+      "meshRole": "mesh.character.body.shared",
+      "materialRoles": ["material.char.shirt05", "material.char.pants01", "material.char.face01"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [0.0, 0.0, 0.0, 1.0],
+      "accessories": [
+        { "rendererComponentFileId": 79449, "meshRole": "mesh.character.prop.beer-bottle", "materialRoles": ["material.prop.beer-bottle"] }
+      ],
+      "contextProps": [
+        { "rendererComponentFileId": 78683, "meshRole": "mesh.character.prop.plastic-chair", "materialRoles": ["material.prop.chair-white"], "sourceMeshGuidOverride": "da5556c75d8da57479bba403afaac84e" }
+      ],
+      "layeredAnimations": [
+        { "targetTransformFileId": 52634, "clipRole": "clip.fat.hands-right-drink", "startTimeSeconds": 0.65 }
+      ],
+      "stateBindings": [
+        { "activityState": "Working", "clipRole": "clip.fat.upper-breath", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.fat.upper-breath", "loop": true }
+      ]
+    },
+    {
+      "id": "sewage-client-2",
+      "bindingId": "presentation.character.sewage-client-2",
+      "productionReplacementKey": "presentation.character.sewage-client-2",
+      "geometryReplacementKey": "presentation.character.sewage-client-2.geometry",
+      "materialReplacementKey": "presentation.character.sewage-client-2.materials",
+      "animationReplacementKey": "presentation.character.sewage-client-2.animation",
+      "rootTransformFileId": 53836,
+      "animationTargetTransformFileId": 52792,
+      "rendererComponentFileIds": [101747],
+      "meshRole": "mesh.character.body.shared",
+      "materialRoles": ["material.char.shirt06", "material.char.pants02", "material.char.face01"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [0.0, 0.0, 0.0, 1.0],
+      "accessories": [
+        { "rendererComponentFileId": 81803, "meshRole": "mesh.character.prop.beer-bottle", "materialRoles": ["material.prop.beer-bottle"] }
+      ],
+      "contextProps": [
+        { "rendererComponentFileId": 75809, "meshRole": "mesh.character.prop.plastic-chair", "materialRoles": ["material.prop.chair-white"], "sourceMeshGuidOverride": "da5556c75d8da57479bba403afaac84e" }
+      ],
+      "layeredAnimations": [
+        { "targetTransformFileId": 49033, "clipRole": "clip.fat.hands-right-drink", "startTimeSeconds": 1.15 }
+      ],
+      "stateBindings": [
+        { "activityState": "Working", "clipRole": "clip.fat.upper-breath", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.fat.upper-breath", "loop": true }
+      ]
+    },
+    {
+      "id": "sewage-client-3",
+      "bindingId": "presentation.character.sewage-client-3",
+      "productionReplacementKey": "presentation.character.sewage-client-3",
+      "geometryReplacementKey": "presentation.character.sewage-client-3.geometry",
+      "materialReplacementKey": "presentation.character.sewage-client-3.materials",
+      "animationReplacementKey": "presentation.character.sewage-client-3.animation",
+      "rootTransformFileId": 61444,
+      "animationTargetTransformFileId": 59801,
+      "rendererComponentFileIds": [101687],
+      "meshRole": "mesh.character.body.roaming",
+      "materialRoles": ["material.char.shirt04", "material.char.pants03", "material.char.face01"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [0.0, 0.0, 0.0, 1.0],
+      "accessories": [
+        { "rendererComponentFileId": 80585, "meshRole": "mesh.character.prop.beer-bottle", "materialRoles": ["material.prop.beer-bottle"] }
+      ],
+      "contextProps": [
+        { "rendererComponentFileId": 76249, "meshRole": "mesh.character.prop.plastic-chair", "materialRoles": ["material.prop.chair-white"], "sourceMeshGuidOverride": "da5556c75d8da57479bba403afaac84e" }
+      ],
+      "layeredAnimations": [
+        { "targetTransformFileId": 46328, "clipRole": "clip.fat.hands-right-drink", "startTimeSeconds": 1.65 }
+      ],
+      "stateBindings": [
+        { "activityState": "Working", "clipRole": "clip.fat.upper-breath", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.fat.upper-breath", "loop": true }
+      ]
+    },
+    {
+      "id": "sewage-client-4",
+      "bindingId": "presentation.character.sewage-client-4",
+      "productionReplacementKey": "presentation.character.sewage-client-4",
+      "geometryReplacementKey": "presentation.character.sewage-client-4.geometry",
+      "materialReplacementKey": "presentation.character.sewage-client-4.materials",
+      "animationReplacementKey": "presentation.character.sewage-client-4.animation",
+      "rootTransformFileId": 48700,
+      "animationTargetTransformFileId": 55697,
+      "rendererComponentFileIds": [101884],
+      "meshRole": "mesh.character.body.shared",
+      "materialRoles": ["material.char.shirt06", "material.char.pants02", "material.char.face01"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [0.0, 0.0, 0.0, 1.0],
+      "accessories": [
+        { "rendererComponentFileId": 74915, "meshRole": "mesh.character.prop.beer-bottle", "materialRoles": ["material.prop.beer-bottle"] }
+      ],
+      "contextProps": [
+        { "rendererComponentFileId": 73353, "meshRole": "mesh.character.prop.plastic-chair", "materialRoles": ["material.prop.chair-white"], "sourceMeshGuidOverride": "da5556c75d8da57479bba403afaac84e" }
+      ],
+      "layeredAnimations": [
+        { "targetTransformFileId": 37693, "clipRole": "clip.fat.hands-right-drink", "startTimeSeconds": 2.15 }
+      ],
+      "stateBindings": [
+        { "activityState": "Working", "clipRole": "clip.fat.upper-breath", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.fat.upper-breath", "loop": true }
+      ]
+    },
+    {
+      "id": "sewage-client-5",
+      "bindingId": "presentation.character.sewage-client-5",
+      "productionReplacementKey": "presentation.character.sewage-client-5",
+      "geometryReplacementKey": "presentation.character.sewage-client-5.geometry",
+      "materialReplacementKey": "presentation.character.sewage-client-5.materials",
+      "animationReplacementKey": "presentation.character.sewage-client-5.animation",
+      "rootTransformFileId": 68982,
+      "animationTargetTransformFileId": 37953,
+      "rendererComponentFileIds": [101699],
+      "meshRole": "mesh.character.body.shared",
+      "materialRoles": ["material.char.shirt06", "material.char.pants02", "material.char.face01"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [0.0, 0.0, 0.0, 1.0],
+      "accessories": [
+        { "rendererComponentFileId": 81123, "meshRole": "mesh.character.prop.beer-bottle", "materialRoles": ["material.prop.beer-bottle"] }
+      ],
+      "contextProps": [
+        { "rendererComponentFileId": 74527, "meshRole": "mesh.character.prop.plastic-chair", "materialRoles": ["material.prop.chair-white"], "sourceMeshGuidOverride": "da5556c75d8da57479bba403afaac84e" }
+      ],
+      "layeredAnimations": [
+        { "targetTransformFileId": 71596, "clipRole": "clip.fat.hands-right-drink", "startTimeSeconds": 2.65 }
+      ],
+      "stateBindings": [
+        { "activityState": "Working", "clipRole": "clip.fat.upper-breath", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.fat.upper-breath", "loop": true }
+      ]
+    },
+    {
+      "id": "firewood-customer",
+      "bindingId": "presentation.character.firewood-customer",
+      "productionReplacementKey": "presentation.character.firewood-customer",
+      "geometryReplacementKey": "presentation.character.firewood-customer.geometry",
+      "materialReplacementKey": "presentation.character.firewood-customer.materials",
+      "animationReplacementKey": "presentation.character.firewood-customer.animation",
+      "rootTransformFileId": 69983,
+      "animationTargetTransformFileId": 64508,
+      "rendererComponentFileIds": [101918],
+      "meshRole": "mesh.character.body.shared",
+      "materialRoles": ["material.char.shirt03", "material.char.pants02", "material.char.face02"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [0.0, 0.0, 0.0, 1.0],
+      "accessories": [
+        { "rendererComponentFileId": 79952, "meshRole": "mesh.character.prop.vodka-bottle", "materialRoles": ["material.prop.vodka-glass", "material.prop.vodka-label"] }
+      ],
+      "stateBindings": [
+        { "activityState": "Working", "clipRole": "clip.fat.standing", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.fat.standing", "loop": true }
+      ]
+    },
+    {
+      "id": "inspection-officer",
+      "bindingId": "presentation.character.inspection-officer",
+      "productionReplacementKey": "presentation.character.inspection-officer",
+      "geometryReplacementKey": "presentation.character.inspection-officer.geometry",
+      "materialReplacementKey": "presentation.character.inspection-officer.materials",
+      "animationReplacementKey": "presentation.character.inspection-officer.animation",
+      "rootTransformFileId": 45213,
+      "animationTargetTransformFileId": 50537,
+      "rendererComponentFileIds": [101750],
+      "meshRole": "mesh.character.body.shared",
+      "materialRoles": ["material.char.shirt05", "material.char.pants02", "material.char.face02"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [0.0, 0.0, 0.0, 1.0],
+      "stateBindings": [
+        { "activityState": "Working", "clipRole": "clip.fat.standing", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.fat.standing", "loop": true }
+      ]
+    },
+    {
+      "id": "wastewater-attendant",
+      "bindingId": "presentation.character.wastewater-attendant",
+      "productionReplacementKey": "presentation.character.wastewater-attendant",
+      "geometryReplacementKey": "presentation.character.wastewater-attendant.geometry",
+      "materialReplacementKey": "presentation.character.wastewater-attendant.materials",
+      "animationReplacementKey": "presentation.character.wastewater-attendant.animation",
+      "rootTransformFileId": 51423,
+      "animationTargetTransformFileId": 48633,
+      "rendererComponentFileIds": [101709],
+      "meshRole": "mesh.character.body.berryman",
+      "materialRoles": ["material.char.shirt12", "material.char.pants02", "material.char.face06"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [0.0, 0.0, 0.0, 1.0],
+      "accessories": [
+        { "rendererComponentFileId": 76425, "meshRole": "mesh.character.accessory.eye-glasses", "materialRoles": ["material.char.glass", "material.char.metal-shiny"] }
+      ],
+      "stateBindings": [
+        { "activityState": "Working", "clipRole": "clip.fat.upper-breath", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.fat.upper-breath", "loop": true }
+      ]
+    },
+    {
+      "id": "ventti-pigman",
+      "bindingId": "presentation.character.ventti-pigman",
+      "productionReplacementKey": "presentation.character.ventti-pigman",
+      "geometryReplacementKey": "presentation.character.ventti-pigman.geometry",
+      "materialReplacementKey": "presentation.character.ventti-pigman.materials",
+      "animationReplacementKey": "presentation.character.ventti-pigman.animation",
+      "rootTransformFileId": 67617,
+      "animationTargetTransformFileId": 41375,
+      "rendererComponentFileIds": [101751],
+      "meshRole": "mesh.character.body.ventti-pig",
+      "materialRoles": ["material.char.shirt11", "material.char.pants04", "material.char.face06"],
+      "rootLocalPositionOverride": [0.0, 0.0, 0.0],
+      "rootLocalRotationOverride": [0.0, 0.0, 0.0, 1.0],
+      "accessories": [
+        { "rendererComponentFileId": 73360, "meshRole": "mesh.character.accessory.eye-glasses-dark", "materialRoles": ["material.char.glass", "material.char.glasses-dark"] },
+        { "rendererComponentFileId": 74879, "meshRole": "mesh.character.accessory.berryman-hat", "materialRoles": ["material.char.pants04"] }
+      ],
+      "stateBindings": [
+        { "activityState": "Working", "clipRole": "clip.fat.upper-breath", "loop": true },
+        { "activityState": "Talking", "clipRole": "clip.fat.upper-breath", "loop": true }
+      ]
+    }
+  ],
+  "materials": [
+    { "role": "material.char.shirt02", "sourceMaterialGuid": "45a9baee2b790f84f95e798f199c044c", "textureRole": "texture.char.shirt02", "productionReplacementKey": "presentation.material.character.shirt02" },
+    { "role": "material.char.pants02", "sourceMaterialGuid": "cc29fd1c0a161ab4a86040cc83abd05d", "textureRole": "texture.char.pants02", "productionReplacementKey": "presentation.material.character.pants02" },
+    { "role": "material.char.face01", "sourceMaterialGuid": "0d8c552fa3c720e4889dc4048f1ffdc7", "textureRole": "texture.char.face01", "productionReplacementKey": "presentation.material.character.face01" },
+    { "role": "material.char.shirt15", "sourceMaterialGuid": "840db7ca7bdc73b49bd1779185cbb09d", "textureRole": "texture.char.shirt15", "productionReplacementKey": "presentation.material.character.shirt15" },
+    { "role": "material.char.pants06", "sourceMaterialGuid": "90aa04919bca2574cb06f9e5d3c34c12", "textureRole": "texture.char.pants06", "productionReplacementKey": "presentation.material.character.pants06" },
+    { "role": "material.char.face09", "sourceMaterialGuid": "a18a1327f42bd0f4abcae3d1cbfb55bc", "textureRole": "texture.char.face09", "productionReplacementKey": "presentation.material.character.face09" },
+    { "role": "material.char.shirt20", "sourceMaterialGuid": "3fa67c622e0520e459fc2c27044f7e40", "textureRole": "texture.char.shirt20", "productionReplacementKey": "presentation.material.character.shirt20" },
+    { "role": "material.char.face03", "sourceMaterialGuid": "f490a73eb01e53445ae62a5bdabb5b24", "textureRole": "texture.char.face03", "productionReplacementKey": "presentation.material.character.face03" },
+    { "role": "material.char.shirt07", "sourceMaterialGuid": "59ddf5058728c3940afa212f01b5cc19", "textureRole": "texture.char.shirt07", "productionReplacementKey": "presentation.material.character.shirt07" },
+    { "role": "material.char.pants01", "sourceMaterialGuid": "e09809cd0cf90f7459c933d81e500ecf", "textureRole": "texture.char.pants01", "productionReplacementKey": "presentation.material.character.pants01" },
+    { "role": "material.char.face02", "sourceMaterialGuid": "80eacb103b0d4394f879f9ad604c7795", "textureRole": "texture.char.face02", "productionReplacementKey": "presentation.material.character.face02" },
+    { "role": "material.char.shirt18", "sourceMaterialGuid": "666270fdf8fe323449ece33fcd6b403c", "textureRole": "texture.char.shirt18", "productionReplacementKey": "presentation.material.character.shirt18" },
+    { "role": "material.char.face10", "sourceMaterialGuid": "a0f83c15fedd77e448a89a94d3f7b58e", "textureRole": "texture.char.face08", "productionReplacementKey": "presentation.material.character.face10" },
+    { "role": "material.char.shirt03", "sourceMaterialGuid": "0eea5903002f48a4db86aa76026a6e56", "textureRole": "texture.char.shirt03", "productionReplacementKey": "presentation.material.character.shirt03" },
+    { "role": "material.char.pants03", "sourceMaterialGuid": "cd4a1cb87c5f9c2488b56d752082e3d1", "textureRole": "texture.char.pants03", "productionReplacementKey": "presentation.material.character.pants03" },
+    { "role": "material.char.pants04", "sourceMaterialGuid": "c62b178638544a6428608ac152ef5ab1", "textureRole": "texture.char.pants04", "productionReplacementKey": "presentation.material.character.pants04" },
+    { "role": "material.char.glass", "sourceMaterialGuid": "f98a21a838696e240ad6a118008de65a", "textureRole": "texture.char.glass", "baseColorOverride": [1.0, 1.0, 1.0, 1.0], "hasMetallicOverride": true, "metallicOverride": 0.0, "hasSmoothnessOverride": true, "smoothnessOverride": 0.25, "surfaceType": "Transparent", "productionReplacementKey": "presentation.material.character.glasses-glass" },
+    { "role": "material.char.glasses-dark", "sourceMaterialGuid": "505c0da5d59fb1a4fbc38445d0494ef3", "textureRole": "texture.char.glasses-dark", "baseColorOverride": [1.0, 1.0, 1.0, 1.0], "hasMetallicOverride": true, "metallicOverride": 0.08, "hasSmoothnessOverride": true, "smoothnessOverride": 0.68, "surfaceType": "Opaque", "productionReplacementKey": "presentation.material.character.farmer-glasses-dark" },
+    { "role": "material.char.metal-shiny", "sourceMaterialGuid": "3c70f4743b3634c4d853f0f23009ce86", "baseColorOverride": [0.89705884, 0.89705884, 0.89705884, 1.0], "hasMetallicOverride": true, "metallicOverride": 0.406, "hasSmoothnessOverride": true, "smoothnessOverride": 0.802, "surfaceType": "Opaque", "productionReplacementKey": "presentation.material.character.glasses-metal" },
+    { "role": "material.vehicle.teimo-bicycle", "sourceMaterialGuid": "ad2f7b6e8cc080845a7a7fd4264fbb83", "textureRole": "texture.vehicle.teimo-bicycle.atlas", "baseColorOverride": [1.0, 1.0, 1.0, 1.0], "hasMetallicOverride": true, "metallicOverride": 0.49, "hasSmoothnessOverride": true, "smoothnessOverride": 0.38, "surfaceType": "Opaque", "productionReplacementKey": "presentation.material.vehicle.teimo-bicycle" },
+    { "role": "material.char.shirt01", "sourceMaterialGuid": "a45aebabcd323074b973a916ade608f1", "textureRole": "texture.char.shirt01", "productionReplacementKey": "presentation.material.character.shirt01" },
+    { "role": "material.char.granny-dress", "sourceMaterialGuid": "8ae218d04967ab342a9062750530a27b", "textureRole": "texture.char.granny-dress", "productionReplacementKey": "presentation.material.character.granny-dress" },
+    { "role": "material.char.face07-woman", "sourceMaterialGuid": "68e026410898e1f44a4a2d5025874dd6", "textureRole": "texture.char.face07-woman", "productionReplacementKey": "presentation.material.character.face07-woman" },
+    { "role": "material.char.shirt04", "sourceMaterialGuid": "a0538e1f8d8d6d142abc2c9dd86e71d0", "textureRole": "texture.char.shirt04", "productionReplacementKey": "presentation.material.character.shirt04" },
+    { "role": "material.char.shirt12", "sourceMaterialGuid": "a277ba9c57ef0844c8fb5acf899bccd8", "textureRole": "texture.char.shirt12", "productionReplacementKey": "presentation.material.character.shirt12" },
+    { "role": "material.char.face06", "sourceMaterialGuid": "200829f414320464ab2102a697bbe53e", "textureRole": "texture.char.face06", "productionReplacementKey": "presentation.material.character.face06" },
+    { "role": "material.char.shirt06", "sourceMaterialGuid": "7504c59c21541634cb289112154dd1e0", "textureRole": "texture.char.shirt06", "productionReplacementKey": "presentation.material.character.shirt06" },
+    { "role": "material.char.shirt05", "sourceMaterialGuid": "4730de16f3ed1cf46a7ec5f50bb1b54b", "textureRole": "texture.char.shirt05", "productionReplacementKey": "presentation.material.character.shirt05" },
+    { "role": "material.char.shirt16", "sourceMaterialGuid": "0dfefc726f956d442b490ab4755fc255", "textureRole": "texture.char.shirt16", "productionReplacementKey": "presentation.material.character.shirt16" },
+    { "role": "material.char.face11", "sourceMaterialGuid": "81483cb40b8572a4b9fd01b88d2006ff", "textureRole": "texture.char.face11", "productionReplacementKey": "presentation.material.character.face11" },
+    { "role": "material.char.shirt11", "sourceMaterialGuid": "41db1b0a6b338484bb524744afe49e3b", "textureRole": "texture.char.shirt11", "productionReplacementKey": "presentation.material.character.shirt11" },
+    { "role": "material.char.granny-hat", "sourceMaterialGuid": "74a60f37d44f7af4fa9d203429c9ea8b", "textureRole": "texture.char.granny-hat", "productionReplacementKey": "presentation.material.character.granny-hat" },
+    { "role": "material.prop.chair-white", "sourceMaterialGuid": "a6b073589b71d114ca5abb007a0db79f", "textureRole": "texture.prop.chair-white", "productionReplacementKey": "presentation.material.prop.plastic-chair" },
+    { "role": "material.prop.garden-furniture", "sourceMaterialGuid": "6a3fd4e6b0401ef47a9d6f4b2f3d2082", "textureRole": "texture.prop.garden-wood", "baseColorOverride": [0.75, 0.75, 0.75, 1.0], "hasSmoothnessOverride": true, "smoothnessOverride": 0.0, "productionReplacementKey": "presentation.material.prop.garden-furniture" },
+    { "role": "material.prop.groceries", "sourceMaterialGuid": "56d8bfd532b19e149a6987e1a81d1d10", "textureRole": "texture.prop.groceries-atlas", "baseColorOverride": [0.7794, 0.7794, 0.7794, 1.0], "hasSmoothnessOverride": true, "smoothnessOverride": 0.0, "productionReplacementKey": "presentation.material.prop.groceries" },
+    { "role": "material.prop.product-tray", "sourceMaterialGuid": "faaad83ccda8f9947ac442069e4801c1", "textureRole": "texture.prop.product-tray", "baseColorOverride": [0.8676, 0.8676, 0.8676, 1.0], "hasSmoothnessOverride": true, "smoothnessOverride": 0.37, "productionReplacementKey": "presentation.material.prop.product-tray" },
+    { "role": "material.prop.beer-bottle", "sourceMaterialGuid": "505c0da5d59fb1a4fbc38445d0494ef3", "textureRole": "texture.char.glasses-dark", "hasMetallicOverride": true, "metallicOverride": 0.08, "hasSmoothnessOverride": true, "smoothnessOverride": 0.68, "productionReplacementKey": "presentation.material.prop.beer-bottle" },
+    { "role": "material.prop.terrace-shade", "sourceMaterialGuid": "64edcaaf91c4c914d87106d9ac507ded", "textureRole": "texture.prop.terrace-shade", "productionReplacementKey": "presentation.material.prop.terrace-shade" },
+    { "role": "material.prop.vodka-glass", "sourceMaterialGuid": "3bbdb57d208571d41a572b27f55a451e", "textureRole": "texture.prop.vodka-glass", "hasMetallicOverride": true, "metallicOverride": 0.345, "hasSmoothnessOverride": true, "smoothnessOverride": 0.824, "surfaceType": "Transparent", "productionReplacementKey": "presentation.material.prop.vodka-glass" },
+    { "role": "material.prop.vodka-label", "sourceMaterialGuid": "c6b5073e6d5333f4fb3e5993a12f21f4", "textureRole": "texture.prop.vodka-label", "hasSmoothnessOverride": true, "smoothnessOverride": 0.31, "productionReplacementKey": "presentation.material.prop.vodka-label" }
+  ],
+  "assets": [
+    { "role": "mesh.character.body.shared", "relativePath": "Mesh/bodymesh.asset", "guid": "4228101e09b2ef849a47cbe9af56052e", "generatedGuid": "10a10000000000000000000000000001", "sha256": "46736ecf1ef7f62776382a3e1480caf6866de7b27a29e5e1f70ddd0460d943f8" },
+    { "role": "mesh.character.body.roaming", "relativePath": "Mesh/bodymesh_3.asset", "guid": "9d6b01984efb98c43b3941855a718ae5", "generatedGuid": "10a10000000000000000000000000002", "sha256": "ba704211504f5efd8222266d82b739011b1bd3c0111c9f2976d328785fbaaee8" },
+    { "role": "clip.teimo.cash-register", "relativePath": "AnimationClip/teimo_cash_register.anim", "guid": "0f5b9e8855842f04da5515d2831286c8", "generatedGuid": "10a10000000000000000000000000003", "sha256": "aa2db3b5e80377cb90e838c6248ec6921853003729948163e360d84ef70e0717" },
+    { "role": "clip.teimo.angry", "relativePath": "AnimationClip/teimo_angry.anim", "guid": "e9fa0b39c8c623a48a68940247f5178e", "generatedGuid": "10d10000000000000000000000000001", "sha256": "7c50e13293cb4abb2c67e885ce40d7dceb0d8d0fa1ae1679ed41c7603fafcd6d" },
+    { "role": "clip.teimo.angry-in", "relativePath": "AnimationClip/teimo_angry_in.anim", "guid": "69ba602be1d3f344599ca2abd556b38d", "generatedGuid": "10d10000000000000000000000000002", "sha256": "6a388e9c59d37a15925aec685210093480f5395b662be090c47c0627157e7846" },
+    { "role": "clip.teimo.angry-out", "relativePath": "AnimationClip/teimo_angry_out.anim", "guid": "abe282f4bae435a41869840e6e720b4a", "generatedGuid": "10d10000000000000000000000000003", "sha256": "17d8556eafa407abe7a278df3a1f58c63253108a452c15baf74c5cb07227ccce" },
+    { "role": "clip.teimo.cook", "relativePath": "AnimationClip/teimo_cook.anim", "guid": "88ef3c97468448648a1c270b5cfb70d4", "generatedGuid": "10d10000000000000000000000000004", "sha256": "7133832cfba4ecb548c959c8ce8f9bf371aedf0d56d7d9ca246a06da3c2c4125" },
+    { "role": "clip.teimo.cook2", "relativePath": "AnimationClip/teimo_cook2.anim", "guid": "536793a6e463efb4883e6b942324f796", "generatedGuid": "10d10000000000000000000000000005", "sha256": "0aad7a3fbbd5964ada45438dab33d08f17a3484a74862f6afdc4bc484a411698" },
+    { "role": "clip.teimo.give-drink", "relativePath": "AnimationClip/teimo_give_drink.anim", "guid": "3bfdec2c9b83bc546a7017c8a36d6895", "generatedGuid": "10d10000000000000000000000000006", "sha256": "cfede707e00f3f35e5541844efa0797521d34c295480ae762b189e0c2b4969cc" },
+    { "role": "clip.teimo.bring-food", "relativePath": "AnimationClip/teimo_lean_bring_food.anim", "guid": "6b0a0349a6d625a479785837e12bca9d", "generatedGuid": "10d10000000000000000000000000007", "sha256": "9d885eabb3d2bae7d5ce6513fe5496499b82e533a8d0e7684eff905bb2f85420" },
+    { "role": "clip.teimo.move-bar", "relativePath": "AnimationClip/teimo_move_bar.anim", "guid": "f515c123f7b267a48b601aade798ffd9", "generatedGuid": "10d10000000000000000000000000008", "sha256": "8935b9fa20061956d4040204b03d2271b243a470124027939998fd99dae43375" },
+    { "role": "clip.teimo.move-store", "relativePath": "AnimationClip/teimo_move_store.anim", "guid": "400a9fec23418704b8b78c3e75be5a29", "generatedGuid": "10d10000000000000000000000000009", "sha256": "8a32105f67a6812ae48367e045404f621e5960afb05bb4eb58a8b67943e38338" },
+    { "role": "clip.teimo.move-kitchen-in", "relativePath": "AnimationClip/teimo_move_kitchen_in.anim", "guid": "1dff2f546b6c42d43941e15a725f6a11", "generatedGuid": "10d1000000000000000000000000000a", "sha256": "f9edad5f0617e446a51548b7ac072d9d28e54e16a7752483c83c13b0b2298c49" },
+    { "role": "clip.teimo.move-kitchen-out", "relativePath": "AnimationClip/teimo_move_kitchen_out.anim", "guid": "0fc19fbeefa10bb49b77b58f8b671de2", "generatedGuid": "10d1000000000000000000000000000b", "sha256": "bcee9c373f55b81fede44256d3407ad9c4c5d239841afdc08226c8f6142b0e54" },
+    { "role": "clip.teimo.walk-hand-out", "relativePath": "AnimationClip/teimo_walk_hand_out.anim", "guid": "89e3845ba9e468e42bb02f23d44c01f5", "generatedGuid": "10d1000000000000000000000000000c", "sha256": "1275c48d948e564a7d20635d7297a38999a7955e5eabc18b035c450969ab61f1" },
+    { "role": "clip.teimo.lean-table-in", "relativePath": "AnimationClip/teimo_lean_table_in.anim", "guid": "5adc2993393bd52459de9032fe371312", "generatedGuid": "10d1000000000000000000000000000d", "sha256": "bb227e906aeb1d247811cc927dfbe401e3d290dec09033dce19c87fb06dcda18" },
+    { "role": "clip.teimo.lean-table-out", "relativePath": "AnimationClip/teimo_lean_table_out.anim", "guid": "573abffdd3c79fb469cdb8eb8cf03324", "generatedGuid": "10d1000000000000000000000000000e", "sha256": "e4a9becfc3769a4aa9338e176258aad2a898616d5cc63a6c1865e556b5f2a78a" },
+    { "role": "clip.teimo.fridge-open", "relativePath": "AnimationClip/fridge_open.anim", "guid": "2526a380cd66cbd4196d78b3c5071c99", "generatedGuid": "10d1000000000000000000000000000f", "sha256": "8326c487def8308009de8fd6f1dd0ca4b076c1d8c78152db56c14f7167931960" },
+    { "role": "clip.teimo.fridge-close", "relativePath": "AnimationClip/fridge_close.anim", "guid": "7f883e6f5b325f440a7cb61eabb4c43c", "generatedGuid": "10d10000000000000000000000000010", "sha256": "62c0fb94ecbf5b16dcedc82cf246baebd020b1835481acae9b6adf399be19550" },
+    { "role": "clip.teimo.microwave-door", "relativePath": "AnimationClip/microwave_door.anim", "guid": "fd87364bfd25fc14695f36805f3e8de2", "generatedGuid": "10d10000000000000000000000000011", "sha256": "b2786e8cd3d60885ea0129435ebf0c7f6d9473922ddd9a4b38bcb645723ff957" },
+    { "role": "clip.fat.walk", "relativePath": "AnimationClip/fat_walk.anim", "guid": "a2e31381f5dacbf4491c470aac978ee7", "generatedGuid": "10a10000000000000000000000000004", "sha256": "20945aced2971b6d993eb6894316dd9fad5a8cf58d8d0ff78519d7ec0df5297a" },
+    { "role": "clip.bus-driver.cash", "relativePath": "AnimationClip/bus_driver_cash.anim", "guid": "3ef18ebbb3b9d7f4bb9e1ff277d31b01", "generatedGuid": "10a10000000000000000000000000005", "sha256": "e792ce3637d9d397c1a4c4e2b032de7fabe940924be6a67905074dbb12e6846e" },
+    { "role": "mesh.character.body.fat", "relativePath": "Mesh/bodymesh_1.asset", "guid": "e3cb04a07e2df994c9eff3a5d3dd17e4", "generatedGuid": "10b10000000000000000000000000006", "sha256": "2ae42ebdd51505ee0df7dc732a1fd3c2407ad26282b7fc3c0c26a19892ad02c4" },
+    { "role": "mesh.character.body.berryman", "relativePath": "Mesh/bodymesh_2.asset", "guid": "acc310de4fee624408f7c196f1cefa28", "generatedGuid": "10b10000000000000000000000000007", "sha256": "f388161b18d0abf3db51ed25a76f400edd222b5f0387a34c18f9d74bb3aef8a6" },
+    { "role": "clip.fleetari.breathe", "relativePath": "AnimationClip/fleetari_breathe.anim", "guid": "9f041fca349ab7243b0d4f1738bdff06", "generatedGuid": "10b10000000000000000000000000008", "sha256": "2aeb594a1452968f7bb3c9afcaded0028ffcf8f000420303db2db9749db90721" },
+    { "role": "clip.fat.standing", "relativePath": "AnimationClip/fat_standing.anim", "guid": "31350dac21a970c45adaf22bb40a8882", "generatedGuid": "10b10000000000000000000000000009", "sha256": "10ba3db5ca038cc2cf55f5dbf48cc1c96ebdaff8a51f3d3e13173e6aac59aabd" },
+    { "role": "clip.berryman.left-hand-loop", "relativePath": "AnimationClip/strawberryman_left_hand_loop.anim", "guid": "7fc9c04ae65671a45a534dfb095a783c", "generatedGuid": "10b1000000000000000000000000000a", "sha256": "b808d2a2d81795b2b5adfac52465f75b997689ee3cf5f1ba5800886b446f39da" },
+    { "role": "texture.char.shirt02", "relativePath": "Texture2D/char_shirt02.png", "guid": "5cc5c0d375e68fd428756769ccb7fa46", "generatedGuid": "10b1000000000000000000000000000b", "sha256": "50b2480efcb3e64abc2afb065c48cfdd9cb2c2571d0385450aac4e4286d8bf6e" },
+    { "role": "texture.char.pants02", "relativePath": "Texture2D/char_pants02.png", "guid": "8effe7f43bba6a74f85872ffaa45ab7b", "generatedGuid": "10b1000000000000000000000000000c", "sha256": "498929841022a01d9334a56118ee3f6b3c5c12cfff3dd64adad89e603f5598f0" },
+    { "role": "texture.char.face01", "relativePath": "Texture2D/char_face01.png", "guid": "f5683ed69e796e04f8988cf718e36023", "generatedGuid": "10b1000000000000000000000000000d", "sha256": "d66ba9881991379fc273ac93d498d1434f286d4b78f6bc5cb864d48c47645324" },
+    { "role": "texture.char.shirt15", "relativePath": "Texture2D/char_shirt15.png", "guid": "8edc2bccc196d9a458d14c590c316bcb", "generatedGuid": "10b1000000000000000000000000000e", "sha256": "7b6a91db31fea05514f00ff9c0521c4a984f824dcb9b3e6551b88faa3bad5553" },
+    { "role": "texture.char.pants06", "relativePath": "Texture2D/char_pants06.png", "guid": "38c05c2cbcaf30b4ca0a746d23a3bcd2", "generatedGuid": "10b1000000000000000000000000000f", "sha256": "813fd13413431c571f790978c0131e652d7dc85c305d6c8b09a1061514348701" },
+    { "role": "texture.char.face09", "relativePath": "Texture2D/char_face09.png", "guid": "196161fa109001743bcbbc3390060ba5", "generatedGuid": "10b10000000000000000000000000010", "sha256": "95435d92d637bc619aef01c87bc64d447720cb7eeef8ad8c48b22815ec17bd6e" },
+    { "role": "texture.char.shirt20", "relativePath": "Texture2D/char_shirt20.png", "guid": "4b192afb7a56c0642953004900f56be1", "generatedGuid": "10b10000000000000000000000000011", "sha256": "b70c75f36a9047e0e241124803b8988150eafd9469724d36e4347f6b1eca10d3" },
+    { "role": "texture.char.face03", "relativePath": "Texture2D/char_face03.png", "guid": "8d8dd0ab74492ff4587f969b184588cb", "generatedGuid": "10b10000000000000000000000000012", "sha256": "411c6ce3df64e06c8d60ec6338924c511d31a3b6f37e5c47cf99cf791b1bd6b2" },
+    { "role": "texture.char.shirt07", "relativePath": "Texture2D/char_shirt07.png", "guid": "b20d178fc82ca5f4d97f922441e9b675", "generatedGuid": "10b10000000000000000000000000013", "sha256": "35710ddab13f728c7cdd20fcacfdcb7cbe1385e75c943f460b30877ecc787b80" },
+    { "role": "texture.char.pants01", "relativePath": "Texture2D/char_pants01.png", "guid": "cba5dd57c3f96a9458c18e42ab80ecf3", "generatedGuid": "10b10000000000000000000000000014", "sha256": "d7cb3b4f0fd2a0f408c5d5a46e7005df8a19740be7b59114cde07a6f973b10ee" },
+    { "role": "texture.char.face02", "relativePath": "Texture2D/char_face02.png", "guid": "ae8042bbc0a319145a3b7338eaeb8554", "generatedGuid": "10b10000000000000000000000000015", "sha256": "1ea7b9acd9dcbbdc77b9f6cd7c3f17b4ae3c114c8c982719097c20d74aee3de2" },
+    { "role": "texture.char.shirt18", "relativePath": "Texture2D/char_shirt18.png", "guid": "69e2f6ffd35cc5e469635d466a048459", "generatedGuid": "10b10000000000000000000000000016", "sha256": "df87a9bbc52a0931973e0105d70ef82fe2f877c488302d786bfb3bcc9f1f8ab5" },
+    { "role": "texture.char.face08", "relativePath": "Texture2D/char_face08.png", "guid": "5fe7c2c4639d3e14da3f43066d407703", "generatedGuid": "10b10000000000000000000000000017", "sha256": "2acc36f75cc16d04faaa524d6bcfe7fca803037210e080343ade7b87c435b246" },
+    { "role": "texture.char.shirt03", "relativePath": "Texture2D/char_shirt03.png", "guid": "7f4f8313ecadba746a170aef54da8905", "generatedGuid": "10b10000000000000000000000000018", "sha256": "17dce7de259ac443fdb2daebc7876956b309623f3c4e76d1c930cb72c390b9e8" },
+    { "role": "texture.char.pants03", "relativePath": "Texture2D/char_pants03.png", "guid": "dcbbf2582dd1e6545b3d6494baa7a8b1", "generatedGuid": "10b10000000000000000000000000019", "sha256": "22fede25d8ba5a8f4443b4848c8cbf44241da1762d6e35aff809aa8c67d6e401" },
+    { "role": "mesh.character.accessory.teimo-hat", "relativePath": "Mesh/teimo_hat.asset", "guid": "978f8691047a38f40bf679a830f7dd02", "generatedGuid": "10b1000000000000000000000000001a", "sha256": "598b20ae83effe15298e47774f42358648651d7ead0f7c6eb75345d5b4401abe" },
+    { "role": "mesh.character.accessory.berryman-hat", "relativePath": "Mesh/latsa.asset", "guid": "c00b61e876eeb964c9a5a4f78789e003", "generatedGuid": "10b1000000000000000000000000001b", "sha256": "3702c5754375226e76d270594dde4f498a64d0dd57fa314051bce00556941748" },
+    { "role": "mesh.character.accessory.busdriver-hat", "relativePath": "Mesh/busdriver_hat.asset", "guid": "d742456301ebbb44a8a5c6102cf3633e", "generatedGuid": "10b1000000000000000000000000001c", "sha256": "bee53964716ead26aaac98eb04f62a3684f5b4624a1bc98dec004202046d1c73" },
+    { "role": "texture.char.pants04", "relativePath": "Texture2D/char_pants04.png", "guid": "67356963aea9d31479bc7f1496df4d99", "generatedGuid": "10b1000000000000000000000000001d", "sha256": "dd03a74e87694e86d90d72a88a5535456c709cdc1e5edfb2c334f33fe08092fe" },
+    { "role": "mesh.character.accessory.eye-glasses", "relativePath": "Mesh/eye_glasses.asset", "guid": "1d1325a33c5897942a453b54eca75e62", "generatedGuid": "10b10000000000000000000000000020", "sha256": "3f1dbf6cd893dfa168a1b0f5b55371e3b0ee1617dcf6759d51ca045c6878bd22" },
+    { "role": "texture.char.glass", "relativePath": "Texture2D/glass.png", "guid": "2f1b808239c33fe4ea26085f47092b57", "generatedGuid": "10b10000000000000000000000000021", "sha256": "cab90ce408d7f2d2d71bfe639af6daaadc3c89c16f41d841b1fe3ff537a6a3cd" },
+    { "role": "mesh.character.accessory.farmer-gifu-hat", "relativePath": "Mesh/gifu_hat.asset", "guid": "6d988a588271b2f4fb648ff2c341f8c1", "generatedGuid": "10b10000000000000000000000000022", "sha256": "89a190a44d05e31df2661704280bf15796501296413fed53989e5343cdc5b5b9" },
+    { "role": "mesh.character.accessory.eye-glasses-dark", "relativePath": "Mesh/eye_glasses2.asset", "guid": "d79824a0df46b364f8d5d8740b75319a", "generatedGuid": "10b10000000000000000000000000023", "sha256": "bccbde43a33fa6b6cc4cd1d367c06e0ce4a85bb497e5df668da3cea942e5559a" },
+    { "role": "texture.char.glasses-dark", "relativePath": "Texture2D/beer_bottle.png", "guid": "3cd2e30e72543c24d82b8a9b60a05b5d", "generatedGuid": "10b10000000000000000000000000024", "sha256": "68ab653c85fbc33ba836a5c5cd35d8fe67a1b08ded72f15d44067621baa02540" },
+    { "role": "mesh.vehicle.teimo-bicycle.frame", "relativePath": "Mesh/bicycle.asset", "guid": "3d2d245579d72e14bb5411be38c723f4", "generatedGuid": "10b10000000000000000000000000025", "sha256": "52cf1e342d7b548421425acda412ae0dfb3f8cb2079a98c881fada514df35af3" },
+    { "role": "mesh.vehicle.teimo-bicycle.pedals", "relativePath": "Mesh/bicycle_pedals.asset", "guid": "f7e0064225abbb94d841a34e1113462b", "generatedGuid": "10b10000000000000000000000000026", "sha256": "8659658f3d14330970024cc208841a4222623b0f32a99a3ea6baaa2938cf4dd8" },
+    { "role": "mesh.vehicle.teimo-bicycle.tire", "relativePath": "Mesh/bicycle_tire.asset", "guid": "3ea2caf230517ac4e83cf3033846e159", "generatedGuid": "10b10000000000000000000000000027", "sha256": "c0c38a0849c8fdeb6d5a29b98e10a7a554cc85526812c14a3055362aa23d11e3" },
+    { "role": "mesh.vehicle.teimo-bicycle.rim", "relativePath": "Mesh/bicycle_rim.asset", "guid": "026bf5a8b90d2054fbbf3b28fb7fb95e", "generatedGuid": "10b10000000000000000000000000028", "sha256": "4cd223ca19edf7090e708152bc69c3ddc61c7af5254e0bb5ea2fa2a28a7b5695" },
+    { "role": "clip.teimo.bicycle-wave", "relativePath": "AnimationClip/teimo_bicycle_waving_hello.anim", "guid": "fd3e78158761d0a4e86844deb09a1ade", "generatedGuid": "10b10000000000000000000000000029", "sha256": "5d0316e09867ded481801fb4b8bcf65127e46c527356f6d9589d6d162b20e990" },
+    { "role": "texture.vehicle.teimo-bicycle.atlas", "relativePath": "Texture2D/ATLAS_MOTORPARTS.png", "guid": "f4795e5371f75b74e910997a99c764b7", "generatedGuid": "10b1000000000000000000000000002a", "sha256": "43376920fa2f626600d24ea83769eaef6c582893ec37d9974835fa250fb61a1f" },
+    { "role": "mesh.character.body.granny", "relativePath": "Mesh/bodymesh_6.asset", "guid": "472fb81b31d32a04aacfc15cf9fa2367", "generatedGuid": "10b20000000000000000000000000001", "sha256": "8f007f169f2184dadd2f839524cc177adf75965c9a0571b10e777c35ae03f679" },
+    { "role": "mesh.character.body.suski", "relativePath": "Mesh/bodymesh_8.asset", "guid": "53889f5e3537e43459c778982d0e9504", "generatedGuid": "10b20000000000000000000000000002", "sha256": "6c4e8021764bf22efc2f0db29f6e30b139e17efdb80fd7bbaa1bdbc695667b25" },
+    { "role": "mesh.character.body.ventti-pig", "relativePath": "Mesh/bodymesh_pig.asset", "guid": "649e553caf2ff854789e3d16dc264c81", "generatedGuid": "10b20000000000000000000000000003", "sha256": "ed5e35ed493a02033aef8656a0427d91f53bf51922fe4f7783d798ae990d641f" },
+    { "role": "mesh.character.accessory.granny-hat", "relativePath": "Mesh/granny_hat.asset", "guid": "d47e8bb0d4ffb1b4b82f9a9faa5a1a0d", "generatedGuid": "10b20000000000000000000000000004", "sha256": "a26b9d6c137092fd89b6361fc6d73035752c74012a00759bb01a707c2e22e10e" },
+    { "role": "mesh.character.prop.plastic-chair", "relativePath": "Mesh/prop_chair_plastic.asset", "guid": "ecde535267007e7438f7a3820f97e45c", "generatedGuid": "10b20000000000000000000000000005", "sha256": "8ce22939ac4562feeaa0a0820d9e7fcd0846cc2ab25c9b5cd735976457e286fb" },
+    { "role": "clip.uncle.upper-breath", "relativePath": "AnimationClip/fat_spine_upper_breath2.anim", "guid": "85085f92b6186ee47a7ba02897445dde", "generatedGuid": "10b20000000000000000000000000006", "sha256": "b9a3aaeec6abae2d8996bd010da2250bc485adfbf66a0fb2b959a5125d368c87" },
+    { "role": "clip.granny.breathe", "relativePath": "AnimationClip/granny_breathe.anim", "guid": "cf0d1456be25ad147ad7e3c1b11ff954", "generatedGuid": "10b20000000000000000000000000007", "sha256": "929720b820e03d8eca6f685db314836965d3d2b75353ae7ed23c5397e387dbe3" },
+    { "role": "clip.jokke.breathe", "relativePath": "AnimationClip/lifter_breathe.anim", "guid": "c245a91f30d13874baab6ef5e81f6fc2", "generatedGuid": "10b20000000000000000000000000008", "sha256": "69868d306e89b4994fac0dcba25e63ab05c03a8be4a9ccff3adbca21606fec5e" },
+    { "role": "clip.woman.standing", "relativePath": "AnimationClip/woman_standing.anim", "guid": "b7985bea852b2cd4882030e84a57a9a6", "generatedGuid": "10b20000000000000000000000000009", "sha256": "33a11019f154ff34fb5d405abadfd21013a90615875859e02a19399856c17e94" },
+    { "role": "clip.fat.upper-breath", "relativePath": "AnimationClip/fat_spine_upper_breath.anim", "guid": "a9084861e4c5fe840aa18c285c361415", "generatedGuid": "10b2000000000000000000000000000a", "sha256": "c4a334fa799b19b41ec87d2f373a361d000a9d64ba826a9118e6f3c87ce21857" },
+    { "role": "texture.char.shirt01", "relativePath": "Texture2D/char_shirt01.png", "guid": "7639de59a90c0c6488c0654e91a672a9", "generatedGuid": "10b2000000000000000000000000000b", "sha256": "feee65fcf914945fff684ae38cde6285f2a5cac815ecb1cf593bfcb603ee2d51" },
+    { "role": "texture.char.granny-dress", "relativePath": "Texture2D/fabric6.png", "guid": "76bf5d67d610fac46ae7b54ca7355e6a", "generatedGuid": "10b2000000000000000000000000000c", "sha256": "30f0df6efe03addadf086a397730a3f097b0471e9f0c01f4bdc9162914aa5649" },
+    { "role": "texture.char.face07-woman", "relativePath": "Texture2D/char_face04_woman.png", "guid": "615e92f84f3c9d943b56440a49e0740c", "generatedGuid": "10b2000000000000000000000000000d", "sha256": "60c66020c1a52d14114396d501ff42be1df673ddf6b3133fca6f5739e7d3edc4" },
+    { "role": "texture.char.shirt04", "relativePath": "Texture2D/char_shirt04.png", "guid": "5cd943d28b3e07b4183980a08bd82f8d", "generatedGuid": "10b2000000000000000000000000000e", "sha256": "ed4f56cbee68826aafb4d6257287757c35d69de4187d1debd16119a993064b62" },
+    { "role": "texture.char.shirt12", "relativePath": "Texture2D/char_shirt12.png", "guid": "809fa869e1029f04f8fdfe706a910b5a", "generatedGuid": "10b2000000000000000000000000000f", "sha256": "47a972d9ee9747adde04d3330e48df544eb9f7490749714be6584db31730fc90" },
+    { "role": "texture.char.face06", "relativePath": "Texture2D/char_face06.png", "guid": "df3ab3745f42bda46980cc2dc4fcc361", "generatedGuid": "10b20000000000000000000000000010", "sha256": "3d0ff530b4821116a299341c907b8c670ec30e2ab68badf739a0274f2d62033c" },
+    { "role": "texture.char.shirt06", "relativePath": "Texture2D/char_shirt06.png", "guid": "402e7edb34e077d41bce8930fbf390ce", "generatedGuid": "10b20000000000000000000000000011", "sha256": "66f7f26c52e50ef509ae4f6694b78b63b9181a41612453e1dee3c6b6e49c4136" },
+    { "role": "texture.char.shirt05", "relativePath": "Texture2D/char_shirt05.png", "guid": "db4c5f8373b75fc44a1a85ac37c3838e", "generatedGuid": "10b20000000000000000000000000012", "sha256": "7af2abfec405aa271ea74405677462b113f84bfae648c95e13883b6e0285903d" },
+    { "role": "texture.char.shirt16", "relativePath": "Texture2D/char_shirt16.png", "guid": "4d42b3fa3d6536a42b42494a6ce60ed3", "generatedGuid": "10b20000000000000000000000000013", "sha256": "f197cfe6727baa90ddcdb864d4264895c90c766578102a77aa5b83b16b66c526" },
+    { "role": "texture.char.face11", "relativePath": "Texture2D/char_face11.png", "guid": "482165f384061c14f832c8eff0108327", "generatedGuid": "10b20000000000000000000000000014", "sha256": "93067f17151731b7b7cde7aa563e41f63f34cb6b351dd460ab05f03a17469c6e" },
+    { "role": "texture.char.shirt11", "relativePath": "Texture2D/char_shirt11.png", "guid": "ff767e8541795c746b8c6af3a4cea964", "generatedGuid": "10b20000000000000000000000000015", "sha256": "79867e92de0edf86dbb8819a6dae6834c35592d1ce8b4d8ccd29c518a4cc7d41" },
+    { "role": "texture.char.granny-hat", "relativePath": "Texture2D/granny_hat.png", "guid": "60846bd6176b4524fa021d395412d185", "generatedGuid": "10b20000000000000000000000000016", "sha256": "0df1e6549f0426ee9b150ec126ad2a8f4dafadac1c91f7e53b79b2d1df6c6472" },
+    { "role": "texture.prop.chair-white", "relativePath": "Texture2D/paint3.png", "guid": "edcd3f2f4121b804dad4ff2641435fb1", "generatedGuid": "10b20000000000000000000000000017", "sha256": "81807aadeaa2845ab7ec931f5fb0a484472a5b25901adc6f6a7df23a4d42170d" },
+    { "role": "mesh.character.prop.plastic-table", "relativePath": "Mesh/plastic_table.asset", "guid": "840d08dd46b6aa341ad9b2f80a2acfde", "generatedGuid": "10b30000000000000000000000000001", "sha256": "053f0be81b9d8941a2b130c6556d2f57c37b46d08c3f9b3fe564fa8fe3e9f140" },
+    { "role": "mesh.character.prop.garden-chair", "relativePath": "Mesh/garden_chair.asset", "guid": "252207d5052d4b948b0de1a769852450", "generatedGuid": "10b30000000000000000000000000002", "sha256": "b966600dc0f07e2a464eb6dede6c0370dcfeffb78436c3aff8843688639fc2fd" },
+    { "role": "mesh.character.prop.garden-table", "relativePath": "Mesh/garden_table.asset", "guid": "039fdbd9d53e91249b6dbc16503bdf35", "generatedGuid": "10b30000000000000000000000000003", "sha256": "6c59da4a7d8c77842895e80a8574727f61a7fb8b6f7f2281c1b9b5eded31c8ba" },
+    { "role": "mesh.character.prop.coffee-cup", "relativePath": "Mesh/coffee_cup.asset", "guid": "845d6b318c12d1844a2439183985055d", "generatedGuid": "10b30000000000000000000000000004", "sha256": "946341410a4eb2637a696bf34e0e209e44f6e3358c1e3e592c6ef37cfba3f5be" },
+    { "role": "mesh.character.prop.coffee-plate", "relativePath": "Mesh/coffee_plate.asset", "guid": "2ab2456ff843a934cb821cf9ef1bd966", "generatedGuid": "10b30000000000000000000000000005", "sha256": "5c45750c807cba03ea6a6e2997a503a73bc04b922b926a72ee3329a4fdf27e5e" },
+    { "role": "mesh.character.prop.product-tray", "relativePath": "Mesh/potato_box.asset", "guid": "acbc9787735389641b217c07d4c1d52f", "generatedGuid": "10b30000000000000000000000000006", "sha256": "bdeb8213710234e530bfda0714bdeb8e3adf7fa0e516b0bb99982194566051cb" },
+    { "role": "mesh.character.prop.beer-bottle", "relativePath": "Mesh/beerbottle_high.asset", "guid": "48d99415fcf46ac438b9600879726116", "generatedGuid": "10b30000000000000000000000000007", "sha256": "1dc2a27559130ffb4a9a3a11c8105a6dfe16291a89815e0a520268f2111e6d44" },
+    { "role": "mesh.character.prop.vodka-bottle", "relativePath": "Mesh/booze_bottle.asset", "guid": "5bf587a3afe51a444b5e9dd0896094e9", "generatedGuid": "10b30000000000000000000000000008", "sha256": "767134af5585fa012a1f50dc1c0e6e76236bc477f25521c19f8a3d94dfaff2ac" },
+    { "role": "texture.prop.garden-wood", "relativePath": "Texture2D/wood_panel7.png", "guid": "b7cfb56dfc0162445bed4af15852a0a5", "generatedGuid": "10b30000000000000000000000000009", "sha256": "77f5628989c1201255e09e93fe04434f28e2170b08c9c1a09c16052928f76759" },
+    { "role": "texture.prop.groceries-atlas", "relativePath": "Texture2D/ATLAS_GROCERIES.png", "guid": "69a3fbf56dbb31845a21b8f854370968", "generatedGuid": "10b3000000000000000000000000000a", "sha256": "0562833118d05dcd9f7c3bd55dee99dee4b195cb6f8ac37cfd47523d2e0d5cd6" },
+    { "role": "texture.prop.product-tray", "relativePath": "Texture2D/beercase.png", "guid": "333570c134facdf4f9f5ea3fa1b46d40", "generatedGuid": "10b3000000000000000000000000000b", "sha256": "5205eb7b4e100f127da8ae0952f4a398f9088026cebb8e0d50c4c6c408d22db2" },
+    { "role": "texture.prop.vodka-glass", "relativePath": "Texture2D/booze_bottle_trans.png", "guid": "d7d7b45ab5c2a5d4399b80b687eb812e", "generatedGuid": "10b3000000000000000000000000000c", "sha256": "c713c2325a126bef247f4a167e71aac496abd401e8b7ef31ae0f0277eaee2b18" },
+    { "role": "texture.prop.vodka-label", "relativePath": "Texture2D/booze_bottle.png", "guid": "042f7bbc74415db41bdeefb2d5737b0c", "generatedGuid": "10b3000000000000000000000000000d", "sha256": "f6cfc8c2e29f2a118d88a2f7574bc4e05781443f93de346ae325a5c9610742b7" },
+    { "role": "mesh.character.prop.terrace-shade", "relativePath": "Mesh/Cylinder.asset", "guid": "dc5f0a87684b4b94f875cd438141cbd4", "generatedGuid": "10b3000000000000000000000000000e", "sha256": "11382ff46930fcc238c709f33c2655eb3c9bac9316a9d85a3074eb1ae2e84ca8" },
+    { "role": "clip.fat.hands-right-drink", "relativePath": "AnimationClip/fat_handsright_drink.anim", "guid": "e3d2175bfb03b1c4a8a925636f91843d", "generatedGuid": "10b3000000000000000000000000000f", "sha256": "b6ad2ea2f7cec2885b2099095a47351c534118ff7108b688d93fc9033567bcfc" },
+    { "role": "texture.prop.terrace-shade", "relativePath": "Texture2D/terrace_shade.png", "guid": "b56b18ff7ced17645aa71f8750dcd577", "generatedGuid": "10b30000000000000000000000000010", "sha256": "9ce39650a812a03c38bbc9855c597d85effcd696de0f8447b0c24ec7f152d727" }
+  ],
+  "explicitlyExcluded": [
+    "donor MonoBehaviours",
+    "PlayMaker FSMs and generated controllers",
+    "donor AnimatorControllers and animation events",
+    "donor gameplay, schedule, dialogue and save authority",
+    "donor shader code",
+    "donor runtime assemblies",
+    "NPC roster rows outside the active 10B-R1/R2 batches"
+  ]
+}

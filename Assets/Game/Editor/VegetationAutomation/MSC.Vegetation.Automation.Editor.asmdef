@@ -1,0 +1,14 @@
+{
+  "name": "MSC.Vegetation.Automation.Editor",
+  "rootNamespace": "MSC.Editor.VegetationAutomation",
+  "references": ["MSC.Editor", "UnityEditor.TestRunner", "UnityEngine.TestRunner"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

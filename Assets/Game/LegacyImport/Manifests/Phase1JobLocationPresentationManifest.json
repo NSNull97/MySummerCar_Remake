@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "manifestId": "phase1-job-location-presentation-10b-r3-v6",
+  "classification": "TemporaryDirectImport",
+  "sourceRevisionId": "msc-world-baseline-04a1.1-c3f2f337",
+  "sourceSceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4",
+  "worldEntityTableSha256": "a0f45c9eb50b2f7dff90caa9d848a0a20be463ce333eae19da576f91dd31a408",
+  "worldColliderTableSha256": "5de8f612ff4dd6a23d9e18e23ecbba88e520a1334533dfee57a2bb14e839cd79",
+  "includeHierarchyRoots": [
+    "JOBS/StrawberryField/",
+    "JOBS/HouseShit1/",
+    "JOBS/HouseShit2/",
+    "JOBS/HouseShit3/",
+    "JOBS/HouseShit4/",
+    "JOBS/HouseShit5/",
+    "JOBS/Farm/",
+    "JOBS/HouseDrunk/HouseRintamaDrunk/",
+    "JOBS/HouseDrunk/Shed/",
+    "JOBS/Mummola/HouseRintama5/",
+    "JOBS/Mummola/LOD/Shed/",
+    "JOBS/HouseWood1/HouseOld2/",
+    "JOBS/HouseWood1/Shed/",
+    "JOBS/HouseWood1/CarShed/"
+  ],
+  "excludeHierarchyFragments": [
+    "/skeleton/",
+    "/ShitNPC/",
+    "/Functions/",
+    "/WaspStrawberry/",
+    "/Farmer/",
+    "/LOD/combine/"
+  ],
+  "expectedRendererCount": 306,
+  "expectedStaticBatchRendererCount": 267,
+  "expectedColliderCount": 102,
+  "ignoredEmptyMeshColliderStableIds": [
+    "654f6152adeeb504bb10efec7b6fbf5a",
+    "af7103df8e449feb4304bbd2e4826c7a"
+  ],
+  "expectedCellIds": [
+    "cell_-3_-4",
+    "cell_-2_-4",
+    "cell_-2_0",
+    "cell_-3_0",
+    "cell_3_-4",
+    "cell_3_-1",
+    "cell_4_-4",
+    "cell_1_-5",
+    "cell_4_-3"
+  ],
+  "doubleSidedRendererStableIds": [
+    "26ba07f32895986ad6b5e1af60e8f42f",
+    "a4fcacc09bcdf19b2870e93c5ae37c1f",
+    "8009a38a36145d5f2e723307bdab9f5d",
+    "877425d5f49f92c6ad267866a9225a45"
+  ],
+  "supplementalMaterials": [
+    {
+      "sourceGuid": "12b1a366069d0d74dbddce396c345f2a",
+      "sourceRelativePath": "Material/npc_car1.mat",
+      "sourceSha256": "0a8e2185e97dcf2558b3b871054d458a124c01e4313bec5d83fd4d22d50fb223",
+      "baseColor": [0.9264706, 0.9264706, 0.9264706, 1.0],
+      "textureGuid": "",
+      "textureRelativePath": "",
+      "textureSha256": ""
+    },
+    {
+      "sourceGuid": "1dc83be66c4d69a4fb950c5714196c79",
+      "sourceRelativePath": "Material/wastewell.mat",
+      "sourceSha256": "43886e7060dce751ced74379d2e288db82c703bbcf16b9c45b753b5e9b6108df",
+      "baseColor": [0.66176474, 0.66176474, 0.66176474, 1.0],
+      "textureGuid": "3da72f11c3dccaf4094498d3342d2a01",
+      "textureRelativePath": "Texture2D/wastewell.png",
+      "textureSha256": "40ac02ce31316d17e144d0a9915586379347f878f1e301b493723e33ecf37a07"
+    }
+  ]
+}

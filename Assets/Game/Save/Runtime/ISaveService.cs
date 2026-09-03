@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace MSC.Save
 {
     /// <summary>
@@ -6,5 +9,13 @@ namespace MSC.Save
     public interface ISaveService
     {
         bool IsOperationInProgress { get; }
+        event EventHandler<SaveOperationEventArgs> OperationStarted;
+        event EventHandler<SaveOperationEventArgs> OperationCompleted;
+        event EventHandler<SaveOperationEventArgs> OperationFailed;
+        event EventHandler<SaveOperationEventArgs> RecoveryPerformed;
+
+        SaveWriteResult Save(SaveRequest request);
+        SaveLoadResult Load(string slotId);
+        IReadOnlyList<SaveSlotSummary> EnumerateSlots();
     }
 }

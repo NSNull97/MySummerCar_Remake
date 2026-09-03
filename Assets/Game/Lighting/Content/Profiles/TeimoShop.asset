@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 534e762fb05fab04581331e39eeac996, type: 3}
+  m_Name: TeimoShop
+  m_EditorClassIdentifier: MSC.Lighting.Runtime::MSC.Lighting.LightFixtureProfile
+  profileId: lighting.fixture.teimo-shop
+  category: 3
+  shape: 4
+  lightUnit: 0
+  intensity: 32500
+  rangeMeters: 18
+  colorTemperatureKelvin: 6000
+  lightColor: {r: 1, g: 1, b: 1, a: 1}
+  sourceRadiusMeters: 0.04
+  sourceWidthMeters: 1.4
+  sourceHeightMeters: 0.1
+  innerSpotAngle: 45
+  outerSpotAngle: 65
+  enableSpotReflector: 0
+  cookie: {fileID: 0}
+  iesProfile: {fileID: 0}
+  shadowFadeDistanceMeters: 38
+  nativeVolumetricMultiplier: 0.05
+  beamClearAirIntensity: 0
+  beamFogIntensity: 0
+  beamRainIntensity: 0
+  beamSnowIntensity: 0
+  emissiveColor: {r: 1, g: 1, b: 1, a: 1}
+  emissiveIntensity: 5.5
+  bloomContribution: 0.2
+  turnOnSeconds: 0.08
+  turnOffSeconds: 0.12
+  powerPolicy: 2
+  low:
+    lightDistanceMeters: 50
+    shadowDistanceMeters: 22.5
+    shadowsEnabled: 0
+    contactShadowsEnabled: 0
+    shadowUpdateMode: 2
+    shadowResolution: 256
+    beamQuality: 0
+    beamDistanceMeters: 40
+  medium:
+    lightDistanceMeters: 75
+    shadowDistanceMeters: 33.75
+    shadowsEnabled: 1
+    contactShadowsEnabled: 0
+    shadowUpdateMode: 2
+    shadowResolution: 512
+    beamQuality: 0
+    beamDistanceMeters: 60
+  high:
+    lightDistanceMeters: 110
+    shadowDistanceMeters: 49.5
+    shadowsEnabled: 1
+    contactShadowsEnabled: 1
+    shadowUpdateMode: 2
+    shadowResolution: 768
+    beamQuality: 0
+    beamDistanceMeters: 88
+  ultra:
+    lightDistanceMeters: 160
+    shadowDistanceMeters: 72
+    shadowsEnabled: 1
+    contactShadowsEnabled: 1
+    shadowUpdateMode: 0
+    shadowResolution: 1024
+    beamQuality: 0
+    beamDistanceMeters: 128

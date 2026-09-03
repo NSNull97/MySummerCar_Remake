@@ -41,13 +41,26 @@
 				<SoundBank Name="MSC_World" ID="{178A9109-B917-430E-B38B-01FD99D984A9}">
 					<Comment>Milestone 08 project-owned bank definition.</Comment>
 					<ObjectInclusionList>
+						<ObjectRef Name="Play_MSC_World_Mosquito" ID="{EA092781-D3A2-41B8-9BD7-64934094EEA7}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Birds_Morning" ID="{9654D6D7-98BF-421A-A84C-3D530ADF11F7}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Chainsaw" ID="{CD641734-EBCF-4220-AE7F-6290FA311376}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Wind_Chime" ID="{5E6D96E1-4B23-42B5-B41C-EF5271C10364}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_MSC_World_Lake_Ambience" ID="{0CAD4318-3F92-42E5-80B8-D1996D601C1F}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_MSC_World_Birds" ID="{AFFE44BE-39A4-434B-939F-CF8F0F24E12D}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_MSC_World_Insects" ID="{2B26B7B2-E798-434E-BD37-92BF16EF7516}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_MSC_World_Interior_RoomTone" ID="{E161C36E-EE03-43F9-BC64-5AAF1A50C0BD}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Wasp" ID="{624EF21F-5045-46A1-A7A1-8E01C891172E}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Birds_Evening" ID="{765A3490-C65A-46DE-AEB8-A4207D6C7DDD}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_MSC_World_Forest_Ambience" ID="{A579EDBD-1F45-47AE-938F-2E75A1CB9AE3}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Meadow" ID="{D87F4A6C-BADC-4833-90E5-3426F8251AF4}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Birds_Swamp" ID="{41D327E4-3014-4AFF-8E8D-A6DFC1F92BFE}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Fly" ID="{5BD5DDDA-999A-4B06-B54B-ADF9AB435977}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Fly_Variant" ID="{B51FC46F-C2C0-4B40-A0FB-63714AD02416}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Dog" ID="{7509E407-B07F-4B4D-B2AA-06429AC7A0E2}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_MSC_World_Garage_RoomTone" ID="{109599EF-86B6-4B75-916D-24FD1AD00C9E}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_MSC_World_Distant_Traffic" ID="{8C98E89B-6C55-4BE9-A071-B9EF5B10ABE2}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Birds_Night" ID="{7B211CD6-C196-4EC7-8E65-1E49FA7CE38F}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_MSC_World_Birds_Day" ID="{64DE3824-1404-4F17-B8D2-28339902E0B9}" WorkUnitID="{28ADDD5A-2586-4183-A1CE-79E82625953E}" Origin="Manual" Filter="7"/>
 					</ObjectInclusionList>
 					<ObjectExclusionList/>
 					<GameSyncExclusionList/>

@@ -22,6 +22,10 @@ namespace MSC.Audio
         private float wind01;
         private float normalizedDayTime01 = 0.5f;
         private AudioListenerSpace weatherListenerSpace = AudioListenerSpace.Exterior;
+        private float weatherShelter01;
+        private float weatherObstruction01;
+        private float weatherReverbSend01;
+        private bool hasContinuousWeatherContext;
 
         public AudioEnvironmentContext CurrentEnvironment { get; private set; } =
             AudioEnvironmentContext.Exterior;
@@ -51,6 +55,30 @@ namespace MSC.Audio
                 listenerSpace)
                 ? listenerSpace
                 : AudioListenerSpace.Exterior;
+            hasContinuousWeatherContext = false;
+        }
+
+        public void SetWeatherExposureContext(
+            float precipitationIntensity01,
+            float windIntensity01,
+            float dayTime01,
+            AudioListenerSpace listenerSpace,
+            float shelter01,
+            float obstruction01,
+            float reverbSend01)
+        {
+            precipitation01 = AudioMath.Clamp01(precipitationIntensity01);
+            wind01 = AudioMath.Clamp01(windIntensity01);
+            normalizedDayTime01 = AudioMath.Clamp01(dayTime01);
+            weatherListenerSpace = System.Enum.IsDefined(
+                typeof(AudioListenerSpace),
+                listenerSpace)
+                ? listenerSpace
+                : AudioListenerSpace.Exterior;
+            weatherShelter01 = AudioMath.Clamp01(shelter01);
+            weatherObstruction01 = AudioMath.Clamp01(obstruction01);
+            weatherReverbSend01 = AudioMath.Clamp01(reverbSend01);
+            hasContinuousWeatherContext = true;
         }
 
         private void Reset()
@@ -145,16 +173,41 @@ namespace MSC.Audio
             }
 
             return selected == null
-                ? CreateWeatherFallbackContext(
-                    weatherListenerSpace,
-                    precipitation01,
-                    wind01,
-                    normalizedDayTime01)
+                ? hasContinuousWeatherContext
+                    ? CreateContinuousWeatherContext(
+                        weatherListenerSpace,
+                        weatherShelter01,
+                        weatherObstruction01,
+                        weatherReverbSend01,
+                        precipitation01,
+                        wind01,
+                        normalizedDayTime01)
+                    : CreateWeatherFallbackContext(
+                        weatherListenerSpace,
+                        precipitation01,
+                        wind01,
+                        normalizedDayTime01)
                 : selected.CreateContext(
                     precipitation01,
                     wind01,
                     normalizedDayTime01);
         }
+
+        public static AudioEnvironmentContext CreateContinuousWeatherContext(
+            AudioListenerSpace listenerSpace,
+            float shelter01,
+            float obstruction01,
+            float reverbSend01,
+            float precipitationIntensity01,
+            float windIntensity01,
+            float dayTime01) => new AudioEnvironmentContext(
+                listenerSpace,
+                shelter01,
+                obstruction01,
+                reverbSend01,
+                precipitationIntensity01,
+                windIntensity01,
+                dayTime01);
 
         /// <summary>
         /// Converts the production weather shelter result into the audio

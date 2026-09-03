@@ -1,0 +1,1739 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-08-01T13:39:56+00:00",
+  "sampleOnly": true,
+  "massApplyAllowed": false,
+  "configSha256": "5c0acc7fe609617abc37622800722f0386188b919ee035626a912ee3758d3b52",
+  "resultCount": 25,
+  "acceptedCount": 14,
+  "manualReviewCount": 11,
+  "textures": [
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_Mask.png",
+      "guid": "d2858c1d99ab5fd4684993e5845006f8",
+      "category": "HDRP Mask Map",
+      "domains": [
+        "Unassigned"
+      ],
+      "sampleBucket": "HDRP Mask Map",
+      "sourceSha256": "bd8a38ca98fbc77e6335b40021fe1edf44f202ee37310466e33878531eb4c5d5",
+      "sourceMetaSha256": "59291162748e8869f49e1aa6a70eaec4d628c5caf525e9344791986daac09310",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        256,
+        256
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_Mask.png",
+      "backend": "channel-safe-mask-resample",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 0.9932882826876556,
+        "psnr": 51.18107218764798,
+        "meanColorOriginal": [
+          159.06820678710938,
+          162.24899291992188,
+          176.8858642578125
+        ],
+        "meanColorProcessedDownsampled": [
+          158.94248962402344,
+          162.1916046142578,
+          176.85986328125
+        ],
+        "meanColorDelta": 0.0697021484375,
+        "histogramL1": 0.117431640625,
+        "alphaCoverageOriginal": 0.0,
+        "alphaCoverageProcessedDownsampled": 0.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 2.6245622634887695,
+          "vertical": 3.622253656387329,
+          "normalHorizontal": 3.330437183380127,
+          "normalVertical": 3.0514774322509766,
+          "normalized": 0.9875512567674914
+        },
+        "seamProcessed": {
+          "horizontal": 0.9744896292686462,
+          "vertical": 0.9989684224128723,
+          "normalHorizontal": 0.8925262689590454,
+          "normalVertical": 0.8312901258468628,
+          "normalized": 1.146770754800328
+        },
+        "seamRegression": 0.15921949803283664
+      },
+      "processedSha256": "0e962edcb65b1090b5c924b69870a50241e0943cb681794eeb5e584154bd4ec6",
+      "processedBytes": 7368
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Bark_Mask.png",
+      "guid": "c4a2a3f5fdd2a024cac95b2d6c73b182",
+      "category": "HDRP Mask Map",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "HDRP Mask Map",
+      "sourceSha256": "a923708207d1d27b3516feba408682ae738d5e965407fc6f823407fe320146db",
+      "sourceMetaSha256": "fbdd10a93e013e54260d576425068853c3ef0c96beaeb69e0c8c3fe3aa224bd7",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        512,
+        512
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Bark_Mask.png",
+      "backend": "channel-safe-mask-resample",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 0.9947432867341615,
+        "psnr": 52.11611845806044,
+        "meanColorOriginal": [
+          104.0174560546875,
+          146.5481414794922,
+          150.9825439453125
+        ],
+        "meanColorProcessedDownsampled": [
+          104.02020263671875,
+          146.465576171875,
+          150.97979736328125
+        ],
+        "meanColorDelta": 0.02935282327234745,
+        "histogramL1": 0.039082845052083336,
+        "alphaCoverageOriginal": 0.0,
+        "alphaCoverageProcessedDownsampled": 0.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 3.5199902057647705,
+          "vertical": 1.9466403722763062,
+          "normalHorizontal": 2.0578112602233887,
+          "normalVertical": 1.789204716682434,
+          "normalized": 1.3992712677291093
+        },
+        "seamProcessed": {
+          "horizontal": 1.0987352132797241,
+          "vertical": 0.6467499732971191,
+          "normalHorizontal": 0.5457862615585327,
+          "normalVertical": 0.4666889011859894,
+          "normalized": 1.6994751946035307
+        },
+        "seamRegression": 0.30020392687442143
+      },
+      "processedSha256": "41886119f81a4f2ccac1980cd7b7cc23a19531e2fac86db0edef669ce12caf54",
+      "processedBytes": 178273
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Concrete_Mask.png",
+      "guid": "7fd867273cdff944cb780c27c4888272",
+      "category": "HDRP Mask Map",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "HDRP Mask Map",
+      "sourceSha256": "389f66a838d88966dd91a155114393dcd624882f390a63370f9a72a3d5682c99",
+      "sourceMetaSha256": "ae2bea6647a79ec2503535d7c0ddf17575e18a0591ec143253e61a74ee81751f",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        512,
+        512
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Concrete_Mask.png",
+      "backend": "channel-safe-mask-resample",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 0.9921345702780832,
+        "psnr": 50.45459321347768,
+        "meanColorOriginal": [
+          95.77841186523438,
+          153.88870239257812,
+          159.22158813476562
+        ],
+        "meanColorProcessedDownsampled": [
+          95.77755737304688,
+          153.74497985839844,
+          159.22244262695312
+        ],
+        "meanColorDelta": 0.0484771728515625,
+        "histogramL1": 0.035054524739583336,
+        "alphaCoverageOriginal": 0.0,
+        "alphaCoverageProcessedDownsampled": 0.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 2.9503777027130127,
+          "vertical": 2.5843141078948975,
+          "normalHorizontal": 2.5733180046081543,
+          "normalVertical": 2.5581579208374023,
+          "normalized": 1.0783756400302367
+        },
+        "seamProcessed": {
+          "horizontal": 0.9343138337135315,
+          "vertical": 0.7777155041694641,
+          "normalHorizontal": 0.683358907699585,
+          "normalVertical": 0.6549205780029297,
+          "normalized": 1.277366635789041
+        },
+        "seamRegression": 0.1989909957588043
+      },
+      "processedSha256": "cd317989317be7bf2b3550b5be6c8023fb64090f1932fd146acb7e26c444f821",
+      "processedBytes": 199829
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_154257df59a5e35448854c0f183a91d1_normal.png",
+      "guid": "3d87a802b1fa9674d96edab29394e84e",
+      "category": "Normal Map",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Normal Map",
+      "sourceSha256": "515b55476a2373932f099923cc72b905cb31781a89a3346cb1f94c1c1bbed03a",
+      "sourceMetaSha256": "4d253010291f423ab054454c6c8a658e4e044cb87d7f32437ec731a890af5185",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        256,
+        256
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_154257df59a5e35448854c0f183a91d1_normal.png",
+      "backend": "vector-normal-resample",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "ManualReview",
+      "warnings": [
+        "Similarity, color, histogram or seam thresholds require manual review."
+      ],
+      "metrics": {
+        "ssimBlock8": 0.9965339899661596,
+        "psnr": 47.259986088333356,
+        "meanColorOriginal": [
+          127.5353012084961,
+          128.88540649414062,
+          190.40509033203125
+        ],
+        "meanColorProcessedDownsampled": [
+          127.3731689453125,
+          128.5629425048828,
+          190.87269592285156
+        ],
+        "meanColorDelta": 0.31740060448646545,
+        "histogramL1": 0.17732747395833334,
+        "alphaCoverageOriginal": 0.679443359375,
+        "alphaCoverageProcessedDownsampled": 0.668701171875,
+        "alphaCoverageDelta": 0.0107421875,
+        "seamOriginal": {
+          "horizontal": 0.0,
+          "vertical": 11.178448677062988,
+          "normalHorizontal": 0.8936451077461243,
+          "normalVertical": 3.056443214416504,
+          "normalized": 1.8286694521816973
+        },
+        "seamProcessed": {
+          "horizontal": 0.0,
+          "vertical": 3.1807143688201904,
+          "normalHorizontal": 0.24069392681121826,
+          "normalVertical": 0.8388504981994629,
+          "normalized": 1.8958767835552244
+        },
+        "seamRegression": 0.06720733137352708
+      },
+      "processedSha256": "e13eaba45767d4c9a70d1e1415a069ee15450921d061230e977a3df057b3e6a3",
+      "processedBytes": 22220
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_187790253f9b5e04094fba1ab6db7acf_normal.png",
+      "guid": "17303be900802a14597f48f4f93dbc03",
+      "category": "Normal Map",
+      "domains": [
+        "World",
+        "Prop"
+      ],
+      "sampleBucket": "Normal Map",
+      "sourceSha256": "f6495bad649b9a753d41e535bee777232e4e96b439c13c9550b6e6f28fee67f1",
+      "sourceMetaSha256": "f72ab861d79ae3ae39c34c8440ef1f17ef6da51c3f3dbe07a9806432bca38f26",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        256,
+        256
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_187790253f9b5e04094fba1ab6db7acf_normal.png",
+      "backend": "vector-normal-resample",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "ManualReview",
+      "warnings": [
+        "Similarity, color, histogram or seam thresholds require manual review."
+      ],
+      "metrics": {
+        "ssimBlock8": 0.9903868467690908,
+        "psnr": 40.14891518796411,
+        "meanColorOriginal": [
+          166.43731689453125,
+          166.5061798095703,
+          187.88961791992188
+        ],
+        "meanColorProcessedDownsampled": [
+          166.0357666015625,
+          166.1277313232422,
+          188.12416076660156
+        ],
+        "meanColorDelta": 0.3381805419921875,
+        "histogramL1": 0.15144856770833334,
+        "alphaCoverageOriginal": 0.874755859375,
+        "alphaCoverageProcessedDownsampled": 0.880859375,
+        "alphaCoverageDelta": 0.006103515625,
+        "seamOriginal": {
+          "horizontal": 20.828044891357422,
+          "vertical": 18.471933364868164,
+          "normalHorizontal": 2.3085505962371826,
+          "normalVertical": 5.793449878692627,
+          "normalized": 6.105273719795798
+        },
+        "seamProcessed": {
+          "horizontal": 7.332746982574463,
+          "vertical": 5.516944885253906,
+          "normalHorizontal": 0.7506668567657471,
+          "normalVertical": 1.7381067276000977,
+          "normalized": 6.471211124839053
+        },
+        "seamRegression": 0.36593740504325556
+      },
+      "processedSha256": "bcb14512728713940c944fa27fa2a781389f3e7d0c90b597a2ea72dec56517dc",
+      "processedBytes": 47012
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_Normal.png",
+      "guid": "2aebed9fc2cb4d54f95ebd706f40a0b6",
+      "category": "Normal Map",
+      "domains": [
+        "Unassigned"
+      ],
+      "sampleBucket": "Normal Map",
+      "sourceSha256": "03d49290bee4b259a5d6f371e92d96c3c4b641559062d5e5bc729ad83116373f",
+      "sourceMetaSha256": "2ad69c70869c97b95739de847db51809d12afe7b0e5dca79c0f108a08395a6d3",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        256,
+        256
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_Normal.png",
+      "backend": "vector-normal-resample",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 0.9839988319780809,
+        "psnr": 47.657776003719825,
+        "meanColorOriginal": [
+          127.543701171875,
+          127.53759765625,
+          255.0
+        ],
+        "meanColorProcessedDownsampled": [
+          127.5537109375,
+          127.540283203125,
+          255.0
+        ],
+        "meanColorDelta": 0.0042317709885537624,
+        "histogramL1": 0.11189778645833333,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 2.6979167461395264,
+          "vertical": 1.015625,
+          "normalHorizontal": 2.559523820877075,
+          "normalVertical": 3.095651388168335,
+          "normalized": 0.6910754933204927
+        },
+        "seamProcessed": {
+          "horizontal": 0.6848958134651184,
+          "vertical": 0.30078125,
+          "normalHorizontal": 0.5376021265983582,
+          "normalVertical": 0.6062142848968506,
+          "normalized": 0.8850729795396777
+        },
+        "seamRegression": 0.193997486219185
+      },
+      "processedSha256": "9756ef6fc4e4ce3b79d995eeea6c11f6785f336f0fac008bce9f4602318f3a9b",
+      "processedBytes": 10476
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Foliage_BaseColor.png",
+      "guid": "3a776f43c3dd56648b66e77ee8df1e01",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "Vegetation",
+        "World"
+      ],
+      "sampleBucket": "Vegetation/Cutout",
+      "sourceSha256": "96811c35d2dcdd773904eb965d680a80c8a115584d55137f116139964a821cf3",
+      "sourceMetaSha256": "2ff351532fb44dbc1c00257d7f2184950c8eb6d5206638108fd03dce7bb79a4b",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        512,
+        512
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Foliage_BaseColor.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 0.9929472484133838,
+        "psnr": 50.84352170805084,
+        "meanColorOriginal": [
+          19.554443359375,
+          46.0277099609375,
+          12.6588134765625
+        ],
+        "meanColorProcessedDownsampled": [
+          19.5577392578125,
+          46.03131103515625,
+          12.6595458984375
+        ],
+        "meanColorDelta": 0.0025431315880268812,
+        "histogramL1": 0.0345458984375,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 2.2942707538604736,
+          "vertical": 2.5052082538604736,
+          "normalHorizontal": 2.2363228797912598,
+          "normalVertical": 2.406783103942871,
+          "normalized": 1.033403510698454
+        },
+        "seamProcessed": {
+          "horizontal": 0.7330729365348816,
+          "vertical": 0.8151041865348816,
+          "normalHorizontal": 0.577862560749054,
+          "normalVertical": 0.6277621388435364,
+          "normalized": 1.2835111622720876
+        },
+        "seamRegression": 0.25010765157363357
+      },
+      "processedSha256": "1b8d96ee48a579c2c511ec560b96be7c036bea953af7781fded8b113d69c9943",
+      "processedBytes": 176951
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Foliage_Mask.png",
+      "guid": "156df97e1e47bb644ae1416804d6c9c1",
+      "category": "HDRP Mask Map",
+      "domains": [
+        "Vegetation",
+        "World"
+      ],
+      "sampleBucket": "Vegetation/Cutout",
+      "sourceSha256": "3ea0789ca69a5b69adfb84b78725b09dbc8a449ac9cd659b1d904ae1cb2395c0",
+      "sourceMetaSha256": "05bdfc0b07e768670533b619e56465469c623f93f0551334ae25b336b4e9d2a2",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        512,
+        512
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Foliage_Mask.png",
+      "backend": "channel-safe-mask-resample",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 0.9934077284273349,
+        "psnr": 51.53999520392464,
+        "meanColorOriginal": [
+          103.05413818359375,
+          145.56195068359375,
+          151.94586181640625
+        ],
+        "meanColorProcessedDownsampled": [
+          103.0528564453125,
+          145.43862915039062,
+          151.9471435546875
+        ],
+        "meanColorDelta": 0.041961669921875,
+        "histogramL1": 0.047526041666666664,
+        "alphaCoverageOriginal": 0.0,
+        "alphaCoverageProcessedDownsampled": 0.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 2.1971659660339355,
+          "vertical": 2.4217417240142822,
+          "normalHorizontal": 2.1620707511901855,
+          "normalVertical": 2.325047254562378,
+          "normalized": 1.028910198491365
+        },
+        "seamProcessed": {
+          "horizontal": 0.7249669432640076,
+          "vertical": 0.7770793437957764,
+          "normalHorizontal": 0.5720529556274414,
+          "normalVertical": 0.5989047288894653,
+          "normalized": 1.2824040818965239
+        },
+        "seamRegression": 0.253493883405159
+      },
+      "processedSha256": "b5157bb6f5ba8eb8fb4f4ecce76ebe036323baa146897094619a7c869d74244a",
+      "processedBytes": 197332
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Foliage_Normal.png",
+      "guid": "b6584d5390a16bf4e9e106d6c9bcc360",
+      "category": "Normal Map",
+      "domains": [
+        "Vegetation",
+        "World"
+      ],
+      "sampleBucket": "Vegetation/Cutout",
+      "sourceSha256": "e271023d61a14c92cd996bbf970bfa42f4ff641f8b4d7c758b01617a886780ad",
+      "sourceMetaSha256": "5b18db2609d97ca00f3fb8a7feaca95519d4ec7032dc5a73873273ebae9f72cc",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        512,
+        512
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Foliage_Normal.png",
+      "backend": "vector-normal-resample",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "ManualReview",
+      "warnings": [
+        "Similarity, color, histogram or seam thresholds require manual review."
+      ],
+      "metrics": {
+        "ssimBlock8": 0.9137223211356078,
+        "psnr": 26.819351170274995,
+        "meanColorOriginal": [
+          127.510009765625,
+          127.50811767578125,
+          236.8221435546875
+        ],
+        "meanColorProcessedDownsampled": [
+          127.4989013671875,
+          127.51776123046875,
+          241.8115234375
+        ],
+        "meanColorDelta": 1.6700439453125,
+        "histogramL1": 0.17635091145833334,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 39.015625,
+          "vertical": 41.19270706176758,
+          "normalHorizontal": 37.69008255004883,
+          "normalVertical": 40.340755462646484,
+          "normalized": 1.0281442047974556
+        },
+        "seamProcessed": {
+          "horizontal": 12.360676765441895,
+          "vertical": 13.744140625,
+          "normalHorizontal": 9.241787910461426,
+          "normalVertical": 10.136493682861328,
+          "normalized": 1.3466917872684674
+        },
+        "seamRegression": 0.3185475824710118
+      },
+      "processedSha256": "2bcd3dd1c0aab6eb9e4d685b83a298c73dc59e64a19e4f151f4d1e64dc371880",
+      "processedBytes": 569193
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_0dda65a63ac2f2743a5a008ce48347fe_color.png",
+      "guid": "08c66fcaf0960a7499cb77c3f6e81330",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Repeat/Tiling",
+      "sourceSha256": "c5cd0a853c241989418312abe487e98cd29fd99c51d33f04cc91fe6e5379336b",
+      "sourceMetaSha256": "bc3b6e7f7dcb54c8f97966af26e4d264e78631ee9a8072b215d8e7be9d297116",
+      "sourceSize": [
+        32,
+        32
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        128,
+        128
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_0dda65a63ac2f2743a5a008ce48347fe_color.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "ManualReview",
+      "warnings": [
+        "Similarity, color, histogram or seam thresholds require manual review."
+      ],
+      "metrics": {
+        "ssimBlock8": 0.9956972687053272,
+        "psnr": 33.77301638954424,
+        "meanColorOriginal": [
+          76.201171875,
+          76.201171875,
+          76.201171875
+        ],
+        "meanColorProcessedDownsampled": [
+          76.0029296875,
+          76.0029296875,
+          76.0029296875
+        ],
+        "meanColorDelta": 0.1982421875,
+        "histogramL1": 0.36328125,
+        "alphaCoverageOriginal": 0.40234375,
+        "alphaCoverageProcessedDownsampled": 0.40234375,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 20.050403594970703,
+          "normalVertical": 6.1693549156188965,
+          "normalized": 0.0
+        },
+        "seamProcessed": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 4.894192695617676,
+          "normalVertical": 1.5059055089950562,
+          "normalized": 0.0
+        },
+        "seamRegression": 0.0
+      },
+      "processedSha256": "b33dfda6a3c79c00675e028cd1cbeb0bb40eb76580e148d51c217da18b9fdaaa",
+      "processedBytes": 332
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_1bb21905ad6633843889f4dc298b2c6c_color.png",
+      "guid": "cbeb71769a59bae469c8e8c217cbc57d",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Repeat/Tiling",
+      "sourceSha256": "f6af441f42edbced67178784858e575a17ccfaa7d155478dcff4b89a788253bd",
+      "sourceMetaSha256": "61b8a9022b0826789555e869eef47e5af134f5beb1265512995b4789aedfd535",
+      "sourceSize": [
+        32,
+        32
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        128,
+        128
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_1bb21905ad6633843889f4dc298b2c6c_color.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 1.0,
+        "psnr": 99.0,
+        "meanColorOriginal": [
+          127.5,
+          127.5,
+          127.5
+        ],
+        "meanColorProcessedDownsampled": [
+          127.5,
+          127.5,
+          127.5
+        ],
+        "meanColorDelta": 0.0,
+        "histogramL1": 0.0,
+        "alphaCoverageOriginal": 0.0,
+        "alphaCoverageProcessedDownsampled": 0.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.0,
+          "normalVertical": 0.0,
+          "normalized": 0.0
+        },
+        "seamProcessed": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.0,
+          "normalVertical": 0.0,
+          "normalized": 0.0
+        },
+        "seamRegression": 0.0
+      },
+      "processedSha256": "06ab142c3bad172a564f50931dd667c07af918ed7298107b0c41f79cd761cc8f",
+      "processedBytes": 143
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_44a59ad488d3ed6419b183a3a652cb20_color.png",
+      "guid": "07b16450af2685949a704a4de232f7f0",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Repeat/Tiling",
+      "sourceSha256": "cd0753773f33c3e9ed4c1f3029a3cc8d00431dbd2a4e9b2be097049c9ede8912",
+      "sourceMetaSha256": "880da7dcdd1786b37f27400c9d6ffd3b75085813b00c8679f9762a33be4f0d61",
+      "sourceSize": [
+        32,
+        32
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        128,
+        128
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_44a59ad488d3ed6419b183a3a652cb20_color.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "ManualReview",
+      "warnings": [
+        "Similarity, color, histogram or seam thresholds require manual review."
+      ],
+      "metrics": {
+        "ssimBlock8": 0.9999930079902654,
+        "psnr": 52.177444700515856,
+        "meanColorOriginal": [
+          144.79547119140625,
+          180.1518096923828,
+          208.59255981445312
+        ],
+        "meanColorProcessedDownsampled": [
+          144.02560424804688,
+          180.1518096923828,
+          207.8235626220703
+        ],
+        "meanColorDelta": 0.5129547119140625,
+        "histogramL1": 0.3333333333333333,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.0,
+          "normalVertical": 0.0,
+          "normalized": 0.0
+        },
+        "seamProcessed": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.0,
+          "normalVertical": 0.0,
+          "normalized": 0.0
+        },
+        "seamRegression": 0.0
+      },
+      "processedSha256": "08539c8ac2885f627b5f77aebf126b6b80dcd3b5f2aee387322548e74548174d",
+      "processedBytes": 299
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Characters/Source/Texture2D/char_face01.png",
+      "guid": "10b1000000000000000000000000000d",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "Character"
+      ],
+      "sampleBucket": "Character",
+      "sourceSha256": "d66ba9881991379fc273ac93d498d1434f286d4b78f6bc5cb864d48c47645324",
+      "sourceMetaSha256": "e4090bd3abbe9faa01d13fc0bca56c87dc8a6131a1be503c92730cd0fb00906a",
+      "sourceSize": [
+        512,
+        256
+      ],
+      "scaleFactor": 2,
+      "targetSize": [
+        1024,
+        512
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Characters/Source/Texture2D/char_face01.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 0.9860524565962128,
+        "psnr": 40.85194753932985,
+        "meanColorOriginal": [
+          200.603271484375,
+          148.8339080810547,
+          125.86774444580078
+        ],
+        "meanColorProcessedDownsampled": [
+          200.59576416015625,
+          148.8248291015625,
+          125.8866958618164
+        ],
+        "meanColorDelta": 0.011845906265079975,
+        "histogramL1": 0.120452880859375,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 5.3203125,
+          "vertical": 33.68359375,
+          "normalHorizontal": 8.016679763793945,
+          "normalVertical": 7.150265693664551,
+          "normalized": 2.6872362198967097
+        },
+        "seamProcessed": {
+          "horizontal": 3.23046875,
+          "vertical": 20.4736328125,
+          "normalHorizontal": 4.414484024047852,
+          "normalVertical": 3.9549782276153564,
+          "normalized": 2.9542312433739117
+        },
+        "seamRegression": 0.26699502347720205
+      },
+      "processedSha256": "ccb5efa10843daf10ad246ba598c8a364a0b7cb829c7fa303e57eee43393f913",
+      "processedBytes": 813014
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Phase1JobLocations/Textures/3da72f11c3dccaf4094498d3342d2a01.png",
+      "guid": "b0c1d118af491e548bff41e440b10e9f",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Large World/Map",
+      "sourceSha256": "40ac02ce31316d17e144d0a9915586379347f878f1e301b493723e33ecf37a07",
+      "sourceMetaSha256": "2c961fbc4676ddb788056843f3a35e261e0584c15ab3bb0e5ab33ba8e590ad74",
+      "sourceSize": [
+        1024,
+        512
+      ],
+      "scaleFactor": 2,
+      "targetSize": [
+        2048,
+        1024
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Phase1JobLocations/Textures/3da72f11c3dccaf4094498d3342d2a01.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 0.9927754063079378,
+        "psnr": 46.41034777467476,
+        "meanColorOriginal": [
+          128.32041931152344,
+          126.01322174072266,
+          120.48493194580078
+        ],
+        "meanColorProcessedDownsampled": [
+          128.27996826171875,
+          126.10940551757812,
+          120.4466323852539
+        ],
+        "meanColorDelta": 0.05831146240234375,
+        "histogramL1": 0.09325472513834636,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 42.703125,
+          "vertical": 29.7490234375,
+          "normalHorizontal": 4.173122406005859,
+          "normalVertical": 4.597364902496338,
+          "normalized": 8.351890610129573
+        },
+        "seamProcessed": {
+          "horizontal": 25.380859375,
+          "vertical": 18.10270118713379,
+          "normalHorizontal": 2.3687374591827393,
+          "normalVertical": 2.6001765727996826,
+          "normalized": 8.838517981465701
+        },
+        "seamRegression": 0.48662737133612843
+      },
+      "processedSha256": "00c6664dbde2793e416a147e9234490fb0785fda0d5b0f060c39213c0edd3d9c",
+      "processedBytes": 2234219
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_6971c87b918f8d1409f952e8fed51530_color.png",
+      "guid": "407ad9efbb61f7b40863e729d2c6be0f",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Albedo",
+      "sourceSha256": "c7ad0a467fef615684b0074d259987cae4c7cbd093803e8d52472f2f7fd9697d",
+      "sourceMetaSha256": "514f74ba83444cd25d632cfbef4ccf9dd4dff171eda93023928507bde2f6381d",
+      "sourceSize": [
+        32,
+        32
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        128,
+        128
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_6971c87b918f8d1409f952e8fed51530_color.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "ManualReview",
+      "warnings": [
+        "Similarity, color, histogram or seam thresholds require manual review."
+      ],
+      "metrics": {
+        "ssimBlock8": 0.8953199458252478,
+        "psnr": 37.64347312543942,
+        "meanColorOriginal": [
+          150.1875,
+          115.03125,
+          116.15625
+        ],
+        "meanColorProcessedDownsampled": [
+          150.1875,
+          115.0625,
+          116.1875
+        ],
+        "meanColorDelta": 0.02083333395421505,
+        "histogramL1": 0.25,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 88.66666412353516,
+          "vertical": 0.0,
+          "normalHorizontal": 5.483870983123779,
+          "normalVertical": 0.0,
+          "normalized": 8.084313470940552
+        },
+        "seamProcessed": {
+          "horizontal": 27.33333396911621,
+          "vertical": 0.0,
+          "normalHorizontal": 2.776902914047241,
+          "normalVertical": 0.0,
+          "normalized": 4.921550161305209
+        },
+        "seamRegression": -3.162763309635343
+      },
+      "processedSha256": "3e484d5fa54d803d379f5a8237f06b4766e254ffc95f568465fab5ee57104d52",
+      "processedBytes": 435
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_a4a9da16af26a654786a322537de8765_color.png",
+      "guid": "03a62d0e5d59c40468457894792d2f7c",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Albedo",
+      "sourceSha256": "ea31bbf4013a6d771a976df56ad9834c936cfd4191bb447b96d4d51546ea161c",
+      "sourceMetaSha256": "34791f60774a8eab32ab4a99e56b40152f9302dc02f10ff001f966910af866e4",
+      "sourceSize": [
+        32,
+        32
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        128,
+        128
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_a4a9da16af26a654786a322537de8765_color.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "ManualReview",
+      "warnings": [
+        "Similarity, color, histogram or seam thresholds require manual review."
+      ],
+      "metrics": {
+        "ssimBlock8": 0.6383326538959443,
+        "psnr": 31.666657845667054,
+        "meanColorOriginal": [
+          231.0,
+          157.0,
+          103.5
+        ],
+        "meanColorProcessedDownsampled": [
+          230.3291015625,
+          156.60546875,
+          103.140625
+        ],
+        "meanColorDelta": 0.4749349057674408,
+        "histogramL1": 0.3444010416666667,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 96.0,
+          "vertical": 125.66666412353516,
+          "normalHorizontal": 3.096774101257324,
+          "normalVertical": 4.053763389587402,
+          "normalized": 31.000000344307743
+        },
+        "seamProcessed": {
+          "horizontal": 29.38541603088379,
+          "vertical": 37.91666793823242,
+          "normalHorizontal": 1.8572834730148315,
+          "normalVertical": 2.1613352298736572,
+          "normalized": 16.682443388993313
+        },
+        "seamRegression": -14.31755695531443
+      },
+      "processedSha256": "29c625297e396ee5deb3e7a7563a15b2c7b57cab9c989fd9039a4bf1883ee022",
+      "processedBytes": 2282
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_3b07495536861a14581e90244c3cb895_color.png",
+      "guid": "62513ae63456ba54a823b1ec6c8d4f16",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Albedo",
+      "sourceSha256": "80a2d962b2057fcdcb9e10835497074905ea77404a8a47ca24e21b8e40983418",
+      "sourceMetaSha256": "d9feffe12ffa143b9b4341e10e958b1c85fde2259f905f420a968546a41fb8f6",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        256,
+        256
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_3b07495536861a14581e90244c3cb895_color.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "ManualReview",
+      "warnings": [
+        "Similarity, color, histogram or seam thresholds require manual review."
+      ],
+      "metrics": {
+        "ssimBlock8": 0.8913626136755659,
+        "psnr": 36.59988308960425,
+        "meanColorOriginal": [
+          158.33203125,
+          154.26171875,
+          127.83203125
+        ],
+        "meanColorProcessedDownsampled": [
+          158.1909942626953,
+          154.21438598632812,
+          127.85559844970703
+        ],
+        "meanColorDelta": 0.07064565271139145,
+        "histogramL1": 0.3190104166666667,
+        "alphaCoverageOriginal": 0.3203125,
+        "alphaCoverageProcessedDownsampled": 0.3203125,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.5568783283233643,
+          "normalVertical": 2.843419313430786,
+          "normalized": 0.0
+        },
+        "seamProcessed": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.26058006286621094,
+          "normalVertical": 1.4444853067398071,
+          "normalized": 0.0
+        },
+        "seamRegression": 0.0
+      },
+      "processedSha256": "801f54046b3be460741735a87c12605975fefa2a43404c19cc4f30edddabcbf2",
+      "processedBytes": 1625
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_6702bb7dccbacf848aa38e162c47fb4c_color.png",
+      "guid": "da7160c88932fb141ab3c9f8eb289ebb",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Albedo",
+      "sourceSha256": "c5d873791c22f966012d91c44568097aece9ebc8748cd21f607de8968d7e15af",
+      "sourceMetaSha256": "356c5fd82b34a4418dfb566ddf351267ec724425fb4b06750a248930e0695772",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        256,
+        256
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_6702bb7dccbacf848aa38e162c47fb4c_color.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "ManualReview",
+      "warnings": [
+        "Similarity, color, histogram or seam thresholds require manual review."
+      ],
+      "metrics": {
+        "ssimBlock8": 0.8730153486009778,
+        "psnr": 35.51589888882796,
+        "meanColorOriginal": [
+          179.25,
+          171.25,
+          118.25
+        ],
+        "meanColorProcessedDownsampled": [
+          179.0779266357422,
+          171.26123046875,
+          118.40662384033203
+        ],
+        "meanColorDelta": 0.11330922693014145,
+        "histogramL1": 0.4791666666666667,
+        "alphaCoverageOriginal": 0.5,
+        "alphaCoverageProcessedDownsampled": 0.5,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.0,
+          "normalVertical": 4.433862209320068,
+          "normalized": 0.0
+        },
+        "seamProcessed": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.0,
+          "normalVertical": 2.3032679557800293,
+          "normalized": 0.0
+        },
+        "seamRegression": 0.0
+      },
+      "processedSha256": "3b3231c1361d0225590ea5959eee5c14d2c64ee55041ca66c1c3f853027e64f1",
+      "processedBytes": 703
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_8dc4a3e69f40c0243ae94a3fa2d85461_color.png",
+      "guid": "1e1a749e959f1d843ba8b1f63b5da5da",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Albedo",
+      "sourceSha256": "170731335116c827b272e7c9dea79adf243eafdc9ffc4caba4f9ef811c4ea1b7",
+      "sourceMetaSha256": "480c885dc12573e3f57ab0876524ea51a74ffc0f0b5aa0575c6892e86604092d",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        256,
+        256
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_8dc4a3e69f40c0243ae94a3fa2d85461_color.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 0.987265230231178,
+        "psnr": 41.851990029561144,
+        "meanColorOriginal": [
+          255.0,
+          122.5107421875,
+          8.552490234375
+        ],
+        "meanColorProcessedDownsampled": [
+          255.0,
+          122.43505859375,
+          8.5888671875
+        ],
+        "meanColorDelta": 0.037353515625,
+        "histogramL1": 0.05419921875,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 1.4791666269302368,
+          "vertical": 40.18229293823242,
+          "normalHorizontal": 2.579695701599121,
+          "normalVertical": 0.6434358358383179,
+          "normalized": 31.511480308984517
+        },
+        "seamProcessed": {
+          "horizontal": 0.4973958432674408,
+          "vertical": 12.130208015441895,
+          "normalHorizontal": 0.802849292755127,
+          "normalVertical": 0.37521445751190186,
+          "normalized": 16.474135624459098
+        },
+        "seamRegression": -15.037344684525419
+      },
+      "processedSha256": "e691b40863dfc508916cfab90df3da2ddd8047a154f3b1d98397c245616d9a70",
+      "processedBytes": 11340
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_a0a60236cd1f5714387993bd01e845b3_color.png",
+      "guid": "947c22ea4c9d92a4eb79663197b9a7c0",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Coverage Fallback",
+      "sourceSha256": "0c6c805c6cf799fe587145312203048dd96d03efec1b95a72194472bc17632ad",
+      "sourceMetaSha256": "f2e18984312ff8cb5307bcc6c5c88f7fc334c2f3aeaef34032abd1fbac201756",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        256,
+        256
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_a0a60236cd1f5714387993bd01e845b3_color.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "ManualReview",
+      "warnings": [
+        "Similarity, color, histogram or seam thresholds require manual review."
+      ],
+      "metrics": {
+        "ssimBlock8": 0.9397458444734493,
+        "psnr": 39.246358826273976,
+        "meanColorOriginal": [
+          154.2602996826172,
+          150.81942749023438,
+          128.559814453125
+        ],
+        "meanColorProcessedDownsampled": [
+          154.29200744628906,
+          150.83978271484375,
+          128.25506591796875
+        ],
+        "meanColorDelta": 0.1189371719956398,
+        "histogramL1": 0.2510579427083333,
+        "alphaCoverageOriginal": 0.28125,
+        "alphaCoverageProcessedDownsampled": 0.28125,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 1.1505050659179688,
+          "normalVertical": 2.498382329940796,
+          "normalized": 0.0
+        },
+        "seamProcessed": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.4895763099193573,
+          "normalVertical": 1.054118037223816,
+          "normalized": 0.0
+        },
+        "seamRegression": 0.0
+      },
+      "processedSha256": "662b35df01e6eb2c3ddb3fb72a999a28e656a1bd7675d98588c1740310806eb9",
+      "processedBytes": 5133
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_ac6f5a6ba24f61c4486229c86c2fe0c3_color.png",
+      "guid": "265dcccd8e0e62f418cb1cce09310958",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Coverage Fallback",
+      "sourceSha256": "f0b795711eb3debf38f480ab20de9a58a47db5580396f1eb88813639960e7f72",
+      "sourceMetaSha256": "480a28ae6e8b73aede169b589dfd99b66e79a6ca82c4decbef3f308c401dd998",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        256,
+        256
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_ac6f5a6ba24f61c4486229c86c2fe0c3_color.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 0.9657002199028447,
+        "psnr": 41.02439805808389,
+        "meanColorOriginal": [
+          132.45703125,
+          132.38671875,
+          132.45703125
+        ],
+        "meanColorProcessedDownsampled": [
+          132.48577880859375,
+          132.40304565429688,
+          132.48577880859375
+        ],
+        "meanColorDelta": 0.02460733987390995,
+        "histogramL1": 0.09375,
+        "alphaCoverageOriginal": 0.0703125,
+        "alphaCoverageProcessedDownsampled": 0.0703125,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.5568783283233643,
+          "normalVertical": 0.6264880895614624,
+          "normalized": 0.0
+        },
+        "seamProcessed": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 0.26229575276374817,
+          "normalVertical": 0.29481208324432373,
+          "normalized": 0.0
+        },
+        "seamRegression": 0.0
+      },
+      "processedSha256": "14931cccfc9b9978c26e6f6805962be84e33430a5716c874fac64777227b3060",
+      "processedBytes": 1416
+    },
+    {
+      "assetPath": "Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_BaseColor.png",
+      "guid": "a4ff71cfba052b946a12730414ffd9fd",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "Unassigned"
+      ],
+      "sampleBucket": "Coverage Fallback",
+      "sourceSha256": "b64b513d824309947a69830f71ccddf3c3ee4e2c8060f621cad868e58022393b",
+      "sourceMetaSha256": "28d53034fdb2f44f0b1d2b7969067cdea7232f22cf686bd4eb1baadf90e9237d",
+      "sourceSize": [
+        64,
+        64
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        256,
+        256
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_BaseColor.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 0.9901518426075139,
+        "psnr": 46.38027068477075,
+        "meanColorOriginal": [
+          97.4609375,
+          28.473876953125,
+          16.473876953125
+        ],
+        "meanColorProcessedDownsampled": [
+          97.526611328125,
+          28.476318359375,
+          16.5185546875
+        ],
+        "meanColorDelta": 0.03759765625,
+        "histogramL1": 0.10994466145833333,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 6.171875,
+          "vertical": 8.265625,
+          "normalHorizontal": 2.5230655670166016,
+          "normalVertical": 6.451636791229248,
+          "normalized": 1.8636740553859692
+        },
+        "seamProcessed": {
+          "horizontal": 1.5859375,
+          "vertical": 2.7903645038604736,
+          "normalHorizontal": 0.7646752595901489,
+          "normalVertical": 1.6727482080459595,
+          "normalized": 1.8710665688247548
+        },
+        "seamRegression": 0.007392513438785553
+      },
+      "processedSha256": "2325464ff459060c56e1a6f7a5ba2ecd317802d84c957b773539e87c2d052662",
+      "processedBytes": 12719
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_1241424523776b54e9980002948a3f41_color.png",
+      "guid": "6636c00c0d40ae54b868eea8665d6a0e",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Coverage Fallback",
+      "sourceSha256": "1c270778ff96389621bc068ef57276c224d47074706ff35df89f4938ab3f9acc",
+      "sourceMetaSha256": "82b6246a6ec7c822ef6bc95f9ace134092458c701f9e5e96338afa6b0aff7aca",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        512,
+        512
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_1241424523776b54e9980002948a3f41_color.png",
+      "backend": "conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "ManualReview",
+      "warnings": [
+        "Approved AI model unavailable; used deterministic conservative fallback, not AI.",
+        "Similarity, color, histogram or seam thresholds require manual review."
+      ],
+      "metrics": {
+        "ssimBlock8": 0.987222357924361,
+        "psnr": 35.47043477144372,
+        "meanColorOriginal": [
+          152.54931640625,
+          121.075439453125,
+          85.85693359375
+        ],
+        "meanColorProcessedDownsampled": [
+          152.5445556640625,
+          121.06884765625,
+          85.85845947265625
+        ],
+        "meanColorDelta": 0.0042928061448037624,
+        "histogramL1": 0.37603759765625,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 6.782808303833008,
+          "normalVertical": 12.406496047973633,
+          "normalized": 0.0
+        },
+        "seamProcessed": {
+          "horizontal": 0.0,
+          "vertical": 0.0,
+          "normalHorizontal": 2.82069993019104,
+          "normalVertical": 4.731966972351074,
+          "normalized": 0.0
+        },
+        "seamRegression": 0.0
+      },
+      "processedSha256": "adf74658634ef94684840051f83a26cd1a557415a9a30bbfa503cd1f4d0973e5",
+      "processedBytes": 128448
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_148710e4d9642944fb00fe40cc63df59_color.png",
+      "guid": "c1d66022727b22e43a943286db8e937d",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Coverage Fallback",
+      "sourceSha256": "ebca15e639633ce3090510b4fc4064672c9209c1895f20a5ffa210f0d8a0275a",
+      "sourceMetaSha256": "b5e28c77788d21bf614fa2c55a66d8ea4d0193a215ab598744127011d86d2bf3",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        512,
+        512
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_148710e4d9642944fb00fe40cc63df59_color.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 0.9978720063484058,
+        "psnr": 49.405594258490524,
+        "meanColorOriginal": [
+          36.9671630859375,
+          36.892822265625,
+          36.9581298828125
+        ],
+        "meanColorProcessedDownsampled": [
+          36.97607421875,
+          36.89337158203125,
+          36.968017578125
+        ],
+        "meanColorDelta": 0.0064493813551962376,
+        "histogramL1": 0.06254069010416667,
+        "alphaCoverageOriginal": 1.0,
+        "alphaCoverageProcessedDownsampled": 1.0,
+        "alphaCoverageDelta": 0.0,
+        "seamOriginal": {
+          "horizontal": 10.864583015441895,
+          "vertical": 11.333333015441895,
+          "normalHorizontal": 4.424786567687988,
+          "normalVertical": 3.9005086421966553,
+          "normalized": 2.6804976509687775
+        },
+        "seamProcessed": {
+          "horizontal": 3.2565104961395264,
+          "vertical": 3.513671875,
+          "normalHorizontal": 1.3045830726623535,
+          "normalVertical": 1.1392070055007935,
+          "normalized": 2.7902608150944843
+        },
+        "seamRegression": 0.10976316412570686
+      },
+      "processedSha256": "116bc39b649cf6287a11ecfa5bd2149a9287a48f6878621066375840257da9af",
+      "processedBytes": 120871
+    },
+    {
+      "assetPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_26887fe73cb2f5446a4188d0810021e5_color.png",
+      "guid": "c8b74b6546b79a1478e6fd7d57dafb1a",
+      "category": "Base Color / Albedo",
+      "domains": [
+        "World"
+      ],
+      "sampleBucket": "Coverage Fallback",
+      "sourceSha256": "116777d5132bab3bc14cac858692e72c9d05a606d5881548b787c0dff582987b",
+      "sourceMetaSha256": "eef730a36007e28b76ca75fd48b28b272ad0fcc4f986e676f62893566d406694",
+      "sourceSize": [
+        128,
+        128
+      ],
+      "scaleFactor": 4,
+      "targetSize": [
+        512,
+        512
+      ],
+      "processedPath": "Reports/TextureUpscale/Processed/Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_26887fe73cb2f5446a4188d0810021e5_color.png",
+      "backend": "alpha-aware-conservative-pillow",
+      "modelName": "",
+      "modelSha256": "",
+      "parameters": {
+        "tileSize": 512,
+        "tileOverlap": 32,
+        "device": "auto",
+        "periodicPadding": true
+      },
+      "status": "Accepted",
+      "warnings": [],
+      "metrics": {
+        "ssimBlock8": 0.9645317279503555,
+        "psnr": 40.015821190840924,
+        "meanColorOriginal": [
+          126.57180786132812,
+          128.08837890625,
+          128.9438018798828
+        ],
+        "meanColorProcessedDownsampled": [
+          126.5518798828125,
+          128.11878967285156,
+          128.97723388671875
+        ],
+        "meanColorDelta": 0.027923583984375,
+        "histogramL1": 0.11079915364583333,
+        "alphaCoverageOriginal": 0.302734375,
+        "alphaCoverageProcessedDownsampled": 0.30267333984375,
+        "alphaCoverageDelta": 6.103515625e-05,
+        "seamOriginal": {
+          "horizontal": 4.625592231750488,
+          "vertical": 1.959712028503418,
+          "normalHorizontal": 2.7495250701904297,
+          "normalVertical": 2.8612873554229736,
+          "normalized": 1.18361489121351
+        },
+        "seamProcessed": {
+          "horizontal": 1.481635570526123,
+          "vertical": 0.6214933395385742,
+          "normalHorizontal": 1.127803921699524,
+          "normalVertical": 1.1765152215957642,
+          "normalized": 0.9209921867331653
+        },
+        "seamRegression": -0.26262270448034475
+      },
+      "processedSha256": "367fa3bc41e3ffdba2fb8cdc71b20e477bc87cfc159b6bdd634a44d9a811af6e",
+      "processedBytes": 232676
+    }
+  ]
+}

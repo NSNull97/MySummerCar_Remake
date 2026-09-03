@@ -1,0 +1,17 @@
+{
+  "name": "MSC.Presentation.Fire.Runtime",
+  "rootNamespace": "MSC.Presentation.Fire",
+  "references": [
+    "MSC.Items.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

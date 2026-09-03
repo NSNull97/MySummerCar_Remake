@@ -16,16 +16,18 @@ Precipitation, wind and thunder-risk parameters are clamped project outputs.
 Precipitation type maps to project switch values `None`, `Drizzle` or `Rain`
 (`Snow` is declared for backend data but the current mapper does not emit it).
 
-Rain selects exactly one loop for the listener context:
+In the production hybrid graph, rain keeps one exterior event handle alive
+while the existing configured `MSC_Weather_Precipitation` value is multiplied
+by the continuous local weather-audio exposure. This avoids an audible event
+restart at an interior boundary. The same resolver writes the existing
+`MSC_Environment_Shelter = 1 - exposure`; authored Wwise curves already use it
+for wind and thunder. No additional hybrid-weather RTPC or event is required.
 
-- exterior rain;
-- sheltered rain;
-- interior/vehicle-interior rain.
-
-Changing listener space stops the old handle before posting the new one. Rain
-uses `0.01` start / `0.005` stop hysteresis. Wind intentionally starts only at
-`0.18` and stops below `0.12`, so a calm non-zero weather output does not create
-an always-audible wind bed. Disable/unsubscribe stops both handles.
+The legacy/no-resolver fallback still selects one exterior, sheltered or
+interior/vehicle-interior rain loop. Rain uses `0.01` start / `0.005` stop
+hysteresis. Wind intentionally starts only at `0.18` and stops below `0.12`, so
+a calm non-zero weather output does not create an always-audible wind bed.
+Disable/unsubscribe stops both handles.
 
 ## Lightning and thunder
 
@@ -44,23 +46,24 @@ hooks but are not selected by the current presenter; the matrix marks them
 
 Shelter is represented by listener state plus a normalized shelter parameter.
 An explicit `AudioEnvironmentZone` remains authoritative. When no audio zone is
-active, the production weather exposure feeds a bounded fallback context:
-Sheltered `0.65/0.20/0.15`, Interior `1.00/0.60/0.35` and VehicleInterior
-`0.90/0.50/0.25` for shelter/obstruction/reverb. Wwise authoring applies up to
-`-24 dB` wind attenuation from `MSC_Environment_Shelter`; rain selects mutually
-exclusive exterior/sheltered/interior loops. Full physical acoustics, aux-send
-calibration and portal diffraction remain later work.
+active, the production weather exposure feeds a continuous bounded context for
+shelter, obstruction and reverb. Wwise authoring applies up to `-24 dB` wind
+attenuation from `MSC_Environment_Shelter`; rain attenuation reuses the authored
+precipitation RTPC instead of switching loops. The Unity fallback applies the
+same existing shelter value to active rain, wind and thunder voices.
+
+Door/window openness remains a project-owned portal input. Until a location has
+authored portals, its existing zone profile is used as-is. Full physical
+acoustics, aux-send calibration and portal diffraction remain later work.
 
 ## Validation
 
-Focused weather-audio mapping has **7/7 EditMode tests passing**, including the
-separate wind threshold, exposure fallback and immediate interior-rain
-selection. The current Bootstrap WeatherProduction run has **7/7 functional
-tests passing** plus one performance test skipped by explicit environment gate.
-The bounded
-performance harness measures the weather parameter batch at
-`2.930 us/iteration`, `0 B` allocated. Live official Bootstrap smoke loads the
-Weather bank without missing-bank diagnostics.
+The final focused suites have **44/44 EditMode tests passing** across hybrid
+exposure, weather-audio mapping, transition mapping and runtime audio, plus
+**12/12 PlayMode tests passing** for runtime audio and the Unity fallback. A
+targeted Bootstrap lifecycle/audio run also has **5/5 PlayMode tests passing**.
+Live official Bootstrap smoke loads the Weather bank without missing-bank
+diagnostics.
 
 Headless execution cannot prove audible rain-space filtering, delayed-thunder
 mix quality or Wwise audio-thread CPU. Those remain manual listening/profiler

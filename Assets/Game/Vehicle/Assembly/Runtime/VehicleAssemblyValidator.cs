@@ -119,6 +119,7 @@ namespace MSC.Vehicle.Assembly
 
                 var fastenerIds = new HashSet<string>(StringComparer.Ordinal);
                 FastenerDefinition[] fasteners = mount.Definition.Fasteners;
+                int fastenerStageSum = 0;
                 for (int fastenerIndex = 0; fastenerIndex < fasteners.Length; fastenerIndex++)
                 {
                     FastenerDefinition fastener = fasteners[fastenerIndex];
@@ -132,6 +133,8 @@ namespace MSC.Vehicle.Assembly
                     {
                         AddError(issues, "FASTENER-DUPLICATE", $"{mount.MountId}: повтор {fastener.DefinitionId}.");
                     }
+
+                    fastenerStageSum += fastener.MaximumStage;
 
                     bool compatibleToolExists = false;
                     for (int toolIndex = 0; toolIndex < tools.Length; toolIndex++)
@@ -148,6 +151,58 @@ namespace MSC.Vehicle.Assembly
                         AddError(issues, "FASTENER-TOOL", $"Нет совместимого инструмента для {fastener.DefinitionId}.");
                     }
                 }
+
+                ValidateFastenerGroup(
+                    mount,
+                    fastenerIds,
+                    fastenerStageSum,
+                    issues);
+            }
+
+            for (int index = 0; index < mounts.Length; index++)
+            {
+                MountPointAuthoring mount = mounts[index];
+                if (mount?.Definition == null)
+                {
+                    continue;
+                }
+
+                ValidateMountReferences(
+                    mount.MountId,
+                    mount.Definition.RequiredOccupiedMountIds,
+                    mountIds,
+                    "MOUNT-REQUIRES-INSTALLED",
+                    issues);
+                ValidateMountReferences(
+                    mount.MountId,
+                    mount.Definition.RequiredAnyOccupiedMountIds,
+                    mountIds,
+                    "MOUNT-REQUIRES-ANY-INSTALLED",
+                    issues);
+                ValidateMountReferences(
+                    mount.MountId,
+                    mount.Definition.RequiredBoltedMountIds,
+                    mountIds,
+                    "MOUNT-REQUIRES-BOLTED",
+                    issues);
+                ValidateMountReferences(
+                    mount.MountId,
+                    mount.Definition.RequiredAnyBoltedMountIds,
+                    mountIds,
+                    "MOUNT-REQUIRES-ANY-BOLTED",
+                    issues);
+                ValidateMountReferences(
+                    mount.MountId,
+                    mount.Definition.BlockedWhileOccupiedMountIds,
+                    mountIds,
+                    "MOUNT-BLOCKED",
+                    issues);
+                ValidateMountReferences(
+                    mount.MountId,
+                    mount.Definition.RemovalBlockedWhileOccupiedMountIds,
+                    mountIds,
+                    "MOUNT-REMOVAL-BLOCKED",
+                    issues);
             }
 
             ValidateDependencies(definitionIds, dependencies, issues);
@@ -171,7 +226,10 @@ namespace MSC.Vehicle.Assembly
                     continue;
                 }
 
-                if (dependency.Kind != AssemblyDependencyKind.InstallRequiresInstalled)
+                if (dependency.Kind !=
+                        AssemblyDependencyKind.InstallRequiresInstalled &&
+                    dependency.Kind !=
+                        AssemblyDependencyKind.InstallRequiresBolted)
                 {
                     continue;
                 }
@@ -195,6 +253,109 @@ namespace MSC.Vehicle.Assembly
                 {
                     AddError(issues, "DEPENDENCY-CYCLE", "Цикл install-зависимостей включает: " + partId);
                     break;
+                }
+            }
+        }
+
+        private static void ValidateFastenerGroup(
+            MountPointAuthoring mount,
+            HashSet<string> fastenerIds,
+            int fastenerStageSum,
+            List<VehicleAssemblyValidationIssue> issues)
+        {
+            FastenerGroupDefinition group = mount.Definition.FastenerGroup;
+            if (fastenerIds.Count == 0)
+            {
+                if (group != null && group.HasFasteners)
+                {
+                    AddError(
+                        issues,
+                        "FASTENER-GROUP-EMPTY-MOUNT",
+                        mount.MountId +
+                        " имеет группу крепежа без FastenerDefinition.");
+                }
+
+                return;
+            }
+
+            if (group == null)
+            {
+                AddError(
+                    issues,
+                    "FASTENER-GROUP-MISSING",
+                    mount.MountId +
+                    " имеет крепёж, но не имеет BoltCheck-группы.");
+                return;
+            }
+
+            var groupIds = new HashSet<string>(StringComparer.Ordinal);
+            string[] configuredIds = group.FastenerDefinitionIds;
+            for (int index = 0; index < configuredIds.Length; index++)
+            {
+                string id = configuredIds[index];
+                if (string.IsNullOrWhiteSpace(id) || !groupIds.Add(id) ||
+                    !fastenerIds.Contains(id))
+                {
+                    AddError(
+                        issues,
+                        "FASTENER-GROUP-ID",
+                        mount.MountId +
+                        " содержит пустой, повторный или чужой group fastener: " +
+                        id);
+                }
+            }
+
+            if (groupIds.Count == 0 ||
+                group.AggregateMaximumTightness <= 0 ||
+                group.AggregateMaximumTightness > fastenerStageSum ||
+                group.BoltedOffThreshold > group.BoltedOnThreshold ||
+                group.BoltedOnThreshold >
+                    group.AggregateMaximumTightness)
+            {
+                AddError(
+                    issues,
+                    "FASTENER-GROUP-THRESHOLD",
+                    mount.MountId +
+                    " имеет некорректные aggregate/max/on/off значения.");
+            }
+
+            if (group.SpeedRetentionPolicy !=
+                    FastenerSpeedRetentionPolicy.None &&
+                (group.BreakAction == FastenerBreakAction.None ||
+                 group.PartialCheckSpeedKph < group.LooseBreakSpeedKph ||
+                 group.ChanceDivisor <= 0f))
+            {
+                AddError(
+                    issues,
+                    "FASTENER-GROUP-BREAK",
+                    mount.MountId +
+                    " имеет неполную donor BREAK policy.");
+            }
+        }
+
+        private static void ValidateMountReferences(
+            string mountId,
+            string[] references,
+            HashSet<string> mountIds,
+            string code,
+            List<VehicleAssemblyValidationIssue> issues)
+        {
+            references = references ?? Array.Empty<string>();
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            for (int index = 0; index < references.Length; index++)
+            {
+                string reference = references[index];
+                if (string.IsNullOrWhiteSpace(reference) ||
+                    !seen.Add(reference) ||
+                    !mountIds.Contains(reference) ||
+                    string.Equals(reference, mountId, StringComparison.Ordinal))
+                {
+                    AddError(
+                        issues,
+                        code,
+                        mountId +
+                        " содержит неизвестную, повторную или self-ссылку: " +
+                        reference);
                 }
             }
         }

@@ -16,6 +16,34 @@ namespace MSC.UI.Runtime.Settings
         Wide = 2,
     }
 
+    public enum UiDlssQuality
+    {
+        Balanced = 0,
+        Quality = 1,
+        Performance = 2,
+        UltraPerformance = 3,
+        Dlaa = 4,
+    }
+
+    public enum UiAntiAliasingMode
+    {
+        Off = 0,
+        Fxaa = 1,
+        Smaa = 2,
+        Taa = 3,
+        TemporalUpscaler = 4,
+        MaximumQuality = 5,
+    }
+
+    public enum UiAntiAliasingPreset
+    {
+        Low = 0,
+        Medium = 1,
+        High = 2,
+        Ultra = 3,
+        Custom = 4,
+    }
+
     public enum UiHudMode
     {
         Off = 0,
@@ -32,7 +60,7 @@ namespace MSC.UI.Runtime.Settings
     [Serializable]
     public sealed class UiSettingsDocument
     {
-        public const int CurrentSchemaVersion = 2;
+        public const int CurrentSchemaVersion = 6;
 
         public int SchemaVersion = CurrentSchemaVersion;
         public GraphicsSettingsDto Graphics = new GraphicsSettingsDto();
@@ -74,6 +102,16 @@ namespace MSC.UI.Runtime.Settings
     [Serializable]
     public sealed class GraphicsSettingsDto
     {
+        public const float DefaultHorizontalFieldOfViewDegrees = 120f;
+        public const float MinimumHorizontalFieldOfViewDegrees = 60f;
+        public const float MaximumHorizontalFieldOfViewDegrees = 140f;
+        public const float DefaultCameraFarClipMeters = 500f;
+        public const float MinimumCameraFarClipMeters = 100f;
+        public const float MaximumCameraFarClipMeters = 5000f;
+        public const float DefaultAntiAliasingSharpening = 0.28f;
+        public const float MinimumAntiAliasingSharpening = 0f;
+        public const float MaximumAntiAliasingSharpening = 0.75f;
+
         public UiDisplayMode DisplayMode;
         public int ResolutionWidth;
         public int ResolutionHeight;
@@ -83,6 +121,13 @@ namespace MSC.UI.Runtime.Settings
         public int QualityLevel;
         public bool MotionBlur;
         public bool DepthOfField;
+        public bool DlssEnabled;
+        public UiDlssQuality DlssQuality;
+        public UiAntiAliasingMode AntiAliasingMode;
+        public UiAntiAliasingPreset AntiAliasingPreset;
+        public float AntiAliasingSharpening;
+        public float HorizontalFieldOfViewDegrees;
+        public float CameraFarClipMeters;
 
         public GraphicsSettingsDto DeepClone()
         {
@@ -100,7 +145,16 @@ namespace MSC.UI.Runtime.Settings
                    VSync == other.VSync &&
                    QualityLevel == other.QualityLevel &&
                    MotionBlur == other.MotionBlur &&
-                   DepthOfField == other.DepthOfField;
+                   DepthOfField == other.DepthOfField &&
+                   DlssEnabled == other.DlssEnabled &&
+                   DlssQuality == other.DlssQuality &&
+                   AntiAliasingMode == other.AntiAliasingMode &&
+                   AntiAliasingPreset == other.AntiAliasingPreset &&
+                   AntiAliasingSharpening.Equals(
+                       other.AntiAliasingSharpening) &&
+                   HorizontalFieldOfViewDegrees.Equals(
+                       other.HorizontalFieldOfViewDegrees) &&
+                   CameraFarClipMeters.Equals(other.CameraFarClipMeters);
         }
     }
 
@@ -186,6 +240,7 @@ namespace MSC.UI.Runtime.Settings
         public bool InteractionOutlines;
         public float CameraShakeIntensity01;
         public bool DevelopmentUiVisible;
+        public bool ShowFpsCounter;
 
         public GameplaySettingsDto DeepClone()
         {
@@ -203,7 +258,8 @@ namespace MSC.UI.Runtime.Settings
                    ContextualHints == other.ContextualHints &&
                    InteractionOutlines == other.InteractionOutlines &&
                    CameraShakeIntensity01.Equals(other.CameraShakeIntensity01) &&
-                   DevelopmentUiVisible == other.DevelopmentUiVisible;
+                   DevelopmentUiVisible == other.DevelopmentUiVisible &&
+                   ShowFpsCounter == other.ShowFpsCounter;
         }
     }
 

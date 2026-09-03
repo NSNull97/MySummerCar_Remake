@@ -11,7 +11,7 @@ namespace MSC.Editor.WorldBaseline
 {
     public static class DonorWorldSolidCollisionPolicy
     {
-        public const string PolicyVersion = "08A1.6";
+        public const string PolicyVersion = "08A1.7";
         public const string WorldSurfaceLayer = "WorldSurface";
         public const string WorldSolidLayer = "WorldSolid";
         public const string WorldSurfacePhysicsMaterial =
@@ -27,6 +27,8 @@ namespace MSC.Editor.WorldBaseline
             "db8f7c3ab9163a68b6d7cb01bf32f415";
         private const string DanceHallNoRainColliderStableId =
             "1eb95efde812a3d7e245026c86bf4b1a";
+        private const string TeimoStorePlayerBoundaryColliderStableId =
+            "e4474f2a451172f949123c2f37727a69";
         private const int RigidbodyClassId = 54;
 
         private static readonly HashSet<string>
@@ -253,6 +255,9 @@ namespace MSC.Editor.WorldBaseline
                 "ExcludedActorOrPlayer" =>
                     "Actor, NPC, skeleton or player-owned collision belongs " +
                     "to a later project-owned gameplay presenter.",
+                "ExcludedLegacyPlayerBoundary" =>
+                    "The donor PlayerOnlyColl box is a player access rule, " +
+                    "not structural store collision.",
                 "ExcludedVehicle" =>
                     "Vehicle collision belongs to the project-owned vehicle " +
                     "runtime, not the static-world pass.",
@@ -297,6 +302,13 @@ namespace MSC.Editor.WorldBaseline
             if (!record.EffectiveActive)
             {
                 return "ExcludedInactive";
+            }
+            if (string.Equals(
+                    record.ColliderStableId,
+                    TeimoStorePlayerBoundaryColliderStableId,
+                    StringComparison.Ordinal))
+            {
+                return "ExcludedLegacyPlayerBoundary";
             }
             if (ContainsAny(
                     record.HierarchyPath,

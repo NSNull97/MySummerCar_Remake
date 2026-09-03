@@ -1,0 +1,24 @@
+{
+  "name": "MSC.Items.Tests.EditMode",
+  "rootNamespace": "MSC.Items.Tests.EditMode",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Items.Runtime",
+    "MSC.Save.Runtime",
+    "MSC.Save.Integration",
+    "MSC.World.Runtime",
+    "MSC.Services.Runtime",
+    "MSC.Vehicle.ItemsIntegration"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": ["TestAssemblies"]
+}

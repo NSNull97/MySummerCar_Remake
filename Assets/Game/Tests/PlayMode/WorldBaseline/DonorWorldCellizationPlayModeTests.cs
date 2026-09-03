@@ -690,6 +690,121 @@ namespace MSC.Tests.PlayMode.WorldBaseline
         }
 
         [UnityTest]
+        public IEnumerator SupplementalFarmLocation_LoadsWithItsCell_AndReplacementSurvivesReload()
+        {
+            RuntimeSession session = null;
+            yield return StartSession(value => session = value);
+            const string farmCellId = "cell_-2_0";
+            Vector3 farmPosition =
+                new Vector3(-662.28f, 3.601f, 307.685f);
+            Assert.That(
+                session.Streaming.Manifest.TryGetCell(
+                    farmCellId,
+                    out ProductionWorldCellScene farmCell),
+                Is.True);
+
+            MoveFocus(session.Player, farmPosition);
+            yield return session.Streaming.RefreshNow();
+            Assert.That(
+                session.Streaming.IsCellLoaded(farmCellId),
+                Is.True);
+
+            Scene loadedScene = FindLoadedScene(farmCell.ScenePath);
+            DonorWorldSupplementalEntityMetadata[] supplemental =
+                GetSceneComponents<DonorWorldSupplementalEntityMetadata>(
+                    loadedScene);
+            Assert.That(supplemental, Is.Not.Empty);
+            Assert.That(
+                supplemental.All(entity =>
+                    entity.SourceCellId == farmCellId &&
+                    entity.ManifestId ==
+                        "phase1-job-location-presentation-10b-r1-v3" &&
+                    entity.Classification ==
+                        DonorWorldBaselineClassification
+                            .TemporaryDirectImport),
+                Is.True);
+            // The authored-scene test locks all 49 renderer records. Unity may
+            // collapse static batches when entering PlayMode, so this runtime
+            // check locks location presence and replacement behavior instead
+            // of the pre-batch renderer-object count.
+            Assert.That(
+                supplemental.Any(entity =>
+                    entity.HasSanitizedRenderer &&
+                    entity.SourceHierarchyPath.StartsWith(
+                        "JOBS/Farm/",
+                        StringComparison.Ordinal)),
+                Is.True);
+            Assert.That(
+                supplemental.Any(entity =>
+                    entity.SourceHierarchyPath.StartsWith(
+                        "JOBS/Farm/Farmhouse/",
+                        StringComparison.Ordinal)),
+                Is.True);
+            Assert.That(
+                supplemental.Any(entity =>
+                    entity.SourceHierarchyPath.StartsWith(
+                        "JOBS/Farm/LOD/combine/",
+                        StringComparison.Ordinal) ||
+                    entity.SourceHierarchyPath.StartsWith(
+                        "JOBS/Farm/Farmer/",
+                        StringComparison.Ordinal)),
+                Is.False);
+            DonorWorldSupplementalEntityMetadata farmRenderer = supplemental
+                .First(entity =>
+                    entity.HasSanitizedRenderer &&
+                    entity.SourceHierarchyPath.StartsWith(
+                        "JOBS/Farm/Farmhouse/",
+                        StringComparison.Ordinal));
+            Assert.That(
+                farmRenderer.GetComponentsInChildren<Renderer>(true)
+                    .Any(renderer => renderer.enabled),
+                Is.True);
+
+            string farmRendererId = farmRenderer.StableId;
+            string replacementKey = farmRenderer.ReplacementKey;
+            Assert.That(
+                session.Registry.SetProductionOverrideActive(
+                    replacementKey,
+                    productionOverrideActive: true),
+                Is.True);
+            Assert.That(
+                farmRenderer.GetComponentsInChildren<Renderer>(true)
+                    .All(renderer => !renderer.enabled),
+                Is.True);
+
+            MoveFocus(
+                session.Player,
+                session.Installer.PlayerSpawnPosition);
+            yield return session.Streaming.RefreshNow();
+            Assert.That(
+                session.Streaming.IsCellLoaded(farmCellId),
+                Is.False);
+
+            MoveFocus(session.Player, farmPosition);
+            yield return session.Streaming.RefreshNow();
+            DonorWorldSupplementalEntityMetadata reloaded =
+                GetSceneComponents<DonorWorldSupplementalEntityMetadata>(
+                        FindLoadedScene(farmCell.ScenePath))
+                    .Single(entity => entity.StableId == farmRendererId);
+            Assert.That(
+                session.Registry.IsProductionOverrideActive(replacementKey),
+                Is.True);
+            Assert.That(
+                reloaded.GetComponentsInChildren<Renderer>(true)
+                    .All(renderer => !renderer.enabled),
+                Is.True);
+            Assert.That(
+                session.Registry.SetProductionOverrideActive(
+                    replacementKey,
+                    productionOverrideActive: false),
+                Is.True);
+            Assert.That(
+                reloaded.GetComponentsInChildren<Renderer>(true)
+                    .Any(renderer => renderer.enabled),
+                Is.True);
+        }
+
+        [UnityTest]
         public IEnumerator OutOfBoundsRecovery_ReturnsSpawnedPlayerToConfiguredSafeTransform()
         {
             RuntimeSession session = null;
@@ -815,6 +930,11 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                     ProductionWorldStreamingService>();
             Assert.That(installer, Is.Not.Null);
             Assert.That(streaming, Is.Not.Null);
+            Assert.That(
+                installer.TryBeginGameplayPreparation(
+                    out string preparationFailure),
+                Is.True,
+                preparationFailure);
 
             double timeout =
                 Time.realtimeSinceStartupAsDouble + 120d;

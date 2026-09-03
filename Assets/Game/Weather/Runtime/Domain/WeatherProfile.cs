@@ -3,6 +3,125 @@ using System.Collections.Generic;
 
 namespace MSC.Weather.Domain
 {
+    public enum WeatherProfileRarity
+    {
+        Common = 0,
+        Uncommon = 1,
+        Rare = 2,
+        Exceptional = 3,
+    }
+
+    /// <summary>
+    /// Optional climate-aware selection metadata. It stays in the project-owned
+    /// domain so the authoritative scheduler does not reference presentation or
+    /// Enviro types.
+    /// </summary>
+    public readonly struct WeatherSelectionSettings
+    {
+        public WeatherSelectionSettings(
+            float baseProbability,
+            WeatherProfileRarity rarity,
+            int allowedMonthMask,
+            float allowedTimeStart01,
+            float allowedTimeEnd01,
+            float preferredTemperatureCelsius,
+            float preferredHumidity01,
+            bool isPrecipitation)
+        {
+            if (!WeatherState.IsFinite(baseProbability) || baseProbability <= 0f ||
+                allowedMonthMask < 0 || allowedMonthMask > 0xFFF ||
+                !WeatherState.IsFinite(allowedTimeStart01) ||
+                !WeatherState.IsFinite(allowedTimeEnd01) ||
+                !WeatherState.IsFinite(preferredTemperatureCelsius) ||
+                !WeatherState.IsFinite(preferredHumidity01) ||
+                preferredHumidity01 < 0f || preferredHumidity01 > 1f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(baseProbability));
+            }
+
+            BaseProbability = baseProbability;
+            Rarity = rarity;
+            AllowedMonthMask = allowedMonthMask;
+            AllowedTimeStart01 = NormalizeTime(allowedTimeStart01);
+            AllowedTimeEnd01 = allowedTimeEnd01 >= 1f
+                ? 1f
+                : NormalizeTime(allowedTimeEnd01);
+            PreferredTemperatureCelsius = preferredTemperatureCelsius;
+            PreferredHumidity01 = preferredHumidity01;
+            IsPrecipitation = isPrecipitation;
+        }
+
+        public float BaseProbability { get; }
+
+        public WeatherProfileRarity Rarity { get; }
+
+        public int AllowedMonthMask { get; }
+
+        public float AllowedTimeStart01 { get; }
+
+        public float AllowedTimeEnd01 { get; }
+
+        public float PreferredTemperatureCelsius { get; }
+
+        public float PreferredHumidity01 { get; }
+
+        public bool IsPrecipitation { get; }
+
+        public bool AllowsMonth(int month) => month >= 1 && month <= 12 &&
+            (AllowedMonthMask & (1 << (month - 1))) != 0;
+
+        public bool AllowsTime(float normalizedTime01)
+        {
+            float value = NormalizeTime(normalizedTime01);
+            if (AllowedTimeStart01 <= 0.000001f &&
+                AllowedTimeEnd01 >= 0.999999f)
+            {
+                return true;
+            }
+
+            return AllowedTimeStart01 <= AllowedTimeEnd01
+                ? value >= AllowedTimeStart01 && value <= AllowedTimeEnd01
+                : value >= AllowedTimeStart01 || value <= AllowedTimeEnd01;
+        }
+
+        public double RarityMultiplier
+        {
+            get
+            {
+                switch (Rarity)
+                {
+                    case WeatherProfileRarity.Uncommon:
+                        return 0.65d;
+                    case WeatherProfileRarity.Rare:
+                        return 0.32d;
+                    case WeatherProfileRarity.Exceptional:
+                        return 0.09d;
+                    default:
+                        return 1d;
+                }
+            }
+        }
+
+        public static WeatherSelectionSettings Uniform(in WeatherState state) =>
+            new WeatherSelectionSettings(
+                1f,
+                WeatherProfileRarity.Common,
+                0xFFF,
+                0f,
+                1f,
+                state.TemperatureCelsius,
+                Math.Min(1f, Math.Max(
+                    state.CloudCoverage01 * 0.8f,
+                    state.PrecipitationIntensity01)),
+                state.PrecipitationType != WeatherPrecipitationType.None);
+
+        private static float NormalizeTime(float value)
+        {
+            double repeated = value - Math.Floor(value);
+            return (float)(repeated < 0d ? repeated + 1d : repeated);
+        }
+    }
+
     public sealed class WeatherProfile
     {
         private readonly WeatherStateId[] allowedPredecessors;
@@ -17,6 +136,29 @@ namespace MSC.Weather.Domain
             WeatherStateId[] allowedPredecessors,
             WeatherStateId[] allowedSuccessors,
             string provenance)
+            : this(
+                targetState,
+                minimumDurationSeconds,
+                maximumDurationSeconds,
+                minimumTransitionSeconds,
+                maximumTransitionSeconds,
+                allowedPredecessors,
+                allowedSuccessors,
+                provenance,
+                WeatherSelectionSettings.Uniform(targetState))
+        {
+        }
+
+        public WeatherProfile(
+            WeatherState targetState,
+            float minimumDurationSeconds,
+            float maximumDurationSeconds,
+            float minimumTransitionSeconds,
+            float maximumTransitionSeconds,
+            WeatherStateId[] allowedPredecessors,
+            WeatherStateId[] allowedSuccessors,
+            string provenance,
+            WeatherSelectionSettings selection)
         {
             WeatherState.ValidateFinitePositive(minimumDurationSeconds, nameof(minimumDurationSeconds));
             WeatherState.ValidateFinitePositive(maximumDurationSeconds, nameof(maximumDurationSeconds));
@@ -50,6 +192,7 @@ namespace MSC.Weather.Domain
             this.allowedPredecessors = CopyIds(allowedPredecessors);
             this.allowedSuccessors = CopyIds(allowedSuccessors);
             Provenance = provenance;
+            Selection = selection;
         }
 
         public WeatherStateId Id => TargetState.Id;
@@ -69,6 +212,8 @@ namespace MSC.Weather.Domain
         public IReadOnlyList<WeatherStateId> AllowedSuccessors => allowedSuccessors;
 
         public string Provenance { get; }
+
+        public WeatherSelectionSettings Selection { get; }
 
         public bool AllowsSuccessor(WeatherStateId id) => Contains(allowedSuccessors, id);
 
@@ -118,6 +263,17 @@ namespace MSC.Weather.Domain
         private readonly WeatherProfile[] orderedProfiles;
 
         public WeatherProfileCatalog(string configId, IReadOnlyList<WeatherProfile> sourceProfiles)
+            : this(configId, sourceProfiles, false, 1, 1f, 1f)
+        {
+        }
+
+        public WeatherProfileCatalog(
+            string configId,
+            IReadOnlyList<WeatherProfile> sourceProfiles,
+            bool climateAwareScheduling,
+            int historyLength,
+            float immediateRepeatMultiplier,
+            float recentRepeatMultiplier)
         {
             if (string.IsNullOrWhiteSpace(configId))
             {
@@ -129,7 +285,20 @@ namespace MSC.Weather.Domain
                 throw new ArgumentException("At least one weather profile is required.", nameof(sourceProfiles));
             }
 
+            if (historyLength < 1 || historyLength > 16 ||
+                !WeatherState.IsFinite(immediateRepeatMultiplier) ||
+                !WeatherState.IsFinite(recentRepeatMultiplier) ||
+                immediateRepeatMultiplier < 0f || immediateRepeatMultiplier > 1f ||
+                recentRepeatMultiplier < 0f || recentRepeatMultiplier > 1f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(historyLength));
+            }
+
             ConfigId = configId;
+            ClimateAwareScheduling = climateAwareScheduling;
+            HistoryLength = historyLength;
+            ImmediateRepeatMultiplier = immediateRepeatMultiplier;
+            RecentRepeatMultiplier = recentRepeatMultiplier;
             profiles = new Dictionary<WeatherStateId, WeatherProfile>(sourceProfiles.Count);
             orderedProfiles = new WeatherProfile[sourceProfiles.Count];
             for (int index = 0; index < sourceProfiles.Count; index++)
@@ -150,6 +319,14 @@ namespace MSC.Weather.Domain
 
         public string ConfigId { get; }
 
+        public bool ClimateAwareScheduling { get; }
+
+        public int HistoryLength { get; }
+
+        public float ImmediateRepeatMultiplier { get; }
+
+        public float RecentRepeatMultiplier { get; }
+
         public IReadOnlyList<WeatherProfile> Profiles => orderedProfiles;
 
         public bool Contains(WeatherStateId id) => profiles.ContainsKey(id);
@@ -164,6 +341,31 @@ namespace MSC.Weather.Domain
             return profile;
         }
 
+        /// <summary>
+        /// Accepts current graph edges and the exact nine-state v1 edges that
+        /// may still be in an in-progress saved front. Restore-only edges are
+        /// never considered by the scheduler when it chooses a new front.
+        /// </summary>
+        public bool AllowsSnapshotTransition(WeatherStateId from, WeatherStateId to)
+        {
+            if (!profiles.TryGetValue(from, out WeatherProfile source) ||
+                !profiles.ContainsKey(to))
+            {
+                return false;
+            }
+
+            if (source.AllowsSuccessor(to))
+            {
+                return true;
+            }
+
+            return string.Equals(
+                       ConfigId,
+                       RemakeDesignTargetConfigId,
+                       StringComparison.Ordinal) &&
+                   IsRemakeDesignTargetV1Transition(from, to);
+        }
+
         public static WeatherProfileCatalog CreateRemakeDesignTargets()
         {
             WeatherStateId clear = WeatherStateIds.Clear;
@@ -174,6 +376,7 @@ namespace MSC.Weather.Domain
             WeatherStateId heavy = WeatherStateIds.HeavyRain;
             WeatherStateId storm = WeatherStateIds.Thunderstorm;
             WeatherStateId mist = WeatherStateIds.MorningMist;
+            WeatherStateId denseFog = WeatherStateIds.DenseFog;
 
             // These values are explicit design targets because donor measurements are still missing.
             var result = new[]
@@ -189,7 +392,8 @@ namespace MSC.Weather.Domain
                 Create(overcast, "weather.overcast", 0.78f, WeatherPrecipitationType.None, 0f, 0.12f,
                     11000f, 245f, 4f, 0.28f, 15f, 0.82f, 0.04f, 0.1f, 0f, 0.8f,
                     900f, 2100f, 180f, 480f,
-                    new[] { partly, drizzle, rain, storm, mist }, new[] { partly, drizzle, rain, mist }),
+                    new[] { partly, drizzle, rain, storm, mist, denseFog },
+                    new[] { partly, drizzle, rain, mist, denseFog }),
                 Create(drizzle, "weather.drizzle", 0.88f, WeatherPrecipitationType.Drizzle, 0.22f, 0.18f,
                     7500f, 250f, 4.5f, 0.32f, 14f, 0.76f, 0.03f, 0.08f, 0.25f, 0.62f,
                     600f, 1500f, 120f, 360f,
@@ -209,7 +413,14 @@ namespace MSC.Weather.Domain
                 Create(mist, "weather.fog", 0.52f, WeatherPrecipitationType.None, 0f, 0.76f,
                     1200f, 210f, 1.5f, 0.08f, 10f, 0.72f, 0f, 0f, 0f, 0.48f,
                     420f, 1200f, 120f, 300f,
-                    new[] { clear, partly, overcast }, new[] { clear, partly, overcast }),
+                    new[] { clear, partly, overcast, denseFog },
+                    new[] { clear, partly, overcast, denseFog }),
+                Create(denseFog, "weather.dense_fog", 0.68f,
+                    WeatherPrecipitationType.None, 0f, 1f,
+                    80f, 215f, 1f, 0.05f, 8f, 0.22f,
+                    0f, 0f, 0f, 0.32f,
+                    300f, 900f, 120f, 300f,
+                    new[] { mist, overcast }, new[] { mist, overcast }),
             };
 
             return new WeatherProfileCatalog(RemakeDesignTargetConfigId, result);
@@ -286,6 +497,72 @@ namespace MSC.Weather.Domain
                     }
                 }
             }
+        }
+
+        private static bool IsRemakeDesignTargetV1Transition(
+            WeatherStateId from,
+            WeatherStateId to)
+        {
+            if (from == WeatherStateIds.Clear)
+            {
+                return to == WeatherStateIds.PartlyCloudy ||
+                       to == WeatherStateIds.MorningMist;
+            }
+
+            if (from == WeatherStateIds.PartlyCloudy)
+            {
+                return to == WeatherStateIds.Clear ||
+                       to == WeatherStateIds.Overcast ||
+                       to == WeatherStateIds.MorningMist;
+            }
+
+            if (from == WeatherStateIds.Overcast)
+            {
+                return to == WeatherStateIds.PartlyCloudy ||
+                       to == WeatherStateIds.Drizzle ||
+                       to == WeatherStateIds.SteadyRain ||
+                       to == WeatherStateIds.MorningMist ||
+                       to == WeatherStateIds.DenseFog;
+            }
+
+            if (from == WeatherStateIds.Drizzle)
+            {
+                return to == WeatherStateIds.Overcast ||
+                       to == WeatherStateIds.SteadyRain;
+            }
+
+            if (from == WeatherStateIds.SteadyRain)
+            {
+                return to == WeatherStateIds.Overcast ||
+                       to == WeatherStateIds.Drizzle ||
+                       to == WeatherStateIds.HeavyRain ||
+                       to == WeatherStateIds.Thunderstorm;
+            }
+
+            if (from == WeatherStateIds.HeavyRain)
+            {
+                return to == WeatherStateIds.SteadyRain ||
+                       to == WeatherStateIds.Thunderstorm;
+            }
+
+            if (from == WeatherStateIds.Thunderstorm)
+            {
+                return to == WeatherStateIds.Overcast ||
+                       to == WeatherStateIds.SteadyRain ||
+                       to == WeatherStateIds.HeavyRain;
+            }
+
+            if (from == WeatherStateIds.MorningMist)
+            {
+                return to == WeatherStateIds.Clear ||
+                       to == WeatherStateIds.PartlyCloudy ||
+                       to == WeatherStateIds.Overcast ||
+                       to == WeatherStateIds.DenseFog;
+            }
+
+            return from == WeatherStateIds.DenseFog &&
+                   (to == WeatherStateIds.MorningMist ||
+                    to == WeatherStateIds.Overcast);
         }
     }
 }

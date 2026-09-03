@@ -1,0 +1,24 @@
+{
+  "name": "MSC.Needs.Tests.EditMode",
+  "rootNamespace": "MSC.Needs.Tests.EditMode",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Items.Runtime",
+    "MSC.Needs.Runtime",
+    "MSC.Player.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

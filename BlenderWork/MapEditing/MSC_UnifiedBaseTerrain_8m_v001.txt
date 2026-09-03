@@ -1,0 +1,34 @@
+MSC unified base terrain build
+
+Output: E:\GAYmDev_Studio\MySummerCar_Remake\BlenderWork\MapEditing\MSC_UnifiedBaseTerrain_8m_v001.blend
+Object: MSC_UnifiedBaseTerrain_8m
+Source: E:\GAYmDev_Studio\MySummerCar_Remake\BlenderWork\BaseMap_SourceExport\20260803_162611_222Z\Scene\Ground_All.obj
+Source objects: 7
+Source vertices: 106032
+Source faces: 140602
+Source bounds min XYZ: [-3726.59424, -2908.53174, -24.5804958]
+Source bounds max XYZ: [4278.451, 4199.83447, 80.78482]
+Grid columns x rows: 1002 x 890
+Grid step: 8.0 m
+Output vertices: 891780
+Output quads: 889889
+Equivalent triangles: 1779778
+Directly sampled grid points: 729603
+Filled grid points: 162177
+Smoothing: 3 iterations at 0.26
+Build duration: 2.0 seconds
+Roads included in output: no
+Buildings included in output: no
+Vegetation objects included in output: no
+Ground-labelled Grass1/Grass2 used only as elevation evidence: yes
+Interior holes: none (regular complete quad grid)
+Outer boundary: open, as expected for a terrain surface
+
+Source ground objects:
+- GroundCandidate__Continuous_Terrain_Void_Fill__2a14b8c07d716505
+- GroundCandidate__Field___Fields___MAP___TERRAIN_OBJ__6732___33abbab40be67c8a
+- GroundCandidate__StaticProp___4tie___MAP___TERRAIN_OBJ__9184___386ba51bd8d3e480
+- GroundCandidate__VegetationGrass___Grass1___MAP___TERRAIN_OBJ__11640___43839e233bd4e0c1
+- GroundCandidate__VegetationGrass___Grass2___MAP___TERRAIN_OBJ__29099___57504a4ac4413e6b
+- GroundCandidate__Terrain___TERRAINOUT___MAP___MESH__16706___5fab2cb4612b5fbf
+- GroundCandidate__Water___LAKEBED___MAP___MESH__18425___fd4537de2169d182

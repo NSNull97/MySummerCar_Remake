@@ -1,0 +1,964 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 135cb4d9d6dbf7c4db1a657ba1619949, type: 3}
+  m_Name: Phase1ItemPlacementCatalog
+  m_EditorClassIdentifier: MSC.Items.Runtime::MSC.Items.ItemPlacementCatalog
+  schemaVersion: 1
+  catalogId: phase1.item-placements.09b.v1
+  donorRevision: msc-world-baseline-04a1.1-c3f2f337
+  placements:
+  - placementId: placement.axe.01
+    stableEntityId: 3b2fbde895025fdcb5fe64faa98a1c60
+    definitionId: item.axe
+    worldPosition: {x: 221.8895, y: 0.7069999, z: -1113.0813}
+    worldRotation: {x: 0.0000000018626454, y: 6.957665e-18, z: 0.9973023, w: -0.0734044}
+    donorStableId: 467dbd9a08deab23107080939db5320c
+    donorSourceObjectId: 3485
+    donorHierarchyPath: ITEMS/ax(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.axe.02
+    stableEntityId: 06b5b19b2f4450be9014be3e74f7ccf0
+    definitionId: item.axe
+    worldPosition: {x: -681.6341, y: -0.8820001, z: -536.57495}
+    worldRotation: {x: 0.972513, y: -0.13208203, z: 0.19049226, w: -0.022033542}
+    donorStableId: 6f95d9bc111af20dcbaa13a47ca758de
+    donorSourceObjectId: 32896
+    donorHierarchyPath: ITEMS/ax(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.basketball.01
+    stableEntityId: cb6779f67d065742bcff6d2dbcd508c9
+    definitionId: item.basketball
+    worldPosition: {x: 158.83499, y: 3.361, z: -1029.275}
+    worldRotation: {x: -0.5554903, y: -0.16302103, z: 0.6698727, w: -0.46489275}
+    donorStableId: e59983d0a6ebece55b094663b5c79e53
+    donorSourceObjectId: 16535
+    donorHierarchyPath: ITEMS/basketball(Clone)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0.05
+    initialAngularDamping: 0.05
+  - placementId: placement.beer-case.01
+    stableEntityId: 797aafa44b1f5c40a32c3279201559a2
+    definitionId: item.beer-case
+    worldPosition: {x: 160.75009, y: 2.0839999, z: -1032.352}
+    worldRotation: {x: -0.70150095, y: -0.08886231, z: -0.088862255, w: 0.70150083}
+    donorStableId: 1d4e170eca3412fbade77a9bf7380537
+    donorSourceObjectId: 21522
+    donorHierarchyPath: ITEMS/beercase0
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 1
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.camera.01
+    stableEntityId: 39d802bbbdc658f082e5fa0319c48c8d
+    definitionId: item.camera
+    worldPosition: {x: -677.7034, y: 0.44639993, z: -535.9292}
+    worldRotation: {x: -0.7096764, y: -0.025889795, z: -0.011836594, w: 0.7039525}
+    donorStableId: 5a8e53fb232fc4db2bfae5eccc942905
+    donorSourceObjectId: 11224
+    donorHierarchyPath: ITEMS/camera(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.car-jack.01
+    stableEntityId: b5349cf3d42f55cb91bae0355c85766a
+    definitionId: item.car-jack
+    worldPosition: {x: 151.2411, y: 1.083, z: -1042.0641}
+    worldRotation: {x: 0, y: -0.6363992, z: 0, w: 0.77135986}
+    donorStableId: 718d196e7c447e0471a18dd6c30c7443
+    donorSourceObjectId: 84
+    donorHierarchyPath: ITEMS/car jack(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.coffee-cup.01
+    stableEntityId: a1b93c7ca7cd5832b8148bca86df20a0
+    definitionId: item.coffee-cup
+    worldPosition: {x: -677.0814, y: -0.227, z: -536.87415}
+    worldRotation: {x: -0.6992077, y: 0.10539774, z: 0.10539764, w: 0.69920754}
+    donorStableId: ad7ea64bb022a92147af0a302afeaabb
+    donorSourceObjectId: 23956
+    donorHierarchyPath: ITEMS/coffee cup(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0.5
+    initialAngularDamping: 0.5
+  - placementId: placement.coffee-pan.01
+    stableEntityId: 11ed7643e631556ea5e95cc6faa9668d
+    definitionId: item.coffee-pan
+    worldPosition: {x: -676.8244, y: -0.18700004, z: -536.7146}
+    worldRotation: {x: -0.24546589, y: 0.6631339, z: 0.66313374, w: 0.24546602}
+    donorStableId: e63ea6308451b8b8a5f4e54fc745696d
+    donorSourceObjectId: 12126
+    donorHierarchyPath: ITEMS/coffee pan(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0.05
+    initialAngularDamping: 0.05
+  - placementId: placement.diesel-can.01
+    stableEntityId: 2d5c020e69355d20a774079c8573713d
+    definitionId: item.diesel-can
+    worldPosition: {x: 223.20511, y: 0.543, z: -1117.4951}
+    worldRotation: {x: -0.5099331, y: 0.48986527, z: 0.48986554, w: 0.5099333}
+    donorStableId: 25ac19d76b3e278f8e2f2c1ecdfb0ca7
+    donorSourceObjectId: 13285
+    donorHierarchyPath: ITEMS/diesel(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.digging-bar.01
+    stableEntityId: 7b05f0d40a8e55ff8537fce31f347832
+    definitionId: item.digging-bar
+    worldPosition: {x: 221.8981, y: 0.93999994, z: -1112.7161}
+    worldRotation: {x: -0.4769404, y: -0.52204204, z: -0.4769405, w: 0.5220419}
+    donorStableId: 757bf95013e49f3e4f1dda6b6316fdf4
+    donorSourceObjectId: 23717
+    donorHierarchyPath: ITEMS/digging bar(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.fish-trap.01
+    stableEntityId: 4a6df05fbaaa5a9083a93e13f5f72ccd
+    definitionId: item.fish-trap
+    worldPosition: {x: -677.2379, y: -0.57000005, z: -531.4581}
+    worldRotation: {x: -0.10068969, y: -0.10068958, z: 0.69990134, w: 0.6999009}
+    donorStableId: 65ffec5304b952db51e226be9b8e86ff
+    donorSourceObjectId: 20496
+    donorHierarchyPath: ITEMS/fish trap(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.flashlight.01
+    stableEntityId: 8a60bfa0fb3651ae8dc0afae19b2fe0a
+    definitionId: item.flashlight
+    worldPosition: {x: 155.5421, y: 2.102, z: -1039.3451}
+    worldRotation: {x: -0.58702, y: -0.39421782, z: -0.39421776, w: 0.58701986}
+    donorStableId: 7ec7c143fa3b45e6ddfbf13ca35351f3
+    donorSourceObjectId: 33234
+    donorHierarchyPath: ITEMS/flashlight(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.floor-jack.01
+    stableEntityId: e9facdf829425308bec840175d19d61e
+    definitionId: item.floor-jack
+    worldPosition: {x: 151.7381, y: 1.1659999, z: -1033.8351}
+    worldRotation: {x: 0, y: 0.7547097, z: 0, w: 0.6560589}
+    donorStableId: 77177dd1f7b8ba5cbde2abf88b98a240
+    donorSourceObjectId: 33725
+    donorHierarchyPath: ITEMS/floor jack(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 15
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 84
+    initialLinearDamping: 9999
+    initialAngularDamping: 9999
+  - placementId: placement.floppy-disk.01
+    stableEntityId: 85ee381169555874b32dda2521d0b16c
+    definitionId: item.floppy-disk
+    worldPosition: {x: -1121.5801, y: 1.7860001, z: 43.036865}
+    worldRotation: {x: -0.5431055, y: -0.45280966, z: -0.4528095, w: 0.5431054}
+    donorStableId: 90b70535462e3ada6395eadeefd5ac53
+    donorSourceObjectId: 23699
+    donorHierarchyPath: ITEMS/diskette(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.floppy-disk.02
+    stableEntityId: f12694b2197f506087e430ac5c602245
+    definitionId: item.floppy-disk
+    worldPosition: {x: -1121.5801, y: 1.8500003, z: 43.036865}
+    worldRotation: {x: 0.89920336, y: 0.000000048141363, z: 0, w: -0.43753096}
+    donorStableId: 7b35d33714f0aed9613c1988b8fb4fa7
+    donorSourceObjectId: 30578
+    donorHierarchyPath: ITEMS/diskette(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 1
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.floppy-disk.03
+    stableEntityId: 8d7df1bbc0d05faabf497ef40cdf4d0c
+    definitionId: item.floppy-disk
+    worldPosition: {x: 168.1091, y: 2.179, z: -1033.1292}
+    worldRotation: {x: -0.21638447, y: 0.68207085, z: 0.6438938, w: 0.27084687}
+    donorStableId: 04b25e712397556cd4684a4eb71622d3
+    donorSourceObjectId: 33247
+    donorHierarchyPath: ITEMS/diskette(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 2
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.garbage-barrel.01
+    stableEntityId: dd895edddcf550abb059e3bb30705fc8
+    definitionId: item.garbage-barrel
+    worldPosition: {x: 150.1191, y: 1.5309999, z: -1036.4111}
+    worldRotation: {x: -0.7071065, y: 0, z: 0, w: 0.7071072}
+    donorStableId: 9709c246c3d178a87be3246d50873a0d
+    donorSourceObjectId: 7199
+    donorHierarchyPath: ITEMS/garbage barrel(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.gasoline-can.01
+    stableEntityId: 3c1d367574c95d74b8261cd2370536cf
+    definitionId: item.gasoline-can
+    worldPosition: {x: 155.39789, y: 1.2891536, z: -1042.4506}
+    worldRotation: {x: -0.581579, y: -0.40220094, z: -0.4022012, w: 0.5815793}
+    donorStableId: 99e96309024434130d2d39b7d9ac0d62
+    donorSourceObjectId: 8657
+    donorHierarchyPath: ITEMS/gasoline(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.helmet.01
+    stableEntityId: 896c6e659dd8544581bcb9ac85bb37ff
+    definitionId: item.helmet
+    worldPosition: {x: 158.8941, y: 1.964, z: -1026.461}
+    worldRotation: {x: -0.18429126, y: 0.6724513, z: 0.69231224, w: 0.18587567}
+    donorStableId: 212392d06375a345cf6b80b5af0b83e8
+    donorSourceObjectId: 31975
+    donorHierarchyPath: ITEMS/helmet(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.kilju-bucket.01
+    stableEntityId: b2784cea23a85f1ca4f1e58b46556b72
+    definitionId: item.kilju-bucket
+    worldPosition: {x: -679.1619, y: -0.5860001, z: -534.6561}
+    worldRotation: {x: -0.04839363, y: 0.70544887, z: 0.7054488, w: 0.04839377}
+    donorStableId: 11aabf50d67993e3b0c3732280f55b0e
+    donorSourceObjectId: 20824
+    donorHierarchyPath: ITEMS/bucket(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.kilju-lid.01
+    stableEntityId: 216a0dc4d7da58e5ae2fe6d1784ff54c
+    definitionId: item.kilju-lid
+    worldPosition: {x: -679.2349, y: -0.61099994, z: -534.3721}
+    worldRotation: {x: -0.12336593, y: 0.18188289, z: 0.9752795, w: 0.023006849}
+    donorStableId: bba7052bd9459774b15f4e680d660622
+    donorSourceObjectId: 35985
+    donorHierarchyPath: ITEMS/bucket lid(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.lantern.01
+    stableEntityId: 7b7710307a4d5d8bb7fc4126c68d7719
+    definitionId: item.lantern
+    worldPosition: {x: -677.88873, y: 0.5730001, z: -535.5429}
+    worldRotation: {x: -0.7071069, y: 0.000000029802326, z: 0, w: 0.70710677}
+    donorStableId: 63adb19c92586ff5abfba5db675ea70e
+    donorSourceObjectId: 5339
+    donorHierarchyPath: ITEMS/lantern(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.macaroni-box.01
+    stableEntityId: baff5dfda77253509e728553e2658ff0
+    definitionId: item.macaroni-box
+    worldPosition: {x: 157.9261, y: 2.274, z: -1032.378}
+    worldRotation: {x: 0.15575583, y: 0.6897393, z: 0.68973905, w: -0.15575576}
+    donorStableId: ea90b4b16dea389acf191bdaa78b6fbe
+    donorSourceObjectId: 3441
+    donorHierarchyPath: ITEMS/macaron boxx
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 1
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.milk.01
+    stableEntityId: 5c352b440dd053f7970489b53eef5918
+    definitionId: item.milk
+    worldPosition: {x: 157.6441, y: 2.34, z: -1032.3981}
+    worldRotation: {x: -0.70150095, y: -0.08886231, z: -0.088862255, w: 0.70150083}
+    donorStableId: 16281979d76fdb2b7b850b52588b832e
+    donorSourceObjectId: 22211
+    donorHierarchyPath: ITEMS/milkx
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 1
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.motor-hoist.01
+    stableEntityId: fe7abf6f56c15d198ef46b43fdfc4e3e
+    definitionId: item.motor-hoist
+    worldPosition: {x: 152.4431, y: 1.092, z: -1040.6051}
+    worldRotation: {x: -0.7071066, y: 0.0000033896517, z: 0.0000033896504, w: 0.70710707}
+    donorStableId: 21be6b31d128759370d7b2054e5fd1f0
+    donorSourceObjectId: 11167
+    donorHierarchyPath: ITEMS/motor hoist(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 15
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 0
+    initialInterpolation: 0
+    initialConstraints: 52
+    initialLinearDamping: 99999
+    initialAngularDamping: 99999
+  - placementId: placement.notepad.01
+    stableEntityId: 77a7b5a352c05a2da74e1238b4ffa5ae
+    definitionId: item.notepad
+    worldPosition: {x: 161.1921, y: 1.9699999, z: -1032.362}
+    worldRotation: {x: 0.031951386, y: 0.7063846, z: 0.7063845, w: -0.031951375}
+    donorStableId: 33df31c5be92d506d9f85edf289d259f
+    donorSourceObjectId: 35454
+    donorHierarchyPath: ITEMS/notepad(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0.08
+    initialAngularDamping: 0.08
+  - placementId: placement.parts-magazine.01
+    stableEntityId: b4eb2f73c8b85239a718a4153e4f903a
+    definitionId: item.parts-magazine
+    worldPosition: {x: 155.2289, y: 2.0370998, z: -1040.5181}
+    worldRotation: {x: 0.000000036002668, y: -0.65323746, z: 0.00000017000559, w: 0.7571531}
+    donorStableId: 4ab82d226565a7aea13c2b6bb25ce852
+    donorSourceObjectId: 19705
+    donorHierarchyPath: ITEMS/parts magazine(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 0
+    donorHasRigidbody: 0
+    initialUseGravity: 1
+    initialIsKinematic: 1
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.pizza.01
+    stableEntityId: b4167911154c5da6993b76dbb05a7f77
+    definitionId: item.pizza
+    worldPosition: {x: 157.8971, y: 2.567, z: -1032.3461}
+    worldRotation: {x: -0.018753076, y: 0.035809148, z: -0.032284204, w: 0.998661}
+    donorStableId: 1354f9712d72ba75bee26ca0b3e84d1b
+    donorSourceObjectId: 7665
+    donorHierarchyPath: ITEMS/pizzax
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 1
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.portable-grill.01
+    stableEntityId: 2d7449e1a021566cba9d1384e397cc4b
+    definitionId: item.portable-grill
+    worldPosition: {x: 155.3701, y: 1.369, z: -1040.659}
+    worldRotation: {x: -0.6779617, y: -0.18298838, z: -0.18528089, w: 0.6874258}
+    donorStableId: a8981adcaeb237875d2d5d0a6d0c94cc
+    donorSourceObjectId: 8034
+    donorHierarchyPath: ITEMS/grill(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.portable-radio.01
+    stableEntityId: 1daea070ee6b557c9864853c74f137b3
+    definitionId: item.portable-radio
+    worldPosition: {x: 160.8921, y: 1.273, z: -1029.1531}
+    worldRotation: {x: -0.4713161, y: 0.5271255, z: 0.5271251, w: 0.47131637}
+    donorStableId: 2c1e6bbcdf4da1eaf8f1af6ce4c2280f
+    donorSourceObjectId: 34320
+    donorHierarchyPath: ITEMS/radio(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.radar-detector.01
+    stableEntityId: d2d12466d43250e3bca116dd57af7f4f
+    definitionId: item.radar-detector
+    worldPosition: {x: 1732.69, y: 6.158, z: -320.28497}
+    worldRotation: {x: -0.07409222, y: 0.7032148, z: 0.70321363, w: -0.07409438}
+    donorStableId: ba99fa72c162b65b95f323e820216876
+    donorSourceObjectId: 10342
+    donorHierarchyPath: ITEMS/radar buster(Clone)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.sauna-bucket.01
+    stableEntityId: db7684aba6b2508598640dcac5023a87
+    definitionId: item.sauna-bucket
+    worldPosition: {x: -679.58594, y: -0.48599994, z: -537.0581}
+    worldRotation: {x: -0.0000015199183, y: 0.707107, z: -0.70710665, w: 0.0000015795232}
+    donorStableId: bbdf589f496fc48a9b85f44a6e9e824e
+    donorSourceObjectId: 11186
+    donorHierarchyPath: ITEMS/water bucket(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.sauna-bucket.02
+    stableEntityId: 5e3c7a9d2dea59e9b0ca1b35443f46c7
+    definitionId: item.sauna-bucket
+    worldPosition: {x: 157.1075, y: 1.8611784, z: -1042.4255}
+    worldRotation: {x: -0.0000014901161, y: 0.707107, z: -0.70710665, w: 0.0000016109442}
+    donorStableId: bf5c3b8f6a5cd5e0b9352fd1e605c4ce
+    donorSourceObjectId: 21074
+    donorHierarchyPath: ITEMS/water bucket(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.sauna-dipper.01
+    stableEntityId: 6c7dc3de95ed590dba9dddc5f8c6b9e7
+    definitionId: item.sauna-dipper
+    worldPosition: {x: 157.138, y: 1.921, z: -1042.42}
+    worldRotation: {x: 0.6877193, y: 0.16384944, z: -0.16168542, w: 0.68851537}
+    donorStableId: be6981916296d73a6aa46d95dd7da643
+    donorSourceObjectId: 9400
+    donorHierarchyPath: ITEMS/dipper(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.sauna-dipper.02
+    stableEntityId: 38f7089453fc5f01b7ce1a0d045189ed
+    definitionId: item.sauna-dipper
+    worldPosition: {x: -679.58594, y: -0.42999995, z: -537.0581}
+    worldRotation: {x: 0.6877193, y: 0.16384946, z: -0.16168542, w: 0.68851537}
+    donorStableId: 3be9c42175ff14822b98dbcbeaa10a52
+    donorSourceObjectId: 33424
+    donorHierarchyPath: ITEMS/dipper(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.sausages-package.01
+    stableEntityId: 730b3386ee9750ea80d31c38da18a64a
+    definitionId: item.sausages-package
+    worldPosition: {x: 157.6831, y: 2.536, z: -1032.3381}
+    worldRotation: {x: 0.6958455, y: 0.08814586, z: -0.08957292, w: 0.70711106}
+    donorStableId: c668d1e989dc6d68e57e2f449d7281fc
+    donorSourceObjectId: 6548
+    donorHierarchyPath: ITEMS/sausagesx0
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 1
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.sledgehammer.01
+    stableEntityId: a033c8b0cd57530b92db5f6d6c045146
+    definitionId: item.sledgehammer
+    worldPosition: {x: 155.6611, y: 1.5469999, z: -1038.7871}
+    worldRotation: {x: 0, y: 0, z: 0.9992862, w: 0.03777755}
+    donorStableId: 8d2786a1f921451ecf7ffb0e0c871e92
+    donorSourceObjectId: 32042
+    donorHierarchyPath: ITEMS/sledgehammer(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.sofa.01
+    stableEntityId: cf0f6f3a792c563d980d4447a7b06ed6
+    definitionId: item.sofa
+    worldPosition: {x: -613.09393, y: 13.982, z: -1684.6511}
+    worldRotation: {x: -0.29012567, y: 0.6448466, z: 0.29012606, w: 0.6448464}
+    donorStableId: 20248b0d551aede22fb335b097ac8ca8
+    donorSourceObjectId: 15572
+    donorHierarchyPath: ITEMS/sofa(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0.1
+    initialAngularDamping: 0.1
+  - placementId: placement.spanner-set.01
+    stableEntityId: 9b081e8de2e956d69fff168e8f90a1c9
+    definitionId: item.spanner-set
+    worldPosition: {x: 155.1951, y: 2.066, z: -1040.9021}
+    worldRotation: {x: -0.70560426, y: 0.046073686, z: 0.046073835, w: 0.7056041}
+    donorStableId: 226d1d3b041e6d7dfe90362ccb97a3f2
+    donorSourceObjectId: 33470
+    donorHierarchyPath: ITEMS/spanner set(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.tv-remote.01
+    stableEntityId: b0733553d3be5e37a9699bdaeda44a7d
+    definitionId: item.tv-remote
+    worldPosition: {x: 165.379, y: 1.6459999, z: -1033.364}
+    worldRotation: {x: -0.39648473, y: 0.58670545, z: 0.47405207, w: 0.523308}
+    donorStableId: 350de3e49e3d902a08488c08236cf766
+    donorSourceObjectId: 12852
+    donorHierarchyPath: ITEMS/tv remote control(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.wiring-mess.01
+    stableEntityId: a9f060202aec5cf386ac9864c9213210
+    definitionId: item.wiring-mess
+    worldPosition: {x: 152.6714, y: 2.5914998, z: -1042.8752}
+    worldRotation: {x: -0.58702, y: -0.39421782, z: -0.39421776, w: 0.58701986}
+    donorStableId: 8c375c1a8c055b2b56f48bf802e9236f
+    donorSourceObjectId: 29115
+    donorHierarchyPath: ITEMS/wiring mess(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.wood-carrier.01
+    stableEntityId: abf5eee0d9e55991b61d610a9d167b7b
+    definitionId: item.wood-carrier
+    worldPosition: {x: -680.9889, y: -0.96299994, z: -533.72107}
+    worldRotation: {x: 0, y: -0.701868, z: 0, w: 0.7123071}
+    donorStableId: 47d2c55d90d01318fa2ef7a5f5431e4d
+    donorSourceObjectId: 7108
+    donorHierarchyPath: ITEMS/wood carrier(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05
+  - placementId: placement.wood-carrier.02
+    stableEntityId: fe9330786e6c557eac363f5316aa820c
+    definitionId: item.wood-carrier
+    worldPosition: {x: 225.6351, y: 0.42299998, z: -1112.3961}
+    worldRotation: {x: 0, y: -0.5329512, z: 0, w: 0.846146}
+    donorStableId: 4dd795f385c3520595b07bccd66b3a71
+    donorSourceObjectId: 9951
+    donorHierarchyPath: ITEMS/wood carrier(itemx)
+    donorSourceHash: 39e5c8f38edd83652325b403e06449eb6fe4e5c588e4dad2bf04b5c9ff406c31
+    initialVariantIndex: 0
+    initialLocalScale: {x: 1, y: 1, z: 1}
+    donorParentStableId: 9c88c287a45c52e91f6ac6b345b20e10
+    donorLayer: 19
+    donorHasRigidbody: 1
+    initialUseGravity: 1
+    initialIsKinematic: 0
+    initialDetectCollisions: 1
+    initialCollisionMode: 1
+    initialInterpolation: 0
+    initialConstraints: 0
+    initialLinearDamping: 0
+    initialAngularDamping: 0.05

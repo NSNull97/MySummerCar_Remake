@@ -810,10 +810,10 @@ namespace MSC.Weather.Enviro3Integration.Editor
 
         private static string[] CreateLogicalWeatherIds()
         {
-            var values = new string[WeatherStateIds.All.Count];
+            var values = new string[WeatherStateIds.AllKnown.Count];
             for (int index = 0; index < values.Length; index++)
             {
-                values[index] = WeatherStateIds.All[index].Value;
+                values[index] = WeatherStateIds.AllKnown[index].Value;
             }
 
             return values;

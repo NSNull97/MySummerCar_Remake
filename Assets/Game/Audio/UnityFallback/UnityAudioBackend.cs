@@ -13,20 +13,28 @@ using UnityEngine.SceneManagement;
 namespace MSC.Audio.UnityFallback
 {
     /// <summary>
-    /// Operational Unity Audio fallback for project-owned events plus the private
-    /// M06 vehicle diagnostic. Donor clips are loaded read-only from ignored
-    /// external staging in the Editor and are never serialized into Assets.
+    /// Operational Unity Audio fallback for project-owned events, explicit
+    /// ignored Phase 1 supplemental libraries and the private M06 vehicle
+    /// diagnostic. Stable event IDs remain the runtime contract.
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class UnityAudioBackend : MonoBehaviour, IVehicleAudioBackend
+    public sealed class UnityAudioBackend : MonoBehaviour,
+        IVehicleAudioBackend,
+        IAudioSupplementalContentBackend,
+        IAudioOverrideContentBackend
     {
         private const string RuntimeBackendId = "unity.fallback";
         private const string DisabledFailure = "Unity Audio fallback is disabled.";
         private const string NotInitializedFailure =
             "Unity Audio fallback has not been initialized.";
+        private const float ProjectMixHeadroomGain = 1.5848932f; // +4 dB
 
         [Header("Project-owned fallback events")]
         [SerializeField] private UnityAudioEventLibrary eventLibrary;
+        [SerializeField] private UnityAudioEventLibrary[] supplementalEventLibraries =
+            Array.Empty<UnityAudioEventLibrary>();
+        [SerializeField] private UnityAudioEventLibrary[] overrideEventLibraries =
+            Array.Empty<UnityAudioEventLibrary>();
         [SerializeField, Min(1)] private int maximumGenericVoices = 32;
 
         [Header("Private M06 vehicle diagnostic")]
@@ -40,6 +48,10 @@ namespace MSC.Audio.UnityFallback
             new Dictionary<string, IAudioEmitter>(StringComparer.Ordinal);
         private readonly Dictionary<AudioParameterId, float> parametersById =
             new Dictionary<AudioParameterId, float>();
+        private readonly Dictionary<string, Dictionary<AudioParameterId, float>>
+            parametersByEmitterId =
+                new Dictionary<string, Dictionary<AudioParameterId, float>>(
+                    StringComparer.Ordinal);
         private readonly Dictionary<AudioSwitchId, AudioSwitchId> switchesByGroup =
             new Dictionary<AudioSwitchId, AudioSwitchId>();
         private readonly Dictionary<AudioStateId, AudioStateId> statesByGroup =
@@ -86,10 +98,162 @@ namespace MSC.Audio.UnityFallback
         public string LocalDiagnosticFailureReason { get; private set; } = string.Empty;
         public int ActiveGenericVoiceCount => CountActiveGenericVoices();
 
+        public bool TryLoadSupplementalEventLibrary(
+            string resourcesPath,
+            out string failure)
+        {
+            string normalizedPath = resourcesPath?.Trim() ?? string.Empty;
+            if (normalizedPath.Length == 0 ||
+                normalizedPath.StartsWith("/", StringComparison.Ordinal) ||
+                normalizedPath.EndsWith(".asset", StringComparison.OrdinalIgnoreCase))
+            {
+                failure =
+                    "A Resources-relative supplemental audio library path without an extension is required.";
+                return false;
+            }
+
+            UnityAudioEventLibrary library =
+                Resources.Load<UnityAudioEventLibrary>(normalizedPath);
+            if (library == null)
+            {
+                failure =
+                    $"Supplemental Unity audio library was not found at Resources/{normalizedPath}.";
+                return false;
+            }
+
+            if (!library.Validate(out string[] validationFailures))
+            {
+                failure =
+                    "Supplemental Unity audio library is invalid: " +
+                    string.Join(" | ", validationFailures);
+                return false;
+            }
+
+            if (ReferenceEquals(eventLibrary, library))
+            {
+                failure = string.Empty;
+                return true;
+            }
+
+            UnityAudioEventLibrary[] current = supplementalEventLibraries ??
+                Array.Empty<UnityAudioEventLibrary>();
+            for (int index = 0; index < current.Length; index++)
+            {
+                if (ReferenceEquals(current[index], library))
+                {
+                    failure = string.Empty;
+                    return true;
+                }
+            }
+
+            var eventIds = new HashSet<string>(StringComparer.Ordinal);
+            CollectEventIds(eventLibrary, eventIds);
+            for (int index = 0; index < current.Length; index++)
+            {
+                CollectEventIds(current[index], eventIds);
+            }
+
+            foreach (UnityAudioEventDefinition definition in library.Definitions)
+            {
+                if (definition != null && !eventIds.Add(definition.EventId))
+                {
+                    failure =
+                        $"Supplemental Unity audio event ID '{definition.EventId}' is already registered.";
+                    return false;
+                }
+            }
+
+            var updated = new UnityAudioEventLibrary[current.Length + 1];
+            Array.Copy(current, updated, current.Length);
+            updated[current.Length] = library;
+            supplementalEventLibraries = updated;
+            lastOperationalFailure = string.Empty;
+            failure = string.Empty;
+            return true;
+        }
+
+        public bool TryLoadOverrideEventLibrary(
+            string resourcesPath,
+            out string failure)
+        {
+            string normalizedPath = resourcesPath?.Trim() ?? string.Empty;
+            if (normalizedPath.Length == 0 ||
+                normalizedPath.StartsWith("/", StringComparison.Ordinal) ||
+                normalizedPath.EndsWith(".asset", StringComparison.OrdinalIgnoreCase))
+            {
+                failure =
+                    "A Resources-relative override audio library path without an extension is required.";
+                return false;
+            }
+
+            UnityAudioEventLibrary library =
+                Resources.Load<UnityAudioEventLibrary>(normalizedPath);
+            if (library == null)
+            {
+                failure =
+                    $"Override Unity audio library was not found at Resources/{normalizedPath}.";
+                return false;
+            }
+
+            if (!library.Validate(out string[] validationFailures))
+            {
+                failure =
+                    "Override Unity audio library is invalid: " +
+                    string.Join(" | ", validationFailures);
+                return false;
+            }
+
+            UnityAudioEventLibrary[] current = overrideEventLibraries ??
+                Array.Empty<UnityAudioEventLibrary>();
+            var eventIds = new HashSet<string>(StringComparer.Ordinal);
+            for (int index = 0; index < current.Length; index++)
+            {
+                if (ReferenceEquals(current[index], library))
+                {
+                    failure = string.Empty;
+                    return true;
+                }
+
+                CollectEventIds(current[index], eventIds);
+            }
+
+            foreach (UnityAudioEventDefinition definition in library.Definitions)
+            {
+                if (definition != null && !eventIds.Add(definition.EventId))
+                {
+                    failure =
+                        $"Override Unity audio event ID '{definition.EventId}' is already overridden.";
+                    return false;
+                }
+            }
+
+            var updated = new UnityAudioEventLibrary[current.Length + 1];
+            Array.Copy(current, updated, current.Length);
+            updated[current.Length] = library;
+            overrideEventLibraries = updated;
+            lastOperationalFailure = string.Empty;
+            failure = string.Empty;
+            return true;
+        }
+
 #if UNITY_EDITOR
         public void ConfigureForAuthoring(UnityAudioEventLibrary configuredLibrary)
         {
             eventLibrary = configuredLibrary;
+        }
+
+        public void ConfigureSupplementalEventLibrariesForAuthoring(
+            params UnityAudioEventLibrary[] configuredLibraries)
+        {
+            supplementalEventLibraries = configuredLibraries ??
+                Array.Empty<UnityAudioEventLibrary>();
+        }
+
+        public void ConfigureOverrideEventLibrariesForAuthoring(
+            params UnityAudioEventLibrary[] configuredLibraries)
+        {
+            overrideEventLibraries = configuredLibraries ??
+                Array.Empty<UnityAudioEventLibrary>();
         }
 #endif
 
@@ -104,7 +268,7 @@ namespace MSC.Audio.UnityFallback
             starterOneShotSource = CreateDiagnosticSource(false);
 
             initialized = true;
-            ValidateConfiguredLibrary();
+            ValidateConfiguredLibraries();
         }
 
         private void OnEnable()
@@ -228,6 +392,7 @@ namespace MSC.Audio.UnityFallback
             }
 
             StopVoicesForEmitter(emitter);
+            parametersByEmitterId.Remove(registeredId);
             return emitters.Remove(registeredId);
         }
 
@@ -239,14 +404,14 @@ namespace MSC.Audio.UnityFallback
                 return AudioEventHandles.Invalid;
             }
 
-            if (eventLibrary == null)
+            if (!HasAnyConfiguredLibrary())
             {
                 RecordOperationalFailure(
                     $"Unity fallback event library is not assigned; event {request.EventId} was not played.");
                 return AudioEventHandles.Invalid;
             }
 
-            if (!eventLibrary.TryResolve(request.EventId, out UnityAudioEventDefinition definition) ||
+            if (!TryResolveDefinition(request.EventId, out UnityAudioEventDefinition definition) ||
                 definition == null || definition.Clip == null)
             {
                 RecordOperationalFailure(
@@ -294,7 +459,25 @@ namespace MSC.Audio.UnityFallback
                 return false;
             }
 
-            parametersById[parameterId] = FiniteOrZero(value);
+            float safeValue = FiniteOrZero(value);
+            if (emitter == null)
+            {
+                parametersById[parameterId] = safeValue;
+            }
+            else
+            {
+                string stableId = emitter.StableId;
+                if (!parametersByEmitterId.TryGetValue(
+                        stableId,
+                        out Dictionary<AudioParameterId, float> scoped))
+                {
+                    scoped = new Dictionary<AudioParameterId, float>();
+                    parametersByEmitterId.Add(stableId, scoped);
+                }
+
+                scoped[parameterId] = safeValue;
+            }
+
             return true;
         }
 
@@ -434,18 +617,162 @@ namespace MSC.Audio.UnityFallback
             }
         }
 
-        private void ValidateConfiguredLibrary()
+        private bool HasAnyConfiguredLibrary()
         {
-            if (eventLibrary == null || eventLibrary.Validate(out string[] failures))
+            if (eventLibrary != null)
+            {
+                return true;
+            }
+
+            UnityAudioEventLibrary[] supplemental = supplementalEventLibraries ??
+                Array.Empty<UnityAudioEventLibrary>();
+            for (int index = 0; index < supplemental.Length; index++)
+            {
+                if (supplemental[index] != null)
+                {
+                    return true;
+                }
+            }
+
+            UnityAudioEventLibrary[] overrides = overrideEventLibraries ??
+                Array.Empty<UnityAudioEventLibrary>();
+            for (int index = 0; index < overrides.Length; index++)
+            {
+                if (overrides[index] != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool TryResolveDefinition(
+            AudioEventId eventId,
+            out UnityAudioEventDefinition definition)
+        {
+            UnityAudioEventLibrary[] overrides = overrideEventLibraries ??
+                Array.Empty<UnityAudioEventLibrary>();
+            for (int index = overrides.Length - 1; index >= 0; index--)
+            {
+                UnityAudioEventLibrary library = overrides[index];
+                if (library != null && library.TryResolve(eventId, out definition))
+                {
+                    return true;
+                }
+            }
+
+            if (eventLibrary != null && eventLibrary.TryResolve(eventId, out definition))
+            {
+                return true;
+            }
+
+            UnityAudioEventLibrary[] supplemental = supplementalEventLibraries ??
+                Array.Empty<UnityAudioEventLibrary>();
+            for (int index = 0; index < supplemental.Length; index++)
+            {
+                UnityAudioEventLibrary library = supplemental[index];
+                if (library != null && library.TryResolve(eventId, out definition))
+                {
+                    return true;
+                }
+            }
+
+            definition = null;
+            return false;
+        }
+
+        private void ValidateConfiguredLibraries()
+        {
+            var failures = new List<string>();
+            var eventIds = new HashSet<string>(StringComparer.Ordinal);
+            ValidateLibrary(eventLibrary, "primary", failures, eventIds);
+
+            UnityAudioEventLibrary[] supplemental = supplementalEventLibraries ??
+                Array.Empty<UnityAudioEventLibrary>();
+            for (int index = 0; index < supplemental.Length; index++)
+            {
+                ValidateLibrary(
+                    supplemental[index],
+                    $"supplemental[{index}]",
+                    failures,
+                    eventIds);
+            }
+
+            // Overrides deliberately reuse primary stable IDs. They only need
+            // to remain internally valid and unique relative to one another.
+            var overrideIds = new HashSet<string>(StringComparer.Ordinal);
+            UnityAudioEventLibrary[] overrides = overrideEventLibraries ??
+                Array.Empty<UnityAudioEventLibrary>();
+            for (int index = 0; index < overrides.Length; index++)
+            {
+                ValidateLibrary(
+                    overrides[index],
+                    $"override[{index}]",
+                    failures,
+                    overrideIds);
+            }
+
+            if (failures.Count == 0)
             {
                 return;
             }
 
             lastOperationalFailure = string.Join(" ", failures);
             Debug.LogWarning(
-                "Unity fallback event library contains invalid mappings: " +
+                "Unity fallback event libraries contain invalid mappings: " +
                 lastOperationalFailure,
                 this);
+        }
+
+        private static void CollectEventIds(
+            UnityAudioEventLibrary library,
+            ISet<string> eventIds)
+        {
+            if (library == null)
+            {
+                return;
+            }
+
+            foreach (UnityAudioEventDefinition definition in library.Definitions)
+            {
+                if (definition != null &&
+                    !string.IsNullOrWhiteSpace(definition.EventId))
+                {
+                    eventIds.Add(definition.EventId);
+                }
+            }
+        }
+
+        private static void ValidateLibrary(
+            UnityAudioEventLibrary library,
+            string role,
+            ICollection<string> failures,
+            ISet<string> eventIds)
+        {
+            if (library == null)
+            {
+                return;
+            }
+
+            if (!library.Validate(out string[] libraryFailures))
+            {
+                for (int index = 0; index < libraryFailures.Length; index++)
+                {
+                    failures.Add($"{role}: {libraryFailures[index]}");
+                }
+            }
+
+            foreach (UnityAudioEventDefinition definition in library.Definitions)
+            {
+                if (definition != null &&
+                    !string.IsNullOrWhiteSpace(definition.EventId) &&
+                    !eventIds.Add(definition.EventId))
+                {
+                    failures.Add(
+                        $"{role}: duplicate event ID across libraries: {definition.EventId}.");
+                }
+            }
         }
 
         private bool IsRegisteredEmitter(IAudioEmitter emitter)
@@ -481,6 +808,7 @@ namespace MSC.Audio.UnityFallback
                 }
 
                 emitters.Remove(stableId);
+                parametersByEmitterId.Remove(stableId);
             }
         }
 
@@ -509,6 +837,7 @@ namespace MSC.Audio.UnityFallback
                 }
 
                 emitters.Remove(stableId);
+                parametersByEmitterId.Remove(stableId);
             }
         }
 
@@ -556,7 +885,10 @@ namespace MSC.Audio.UnityFallback
             source.playOnAwake = false;
             source.dopplerLevel = 0.15f;
             source.rolloffMode = AudioRolloffMode.Linear;
-            var voice = new UnityVoice(source);
+            UnityDialogueGainFilter dialogueGain =
+                voiceObject.AddComponent<UnityDialogueGainFilter>();
+            dialogueGain.enabled = false;
+            var voice = new UnityVoice(source, dialogueGain);
             voices.Add(voice);
             return voice;
         }
@@ -579,6 +911,14 @@ namespace MSC.Audio.UnityFallback
             voice.Definition = definition;
             voice.RequestVolume01 = request.Volume01;
             voice.FadingOut = false;
+            bool dialogue =
+                definition.Category == UnityAudioCategory.Dialogue ||
+                request.EventId.Value.StartsWith(
+                    "audio.npc.",
+                    StringComparison.Ordinal);
+            voice.DialogueGain.Configure(
+                UnityDialogueGainFilter.DefaultDialogueGain);
+            voice.DialogueGain.enabled = dialogue;
 
             AudioSource source = voice.Source;
             source.Stop();
@@ -643,6 +983,8 @@ namespace MSC.Audio.UnityFallback
                     voice.Source.transform.position = voice.Emitter.AudioTransform.position;
                 }
 
+                UpdateStoryTrafficVoicePitch(voice);
+
                 if (voice.FadingOut)
                 {
                     if (currentDspTime >= voice.FadeEndDspTime)
@@ -685,6 +1027,9 @@ namespace MSC.Audio.UnityFallback
                 case UnityAudioCategory.UserInterface:
                     categoryGain = settings.Ui01;
                     break;
+                case UnityAudioCategory.Dialogue:
+                    categoryGain = settings.Effects01;
+                    break;
                 default:
                     categoryGain = settings.Effects01;
                     break;
@@ -696,13 +1041,75 @@ namespace MSC.Audio.UnityFallback
                 ? 0f
                 : 1f;
             float loudnessGain = settings.ReduceLoudSounds ? 0.8f : 1f;
+            float weatherExposureGain = ResolveWeatherExposureGain(voice);
             return Mathf.Clamp01(
                 voice.RequestVolume01 *
                 voice.Definition.Volume *
+                ProjectMixHeadroomGain *
                 settings.Master01 *
                 categoryGain *
                 focusGain *
-                loudnessGain);
+                loudnessGain *
+                weatherExposureGain);
+        }
+
+        private float ResolveWeatherExposureGain(UnityVoice voice)
+        {
+            bool isWeatherVoice =
+                voice.EventId.Equals(AudioProjectIds.Events.WeatherRainExterior) ||
+                voice.EventId.Equals(AudioProjectIds.Events.WeatherRainSheltered) ||
+                voice.EventId.Equals(AudioProjectIds.Events.WeatherRainInterior) ||
+                voice.EventId.Equals(AudioProjectIds.Events.WeatherWind) ||
+                voice.EventId.Equals(AudioProjectIds.Events.WeatherThunder);
+            if (!isWeatherVoice)
+            {
+                return 1f;
+            }
+
+            AudioParameterId parameterId =
+                AudioProjectIds.Parameters.EnvironmentShelter;
+
+            if (voice.Emitter != null &&
+                parametersByEmitterId.TryGetValue(
+                    voice.Emitter.StableId,
+                    out Dictionary<AudioParameterId, float> scoped) &&
+                scoped.TryGetValue(parameterId, out float scopedValue))
+            {
+                return 1f - Mathf.Clamp01(scopedValue);
+            }
+
+            return parametersById.TryGetValue(parameterId, out float globalValue)
+                ? 1f - Mathf.Clamp01(globalValue)
+                : 1f;
+        }
+
+        private void UpdateStoryTrafficVoicePitch(UnityVoice voice)
+        {
+            if (voice.Emitter == null ||
+                !voice.EventId.Value.StartsWith(
+                    "audio.event.traffic.",
+                    StringComparison.Ordinal) ||
+                !voice.EventId.Value.EndsWith(
+                    ".engine.loop",
+                    StringComparison.Ordinal) ||
+                !parametersByEmitterId.TryGetValue(
+                    voice.Emitter.StableId,
+                    out Dictionary<AudioParameterId, float> scoped) ||
+                !scoped.TryGetValue(
+                    AudioProjectIds.Parameters.VehicleRpmNormalized,
+                    out float normalizedRpm))
+            {
+                return;
+            }
+
+            float targetPitch = Mathf.Lerp(
+                0.68f,
+                1.72f,
+                Mathf.Pow(Mathf.Clamp01(normalizedRpm), 0.72f));
+            voice.Source.pitch = Mathf.MoveTowards(
+                voice.Source.pitch,
+                targetPitch,
+                2.8f * Mathf.Max(0.001f, Time.unscaledDeltaTime));
         }
 
         private void RequestVoiceStop(UnityVoice voice, float fadeSeconds)
@@ -734,6 +1141,7 @@ namespace MSC.Audio.UnityFallback
             voice.EventId = default;
             voice.RequestVolume01 = 0f;
             voice.FadingOut = false;
+            voice.DialogueGain.enabled = false;
         }
 
         private void StopVoicesForEmitter(IAudioEmitter emitter)
@@ -1192,12 +1600,16 @@ namespace MSC.Audio.UnityFallback
 
         private sealed class UnityVoice
         {
-            public UnityVoice(AudioSource source)
+            public UnityVoice(
+                AudioSource source,
+                UnityDialogueGainFilter dialogueGain)
             {
                 Source = source;
+                DialogueGain = dialogueGain;
             }
 
             public AudioSource Source { get; }
+            public UnityDialogueGainFilter DialogueGain { get; }
             public bool Active { get; set; }
             public uint Generation { get; set; }
             public ulong HandleId { get; set; }

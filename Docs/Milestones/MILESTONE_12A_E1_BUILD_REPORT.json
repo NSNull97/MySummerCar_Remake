@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "milestoneId": "12A-E1",
+  "classification": "Reimplemented",
+  "sourceSceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4",
+  "sourceGlobalsSha256": "0c232081e5dd2d6611d27ccd06274cbb31f5fabc5ef5e5f901b86d39da25afec",
+  "initialBalanceMinorUnits": 300000,
+  "lockedStorePriceCount": 38,
+  "expandedShopPriceCount": 19,
+  "storePriceCount": 57,
+  "storeInflationRate": 0.054,
+  "storeRestockDay": 4,
+  "donorFsmRuntimeExcluded": true
+}

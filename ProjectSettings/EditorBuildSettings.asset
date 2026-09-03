@@ -188,6 +188,522 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_5_-2_Legacy.unity
     guid: b089582e277abaa4cb628b93cf8c7b11
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_-3_Vegetation.unity
+    guid: 5eadcaad38721624ba7fa7e48469d136
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_-6_Vegetation.unity
+    guid: 3a936e165eafa2f4b94eaf93b6851df1
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_-6_Vegetation.unity
+    guid: c6c8dff639d367748b54f4448231860a
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_-6_Vegetation.unity
+    guid: 5fad4e87fade0a248a6603ba583207a3
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_-6_Vegetation.unity
+    guid: e515e49799c285f4e88f8fc3187b49fb
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_-6_Vegetation.unity
+    guid: f9a2403b34491d749836032005d873db
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_-6_Vegetation.unity
+    guid: 5b7a7e2ba75da604f9f1e7ee0b0caa5e
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_-6_Vegetation.unity
+    guid: 6ddb906478aaca9409954c0e02e499fb
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_-6_Vegetation.unity
+    guid: 351348c1b07a86b4cb5d067f9bcbb170
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_-6_Vegetation.unity
+    guid: e0900f939d8ce6240ae46cb10342749a
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_-6_Vegetation.unity
+    guid: 24ec0af1071243f4d829b640e81f2c67
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_-6_Vegetation.unity
+    guid: b4639a11e0504e1479d6339810eea4c7
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_-5_Vegetation.unity
+    guid: 26dd7276090028140b375a4f757c73ea
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_-5_Vegetation.unity
+    guid: 982b4dd3b22a2e542ba0ed170df8a56a
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_-5_Vegetation.unity
+    guid: 7f2ce725b271bbe42bb147c5a1b71aba
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_-5_Vegetation.unity
+    guid: e00078adc58c33c42b9c6ea1e784f94d
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_-5_Vegetation.unity
+    guid: 407299b5163200d4faf4131e3801082e
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_-5_Vegetation.unity
+    guid: 27ef446fe024a5e44913f71940035017
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_-5_Vegetation.unity
+    guid: 8290dc49db544c748ba6bf6fe91f946a
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_-5_Vegetation.unity
+    guid: 1e34ad1aadfdc2a4491912bff347c1d2
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_-5_Vegetation.unity
+    guid: c41a719dde435a84fa37e8a23057213f
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_-5_Vegetation.unity
+    guid: 6ad2507866f3b3a4a82b1c49a59b5a65
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_-5_Vegetation.unity
+    guid: 814fadb64bfa0764f962242a867787f8
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_-4_Vegetation.unity
+    guid: e2613cdaf742de440a3d981e36de5d01
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_-4_Vegetation.unity
+    guid: d01bfb26cc36cdd439ba74ffbb26b96d
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_-4_Vegetation.unity
+    guid: 490881f4e04abab42b17059e7c11d7e6
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_-4_Vegetation.unity
+    guid: fc59ad1866ae4ad439523cd00ed29f65
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_-4_Vegetation.unity
+    guid: 494a1e8f1756f6841b6675df7c57838c
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_-4_Vegetation.unity
+    guid: eb8f85de9fbdfdc4ebd027f2f33a02c7
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_-4_Vegetation.unity
+    guid: 121add2b5fc362a44bf5bc6de5ee723f
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_-4_Vegetation.unity
+    guid: a2716dac2b4233a40b3aa7837b4335b8
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_-4_Vegetation.unity
+    guid: 62bf16867b1b8874ca6f4582535e1612
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_-4_Vegetation.unity
+    guid: 1c2f4707751e51b46844a3d48b29038a
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_-4_Vegetation.unity
+    guid: ca8d82bca33db0a4baf2aba1abc27851
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_-3_Vegetation.unity
+    guid: 36934cae9490945488737635530905ec
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_-3_Vegetation.unity
+    guid: 2873d6954ce3cec4d9825d29152cce18
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_-3_Vegetation.unity
+    guid: c7e2adb603a57d54688dfb24f9086508
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_-3_Vegetation.unity
+    guid: bbe82041ed2e2424a9f4d3eb98bc5e2e
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_-3_Vegetation.unity
+    guid: 91c600eafb8ffba4bb3854a0a8469ad6
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_-3_Vegetation.unity
+    guid: 1969f0819f07be34ebac8ec078d97f61
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_-3_Vegetation.unity
+    guid: 34b672d16bf3516469fd16aa615289d3
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_-3_Vegetation.unity
+    guid: 20f421575441fe14d90412e6f97757df
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_-3_Vegetation.unity
+    guid: e60c7483d5492974489ecc35534afd4c
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_-3_Vegetation.unity
+    guid: 3eab97bb64a71314581b9d8db5a1ccfd
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_-2_Vegetation.unity
+    guid: 1e0d00a6f3076fe498362573abc1afa2
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_-2_Vegetation.unity
+    guid: dff5eb3ecf7b42145b5c8631017c2211
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_-2_Vegetation.unity
+    guid: fb337342f33ca594e91cc97238f0593e
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_-2_Vegetation.unity
+    guid: aeadc7d2990ef4243bb06bede4e98b1f
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_-2_Vegetation.unity
+    guid: c7704e07d1f00bd46b2867ba1dadb409
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_-2_Vegetation.unity
+    guid: ad524425680bef741b0563b2296e63ad
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_-2_Vegetation.unity
+    guid: 49faa13adf492c2499e0c415dee80d54
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_-2_Vegetation.unity
+    guid: 8cab2da6b8ddff1438a4c7643a38be9e
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_-2_Vegetation.unity
+    guid: a412cd8e97e618d488cc9cd331b95c00
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_-2_Vegetation.unity
+    guid: 88c6ad2675518bd49881630efb0d88b5
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_-2_Vegetation.unity
+    guid: 095260f0a310d6e4dba28daf0f354c05
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_-1_Vegetation.unity
+    guid: 906687615ec4d7248a0cce6e2a4cc768
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_-1_Vegetation.unity
+    guid: 80d253c0d2f43074e8279ef5deb18c6c
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_-1_Vegetation.unity
+    guid: 0d316c8d51883b94ebb7f6dc1be9dc6e
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_-1_Vegetation.unity
+    guid: ec1a19ac927ebf24f977fd6baee81dfd
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_-1_Vegetation.unity
+    guid: 47e7016746332194bbdb84e9619e1def
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_-1_Vegetation.unity
+    guid: 9b94fce6611519544b3cac462928d0b1
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_-1_Vegetation.unity
+    guid: c00ceab68e4003841b8f02f2ebf1d747
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_-1_Vegetation.unity
+    guid: a554f03a73638d74a9e160281e59d71f
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_-1_Vegetation.unity
+    guid: ce146d5caee4bcc4588da117f3f0ae43
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_-1_Vegetation.unity
+    guid: 5a3b96334d57ae84c97985ae0638c594
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_-1_Vegetation.unity
+    guid: 467a1eb786723b142af2445ecafb0591
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_0_Vegetation.unity
+    guid: 027f55d3475a5a14fa83c31ab7df86b8
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_0_Vegetation.unity
+    guid: 7dbf34e43f8a22a4aa2bb3277a8f73c8
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_0_Vegetation.unity
+    guid: b0d4123c8e436f44495b8dc4ffe3d704
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_0_Vegetation.unity
+    guid: 1f4a84babfd730a4e96a35827a3671fb
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_0_Vegetation.unity
+    guid: 981771135cd088d44bfe47598c6c17bc
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_0_Vegetation.unity
+    guid: 2f758b31816037c4da4e832a32d40f6c
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_0_Vegetation.unity
+    guid: 000bd1f83018d304b91b008db18ff142
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_0_Vegetation.unity
+    guid: 388062e59fb149646a0f1415c210da4f
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_0_Vegetation.unity
+    guid: 905cb8dcdd8fe0749b5283c0d0b4100d
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_0_Vegetation.unity
+    guid: 0fde23f86feedab4e988262c2068b813
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_0_Vegetation.unity
+    guid: f211d30ce9c921f49a435640d9084e22
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_1_Vegetation.unity
+    guid: 033630c6b4e33304ba825752b65e66ed
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_1_Vegetation.unity
+    guid: 0b1cfb6d032792c4c88efaf2e11ba63f
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_1_Vegetation.unity
+    guid: 7c92067cab28d194e83126a6b19ca5e0
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_1_Vegetation.unity
+    guid: 69c4726aea60e4644a8025bae50b5c72
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_1_Vegetation.unity
+    guid: 28c46b86b2ffa764aa6bae164421dc28
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_1_Vegetation.unity
+    guid: 2ab835087a7a4394386ccd2276826f94
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_1_Vegetation.unity
+    guid: 310d08a1eddb3ef41be6c1dc72150e40
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_1_Vegetation.unity
+    guid: 99d079cefcb581a4297468ba229cdd4c
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_1_Vegetation.unity
+    guid: f01de5cf20025f74fa67963c05d50f7a
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_1_Vegetation.unity
+    guid: bb5b646f464df2141bc463af281b7213
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_1_Vegetation.unity
+    guid: 5e539bed44e1a8a44be8bb6c56d4a5fc
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-1_-6_VegetationBackdrop.unity
+    guid: 0708e92ea7c3aef4c8a08c359e4164d4
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-1_-7_VegetationBackdrop.unity
+    guid: 3bee05f796b52d74695374c9019ccfdb
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-1_3_VegetationBackdrop.unity
+    guid: f9e564c8f4cc87247a968fcceb5b57ef
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-1_4_VegetationBackdrop.unity
+    guid: 31f49e101c40dad418b270387b26944b
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-2_-5_VegetationBackdrop.unity
+    guid: d9817b8bd0fdf744abfba198fb4a3720
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-2_-6_VegetationBackdrop.unity
+    guid: 4aacb30e191b5314099eec85b1f1e53e
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-2_-7_VegetationBackdrop.unity
+    guid: 92fac42ed6ff1f043b0a0d26615d5150
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-2_3_VegetationBackdrop.unity
+    guid: 1f8c4a5187014314582a0a8b6d4cc9b7
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-2_4_VegetationBackdrop.unity
+    guid: 485ceb07db604ac4bbe3741ad0141fc9
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-3_-5_VegetationBackdrop.unity
+    guid: 11a59d23e61abcc4c9fc5326a87439a1
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-3_-6_VegetationBackdrop.unity
+    guid: af52785eebb372e449a6c77865fece56
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-3_-7_VegetationBackdrop.unity
+    guid: 2c483ee912dcc7647a82120307599513
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-3_3_VegetationBackdrop.unity
+    guid: bed35db86941c2f45b59d3c7623881ff
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-3_4_VegetationBackdrop.unity
+    guid: 1f21acb718b8eae4ea1f27ea06ec2a8b
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-4_-4_VegetationBackdrop.unity
+    guid: b5369e462b30c604d9b575f07fad437c
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-4_-5_VegetationBackdrop.unity
+    guid: a1d44d1fc36c4d74a8f3063dea6a870a
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-4_-6_VegetationBackdrop.unity
+    guid: 88c4fa0ce6aa8ef49a593c4d30d7c731
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-4_2_VegetationBackdrop.unity
+    guid: 5fa3569d287f7784a9d245dafe2a8039
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-4_3_VegetationBackdrop.unity
+    guid: 8210a0bad3fa3fa43b4dfd1e9cbc1cc3
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-4_4_VegetationBackdrop.unity
+    guid: 9792b88e636653549a7eb7c750d571e4
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_-1_VegetationBackdrop.unity
+    guid: 43a3b66096a90da47a544b094a260846
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_-2_VegetationBackdrop.unity
+    guid: ce182705b0f826f43b71c0687564aac7
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_-3_VegetationBackdrop.unity
+    guid: 938201f39a8833f4bbfe3524ceab41fd
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_-4_VegetationBackdrop.unity
+    guid: 761c603d2cd500c4a84529303e11439c
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_-5_VegetationBackdrop.unity
+    guid: 084eb4efc0ff37243b785f42909f317d
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_-6_VegetationBackdrop.unity
+    guid: c0506e2fb63b4b347896114c1fffa696
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_0_VegetationBackdrop.unity
+    guid: 021eedc8ef32c704b93eee942762d294
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_1_VegetationBackdrop.unity
+    guid: 399bbc3be90fccb489f659fad31556d8
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_2_VegetationBackdrop.unity
+    guid: 6888de7bc81f1964b898657f93ec5a36
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_3_VegetationBackdrop.unity
+    guid: c23838bb584306b4cbc0aaf030a9211a
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_-1_VegetationBackdrop.unity
+    guid: 1bb98e15a81d91549996e3d7b6fb10be
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_-2_VegetationBackdrop.unity
+    guid: 12971ad2cc50b8e45a3a5214d919fd8d
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_-3_VegetationBackdrop.unity
+    guid: 377d11fa99ca954458f572f6c9d0d0b2
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_-4_VegetationBackdrop.unity
+    guid: 1307b7c5b1e18fb488254218855d4218
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_-5_VegetationBackdrop.unity
+    guid: d3a111c7a8a9caf43a97dfc036a6a234
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_0_VegetationBackdrop.unity
+    guid: ef73fc9734e2a454ba7230e7e40df519
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_1_VegetationBackdrop.unity
+    guid: b0633d3ed99e9b14fa279e84dbbf7acc
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_2_VegetationBackdrop.unity
+    guid: 4783b7e35015edc4baf1d8e71207c1c0
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_0_-6_VegetationBackdrop.unity
+    guid: 35898e0255c1f5a4c915b4d9d34589bb
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_0_-7_VegetationBackdrop.unity
+    guid: e8c0d772f1486f74ab97630b94f9e975
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_0_3_VegetationBackdrop.unity
+    guid: 54ec842ff9149e142be15831fd071630
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_0_4_VegetationBackdrop.unity
+    guid: d9f687928c400454cb8809f1e859a117
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_1_-6_VegetationBackdrop.unity
+    guid: 468166cc55db6b24c92acbf351f6783e
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_1_-7_VegetationBackdrop.unity
+    guid: a657700b952d099488666035664e1d95
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_1_3_VegetationBackdrop.unity
+    guid: 1257228485db706479f69a1bf7f41c18
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_1_4_VegetationBackdrop.unity
+    guid: e8c2ebd391b59f244b02c63c8bb9af23
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_2_-6_VegetationBackdrop.unity
+    guid: 9e004170a462c8d4fa13f524c5109c84
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_2_-7_VegetationBackdrop.unity
+    guid: 029afb96a7fb6134abe0972fef9b5639
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_2_3_VegetationBackdrop.unity
+    guid: dceac44c190634648a63098c7afd355b
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_2_4_VegetationBackdrop.unity
+    guid: 909f52cbd5b267a4d9e1eef3c6ce34e6
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_3_-6_VegetationBackdrop.unity
+    guid: fa2487edbc74e4b439172da5b043f61a
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_3_-7_VegetationBackdrop.unity
+    guid: 6da62dbb1138a5d4f874fc8ed6955725
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_3_3_VegetationBackdrop.unity
+    guid: f1b0e04c9476ee546992e42d9961f91f
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_3_4_VegetationBackdrop.unity
+    guid: aa667d7874fca60418cfbbfe56486718
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_4_-4_VegetationBackdrop.unity
+    guid: 8e38f62f5b204ae4dbc8ecc28f0dd708
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_4_-5_VegetationBackdrop.unity
+    guid: 6d2f65dd762a8fa4bb2d495bd5b9c5aa
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_4_-6_VegetationBackdrop.unity
+    guid: fafbe36fa7b0bda48a5a9a331d4606cc
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_4_-7_VegetationBackdrop.unity
+    guid: 3e7bb4924da98504f8e8db77e1c44867
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_4_3_VegetationBackdrop.unity
+    guid: 8edd18d37e0cb5c479c5c3a4b24c9832
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_4_4_VegetationBackdrop.unity
+    guid: 779b72249b5ac1d47a02146802d3227e
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_-1_VegetationBackdrop.unity
+    guid: a1409590496966f479bcfd35d00c9ffe
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_-2_VegetationBackdrop.unity
+    guid: 2d86e342e4932b14db6c77e79191e1c9
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_-3_VegetationBackdrop.unity
+    guid: 2741570a4d7f85742936e2d35e7b9c85
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_-4_VegetationBackdrop.unity
+    guid: c072ff6e22bf48f4988fa023002075cb
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_-5_VegetationBackdrop.unity
+    guid: f5f52ccab25489548ac3e09a7cceed06
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_-6_VegetationBackdrop.unity
+    guid: 692e2d985d247ec40aab46aac177f19c
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_0_VegetationBackdrop.unity
+    guid: 8e7148befad2e554fbf9a41a9ac11878
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_2_VegetationBackdrop.unity
+    guid: f1e3cedf358a44a4dbbfeeb908ecc442
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_3_VegetationBackdrop.unity
+    guid: 0084a0911e1d72345b106a2b6e2da2ef
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_4_VegetationBackdrop.unity
+    guid: c4c467e3651fb5945be9c050e387fdc7
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_-1_VegetationBackdrop.unity
+    guid: 2b6e8fd36976cc8409b946d46142f740
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_-2_VegetationBackdrop.unity
+    guid: 0030c73f623fa4d46aeaa243d50c3b8f
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_-3_VegetationBackdrop.unity
+    guid: 941101d6742ed1e42b883cdcf9f863ba
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_-4_VegetationBackdrop.unity
+    guid: 6dfcd0b2acb48f247ad23c047054cb5d
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_0_VegetationBackdrop.unity
+    guid: 4cc421503a07c72438d01be399805c2a
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_1_VegetationBackdrop.unity
+    guid: 7381adf8f1316334399e3ac7a5182eab
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_2_VegetationBackdrop.unity
+    guid: 4bfef906067abae43a4d6e429df1a66b
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_3_VegetationBackdrop.unity
+    guid: 28f84ff793bb9f84a90ffaf4c109c0a4
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_4_VegetationBackdrop.unity
+    guid: 51e9905196c65ae4f8da7a65c85ef053
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_7_0_VegetationBackdrop.unity
+    guid: 4dedd2caae2f39244b47f80560a367fe
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_7_1_VegetationBackdrop.unity
+    guid: a274ba15aa9168c4da6c5dd7149d1fe2
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_7_2_VegetationBackdrop.unity
+    guid: 317c727a452ebe442a736c3f5db50338
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_7_3_VegetationBackdrop.unity
+    guid: 735585df5111afb4798a52c85baba8e4
+  - enabled: 1
+    path: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Global/World_Global_VegetationPresentation.unity
+    guid: f4127ac129b06324ba894b9784d75071
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   m_UseUCBPForAssetBundles: 0

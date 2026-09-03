@@ -6,6 +6,7 @@ namespace MSC.Interaction.Capabilities
         Placed = 1,
         Thrown = 2,
         MountHandoff = 3,
-        TargetLost = 4
+        TargetLost = 4,
+        Consumed = 5,
     }
 }

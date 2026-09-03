@@ -1,0 +1,139 @@
+{
+    "generatedUtc": "2026-08-04T14:35:39.0261708Z",
+    "passed": true,
+    "scenePath": "Assets/Scenes/Generated/FullMap_UnifiedBaseTerrain.unity",
+    "sourceGlobalScenePath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/World_Global_Legacy.unity",
+    "sourceGlobalSceneSha256": "a4b929ee74b95778f44599e26b081a70e20edcd494f929de7f624c2c632f2322",
+    "importedFbxPath": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/UnifiedTerrain/MSC_UnifiedBaseTerrain_4m_v006_Unity.fbx",
+    "importedFbxSha256": "428b7802991956ba6a2fdb1ebe7b7e57ec72232515500ebb9c054b0da419e827",
+    "donorEntityCount": 3846,
+    "donorRendererEntityCount": 2607,
+    "mergedCellSceneCount": 49,
+    "disabledLegacyGroundEntityCount": 11,
+    "unifiedMeshFilterCount": 1,
+    "unifiedRendererCount": 1,
+    "unifiedSubMeshCount": 1,
+    "unifiedVertexCount": 3563337,
+    "unifiedTriangleCount": 7119112,
+    "unifiedBoundsCenter": {
+        "x": 276.0,
+        "y": 28.196168899536134,
+        "z": -643.9999389648438
+    },
+    "unifiedBoundsSize": {
+        "x": 8008.0,
+        "y": 105.05736541748047,
+        "z": 7111.99951171875
+    },
+    "visibleLegacyGroundRendererCount": 0,
+    "enabledLegacyGroundColliderCount": 0,
+    "integratedRoadColliderCount": 5,
+    "enabledIntegratedRoadColliderCount": 5,
+    "collisionTerrainCount": 72,
+    "collisionTerrainColliderCount": 72,
+    "roadSurfaceEntityCount": 9,
+    "enabledRoadSurfaceRendererCount": 9,
+    "missingScriptCount": 0,
+    "categoryCounts": [
+        {
+            "category": "Bridge",
+            "count": 2
+        },
+        {
+            "category": "BuildingExterior",
+            "count": 1568
+        },
+        {
+            "category": "BuildingInterior",
+            "count": 211
+        },
+        {
+            "category": "ColliderOnly",
+            "count": 772
+        },
+        {
+            "category": "Door",
+            "count": 120
+        },
+        {
+            "category": "Fence",
+            "count": 18
+        },
+        {
+            "category": "Field",
+            "count": 2
+        },
+        {
+            "category": "Floor",
+            "count": 23
+        },
+        {
+            "category": "InteractivePropCandidate",
+            "count": 395
+        },
+        {
+            "category": "Landmark",
+            "count": 9
+        },
+        {
+            "category": "Road",
+            "count": 29
+        },
+        {
+            "category": "RoadSign",
+            "count": 163
+        },
+        {
+            "category": "Rock",
+            "count": 3
+        },
+        {
+            "category": "Roof",
+            "count": 124
+        },
+        {
+            "category": "SpawnMarker",
+            "count": 14
+        },
+        {
+            "category": "StaticProp",
+            "count": 265
+        },
+        {
+            "category": "Terrain",
+            "count": 2
+        },
+        {
+            "category": "UtilityPole",
+            "count": 14
+        },
+        {
+            "category": "VegetationBush",
+            "count": 7
+        },
+        {
+            "category": "VegetationGrass",
+            "count": 3
+        },
+        {
+            "category": "VegetationTree",
+            "count": 18
+        },
+        {
+            "category": "Water",
+            "count": 12
+        },
+        {
+            "category": "Window",
+            "count": 67
+        },
+        {
+            "category": "Wire",
+            "count": 4
+        },
+        {
+            "category": "WorldLayoutReference",
+            "count": 1
+        }
+    ]
+}

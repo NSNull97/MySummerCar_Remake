@@ -1,0 +1,22 @@
+{
+  "name": "MSC.Traffic.Runtime",
+  "rootNamespace": "MSC.Traffic",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Characters.Runtime",
+    "MSC.Core.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Player.Runtime",
+    "MSC.NPC.Runtime",
+    "MSC.World.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

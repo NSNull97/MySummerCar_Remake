@@ -3,6 +3,16 @@ using System;
 namespace MSC.Core.Time
 {
     /// <summary>
+    /// Cross-system boundary for intentional time skips such as sleeping.
+    /// Implementations must advance every authoritative time-dependent domain,
+    /// not only the clock.
+    /// </summary>
+    public interface IGameTimeAdvanceService
+    {
+        bool TryAdvanceGameSeconds(double gameSeconds, out string failure);
+    }
+
+    /// <summary>
     /// Authoritative project-owned game clock. Callers supply explicit simulation
     /// deltas; the service never reads the wall clock or Unity time implicitly.
     /// </summary>

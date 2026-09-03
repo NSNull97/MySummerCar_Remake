@@ -1,13 +1,90 @@
 # Milestone 08A report -- reference-locked main menu, settings and HUD
 
-Status: **ImplementationComplete / VisuallyApproved**  
-Date: **2026-07-20**
+Status: **Five menu/settings screens remain ImplementationComplete /
+VisuallyApproved; 2026-08-05 HUD revision TargetedPlayModePassed /
+CaptureBlocked / VisualApprovalPending; 2026-09-02 context-action revision
+ImplementationComplete / FocusedTestsPassed / VisualReviewPending**
+Original closeout: **2026-07-20**; HUD direction update: **2026-08-05**;
+context-action update: **2026-09-02**
 
 The bounded Milestone 08A implementation and its final 2026-07-20 Gaussian
 correction are technically complete. Focused authoring, EditMode, PlayMode,
 private development build and native capture gates pass; corrected captures are
 recorded. On 2026-07-20 the user reviewed the corrected presentation, including
 the denser Gaussian blur, and explicitly accepted Milestone 08A as excellent.
+
+### 2026-09-02 context-action direction and direct corrections
+
+The new review-only reference replaces the old projected target-title/action
+blocks with a centre dot/open-palm/check/cross reticle and a lower-left stack of at most
+three compact translucent plaques. The user additionally requires carried-item
+release, signed mouse-wheel actions and an Alt-held H/M/N alternative-action
+layer, then explicitly removes the proposed `ALT — ДОП. ДЕЙСТВИЯ` plaque.
+The subsequent in-Editor review adds rounded binding keycaps, effective-button
+mouse glyphs, stronger icon halos and a dynamic bottom-centre target/subtitle
+stack with distinct title/subtitle typography.
+
+The implementation preserves the player-facing `CrossdotPresenter` and
+interaction controller APIs while replacing their presentation internals with
+a fixed-capacity typed snapshot. Directional read-only capability extensions
+make bolt, steering-alignment and sauna-control hints endpoint-aware without
+probing mutating operations. `PlayerInputRouter` owns the Alt state and cached
+live binding labels and glyph categories; existing H/M/N dispatch remains
+unchanged. `IPlayerSubtitleSource` keeps subtitle timing outside the HUD, while
+`IRemovalInteractionTarget` exposes the cross without parsing localized text.
+The source image is documentation-only; runtime icons come from pinned ISC
+Lucide and Apache-2.0 Material Symbols sources.
+
+Current interaction, player, vehicle assembly, home, Needs, EditMode-test and
+PlayMode-test sources compile in Unity `6000.3.11f1` batch mode. The focused
+related EditMode filter passes `88/88`; isolated Alt input passes `1/1`; the
+broader player-flow class passes `8/9`, with only its pre-existing carry-spring
+tolerance case failing. A canonical gameplay capture remains pending. This revision does not change
+routes, stable IDs, save DTOs, gameplay simulations or the approved persistent
+needs/time/money composition; it reopens only context-action visual approval.
+
+### 2026-08-05 direct HUD direction correction
+
+The user supplied a new bounded gameplay-HUD style direction and a direct
+screenshot correction. It replaces only the live HUD composition: all six needs
+form a vertical upper-left column, while the clock moves to upper-right and
+money sits directly beneath it in `value MK` order. Typography increases by only
+1–2 px and the need tracks widen from 124 to 144 px. The reference's
+speedometer/gear cluster is explicitly excluded. Urine and Dirtiness are
+retained even though the image omits them. Text, icons, need tracks, fills and
+amber indicators receive a shared dark shadow so they remain readable over
+bright sky, water and roads. The Russian Dirtiness label remains
+`НЕОПРЯТНОСТЬ`. The optional FPS counter uses the same panel-free shadowed
+treatment, with a pure-white numeric value followed by an amber `FPS` suffix and
+no decorative line.
+
+The source image is catalogued as review-only under
+`References/UI/Direction/`; no reference pixels are runtime dependencies. This
+bounded correction does not modify routes, settings/save schemas, stable IDs,
+gameplay authority or the five accepted menu/settings screens. It reopens only
+HUD validation, capture and user visual approval.
+
+The revised runtime and PlayMode test assemblies compile. Three focused HUD and
+backdrop/spacing tests pass. The full UI PlayMode class reports `16/17` because
+the pre-existing Graphics assertion still expects the already removed
+`UpscalerQualityState`; this failure is outside the HUD correction. A new
+private-player capture was attempted but the player build is blocked by
+unrelated `CS1061` use of `Light.lightmapBakeType` in the untracked
+`Assets/Game/World/Runtime/Lighting/WorldLightingProbeRuntime.cs`. The HUD
+capture and renewed visual approval therefore remain pending without expanding
+this task into world-lighting work.
+
+The latest vertical-layout rerun on 2026-08-05 passes all three affected
+contracts: HUD positions/order/type sizes/track width/colour/shadow/no-line,
+panel-free backdrop ownership and shared spacing
+(`M08A_HudMinimal_Vertical_*_PlayMode.xml`).
+
+A subsequent direct screenshot correction reduces the day/date field gap to
+4 px and splits HUD FPS formatting from the complete main-menu performance
+string: the HUD value is digits-only and one separate amber `FPS` suffix follows
+it at the same 17 px size. Runtime and test assemblies compile; the updated
+focused PlayMode rerun is pending because the project is currently open in the
+user's Unity Editor, which correctly rejects a second batch instance.
 
 ### 2026-07-20 direct user correction
 
@@ -82,6 +159,17 @@ simulation remain dormant. `New Game` activates this gate idempotently before
 the HUD is entered. Non-menu/headless startup retains the established automatic
 activation path.
 
+The 2026-08-06 input-restoration correction preserves the pending enabled state
+of an `IGameplayInputGate` whose hierarchy is inactive behind Main Menu. Before
+this correction, the inactive `PlayerInputRouter` reported its action map as
+disabled, that transient `false` was saved, and New Game restored it after
+activating the player hierarchy; movement and camera sampling could therefore
+remain disabled. Active gates still preserve their live state, and inactive
+components authored as disabled remain disabled. The focused regression also
+covers the following pause/resume cycle. Runtime and test assemblies compile;
+the Unity PlayMode execution is pending because the project is open in the user
+Editor and cannot be opened simultaneously by batch mode.
+
 Main menu and settings use a sharp project-owned `1672 x 941` garage plate.
 Only masked menu glass samples aligned slices from its one-time softened
 full-resolution `1672 x 941`, ARGBHalf Linear Gaussian result, with an 8% tint
@@ -89,8 +177,8 @@ derived from the selected car colour. Four separable horizontal/vertical
 iterations use radii `2 / 4 / 6 / 8`. The
 full-canvas plate is outside `UiScale` and uses aspect-preserved crop coverage,
 so a reduced UI scale cannot expose the dormant gameplay camera at the edges.
-Gameplay stays sharp; the two semi-black HUD glass blocks are stable
-translucent surfaces with no live capture or blur. Pause captures `1024 x 576`
+Gameplay stays sharp; the revised HUD uses shadowed scene-integrated graphics
+with no persistent panel, live capture or blur. Pause captures `1024 x 576`
 once, filters to a `512 x 288` ARGBHalf Gaussian result, displays it full-screen
 and adds a `0.74`-alpha dark dim.
 
@@ -139,15 +227,17 @@ surface.
 
 ## 5. Settings
 
-Schema v2 implements Graphics, Audio, Controls, Gameplay and Accessibility
-DTOs, validation, Defaults/Applied/Pending transactions, atomic JSON writes,
-corrupt-file quarantine and v1 migration. Settings are separate from world
-saves.
+The accepted 08A baseline introduced schema v2 for Graphics, Audio, Controls,
+Gameplay and Accessibility. The current post-08A schema is v5 and retains the
+same validation, Defaults/Applied/Pending transactions, atomic JSON writes and
+corrupt-file quarantine while adding compatible migrations through v4. Settings
+remain separate from world saves.
 
 Supported application covers resolution/display/refresh, VSync, Unity quality
 level, the project `IAudioBackend`, locale, UI scale, mouse/gamepad look
 sensitivity and inversion through `IPlayerLookSettingsSink`, Input System
-dead-zone policy and binding override persistence. Unsupported advanced
+dead-zone policy, binding override persistence, and horizontal FOV/gameplay
+camera far clip through `IPlayerCameraSettingsSink`. Unsupported advanced
 graphics, independent audio buses, save/profile features, vibration and
 remaining gameplay/accessibility adapters stay disabled or adapter-pending.
 
@@ -162,14 +252,21 @@ See `Docs/UI/SETTINGS_SCHEMA.md`.
 
 ## 6. HUD
 
-The HUD uses the locked upper-left composition and exactly the approved
-persistent categories. Project game time is authoritative. Money and needs
-have no production provider and display unavailable values. Deterministic
-values exist only in Editor/development review mode for comparison captures.
-HUD text and bars refresh only when the authoritative clock revision changes,
-not every frame. The two HUD blocks use stable semi-black translucent surfaces;
-they perform no camera capture or blur. This final correction removes the severe
-frame loss previously observed while rotating the camera.
+The HUD uses the revised corner-and-lower-row composition and exactly the
+approved persistent categories. Project game time is authoritative; needs use
+the explicitly composed `IPlayerNeedsService`, with a truthful unavailable
+fallback. Money still has no production provider. Deterministic review values
+exist only in Editor/development mode. HUD text and bars refresh from authority
+revisions, not fabricated state. Clock, money and needs use shadowed
+scene-integrated graphics without panels, camera capture or blur, preserving the
+earlier correction for severe look-input stutter.
+
+Context actions now use the separate 2026-09-02 contract: semantic centre
+affordance state, a lower-left action stack and a bottom-centre dynamic
+target/subtitle stack, with no target-title projection and no permanent Alt
+instruction. `PlayerInteractionController` remains the gameplay authority;
+presentation consumes its non-mutating action snapshot and explicit display
+metadata.
 
 See `Docs/UI/HUD_SPEC.md`.
 
@@ -325,14 +422,15 @@ No approved-reference screenshot pixel is a runtime dependency.
 
 - a temporary project-owned static garage plate with a generic compact vehicle
   stands in for the exact Phase 1 Satsuma presentation;
-- Continue/Load, profiles, money and needs have no backing provider;
+- profiles and money have no backing provider; needs bind through the explicitly
+  composed `IPlayerNeedsService`;
 - unsupported graphics/audio/input rows retain truthful disabled states;
 - several accessibility/gameplay settings are persistence foundations only;
 - the Windows/Unity font fallback and procedural icons remain bounded
   substitutes; 4x fractional-alpha rasterization fixes dominant edge aliasing
   but does not replace final typography art;
-- menu blur is limited to masked glass; HUD uses stable dark translucent blocks
-  without capture/blur; pause uses a one-shot Gaussian frozen frame with dark
+- menu blur is limited to masked glass; HUD uses shadowed scene-integrated
+  graphics without panels/capture/blur; pause uses a one-shot Gaussian frozen frame with dark
   dim and still requires manual appearance/readability validation;
 - the menu plate is deliberately outside accessible UI scale; gameplay remains
   prepared/dormant until the explicit session gate is activated;
@@ -343,13 +441,16 @@ No approved-reference screenshot pixel is a runtime dependency.
 - widescreen variants and physical gamepad navigation need manual review;
 - visual fidelity remains unapproved until the user reviews the canonical
   implementation and blended images.
+- the 2026-09-02 context-action scale/readability still needs a canonical
+  gameplay capture and user review; the focused automated contracts pass.
 
 Detailed register: `Docs/UI/APPROVED_REFERENCE_DEVIATIONS.md`.
 
 ## 14. Compatibility impact and migrations
 
-- route IDs, settings DTO/schema v2, stable IDs, save boundaries and established
-  gameplay interfaces are unchanged;
+- route IDs, stable IDs, world-save boundaries and established gameplay
+  interfaces are unchanged; the independent UI settings schema advances from
+  v4 to v5 for horizontal FOV and camera far clip;
 - one small project-owned `IGameplaySessionGate` boundary is added between the
   prepared production world and UI New Game flow; it extends rather than
   replaces streaming, player, weather or pause architecture;
@@ -361,9 +462,18 @@ Detailed register: `Docs/UI/APPROVED_REFERENCE_DEVIATIONS.md`.
 - pause now covers all gates under the existing composition root and the
   existing vehicle chase camera honours scaled time; no player, interaction,
   vehicle simulation or world-streaming architecture was replaced;
-- no settings, data or save migration is required. Existing control binding JSON
-  remains compatible; only its commit timing is corrected to the shared Pending
+- inactive input gates now preserve their authored pending enabled state across
+  Main Menu -> New Game activation; the `IGameplayInputGate` API is unchanged;
+- no world/data save migration is required. UI settings v1-v4 migrate
+  automatically, with pre-v5 camera values initialized to the existing
+  `120 degrees / 500 m` authored defaults. Existing control binding JSON remains
+  compatible; only its commit timing is corrected to the shared Pending
   transaction.
+- context-action capability extensions are optional/additive; established
+  interaction interfaces and dispatch remain compatible. The canonical player
+  Input System asset gains one `Player/AlternativeActions` action, defaulted to
+  explicit left- and right-Alt bindings. The accepted Controls-screen geometry is unchanged;
+  this bounded HUD task adds no settings row. No save migration is required.
 
 ## 15. Readiness and next gate
 
@@ -384,8 +494,11 @@ Detailed register: `Docs/UI/APPROVED_REFERENCE_DEVIATIONS.md`.
 | corrected comparison files and ReferencePending captures | `PASS; updated 2026-07-20` |
 | manual pause appearance/readability | `PASS`; user accepted final presentation on 2026-07-20 |
 | user visual approval | `PASS`; `VisuallyApproved` on 2026-07-20 |
+| 2026-09-02 context-action revision | `ImplementationComplete / FocusedTestsPassed / VisualReviewPending` |
 
-Milestone 08A is `ImplementationComplete / VisuallyApproved`. Physical-device
-and non-16:9 compatibility checks remain ordinary follow-up coverage and do not
-reopen the accepted canonical 16:9 visual baseline. No later milestone is
-started by this approval record.
+The historical 2026-07-20 Milestone 08A composition remains
+`ImplementationComplete / VisuallyApproved`. The later persistent-HUD,
+Graphics-card and 2026-09-02 context-action corrections retain their explicitly
+pending visual gates; they do not erase the historical evidence. Physical-device
+and non-16:9 compatibility checks remain ordinary follow-up coverage. No later
+milestone is started by this approval record.

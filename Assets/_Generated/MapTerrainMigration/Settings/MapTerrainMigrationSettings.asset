@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 649d25c1833e24347a7893303bb907cb, type: 3}
+  m_Name: MapTerrainMigrationSettings
+  m_EditorClassIdentifier: MSC.MapMigration.Editor::MSCMapMigration.MapMigrationSettings
+  sourceScene: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/World_Global_Legacy.unity
+  sourceRoot: TEMPORARY_DIRECT_IMPORT_ENTITIES
+  includeSiblingBaselineCells: 1
+  outputScene: Assets/Scenes/Generated/3Buildings_TerrainMigration.unity
+  blenderExportFolder: BlenderWork/BaseMap_SourceExport
+  terrainTileSize: 1024
+  targetHeightSampleSpacing: 2
+  maximumTotalHeightSamples: 30000000
+  smoothingStrength: 0.32
+  smoothingIterations: 2
+  maximumAllowedSmoothingDisplacement: 0.75
+  roadClearance: 0.075
+  roadShoulderBlendDistance: 4
+  minimumSourceCoverage: 0.95
+  validationSampleCount: 20000
+  materialTransferMode: 0
+  dryRun: 0
+  lastExportRelativePath: BlenderWork/BaseMap_SourceExport/20260803_162611_222Z
+  lastExportFingerprint: 869cb1970562dd3b

@@ -1,6 +1,7 @@
 using MSC.Weather.Domain;
 using MSC.Weather.Lightning;
 using MSC.Weather.Production;
+using Unity.Profiling;
 using UnityEngine;
 
 namespace MSC.Audio.WeatherIntegration
@@ -13,6 +14,9 @@ namespace MSC.Audio.WeatherIntegration
     [DisallowMultipleComponent]
     public sealed class WeatherAudioPresenter : MonoBehaviour
     {
+        private static readonly ProfilerMarker BridgeMarker =
+            new ProfilerMarker("MSC.WwiseWeatherBridge");
+
         public const float RainLoopStartThreshold = 0.01f;
         public const float RainLoopStopThreshold = 0.005f;
         public const float WindLoopStartThreshold = 0.18f;
@@ -22,6 +26,7 @@ namespace MSC.Audio.WeatherIntegration
         [SerializeField] private MonoBehaviour backendComponent;
         [SerializeField] private AudioEmitterAuthoring ambienceEmitter;
         [SerializeField] private AudioListenerContextPresenter listenerPresenter;
+        [SerializeField] private WeatherExposureResolver exposureResolver;
 
         private IAudioBackend backend;
         private IAudioEventHandle rainHandle = AudioEventHandles.Invalid;
@@ -31,8 +36,10 @@ namespace MSC.Audio.WeatherIntegration
         private uint latestLightningSequence;
         private uint latestThunderSequence;
         private bool subscribed;
+        private bool playbackPaused;
         private float precipitationIntensity01;
         private float windIntensity01;
+        private float normalizedDayTime01 = 0.5f;
 
         public bool IsInitialized => backend != null && environmentController != null;
 
@@ -40,7 +47,8 @@ namespace MSC.Audio.WeatherIntegration
             ProductionEnvironmentController controller,
             MonoBehaviour audioBackend,
             AudioEmitterAuthoring weatherEmitter,
-            AudioListenerContextPresenter listener = null)
+            AudioListenerContextPresenter listener = null,
+            WeatherExposureResolver weatherExposureResolver = null)
         {
             Unsubscribe();
             StopLoop(ref rainHandle);
@@ -51,7 +59,9 @@ namespace MSC.Audio.WeatherIntegration
             backendComponent = audioBackend;
             ambienceEmitter = weatherEmitter;
             listenerPresenter = listener;
+            exposureResolver = weatherExposureResolver;
             backend = backendComponent as IAudioBackend;
+            playbackPaused = IsPlaybackPaused();
             if (isActiveAndEnabled)
             {
                 Subscribe();
@@ -98,7 +108,42 @@ namespace MSC.Audio.WeatherIntegration
 
         private void Update()
         {
-            if (backend == null || !backend.IsReady)
+            if (backend == null)
+            {
+                return;
+            }
+
+            bool shouldPause = IsPlaybackPaused();
+            if (shouldPause)
+            {
+                if (!playbackPaused)
+                {
+                    playbackPaused = true;
+                    StopLoop(ref rainHandle);
+                    StopLoop(ref windHandle);
+                    activeRainSpace = (AudioListenerSpace)(-1);
+                }
+
+                return;
+            }
+
+            if (playbackPaused)
+            {
+                playbackPaused = false;
+                activeRainSpace = (AudioListenerSpace)(-1);
+                if (backend.IsReady)
+                {
+                    WeatherEnvironmentOutputs resumed =
+                        environmentController.CurrentOutputs;
+                    if (resumed.IsValid)
+                    {
+                        ApplyEnvironmentOutputs(resumed);
+                        return;
+                    }
+                }
+            }
+
+            if (!backend.IsReady)
             {
                 return;
             }
@@ -129,6 +174,7 @@ namespace MSC.Audio.WeatherIntegration
             StopLoop(ref windHandle);
             activeRainSpace = (AudioListenerSpace)(-1);
             activeBackendId = string.Empty;
+            playbackPaused = false;
         }
 
         private void Subscribe()
@@ -141,6 +187,10 @@ namespace MSC.Audio.WeatherIntegration
             environmentController.EnvironmentOutputsChanged += HandleEnvironmentOutputs;
             environmentController.LightningOccurred += HandleLightning;
             environmentController.ThunderRequested += HandleThunder;
+            if (exposureResolver != null)
+            {
+                exposureResolver.ExposureChanged += HandleExposureChanged;
+            }
             subscribed = true;
 
             WeatherEnvironmentOutputs current = environmentController.CurrentOutputs;
@@ -160,12 +210,17 @@ namespace MSC.Audio.WeatherIntegration
             environmentController.EnvironmentOutputsChanged -= HandleEnvironmentOutputs;
             environmentController.LightningOccurred -= HandleLightning;
             environmentController.ThunderRequested -= HandleThunder;
+            if (exposureResolver != null)
+            {
+                exposureResolver.ExposureChanged -= HandleExposureChanged;
+            }
             subscribed = false;
         }
 
         private void HandleEnvironmentOutputs(WeatherEnvironmentOutputs outputs)
         {
-            if (backend == null || !backend.IsReady || !outputs.IsValid)
+            if (backend == null || !backend.IsReady || !outputs.IsValid ||
+                IsPlaybackPaused())
             {
                 return;
             }
@@ -175,6 +230,15 @@ namespace MSC.Audio.WeatherIntegration
         }
 
         private void ApplyEnvironmentOutputs(WeatherEnvironmentOutputs outputs)
+        {
+            using (BridgeMarker.Auto())
+            {
+                ApplyEnvironmentOutputsUnprofiled(outputs);
+            }
+        }
+
+        private void ApplyEnvironmentOutputsUnprofiled(
+            WeatherEnvironmentOutputs outputs)
         {
             // This method deliberately replays the complete weather state. The
             // router can switch from Unity fallback to Wwise after SoundBanks
@@ -201,12 +265,20 @@ namespace MSC.Audio.WeatherIntegration
             precipitationIntensity01 =
                 FiniteClamp01(outputs.Audio.PrecipitationIntensity01);
             windIntensity01 = FiniteClamp01(outputs.Audio.WindIntensity01);
+            normalizedDayTime01 = FiniteClamp01(outputs.Clock.NormalizedDayTime01);
 
-            listenerPresenter?.SetWeatherContext(
-                outputs.Audio.PrecipitationIntensity01,
-                outputs.Audio.WindIntensity01,
-                outputs.Clock.NormalizedDayTime01,
-                MapExposure(outputs.ExposureContext));
+            if (exposureResolver != null)
+            {
+                ApplyExposureParameters(exposureResolver.Current);
+            }
+            else
+            {
+                listenerPresenter?.SetWeatherContext(
+                    precipitationIntensity01,
+                    windIntensity01,
+                    normalizedDayTime01,
+                    MapExposure(outputs.ExposureContext));
+            }
 
             // Use the current project-owned production shelter output
             // immediately. AudioListenerContextPresenter applies the same value
@@ -217,9 +289,46 @@ namespace MSC.Audio.WeatherIntegration
             UpdateWindLoop();
         }
 
+        private void HandleExposureChanged(WeatherExposureState exposure)
+        {
+            if (backend == null || !backend.IsReady || IsPlaybackPaused())
+            {
+                return;
+            }
+
+            ApplyExposureParameters(exposure);
+            UpdateRainLoop(MapExposure(exposure));
+        }
+
+        private void ApplyExposureParameters(in WeatherExposureState exposure)
+        {
+            float audioShelter = CalculateExistingShelterParameter(exposure);
+            float obstruction =
+                exposure.EnclosureFactor * (1f - exposure.PortalExposure);
+            backend.SetParameter(
+                AudioProjectIds.Parameters.WeatherPrecipitation,
+                CalculateAudiblePrecipitation(
+                    precipitationIntensity01,
+                    exposure),
+                ambienceEmitter);
+            backend.SetParameter(
+                AudioProjectIds.Parameters.EnvironmentShelter,
+                audioShelter,
+                ambienceEmitter);
+            listenerPresenter?.SetWeatherExposureContext(
+                precipitationIntensity01,
+                windIntensity01,
+                normalizedDayTime01,
+                MapExposure(exposure),
+                audioShelter,
+                obstruction,
+                exposure.EnclosureFactor * 0.35f);
+        }
+
         private void HandleLightning(LightningStrikeEvent strike)
         {
-            if (backend == null || !backend.IsReady || strike.Sequence <= latestLightningSequence)
+            if (backend == null || !backend.IsReady || IsPlaybackPaused() ||
+                strike.Sequence <= latestLightningSequence)
             {
                 return;
             }
@@ -234,7 +343,8 @@ namespace MSC.Audio.WeatherIntegration
 
         private void HandleThunder(ThunderAudioRequest thunder)
         {
-            if (backend == null || !backend.IsReady || thunder.Sequence <= latestThunderSequence)
+            if (backend == null || !backend.IsReady || IsPlaybackPaused() ||
+                thunder.Sequence <= latestThunderSequence)
             {
                 return;
             }
@@ -269,15 +379,18 @@ namespace MSC.Audio.WeatherIntegration
                 return;
             }
 
-            if (activeRainSpace == space && isActive)
+            AudioListenerSpace eventSpace = exposureResolver != null
+                ? AudioListenerSpace.Exterior
+                : space;
+            if (activeRainSpace == eventSpace && isActive)
             {
                 return;
             }
 
             StopLoop(ref rainHandle);
-            activeRainSpace = space;
+            activeRainSpace = eventSpace;
             AudioEventId eventId;
-            switch (space)
+            switch (eventSpace)
             {
                 case AudioListenerSpace.Interior:
                 case AudioListenerSpace.VehicleInterior:
@@ -369,6 +482,13 @@ namespace MSC.Audio.WeatherIntegration
                 ? 0f
                 : Mathf.Clamp01(value);
 
+        private bool IsPlaybackPaused() =>
+            AudioPausePolicy.ShouldPausePlayback(
+                environmentController != null &&
+                environmentController.GameTime != null &&
+                environmentController.GameTime.Snapshot.IsPaused,
+                Time.timeScale);
+
         private static void StopLoop(ref IAudioEventHandle handle)
         {
             if (handle == null)
@@ -407,6 +527,32 @@ namespace MSC.Audio.WeatherIntegration
                     return AudioListenerSpace.Exterior;
             }
         }
+
+        public static AudioListenerSpace MapExposure(
+            in WeatherExposureState exposure)
+        {
+            if (exposure.IndoorFactor >= 0.65f)
+            {
+                return AudioListenerSpace.Interior;
+            }
+
+            if (exposure.ShelterFactor >= 0.5f)
+            {
+                return AudioListenerSpace.Sheltered;
+            }
+
+            return AudioListenerSpace.Exterior;
+        }
+
+        public static float CalculateExistingShelterParameter(
+            in WeatherExposureState exposure) =>
+            1f - Mathf.Clamp01(exposure.WeatherAudioExposure);
+
+        public static float CalculateAudiblePrecipitation(
+            float precipitationIntensity01,
+            in WeatherExposureState exposure) =>
+            FiniteClamp01(precipitationIntensity01) *
+            Mathf.Clamp01(exposure.WeatherAudioExposure);
 
         public static AudioEventRequest MapThunderRequest(in ThunderAudioRequest thunder) =>
             new AudioEventRequest(

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq;
 using MSC.Interaction;
+using MSC.Interaction.Capabilities;
 using MSC.Interaction.Carrying;
 using MSC.Player;
 using MSC.Vehicle.Assembly;
@@ -26,7 +27,12 @@ namespace MSC.Tests.PlayMode.VehicleAssembly
                 yield return null;
             }
 
-            controller = Object.FindFirstObjectByType<VehicleAssemblyController>();
+            Scene activeScene = SceneManager.GetActiveScene();
+            controller = Object
+                .FindObjectsByType<VehicleAssemblyController>(
+                    FindObjectsInactive.Include,
+                    FindObjectsSortMode.None)
+                .Single(value => value.gameObject.scene == activeScene);
             controller.Initialize();
             drum = FindPart("vehicle.brake_drum_rl");
             drumMount = FindMountFor("vehicle.brake_drum_rl");
@@ -48,7 +54,7 @@ namespace MSC.Tests.PlayMode.VehicleAssembly
         }
 
         [UnityTest]
-        public IEnumerator M4CarryHandoff_InstallsRepresentativeDrum()
+        public IEnumerator M4CarryHandoff_SmoothlyInstallsRepresentativeDrum()
         {
             PhysicalCarryController carry = Object.FindFirstObjectByType<PhysicalCarryController>();
             InteractionContext context = CreateContext(carry.gameObject);
@@ -56,14 +62,24 @@ namespace MSC.Tests.PlayMode.VehicleAssembly
             Renderer[] visualRenderers = drum.GetComponentsInChildren<Renderer>(true);
             Assert.That(visualRenderers, Is.Not.Empty);
             Assert.That(carry.TryPickup(drum.PickupTarget, context), Is.True);
-            drum.transform.SetPositionAndRotation(drumMount.Pose.position, drumMount.Pose.rotation);
+            Vector3 releasedPosition =
+                drumMount.Pose.position + Vector3.up * 0.15f;
+            drum.transform.SetPositionAndRotation(
+                releasedPosition,
+                drumMount.Pose.rotation);
             Physics.SyncTransforms();
             AssemblyMountHandoffTarget target = drumMount.GetComponent<AssemblyMountHandoffTarget>();
 
             Assert.That(carry.TryHandoff(target, context), Is.True, target.HandoffPrompt);
+            Assert.That(carry.HasHeldObject, Is.False);
+            Assert.That(drum.IsInstalled, Is.False);
+            Assert.That(
+                Vector3.Distance(drum.transform.position, releasedPosition),
+                Is.LessThan(0.01f));
+
+            yield return new WaitForSeconds(0.4f);
             yield return new WaitForFixedUpdate();
 
-            Assert.That(carry.HasHeldObject, Is.False);
             Assert.That(drum.IsInstalled, Is.True);
             Assert.That(drum.Body.isKinematic, Is.True);
             Assert.That(drum.transform.lossyScale.x, Is.EqualTo(scaleBeforeInstall.x).Within(0.001f));
@@ -80,11 +96,18 @@ namespace MSC.Tests.PlayMode.VehicleAssembly
         {
             InstallDrumDirect();
             AssemblyFastenerInteractionTarget target =
-                drumMount.GetComponentInChildren<AssemblyFastenerInteractionTarget>(true);
+                drumMount
+                    .GetComponentsInChildren<AssemblyFastenerInteractionTarget>(true)
+                    .Single(value => value.MountId == drumMount.MountId);
             InteractionContext context = CreateContext(target.gameObject);
             for (int i = 0; i < 8; i++)
             {
                 target.ActivateTool(context);
+                Assert.That(
+                    GetDrumFastener().Stage,
+                    Is.EqualTo(i + 1),
+                    $"Fastener interaction diverged at turn {i + 1}: " +
+                    controller.LastOperationResult.Message);
             }
 
             Assert.That(GetDrumFastener().Stage, Is.EqualTo(8));
@@ -93,6 +116,71 @@ namespace MSC.Tests.PlayMode.VehicleAssembly
             yield return null;
 
             Assert.That(GetDrumFastener().Stage, Is.EqualTo(7));
+        }
+
+        [UnityTest]
+        public IEnumerator FastenerTarget_MouseWheelDirectionTightensAndLoosensWithMatchingWrench()
+        {
+            InstallDrumDirect();
+            AssemblyFastenerInteractionTarget target = drumMount
+                .GetComponentsInChildren<AssemblyFastenerInteractionTarget>(true)
+                .Single(value => value.MountId == drumMount.MountId);
+            FastenerInstance fastener = GetDrumFastener();
+            var heldTool = new TestHeldToolIdentity(
+                "Wrench",
+                ((int)fastener.Definition.Size).ToString());
+            InteractionContext context = CreateContext(target.gameObject);
+            Assert.That(
+                target.TryActivateHeldTool(
+                    heldTool,
+                    context,
+                    1f),
+                Is.True);
+            Assert.That(fastener.Stage, Is.EqualTo(1));
+            Assert.That(
+                target.TryActivateHeldTool(
+                    heldTool,
+                    context,
+                    -1f),
+                Is.True);
+            Assert.That(
+                fastener.Stage,
+                Is.EqualTo(1),
+                "Extra wheel notches must be consumed until the current " +
+                "BetterMSC work/regrip cycle finishes.");
+
+            yield return new WaitForSecondsRealtime(0.4f);
+
+            Assert.That(
+                target.TryActivateHeldTool(
+                    heldTool,
+                    context,
+                    -1f),
+                Is.True);
+            Assert.That(fastener.Stage, Is.Zero);
+            yield return new WaitForSecondsRealtime(0.4f);
+        }
+
+        [UnityTest]
+        public IEnumerator FastenerTarget_IsRaycastableOnlyWhileItsPartIsInstalled()
+        {
+            AssemblyFastenerInteractionTarget target =
+                drumMount
+                    .GetComponentsInChildren<AssemblyFastenerInteractionTarget>(true)
+                    .Single(value => value.MountId == drumMount.MountId);
+            Collider targetCollider = target.GetComponent<Collider>();
+            yield return null;
+
+            Assert.That(targetCollider, Is.Not.Null);
+            Assert.That(targetCollider.enabled, Is.False);
+
+            InstallDrumDirect();
+            yield return null;
+            Assert.That(targetCollider.enabled, Is.True);
+
+            Assert.That(controller.TryRemove(drum).Succeeded, Is.True);
+            yield return null;
+            Assert.That(targetCollider.enabled, Is.False);
         }
 
         [UnityTest]
@@ -137,6 +225,46 @@ namespace MSC.Tests.PlayMode.VehicleAssembly
             Assert.That(drum.IsInstalled, Is.False);
             Assert.That(drum.Body.isKinematic, Is.False);
             Assert.That(drum.PickupTarget.CanPickup(CreateContext(drum.gameObject)), Is.True);
+        }
+
+        [UnityTest]
+        public IEnumerator InstalledParts_FollowMovedAssemblyRootAsOnePhysicalAggregate()
+        {
+            InstallDrumDirect();
+            PartInstance trailingArm = FindPart("vehicle.trailing_arm_rl");
+            PartInstance assemblyRoot = controller.Parts.Single(part => part.IsAssemblyRoot);
+            Vector3 drumLocalPosition = assemblyRoot.transform.InverseTransformPoint(
+                drum.transform.position);
+            Vector3 armLocalPosition = assemblyRoot.transform.InverseTransformPoint(
+                trailingArm.transform.position);
+            Quaternion rotationDelta = Quaternion.Euler(0f, 31f, 0f);
+            assemblyRoot.transform.SetPositionAndRotation(
+                assemblyRoot.transform.position + new Vector3(2.4f, 0.35f, -1.2f),
+                rotationDelta * assemblyRoot.transform.rotation);
+
+            controller.SynchronizeInstalledParts();
+            Physics.SyncTransforms();
+            yield return new WaitForFixedUpdate();
+            yield return null;
+
+            Assert.That(
+                Vector3.Distance(
+                    drum.transform.position,
+                    assemblyRoot.transform.TransformPoint(drumLocalPosition)),
+                Is.LessThan(0.002f));
+            Assert.That(
+                Vector3.Distance(
+                    trailingArm.transform.position,
+                    assemblyRoot.transform.TransformPoint(armLocalPosition)),
+                Is.LessThan(0.002f));
+            Assert.That(
+                Vector3.Distance(drum.Body.position, drum.transform.position),
+                Is.LessThan(0.0001f));
+            Assert.That(
+                Vector3.Distance(
+                    trailingArm.Body.position,
+                    trailingArm.transform.position),
+                Is.LessThan(0.0001f));
         }
 
         [UnityTest]
@@ -204,6 +332,19 @@ namespace MSC.Tests.PlayMode.VehicleAssembly
         private static InteractionContext CreateContext(GameObject interactor)
         {
             return new InteractionContext(interactor, interactor.transform.position, interactor.transform.forward);
+        }
+
+        private sealed class TestHeldToolIdentity : IHeldToolIdentity
+        {
+            public TestHeldToolIdentity(string toolType, string toolVariant)
+            {
+                ToolType = toolType;
+                ToolVariant = toolVariant;
+            }
+
+            public string ToolType { get; }
+
+            public string ToolVariant { get; }
         }
     }
 }

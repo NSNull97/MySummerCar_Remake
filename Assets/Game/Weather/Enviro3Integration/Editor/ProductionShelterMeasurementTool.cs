@@ -656,7 +656,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
             builder.Append('|');
             builder.Append(value.ToString(
                 "R",
-                System.Globalization.CultureInfo.InvariantCulture));
+                global::System.Globalization.CultureInfo.InvariantCulture));
         }
 
         private static bool IsSha256(string value) =>

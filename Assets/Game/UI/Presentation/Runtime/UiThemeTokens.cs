@@ -11,7 +11,20 @@ namespace MSC.UI.Presentation
         public static readonly Color MenuBackdropFallback = new Color(0.018f, 0.015f, 0.013f, 1f);
         public static readonly Color PauseBackdropDim = new Color(0.006f, 0.005f, 0.004f, 0.74f);
         public static readonly Color MenuGlassNeutral = new Color(0.055f, 0.050f, 0.045f, 0.60f);
-        public static readonly Color HudGlassTint = new Color(0.008f, 0.009f, 0.009f, 0.70f);
+        public static readonly Color HudGlassTint =
+            new Color(0.006f, 0.007f, 0.008f, 0.78f);
+        public static readonly Color HudBorder =
+            new Color(0.78f, 0.80f, 0.82f, 0.16f);
+        public static readonly Color HudTrack =
+            new Color(0.18f, 0.19f, 0.20f, 0.94f);
+        public static readonly Color HudIconBackground =
+            new Color(0.02f, 0.022f, 0.024f, 0.74f);
+        public static readonly Color HudMinimalShadow =
+            new Color(0f, 0f, 0f, 0.38f);
+        public static readonly Color HudMinimalTrack =
+            new Color(0.94f, 0.94f, 0.92f, 0.30f);
+        public static readonly Color HudMinimalFill =
+            new Color(0.96f, 0.95f, 0.92f, 0.78f);
         public static readonly Color Panel = new Color(0.055f, 0.047f, 0.04f, 0.88f);
         public static readonly Color Card = new Color(0.08f, 0.07f, 0.06f, 0.78f);
         public static readonly Color Row = new Color(0.15f, 0.13f, 0.115f, 0.72f);

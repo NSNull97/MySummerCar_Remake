@@ -22,3 +22,10 @@ Do not:
 
 Recreate the interface from project-owned layouts, styles, icons, strings, and
 view models.
+
+## Direction references
+
+`Direction/` contains later user-supplied visual-direction images that refine a
+bounded part of an approved screen. Each directory README records what is and is
+not authoritative. These images remain review-only and are never runtime
+dependencies.

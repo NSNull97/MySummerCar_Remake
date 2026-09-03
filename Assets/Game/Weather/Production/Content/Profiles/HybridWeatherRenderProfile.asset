@@ -1,0 +1,142 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f247a188fe86d4a9b509c6cdc23534, type: 3}
+  m_Name: HybridWeatherRenderProfile
+  m_EditorClassIdentifier: MSC.Weather.Production.Runtime::MSC.Weather.Production.HybridWeatherRenderProfile
+  fallback:
+    weatherId: weather.clear
+    fogTint: {r: 1, g: 1, b: 1, a: 1}
+    baseHeightMeters: 0
+    maximumHeightMeters: 80
+    maximumFogDistanceMeters: 6000
+    anisotropy: 0
+    singleScatteringAlbedo: {r: 1, g: 1, b: 1, a: 1}
+    exposureCompensationEv: 0
+    volumetricLightDimmer: 1
+    daytimeColorFilter: {r: 0.93, g: 0.97, b: 1, a: 1}
+    daytimeTemperature: -10
+    daytimeTint: -2
+    daytimeContrast: -4
+    daytimeSaturation: -10
+  entries:
+  - weatherId: weather.partly_cloudy
+    fogTint: {r: 0.9, g: 0.94, b: 0.98, a: 1}
+    baseHeightMeters: 0
+    maximumHeightMeters: 90
+    maximumFogDistanceMeters: 6000
+    anisotropy: 0.02
+    singleScatteringAlbedo: {r: 1, g: 1, b: 1, a: 1}
+    exposureCompensationEv: 0
+    volumetricLightDimmer: 0.95
+    daytimeColorFilter: {r: 0.95, g: 0.98, b: 1, a: 1}
+    daytimeTemperature: -8
+    daytimeTint: -1
+    daytimeContrast: -5
+    daytimeSaturation: -12
+  - weatherId: weather.overcast
+    fogTint: {r: 0.8, g: 0.86, b: 0.9, a: 1}
+    baseHeightMeters: 0
+    maximumHeightMeters: 90
+    maximumFogDistanceMeters: 5000
+    anisotropy: 0.05
+    singleScatteringAlbedo: {r: 1, g: 1, b: 1, a: 1}
+    exposureCompensationEv: -0.2
+    volumetricLightDimmer: 0.8
+    daytimeColorFilter: {r: 0.97, g: 0.985, b: 1, a: 1}
+    daytimeTemperature: -4
+    daytimeTint: 0
+    daytimeContrast: -8
+    daytimeSaturation: -15
+  - weatherId: weather.drizzle
+    fogTint: {r: 0.72, g: 0.8, b: 0.84, a: 1}
+    baseHeightMeters: 0
+    maximumHeightMeters: 80
+    maximumFogDistanceMeters: 3500
+    anisotropy: 0.1
+    singleScatteringAlbedo: {r: 1, g: 1, b: 1, a: 1}
+    exposureCompensationEv: -0.3
+    volumetricLightDimmer: 0.75
+    daytimeColorFilter: {r: 0.92, g: 0.96, b: 1, a: 1}
+    daytimeTemperature: -12
+    daytimeTint: -2
+    daytimeContrast: -9
+    daytimeSaturation: -17
+  - weatherId: weather.steady_rain
+    fogTint: {r: 0.68, g: 0.76, b: 0.81, a: 1}
+    baseHeightMeters: 0
+    maximumHeightMeters: 75
+    maximumFogDistanceMeters: 2800
+    anisotropy: 0.12
+    singleScatteringAlbedo: {r: 1, g: 1, b: 1, a: 1}
+    exposureCompensationEv: -0.42
+    volumetricLightDimmer: 0.65
+    daytimeColorFilter: {r: 0.9, g: 0.95, b: 1, a: 1}
+    daytimeTemperature: -16
+    daytimeTint: -3
+    daytimeContrast: -10
+    daytimeSaturation: -18
+  - weatherId: weather.heavy_rain
+    fogTint: {r: 0.62, g: 0.7, b: 0.76, a: 1}
+    baseHeightMeters: 0
+    maximumHeightMeters: 70
+    maximumFogDistanceMeters: 2200
+    anisotropy: 0.15
+    singleScatteringAlbedo: {r: 1, g: 1, b: 1, a: 1}
+    exposureCompensationEv: -0.55
+    volumetricLightDimmer: 0.55
+    daytimeColorFilter: {r: 0.88, g: 0.94, b: 1, a: 1}
+    daytimeTemperature: -20
+    daytimeTint: -4
+    daytimeContrast: -12
+    daytimeSaturation: -20
+  - weatherId: weather.thunderstorm
+    fogTint: {r: 0.52, g: 0.6, b: 0.68, a: 1}
+    baseHeightMeters: 0
+    maximumHeightMeters: 70
+    maximumFogDistanceMeters: 1600
+    anisotropy: 0.2
+    singleScatteringAlbedo: {r: 1, g: 1, b: 1, a: 1}
+    exposureCompensationEv: -0.75
+    volumetricLightDimmer: 0.4
+    daytimeColorFilter: {r: 0.86, g: 0.92, b: 1, a: 1}
+    daytimeTemperature: -24
+    daytimeTint: -5
+    daytimeContrast: -14
+    daytimeSaturation: -22
+  - weatherId: weather.morning_mist
+    fogTint: {r: 0.86, g: 0.9, b: 0.92, a: 1}
+    baseHeightMeters: 0
+    maximumHeightMeters: 35
+    maximumFogDistanceMeters: 900
+    anisotropy: 0.25
+    singleScatteringAlbedo: {r: 1, g: 1, b: 1, a: 1}
+    exposureCompensationEv: 0
+    volumetricLightDimmer: 0.8
+    daytimeColorFilter: {r: 0.96, g: 0.98, b: 1, a: 1}
+    daytimeTemperature: -6
+    daytimeTint: 0
+    daytimeContrast: -10
+    daytimeSaturation: -16
+  - weatherId: weather.dense_fog
+    fogTint: {r: 0.82, g: 0.86, b: 0.88, a: 1}
+    baseHeightMeters: 0
+    maximumHeightMeters: 45
+    maximumFogDistanceMeters: 350
+    anisotropy: 0.3
+    singleScatteringAlbedo: {r: 1, g: 1, b: 1, a: 1}
+    exposureCompensationEv: -0.15
+    volumetricLightDimmer: 0.65
+    daytimeColorFilter: {r: 0.98, g: 0.99, b: 1, a: 1}
+    daytimeTemperature: -3
+    daytimeTint: 0
+    daytimeContrast: -14
+    daytimeSaturation: -20

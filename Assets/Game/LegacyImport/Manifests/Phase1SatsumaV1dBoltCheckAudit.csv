@@ -1,0 +1,101 @@
+ComponentId,GameObjectId,TransformId,HierarchyPath,HasBoltedYES,BoltedYES,HasBoltedNO,BoltedNO,ReferencesTightness,ReferencesBREAK,ReferencesSpeedKMH,LooseBreakSpeedKph,PartialCheckSpeedKph,ChanceMaximumTightness,ChanceDivisor,HasChanceFormula,IsWheelRetentionPolicy,TransferStatus
+110020,21036,57097,"CARPARTS/PartsCar/bootlid(Clone)",true,24,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+112769,30242,66293,"CARPARTS/PartsCar/bumper front(Clone)",true,6,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+104715,2149,38205,"CARPARTS/PartsCar/bumper rear(Clone)",true,6,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+110761,23566,59626,"CARPARTS/PartsCar/door left(Clone)",true,28,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+112705,30067,66117,"CARPARTS/PartsCar/door right(Clone)",true,28,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+113538,32861,68921,"CARPARTS/PartsCar/fender left(Clone)",true,28,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+106910,9801,45852,"CARPARTS/PartsCar/fender right(Clone)",true,28,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+108392,14991,51053,"CARPARTS/PartsCar/grille(Clone)",true,6,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+111922,27648,63703,"CARPARTS/PartsCar/hood(Clone)",true,8,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+113900,34253,70305,"CARPARTS/PartsCar/wheel_steel1",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+111136,24941,61000,"CARPARTS/PartsCar/wheel_steel2",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+108243,14477,50534,"CARPARTS/PartsCar/wheel_steel3",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+111898,27568,63620,"CARPARTS/PartsCar/wheel_steel4",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+114016,34684,70738,"CARPARTS/PartsGT/wheel_gt1",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+109103,17663,53724,"CARPARTS/PartsGT/wheel_gt2",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+112738,30107,66158,"CARPARTS/PartsGT/wheel_gt3",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+107110,10549,46605,"CARPARTS/PartsGT/wheel_gt4",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+110216,21679,57736,"REPAIRSHOP/JunkCar4/Parts/wheel_steel5",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+113307,32023,68082,"SATSUMA(557kg, 248)/Chassis/FL/Wishbone/Arm/IK_wishbone_fl/wishbone fl(xxxxx)",true,2,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+107527,11974,48021,"SATSUMA(557kg, 248)/Chassis/FL/halfshaft_fl/halfshaft(xxxxx)",true,2,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+106261,7714,43770,"SATSUMA(557kg, 248)/Chassis/FL/strut fl rally(xxxxx)",true,3,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+108085,13821,49879,"SATSUMA(557kg, 248)/Chassis/FL/strut fl(xxxxx)",true,3,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+114055,34825,70876,"SATSUMA(557kg, 248)/Chassis/FR/Wishbone/Arm/IK_wishbone_fr/wishbone fr(xxxxx)",true,2,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+110145,21498,57559,"SATSUMA(557kg, 248)/Chassis/FR/halfshaft_fr/halfshaft(xxxxx)",true,2,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+105420,4722,40776,"SATSUMA(557kg, 248)/Chassis/FR/strut fr rally(xxxxx)",true,3,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+108452,15127,51184,"SATSUMA(557kg, 248)/Chassis/FR/strut fr(xxxxx)",true,3,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+108425,15087,51146,"SATSUMA(557kg, 248)/Chassis/RL/ShockTop/Arm/shock absorber rally(rlxxx)",true,2,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+113609,33169,69228,"SATSUMA(557kg, 248)/Chassis/RL/ShockTop/Arm/shock absorber(rlxxx)",true,2,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+107386,11502,47549,"SATSUMA(557kg, 248)/Chassis/RL/TrailArm/Arm/trail arm rl(xxxxx)",true,12,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+112207,28502,64556,"SATSUMA(557kg, 248)/Chassis/RR/ShockTop/Arm/shock absorber rally(rrxxx)",true,2,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+106944,9915,45970,"SATSUMA(557kg, 248)/Chassis/RR/ShockTop/Arm/shock absorber(rrxxx)",true,2,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+113636,33251,69310,"SATSUMA(557kg, 248)/Chassis/RR/TrailArm/Arm/trail arm rr(xxxxx)",true,12,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+113483,32711,68773,"SATSUMA(557kg, 248)/Chassis/steering rack(xxxxx)",true,24,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+111004,24431,60493,"SATSUMA(557kg, 248)/Chassis/steering rod fl(xxxxx)",true,8,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+104921,2810,38864,"SATSUMA(557kg, 248)/Chassis/steering rod fr(xxxxx)",true,8,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+107345,11354,47402,"SATSUMA(557kg, 248)/Chassis/sub frame(xxxxx)",true,26,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+108776,16469,52534,"SATSUMA(557kg, 248)/Dashboard/Steering/CarSteeringPivot/steering column(xxxxx)",true,10,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+112821,30372,66424,"SATSUMA(557kg, 248)/Dashboard/Steering/steering_column2/tachometer(xxxx1)",true,2,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+112358,28925,64972,"SATSUMA(557kg, 248)/Dashboard/center console gt(xxxxx)",true,6,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+110586,22967,59024,"SATSUMA(557kg, 248)/Dashboard/gear stick(xxxxx)",true,6,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+110196,21615,57671,"SATSUMA(557kg, 248)/FL/AckerFL/wheelFL/SpindleFL/OFFSET/spindle fl(xxxxx)",true,2,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+104208,347,36394,"SATSUMA(557kg, 248)/FL/AckerFL/wheelFL/TireFL/OFFSET/discbrake(flxxx)",true,2,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+110399,22276,58329,"SATSUMA(557kg, 248)/FR/AckerFR/wheelFR/SpindleFR/OFFSET/spindle fr(xxxxx)",true,2,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+107488,11850,47897,"SATSUMA(557kg, 248)/FR/AckerFR/wheelFR/TireFR/OFFSET/discbrake(frxxx)",true,2,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+110656,23197,59251,"SATSUMA(557kg, 248)/Interior/fire extinguisher holder(xxxxx)",true,2,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+109758,20176,56240,"SATSUMA(557kg, 248)/Interior/n2o bottle holder(xxxxx)",true,2,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+111444,26083,62140,"SATSUMA(557kg, 248)/Interior/racing harness(xxxxx)",true,4,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+112500,29367,65418,"SATSUMA(557kg, 248)/MiscParts/HandBrake/handbrake(xxxxx)",true,6,true,0,true,true,false,0,0,0,0,false,false,ConfigurationTransferred
+113822,33905,69958,"SATSUMA(557kg, 248)/MiscParts/antenna(leftx)",true,1,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+107645,12385,48431,"SATSUMA(557kg, 248)/MiscParts/antenna(right)",true,1,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+107651,12393,48439,"SATSUMA(557kg, 248)/MiscParts/brake lining(xxxxx)",true,6,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+110970,24351,60414,"SATSUMA(557kg, 248)/MiscParts/brake master cylinder(xxxxx)",true,6,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+108751,16361,52429,"SATSUMA(557kg, 248)/MiscParts/clutch lining(xxxxx)",true,4,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+105523,5096,41150,"SATSUMA(557kg, 248)/MiscParts/clutch master cylinder(xxxxx)",true,6,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+110473,22525,58580,"SATSUMA(557kg, 248)/MiscParts/fuel line(xxxxx)",true,8,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+104353,892,36947,"SATSUMA(557kg, 248)/MiscParts/fuel strainer(xxxxx)",true,6,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+104941,2883,38941,"SATSUMA(557kg, 248)/MiscParts/gear linkage(xxxxx)",true,8,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+105499,5023,41074,"SATSUMA(557kg, 248)/MiscParts/marker light left(xxxxx)",true,1,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+106343,8028,44081,"SATSUMA(557kg, 248)/MiscParts/marker light right(xxxxx)",true,1,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+105600,5365,41419,"SATSUMA(557kg, 248)/MiscParts/racing radiator(xxxxx)",true,2,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+112781,30269,66320,"SATSUMA(557kg, 248)/MiscParts/radiator hose1(xxxxx)",true,1,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+112296,28784,64836,"SATSUMA(557kg, 248)/MiscParts/radiator hose3(xxxxx)",true,1,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+114258,35566,71613,"SATSUMA(557kg, 248)/MiscParts/radiator(xxxxx)",true,2,true,0,true,true,false,0,0,32,100,true,false,ConfigurationTransferred
+105233,4017,40078,"SATSUMA(557kg, 248)/RL/wheelRL/TireRL/drumbrake rl(xxxxx)",true,8,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+106737,9316,45372,"SATSUMA(557kg, 248)/RR/wheelRR/TireRR/drumbrake rr(xxxxx)",true,8,true,0,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+112469,29245,65291,"SATSUMA(557kg, 248)/Wiring/Parts/battery_terminal_minus(xxxxx)",true,2,true,2,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+110857,23982,60044,"SATSUMA(557kg, 248)/Wiring/Parts/battery_terminal_plus(xxxxx)",true,2,true,2,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+113207,31786,67843,"SATSUMA(557kg, 248)/Wiring/Parts/wiring_starter(xxxxx)",true,7,true,6,true,false,false,0,0,0,0,false,false,ConfigurationTransferred
+113075,31232,67291,"STORE/Boxes/wheelset hayosiko(Clone)/Parts/wheel_hayosiko1",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+106704,9195,45249,"STORE/Boxes/wheelset hayosiko(Clone)/Parts/wheel_hayosiko2",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+113591,33108,69169,"STORE/Boxes/wheelset hayosiko(Clone)/Parts/wheel_hayosiko3",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+113048,31156,67215,"STORE/Boxes/wheelset hayosiko(Clone)/Parts/wheel_hayosiko4",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+112326,28888,64937,"STORE/Boxes/wheelset octo(Clone)/Parts/wheel_octo1",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+108738,16323,52390,"STORE/Boxes/wheelset octo(Clone)/Parts/wheel_octo2",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+104760,2276,38329,"STORE/Boxes/wheelset octo(Clone)/Parts/wheel_octo3",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+104288,657,36708,"STORE/Boxes/wheelset octo(Clone)/Parts/wheel_octo4",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+109595,19537,55602,"STORE/Boxes/wheelset racing(Clone)/Parts/wheel_racing1",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+107794,12910,48958,"STORE/Boxes/wheelset racing(Clone)/Parts/wheel_racing2",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+105489,5016,41067,"STORE/Boxes/wheelset racing(Clone)/Parts/wheel_racing3",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+111503,26288,62346,"STORE/Boxes/wheelset racing(Clone)/Parts/wheel_racing4",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+113365,32288,68345,"STORE/Boxes/wheelset rally(Clone)/Parts/wheel_rally1",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+109965,20840,56903,"STORE/Boxes/wheelset rally(Clone)/Parts/wheel_rally2",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+107130,10613,46669,"STORE/Boxes/wheelset rally(Clone)/Parts/wheel_rally3",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+105355,4494,40549,"STORE/Boxes/wheelset rally(Clone)/Parts/wheel_rally4",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+107892,13165,49215,"STORE/Boxes/wheelset slot(Clone)/Parts/wheel_slot1",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+113451,32604,68663,"STORE/Boxes/wheelset slot(Clone)/Parts/wheel_slot2",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+104694,2072,38129,"STORE/Boxes/wheelset slot(Clone)/Parts/wheel_slot3",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+104538,1504,37564,"STORE/Boxes/wheelset slot(Clone)/Parts/wheel_slot4",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+109303,18416,54473,"STORE/Boxes/wheelset spoke(Clone)/Parts/wheel_spoke1",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+111430,26035,62092,"STORE/Boxes/wheelset spoke(Clone)/Parts/wheel_spoke2",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+107904,13207,49256,"STORE/Boxes/wheelset spoke(Clone)/Parts/wheel_spoke3",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+105669,5555,41612,"STORE/Boxes/wheelset spoke(Clone)/Parts/wheel_spoke4",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+110710,23327,59384,"STORE/Boxes/wheelset steelwide(Clone)/Parts/wheel_steelwide1",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+106371,8099,44151,"STORE/Boxes/wheelset steelwide(Clone)/Parts/wheel_steelwide2",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+108155,14071,50127,"STORE/Boxes/wheelset steelwide(Clone)/Parts/wheel_steelwide3",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+112484,29305,65354,"STORE/Boxes/wheelset steelwide(Clone)/Parts/wheel_steelwide4",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+111816,27334,63386,"STORE/Boxes/wheelset turbine(Clone)/Parts/wheel_turbine1",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+108923,16993,53055,"STORE/Boxes/wheelset turbine(Clone)/Parts/wheel_turbine2",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+112150,28312,64367,"STORE/Boxes/wheelset turbine(Clone)/Parts/wheel_turbine3",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred
+106642,8960,45014,"STORE/Boxes/wheelset turbine(Clone)/Parts/wheel_turbine4",true,1,true,0,true,true,true,5,33,32,100,true,true,ConfigurationTransferred

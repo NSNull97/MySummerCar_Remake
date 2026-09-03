@@ -17,7 +17,7 @@
 									<Comment>Vehicle category bus.</Comment>
 									<ObjectLists>
 										<ObjectList Name="RTPC">
-											<RTPC Name="" ID="{77FF0F7F-76B0-4736-A627-82594F1C2098}" ShortID="5782256">
+											<RTPC Name="" ID="{61E9C25C-2A26-4E3B-B465-78D787338292}" ShortID="691313414">
 												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 												<PropertyList>
 													<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -28,7 +28,7 @@
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{9987E8B4-36B5-4E9F-A520-F3166EE7EF15}">
+															<Curve Name="" ID="{24D18CDE-F898-4FB9-A071-E65AC128977C}">
 																<PropertyList>
 																	<Property Name="Flags" Type="int32" Value="3"/>
 																</PropertyList>
@@ -56,7 +56,7 @@
 									<Comment>Interaction and gameplay effects category bus.</Comment>
 									<ObjectLists>
 										<ObjectList Name="RTPC">
-											<RTPC Name="" ID="{620D27C1-9C2B-4361-AFDB-99804F77F45F}" ShortID="238301048">
+											<RTPC Name="" ID="{B1C192DA-664F-45F3-B36D-BA209B8FF6A4}" ShortID="431087172">
 												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 												<PropertyList>
 													<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -67,7 +67,7 @@
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{B65AE6B6-B266-4D7C-A4BE-AD14FF623A6E}">
+															<Curve Name="" ID="{5CCB2923-A203-45B6-9783-29556ECC6C89}">
 																<PropertyList>
 																	<Property Name="Flags" Type="int32" Value="3"/>
 																</PropertyList>
@@ -95,7 +95,7 @@
 									<Comment>Weather and world ambience category bus.</Comment>
 									<ObjectLists>
 										<ObjectList Name="RTPC">
-											<RTPC Name="" ID="{2BBD5DDC-3FFC-416C-857C-F8598A494B7C}" ShortID="794589375">
+											<RTPC Name="" ID="{7AEF98E8-0FF2-4090-8F48-0A5D15F69EBD}" ShortID="550072947">
 												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 												<PropertyList>
 													<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -106,7 +106,7 @@
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{9ED5F2A6-914F-4C3F-BC73-5D3B13E08E51}">
+															<Curve Name="" ID="{A80DA1F8-9B57-4D3C-846E-21E489960403}">
 																<PropertyList>
 																	<Property Name="Flags" Type="int32" Value="3"/>
 																</PropertyList>
@@ -134,7 +134,7 @@
 									<Comment>Reserved project music category bus.</Comment>
 									<ObjectLists>
 										<ObjectList Name="RTPC">
-											<RTPC Name="" ID="{5C4C66FE-4123-42EC-ABAA-3A88811325BB}" ShortID="578091366">
+											<RTPC Name="" ID="{79E841BC-FAAE-4AFD-95A9-5D6C3F7748C6}" ShortID="794688608">
 												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 												<PropertyList>
 													<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -145,7 +145,7 @@
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{68A1EA8E-49BC-41C5-A609-C496047086E0}">
+															<Curve Name="" ID="{434C2874-4FD7-4BAA-94B7-18AB03D29402}">
 																<PropertyList>
 																	<Property Name="Flags" Type="int32" Value="3"/>
 																</PropertyList>
@@ -173,7 +173,7 @@
 									<Comment>Project UI category bus; Milestone 08 has no UI media.</Comment>
 									<ObjectLists>
 										<ObjectList Name="RTPC">
-											<RTPC Name="" ID="{3EC832FF-BFBB-4B04-B59B-5FFBC06DDBE2}" ShortID="160110384">
+											<RTPC Name="" ID="{40460CDB-867F-432E-A93B-12FC246BD2AF}" ShortID="620826161">
 												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 												<PropertyList>
 													<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -184,7 +184,7 @@
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{A8B60A76-3C25-4132-B7C1-E8785D05B167}">
+															<Curve Name="" ID="{9E609CF1-9E00-4ABD-B36A-B5003B29DF55}">
 																<PropertyList>
 																	<Property Name="Flags" Type="int32" Value="3"/>
 																</PropertyList>
@@ -211,7 +211,7 @@
 							</ChildrenList>
 							<ObjectLists>
 								<ObjectList Name="RTPC">
-									<RTPC Name="" ID="{A0572526-D8DF-42C3-98FE-1890FE8396AA}" ShortID="127786210">
+									<RTPC Name="" ID="{4FF9A966-2207-4F86-B1CA-3D057C106F65}" ShortID="851332508">
 										<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 										<PropertyList>
 											<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -222,7 +222,7 @@
 											</Reference>
 											<Reference Name="Curve">
 												<Custom>
-													<Curve Name="" ID="{11346940-9E11-4940-8119-C9FFA199595B}">
+													<Curve Name="" ID="{A99970A9-6088-4596-9F61-BAB148B46F5C}">
 														<PropertyList>
 															<Property Name="Flags" Type="int32" Value="3"/>
 														</PropertyList>
@@ -234,7 +234,7 @@
 															</Point>
 															<Point>
 																<XPos>1</XPos>
-																<YPos>0</YPos>
+																<YPos>4</YPos>
 																<Flags>37</Flags>
 															</Point>
 														</PointList>

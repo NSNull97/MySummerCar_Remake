@@ -191,6 +191,49 @@ namespace MSC.Vehicle.Simulation
             UpdateTelemetry(VehicleInputState.Neutral(), 0f, 0f, 0f);
         }
 
+        public bool CanRestoreState(
+            VehicleSimulationStateDto dto,
+            out string failure)
+        {
+            var probe = new VehicleSimulationState();
+            probe.Reset(config);
+            if (!probe.TryRestoreDto(dto, config))
+            {
+                failure = "Vehicle simulation DTO failed domain validation.";
+                return false;
+            }
+
+            failure = string.Empty;
+            return true;
+        }
+
+        public bool TryRestoreState(
+            VehicleSimulationStateDto dto,
+            out string failure)
+        {
+            if (!CanRestoreState(dto, out failure))
+            {
+                return false;
+            }
+
+            wheelBackend.Reset();
+            if (!State.TryRestoreDto(dto, config))
+            {
+                failure = "Vehicle simulation DTO changed after preflight.";
+                return false;
+            }
+
+            prerequisites.Reset();
+            Array.Clear(wheelSamples, 0, wheelSamples.Length);
+            Array.Clear(wheelCommands, 0, wheelCommands.Length);
+            Array.Clear(commandAccumulator, 0, commandAccumulator.Length);
+            LastTickWasFinite = true;
+            lastFixedStepSeconds = 0f;
+            UpdateTelemetry(VehicleInputState.Neutral(), 0f, 0f, 0f);
+            failure = string.Empty;
+            return true;
+        }
+
         private void StepPureSimulation(
             float deltaSeconds,
             in VehicleInputState input,

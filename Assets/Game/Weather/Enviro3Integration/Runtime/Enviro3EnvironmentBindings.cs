@@ -22,6 +22,7 @@ namespace MSC.Weather.Enviro3Integration
         public const string HeavyRainIdValue = "weather.heavy_rain";
         public const string StormIdValue = "weather.storm_visual";
         public const string FogIdValue = "weather.fog";
+        public const string DenseFogIdValue = "weather.dense_fog";
         public const string NightIdValue = "weather.night";
         public const string LowQualityIdValue = "quality.low";
         public const string MediumQualityIdValue = "quality.medium";
@@ -35,6 +36,8 @@ namespace MSC.Weather.Enviro3Integration
         private static readonly EnvironmentBindingId HeavyRainId = ParseKnownId(HeavyRainIdValue);
         private static readonly EnvironmentBindingId StormId = ParseKnownId(StormIdValue);
         private static readonly EnvironmentBindingId FogId = ParseKnownId(FogIdValue);
+        private static readonly EnvironmentBindingId DenseFogId =
+            ParseKnownId(DenseFogIdValue);
         private static readonly EnvironmentBindingId NightId = ParseKnownId(NightIdValue);
 
         [Header("Runtime-isolated configuration source")]
@@ -211,7 +214,7 @@ namespace MSC.Weather.Enviro3Integration
                 return weatherType != null;
             }
 
-            if (bindingId == FogId)
+            if (bindingId == FogId || bindingId == DenseFogId)
             {
                 weatherType = fog;
                 presetKind = EnvironmentPresentationPresetKind.Mist;

@@ -21,6 +21,16 @@ project content and project-owned UI components.
 The HUD file in this directory supersedes earlier HUD mockups and earlier layout
 notes.
 
+## 2026-08-05 HUD-only user correction
+
+The later direct user correction recorded in `Docs/UI/HUD_SPEC.md` supersedes
+the live layout/styling of `06_INGAME_HUD_APPROVED.png` without changing its
+functional category contract. The new review-only style image is catalogued in
+`References/UI/Direction/`. Its speedometer is explicitly excluded, while the
+runtime retains all six required needs and adds shadow treatment for bright
+backgrounds. The five menu/settings references in this directory are
+unchanged.
+
 ## Text artifacts
 
 These are generated concept images. Their visual geometry is authoritative, but

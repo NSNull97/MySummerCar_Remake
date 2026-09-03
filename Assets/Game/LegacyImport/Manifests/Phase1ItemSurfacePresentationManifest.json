@@ -1,0 +1,344 @@
+{
+  "schemaVersion": 1,
+  "manifestId": "phase1.item-surfaces.09b.hotfix-03",
+  "classification": "TemporaryDirectImport",
+  "source": {
+    "stagingRootRelativePath": "raw/world/milestone-04a1/assetripper-unity-project/ExportedProject/Assets"
+  },
+  "assets": [
+    {
+      "role": "basketball.albedo",
+      "relativePath": "Texture2D/basketball2.png",
+      "sha256": "4291c51de0bc4b6c1b1b1ffe7708c0bd92c133d44c4ac139ba0fae3de9d4b40d",
+      "sourceGuid": "88db0ce4e0fb62b479b39a16b2412d43",
+      "generatedGuid": "ac7f084903df4c3b9eb1ed36a450c2b4",
+      "normalMap": false
+    },
+    {
+      "role": "sausage.albedo",
+      "relativePath": "Texture2D/sausage_package.png",
+      "sha256": "275196b5785569887c61f2451e42e3015cf3d612336d7b7ccdc16c58ec1e56fe",
+      "sourceGuid": "ebf67b4287cfe6e44935bb0354314b5f",
+      "generatedGuid": "7c6f9096bd4b42fbb098a54554c10311",
+      "normalMap": false
+    },
+    {
+      "role": "basketball.normal",
+      "relativePath": "Texture2D/basketball_n.png",
+      "sha256": "c4df9ac27a8a083ed6e43b4e9362d00519cf3714f8c6059e3d545847f4a11f98",
+      "sourceGuid": "d10545f58b693484980ebc0f282e42cb",
+      "generatedGuid": "283bb45558dd49dbbc218b4abaaba081",
+      "normalMap": true
+    },
+    {
+      "role": "helmet.albedo",
+      "relativePath": "Texture2D/racing_accessories.png",
+      "sha256": "f3dbcc1caebf32def48e12f3a59ad43094b6c3471296530de4ebe75ffcaa76a3",
+      "sourceGuid": "6ab1e91fa00be374f801797f205d5368",
+      "generatedGuid": "04f8a27caf5f419ebfc8141f66006e27",
+      "normalMap": false
+    },
+    {
+      "role": "flashlight.albedo",
+      "relativePath": "Texture2D/prop_flashlight.png",
+      "sha256": "af5832e14424ad7886083c08f1588c3b37fa9fd289361e9884e5d1c1a44a5c2b",
+      "sourceGuid": "2e1e153fe7b2c754e962b95b26d32638",
+      "generatedGuid": "66b1dc738f4a4abf97bc9451267d49d1",
+      "normalMap": false
+    },
+    {
+      "role": "flashlight.normal",
+      "relativePath": "Texture2D/prop_flashlight_n.png",
+      "sha256": "2d5d643dc5bfdbdd7409b30a9d904f0536f0203beec22b41117af83a96fa3922",
+      "sourceGuid": "cb48b931f4a1c0c45bcfca3e7d5b73a9",
+      "generatedGuid": "9d6891090e574b64b74dd68d1ff0040d",
+      "normalMap": true
+    },
+    {
+      "role": "parts-magazine.albedo",
+      "relativePath": "Texture2D/kansi.png",
+      "sha256": "4f2c07d4425cc49c7981d0994c2102d6325a11eded6df8ef8fb934e358afcecd",
+      "sourceGuid": "53479b91d6bbb1249959da2901434cc4",
+      "generatedGuid": "99f45fa0b55e4f87a3320ea4782bb7c8",
+      "normalMap": false
+    },
+    {
+      "role": "fleetari-brochure.albedo",
+      "relativePath": "Texture2D/repairshop_01.png",
+      "sha256": "4b83ac04ce1901691e7fdaf3ac658ea43e02a869f4c865b81c969fa5d40415aa",
+      "sourceGuid": "255c42b36eb437a4bbdef49d8f75da83",
+      "generatedGuid": "fe30ca4e7771480b9968c11ddc505cc0",
+      "normalMap": false
+    },
+    {
+      "role": "parts-magazine.page-audio",
+      "relativePath": "Texture2D/page_audio.png",
+      "sha256": "bc387bde2ba1af49fabf9ebffaa9ecc04a559b50b9e2068c6bd303f45aa5358b",
+      "sourceGuid": "3d79b7a1e9c39d74aa2e1be8bd761b14",
+      "generatedGuid": "5dd4bc662dd843ad944d6dd45ccce101",
+      "normalMap": false
+    },
+    {
+      "role": "parts-magazine.page-body",
+      "relativePath": "Texture2D/page_body.png",
+      "sha256": "3bba760274eea6c7991d192fcd4f5cff3e87888d4d1ec079aa7ddca35735b1bb",
+      "sourceGuid": "040344ed4a6597f4b9a5ecb485584dee",
+      "generatedGuid": "cce922b440ca4306ac123d5caa66452c",
+      "normalMap": false
+    },
+    {
+      "role": "parts-magazine.page-order",
+      "relativePath": "Texture2D/page_order.png",
+      "sha256": "55d30bc75ce2c51237d70cacd2f667084a1fef85a15f5cb42bc5daf91209ae3b",
+      "sourceGuid": "77438bf50a4e65c47ae00130e55592e0",
+      "generatedGuid": "44e6103024e941289155d11d37e58ac4",
+      "normalMap": false
+    },
+    {
+      "role": "parts-magazine.selection-x",
+      "relativePath": "Texture2D/x.png",
+      "sha256": "12691208d251b122688f5795ebbd01b28b81ea415aa3b4ef1cbf825357a3c49e",
+      "sourceGuid": "466766d340ff7c44b99693539cdf624d",
+      "generatedGuid": "a4f8e65d219c4dd792a43db5e612831c",
+      "normalMap": false,
+      "clamp": true,
+      "alphaIsTransparency": true
+    },
+    {
+      "role": "parts-magazine.page-performance-1",
+      "relativePath": "Texture2D/page_performance.png",
+      "sha256": "c1b4020d8e6cce6f0bd45aafa750b2dcb26c7253ed59a58176cad74e1bf2f291",
+      "sourceGuid": "dec3ca79a3f37ae4395802dec77884b2",
+      "generatedGuid": "d85b74186ce3416992203563683db7fa",
+      "normalMap": false
+    },
+    {
+      "role": "parts-magazine.page-performance-2",
+      "relativePath": "Texture2D/page_performance2.png",
+      "sha256": "4261dfa51511e0c36d9fe81265fed5f70c9527c5041305aa6016941befb40004",
+      "sourceGuid": "adc3561e78674d5458b9887269cf1cb9",
+      "generatedGuid": "7efc1f5f39c1462184cd4efece5db3aa",
+      "normalMap": false
+    },
+    {
+      "role": "parts-magazine.page-poulstery",
+      "relativePath": "Texture2D/page_poulstery.png",
+      "sha256": "54b32a4898d815d192613d6aaaa3c43decaaa700cb28ad2484ed5b2f8707e8ca",
+      "sourceGuid": "7360792bdd7a86e4ab8ac635f4a299b2",
+      "generatedGuid": "228713fab9dc4b1584fd02c388ff763f",
+      "normalMap": false
+    },
+    {
+      "role": "parts-magazine.page-racing-1",
+      "relativePath": "Texture2D/page_racing 1.png",
+      "sha256": "0155db2c55844b9300a84fada0c3d26dce28afb7a8bbaf76bc3bd12a08ab06a8",
+      "sourceGuid": "5f1d3acf9ea3d114b88b774fb6580e9a",
+      "generatedGuid": "5fa91f0fcd7a4f729e115bde9aa24205",
+      "normalMap": false
+    },
+    {
+      "role": "parts-magazine.page-racing-2",
+      "relativePath": "Texture2D/page_racing 2.png",
+      "sha256": "f407f22c43c2b42ccb84dc50ead0ded25810fc046b80c45765a72b6f097d387e",
+      "sourceGuid": "cb6eb83735c5f1442a09477e9358cb7a",
+      "generatedGuid": "a95d64cb73334b42b19c4387465e0797",
+      "normalMap": false
+    },
+    {
+      "role": "parts-magazine.page-wheels",
+      "relativePath": "Texture2D/page_wheels.png",
+      "sha256": "92c35e7d75094de851931ba83ad7ebb4369a7823c3ae7ce51867eebd562789e0",
+      "sourceGuid": "c81dba978ac1bef488e358b04551f3da",
+      "generatedGuid": "416e181797ad485394792db41b0f2366",
+      "normalMap": false
+    },
+    {
+      "role": "fleetari-brochure.page-02",
+      "relativePath": "Texture2D/repairshop_02.png",
+      "sha256": "d14944be98d7ba63de6e6ce26d2c6f9630e1ed163c7f9403458f0782d9b0e79a",
+      "sourceGuid": "2caa2c49cf1f75a418c7487494eddd2c",
+      "generatedGuid": "47bfdc8b49a54bf69094b2f453ea1498",
+      "normalMap": false
+    },
+    {
+      "role": "fleetari-brochure.page-03",
+      "relativePath": "Texture2D/repairshop_03.png",
+      "sha256": "380e261dd719890b5255de506b2b559d0c6afeeb5b861683910f29fa3bd46b48",
+      "sourceGuid": "72b0bbc87efc3a846aed119a59eba75d",
+      "generatedGuid": "f544427d6fc9408c94297d5865311e57",
+      "normalMap": false
+    },
+    {
+      "role": "fleetari-brochure.page-04",
+      "relativePath": "Texture2D/repairshop_04.png",
+      "sha256": "bbf36e6cee5e0759b8d52d9daf341e05bbb957be1a482357dbd7cb2da5ec8985",
+      "sourceGuid": "37d51589af90f614892cf68ec2bc8e76",
+      "generatedGuid": "b38a5e57a6d14d8bb14617ccad72931b",
+      "normalMap": false
+    },
+    {
+      "role": "fleetari-brochure.page-05",
+      "relativePath": "Texture2D/repairshop_05.png",
+      "sha256": "2cc4c5717962b1643e701f36d42de975ed885fdeb2ece2bcd7a1b8091cfed7b0",
+      "sourceGuid": "2e4e594d071d62c4886c522de99944c7",
+      "generatedGuid": "0af2fb135fa54dd9a034ee799fd7f340",
+      "normalMap": false
+    },
+    {
+      "role": "fleetari-brochure.page-06",
+      "relativePath": "Texture2D/repairshop_06.png",
+      "sha256": "2687dbb729fdda1edfa04d6dc45899454c8402ba0d8c576e277d44a3c0dfe786",
+      "sourceGuid": "5aa0e00d60ce357429b2d6c6dca513d8",
+      "generatedGuid": "940bde60ef1347219ec79162db88df62",
+      "normalMap": false
+    },
+    {
+      "role": "fleetari-brochure.page-order",
+      "relativePath": "Texture2D/repairshop_07.png",
+      "sha256": "2d78fbd11d2e4b8d16370dd1defd2fc0365c0540245b196a92170ccb4f30cab4",
+      "sourceGuid": "790601e4bdddbbf44a16ac1a184b1865",
+      "generatedGuid": "b14c4b8c1c0b44c591be246215b6a37a",
+      "normalMap": false
+    },
+    {
+      "role": "fleetari-brochure.page-08",
+      "relativePath": "Texture2D/repairshop_08.png",
+      "sha256": "09f3bf22e822fb074113243b2eac6045003472e3f398ff480950f48948a848be",
+      "sourceGuid": "926bab730457f7d41a3fc8b794be50bf",
+      "generatedGuid": "8df3be1b66314f6da6feac74719903af",
+      "normalMap": false
+    }
+  ],
+  "materials": [
+    {
+      "sourceMaterialGuid": "1603a543741ec1a4f863a810e1509c21",
+      "albedoRole": "basketball.albedo",
+      "normalRole": "basketball.normal",
+      "metallic": 0.0,
+      "smoothness": 0.08,
+      "normalScale": 0.5
+    },
+    {
+      "sourceMaterialGuid": "2dea1710c6f0e2c4ba0680d85935b47c",
+      "albedoRole": "sausage.albedo",
+      "normalRole": "",
+      "metallic": 0.0,
+      "smoothness": 0.32,
+      "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "bc4c3320b6b204d4a8e798a5a76de0e4",
+      "albedoRole": "helmet.albedo",
+      "normalRole": "",
+      "metallic": 0.0,
+      "smoothness": 0.28,
+      "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "7d2284969ac525e42828b7d103af5b41",
+      "albedoRole": "flashlight.albedo",
+      "normalRole": "flashlight.normal",
+      "metallic": 0.0,
+      "smoothness": 0.32,
+      "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "e97e1bb757f448c42ba6febd9093d97b",
+      "albedoRole": "parts-magazine.albedo",
+      "normalRole": "",
+      "metallic": 0.0,
+      "smoothness": 0.18,
+      "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "ab474223bc939c949abeb2dd2282c31e",
+      "albedoRole": "fleetari-brochure.albedo",
+      "normalRole": "",
+      "metallic": 0.0,
+      "smoothness": 0.14,
+      "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "e68a1ff1e69b08146b1bba0d34759b5d",
+      "albedoRole": "parts-magazine.page-audio", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "dee048d02c564064aaa30a3c00f608d9",
+      "albedoRole": "parts-magazine.page-body", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "1b94212a6192d75498f7eeb067cf128e",
+      "albedoRole": "parts-magazine.page-order", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "1365f5837af5d3e4c9aff55dfc1fb1d3",
+      "albedoRole": "parts-magazine.selection-x", "normalRole": "", "metallic": 0.0, "smoothness": 0.0, "normalScale": 1.0, "transparent": true
+    },
+    {
+      "sourceMaterialGuid": "ab38e828c7985334598eb0338158c5b4",
+      "albedoRole": "parts-magazine.page-performance-1", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "f909787131e71cc41b82e81933788652",
+      "albedoRole": "parts-magazine.page-performance-2", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "2c4e800a883a4cf4fa61599870311790",
+      "albedoRole": "parts-magazine.page-poulstery", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "adb9f4747417c34419bd10a516e01601",
+      "albedoRole": "parts-magazine.page-racing-1", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "8142a30cdfa068b43877a5e392f183c5",
+      "albedoRole": "parts-magazine.page-racing-2", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "0367950d11c1aad4397de3d749dcee8d",
+      "albedoRole": "parts-magazine.page-wheels", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "f802287c31806ba4ab513afc17fb6ac2",
+      "albedoRole": "fleetari-brochure.page-02", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "6607163ad205bf44f80e6e25dbcdc24e",
+      "albedoRole": "fleetari-brochure.page-03", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "3b17378927266e443bd7052a4c5a953f",
+      "albedoRole": "fleetari-brochure.page-04", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "98cc377ed41acfc4ebea28ddd1609788",
+      "albedoRole": "fleetari-brochure.page-05", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "daae3bb0264fb0044b3f4c7cca017cee",
+      "albedoRole": "fleetari-brochure.page-06", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "63e559f856bafbf458126e90ca53d083",
+      "albedoRole": "fleetari-brochure.page-08", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    },
+    {
+      "sourceMaterialGuid": "bc6139561a896d54782f54521399b566",
+      "albedoRole": "fleetari-brochure.page-order", "normalRole": "", "metallic": 0.0, "smoothness": 0.10, "normalScale": 1.0
+    }
+  ],
+  "homeOrderFont": {
+    "fontRelativePath": "Font/RAGE.asset",
+    "fontSha256": "2c4621749e8cb902491ca3e209058f143436688e4514b14138c6d891d51b2d3d",
+    "fontSourceGuid": "4d0d0592d9db7d34ca1a5df26152fd39",
+    "fontGeneratedGuid": "6c8b6e84d23e49a7b64a12df88b46c91",
+    "materialRelativePath": "Material/Font Material_0.mat",
+    "materialSha256": "eb2841ca403888ba5c1f8732ed0440db8129646870e6dd2a5aca8189c8685602",
+    "materialSourceGuid": "aa03de8695b53aa4483598419f3228e2",
+    "materialGeneratedGuid": "718e91586fc9492eae9544f07217fb01",
+    "textureRelativePath": "Texture2D/Font Texture_0.texture2D",
+    "textureSha256": "ec8fd60bcd0280c514decc8494dc6634d5ac29911ea620cc776d894888312f1d",
+    "textureSourceGuid": "5c5dee85089a63243a3182b10ccf909f",
+    "textureGeneratedGuid": "b7215852bb234fe993c767cfb62a6df9"
+  }
+}

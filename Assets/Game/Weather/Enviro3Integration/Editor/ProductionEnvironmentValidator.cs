@@ -13,6 +13,10 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.SceneManagement;
+using GameWeatherSystem = MSC.Weather.System.GameWeatherSystem;
+using NativeHDRPWeatherBackend =
+    MSC.Weather.System.NativeHDRP.NativeHDRPWeatherBackend;
+using WeatherBackendType = MSC.Weather.System.WeatherBackendType;
 
 namespace MSC.Weather.Enviro3Integration.Editor
 {
@@ -65,6 +69,18 @@ namespace MSC.Weather.Enviro3Integration.Editor
                 FindSingleActive<ProductionEnvironmentBackendActivator>(scene);
             ProductionEnvironmentBackendMarker marker =
                 FindSingleTotal<ProductionEnvironmentBackendMarker>(scene);
+            GameWeatherSystem[] weatherRouters =
+                FindAll<GameWeatherSystem>(scene);
+            if (weatherRouters.Length > 1)
+            {
+                throw new InvalidOperationException(
+                    "Expected at most one GameWeatherSystem route; found " +
+                    weatherRouters.Length + ".");
+            }
+
+            GameWeatherSystem weatherRouter = weatherRouters.Length == 1
+                ? weatherRouters[0]
+                : null;
             WindZone[] windZones = FindAll<WindZone>(scene);
             if (windZones.Length != 0)
             {
@@ -144,9 +160,24 @@ namespace MSC.Weather.Enviro3Integration.Editor
                     "canonical vendor prefab.");
             }
 
-            ValidateVolume(manager);
+            ValidateVolume(manager, adapter);
             ValidateMeasuredShelters(scene, root.transform);
-            ValidateNoLegacyPlaceholderOwners(scene, manager.transform);
+            if (weatherRouter != null &&
+                weatherRouter.SelectedBackend == WeatherBackendType.NativeHDRP)
+            {
+                ValidateNativeWeatherRoute(
+                    scene,
+                    root,
+                    environment,
+                    manager,
+                    adapter,
+                    weatherRouter);
+            }
+            else if (!adapter.HybridNativeHdrpOwnership)
+            {
+                ValidateNoLegacyPlaceholderOwners(scene, manager.transform);
+            }
+
             ValidateBindings();
             ValidateActiveWorldProfile(installer);
             ValidateBuildSettings();
@@ -157,7 +188,9 @@ namespace MSC.Weather.Enviro3Integration.Editor
             ValidateOrThrow();
         }
 
-        private static void ValidateVolume(EnviroManager manager)
+        private static void ValidateVolume(
+            EnviroManager manager,
+            Enviro3EnvironmentAdapter adapter)
         {
             if (manager.volumeHDRP == null ||
                 !manager.volumeHDRP.isGlobal ||
@@ -169,6 +202,28 @@ namespace MSC.Weather.Enviro3Integration.Editor
 
             string path = AssetDatabase.GetAssetPath(
                 manager.volumeHDRP.sharedProfile);
+            VolumeProfile profile = manager.volumeHDRP.sharedProfile;
+            if (adapter.HybridNativeHdrpOwnership)
+            {
+                if (!string.Equals(
+                        path,
+                        HybridEnvironmentMigrationTool.EnviroSkyProfilePath,
+                        StringComparison.Ordinal) ||
+                    !profile.TryGet(out VisualEnvironment hybridVisual) ||
+                    hybridVisual.skyType.value != 990 ||
+                    !profile.TryGet(out EnviroHDRPSky _) ||
+                    profile.TryGet(out Fog _) ||
+                    profile.TryGet(out Exposure _) ||
+                    profile.TryGet(out IndirectLightingController _))
+                {
+                    throw new InvalidOperationException(
+                        "Preserved Enviro rollback owner does not use the " +
+                        "reviewed sky-only hybrid profile.");
+                }
+
+                return;
+            }
+
             if (!string.Equals(
                     path,
                     ProductionEnvironmentBuilder.VolumeProfilePath,
@@ -178,7 +233,6 @@ namespace MSC.Weather.Enviro3Integration.Editor
                     "Enviro uses a non-production HDRP volume profile.");
             }
 
-            VolumeProfile profile = manager.volumeHDRP.sharedProfile;
             if (!profile.TryGet(out VisualEnvironment visual) ||
                 visual.skyType.value != 990 ||
                 !profile.TryGet(out EnviroHDRPSky _) ||
@@ -215,6 +269,193 @@ namespace MSC.Weather.Enviro3Integration.Editor
                     "Production HDRP profile has an invalid " +
                     "Enviro sky/fog/exposure/indirect-lighting stack.");
             }
+        }
+
+        private static void ValidateNativeWeatherRoute(
+            Scene scene,
+            GameCompositionRoot compositionRoot,
+            ProductionEnvironmentController environment,
+            EnviroManager manager,
+            Enviro3EnvironmentAdapter enviroAdapter,
+            GameWeatherSystem router)
+        {
+            if (!router.gameObject.activeInHierarchy || !router.enabled ||
+                !router.transform.IsChildOf(compositionRoot.transform))
+            {
+                throw new InvalidOperationException(
+                    "Native GameWeatherSystem is not active under the " +
+                    "persistent Bootstrap composition root.");
+            }
+
+            SerializedProperty adapterProperty =
+                new SerializedObject(environment).FindProperty(
+                    "adapterBehaviour");
+            if (adapterProperty == null ||
+                adapterProperty.objectReferenceValue != router)
+            {
+                throw new InvalidOperationException(
+                    "ProductionEnvironmentController is not routed through " +
+                    "GameWeatherSystem.");
+            }
+
+            NativeHDRPWeatherBackend[] nativeBackends =
+                FindAll<NativeHDRPWeatherBackend>(scene);
+            if (nativeBackends.Length != 1 ||
+                !nativeBackends[0].gameObject.activeInHierarchy ||
+                !nativeBackends[0].enabled)
+            {
+                throw new InvalidOperationException(
+                    "Expected exactly one active NativeHDRPWeatherBackend; " +
+                    $"found {nativeBackends.Length}.");
+            }
+
+            NativeHDRPWeatherBackend native = nativeBackends[0];
+            Volume nativeVolume = native.RuntimeWeatherVolume;
+            if (native.gameObject != router.gameObject ||
+                nativeVolume == null || !nativeVolume.isGlobal ||
+                nativeVolume.enabled || nativeVolume.weight > 0f ||
+                nativeVolume.sharedProfile == null ||
+                !string.Equals(
+                    AssetDatabase.GetAssetPath(nativeVolume.sharedProfile),
+                    "Assets/Game/Weather/System/Content/FinnishSummer/" +
+                    "NativeHDRPWeatherVolume.asset",
+                    StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    "Native HDRP weather Volume is missing, active before " +
+                    "attachment, or uses the wrong authored profile.");
+            }
+
+            if (native.DirectionalSun == null ||
+                native.DirectionalSun.type != LightType.Directional ||
+                native.DirectionalSunData == null ||
+                native.Geography == null ||
+                !HasAssignedParticleSystem(native.RainSystems) ||
+                !HasAssignedParticleSystem(native.DrizzleSystems) ||
+                native.LightningFlashLight == null)
+            {
+                throw new InvalidOperationException(
+                    "Native HDRP weather presentation is missing its sun, " +
+                    "geography, rain, drizzle, or lightning authoring.");
+            }
+
+            if (!ContainsReference(
+                    native.LegacyVolumesToSuspend,
+                    manager.volumeHDRP) ||
+                !ContainsReference(
+                    native.LegacyOwnersToSuspend,
+                    enviroAdapter) ||
+                !ContainsReference(
+                    native.LegacyOwnersToSuspend,
+                    manager))
+            {
+                throw new InvalidOperationException(
+                    "Native HDRP rollback does not retain and suspend the " +
+                    "preserved Enviro owners.");
+            }
+
+            foreach (Volume candidate in FindAll<Volume>(scene))
+            {
+                if (candidate == nativeVolume ||
+                    !candidate.isActiveAndEnabled || !candidate.isGlobal ||
+                    candidate.weight <= 0f ||
+                    !ContainsWeatherOverride(candidate.sharedProfile))
+                {
+                    continue;
+                }
+
+                if (!ContainsReference(
+                        native.LegacyVolumesToSuspend,
+                        candidate))
+                {
+                    throw new InvalidOperationException(
+                        "An authored global weather Volume is not included " +
+                        "in native rollback suspension: " + candidate.name);
+                }
+            }
+
+            foreach (Light candidate in FindAll<Light>(scene))
+            {
+                if (!candidate.isActiveAndEnabled ||
+                    candidate.type != LightType.Directional ||
+                    candidate == native.DirectionalSun ||
+                    candidate.name.IndexOf(
+                        "moon",
+                        StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    continue;
+                }
+
+                throw new InvalidOperationException(
+                    "An active directional-light owner exists outside the " +
+                    "selected native sun: " + candidate.name);
+            }
+        }
+
+        private static bool HasAssignedParticleSystem(
+            IReadOnlyList<ParticleSystem> systems)
+        {
+            if (systems == null)
+            {
+                return false;
+            }
+
+            for (int index = 0; index < systems.Count; index++)
+            {
+                if (systems[index] != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool ContainsReference<T>(
+            IReadOnlyList<T> values,
+            T expected)
+            where T : UnityEngine.Object
+        {
+            if (values == null || expected == null)
+            {
+                return false;
+            }
+
+            for (int index = 0; index < values.Count; index++)
+            {
+                if (values[index] == expected)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool ContainsWeatherOverride(VolumeProfile profile)
+        {
+            if (profile == null)
+            {
+                return false;
+            }
+
+            IReadOnlyList<VolumeComponent> components = profile.components;
+            for (int index = 0; index < components.Count; index++)
+            {
+                string typeName = components[index]?.GetType().Name ??
+                    string.Empty;
+                if (typeName == "VisualEnvironment" ||
+                    typeName == "PhysicallyBasedSky" ||
+                    typeName == "EnviroHDRPSky" ||
+                    typeName == "VolumetricClouds" || typeName == "Fog" ||
+                    typeName == "Exposure" ||
+                    typeName == "IndirectLightingController")
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static void ValidateNoLegacyPlaceholderOwners(

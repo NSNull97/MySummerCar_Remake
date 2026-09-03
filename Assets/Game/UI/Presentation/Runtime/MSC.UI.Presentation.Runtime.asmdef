@@ -3,10 +3,15 @@
   "rootNamespace": "MSC.UI.Presentation",
   "references": [
     "MSC.Core.Runtime",
+    "MSC.Economy.Runtime",
     "MSC.Audio.Runtime",
+    "MSC.Needs.Runtime",
+    "MSC.Save.Runtime",
     "MSC.UI.Runtime",
+    "MSC.Presentation.AntiAliasing.Runtime",
     "Unity.InputSystem",
-    "UnityEngine.UI"
+    "UnityEngine.UI",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

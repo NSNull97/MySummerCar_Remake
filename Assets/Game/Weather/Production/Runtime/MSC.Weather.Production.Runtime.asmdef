@@ -4,7 +4,10 @@
   "references": [
     "MSC.Core.Runtime",
     "MSC.Weather.Runtime",
-    "MSC.Weather.Presentation.Runtime"
+    "MSC.Weather.Presentation.Runtime",
+    "MSC.Weather.System.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

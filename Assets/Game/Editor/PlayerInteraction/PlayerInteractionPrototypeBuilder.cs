@@ -6,11 +6,14 @@ using MSC.Interaction.Carrying;
 using MSC.Interaction.Prototype;
 using MSC.Interaction.Query;
 using MSC.Player;
+using MSC.Presentation.InteractionOutline.EPO;
+using EPOOutline;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.HighDefinition;
 
 namespace MSC.Editor.PlayerInteraction
 {
@@ -39,7 +42,8 @@ namespace MSC.Editor.PlayerInteraction
             }
 
             Material debugMaterial = BuildDebugMaterial();
-            GameObject playerPrefab = BuildPlayerPrefab(inputActions);
+            GameObject playerPrefab = BuildPlayerPrefab(
+                inputActions);
             BuildPrototypeScene(playerPrefab, debugMaterial);
             EnsureSceneInBuildSettings();
 
@@ -82,40 +86,90 @@ namespace MSC.Editor.PlayerInteraction
             return material;
         }
 
-        private static GameObject BuildPlayerPrefab(InputActionAsset inputActions)
+        private static GameObject BuildPlayerPrefab(
+            InputActionAsset inputActions)
         {
             var root = new GameObject("M4_FirstPersonPlayer");
             try
             {
                 CharacterController characterController = root.AddComponent<CharacterController>();
-                characterController.radius = 0.32f;
-                characterController.height = 1.8f;
-                characterController.center = new Vector3(0f, 0.9f, 0f);
-                characterController.stepOffset = 0.3f;
-                characterController.slopeLimit = 50f;
+                characterController.radius = 0.12f;
+                characterController.height = 0.5f;
+                characterController.center = new Vector3(0f, 0.25f, 0f);
+                characterController.stepOffset = 0.4f;
+                characterController.slopeLimit = 90f;
+                characterController.skinWidth = 0.03f;
+                characterController.minMoveDistance = 0f;
+
+                GameObject leanPivotObject = new GameObject("LeanPivot");
+                leanPivotObject.transform.SetParent(root.transform, false);
+                leanPivotObject.transform.localPosition = new Vector3(0f, -0.3f, 0f);
 
                 GameObject pivotObject = new GameObject("CameraPivot");
-                pivotObject.transform.SetParent(root.transform, false);
-                pivotObject.transform.localPosition = new Vector3(0f, 1.68f, 0f);
+                pivotObject.transform.SetParent(leanPivotObject.transform, false);
+                pivotObject.transform.localPosition = new Vector3(0f, 1.78f, 0f);
+
+                GameObject impactPivotObject = new GameObject("ImpactPivot");
+                impactPivotObject.transform.SetParent(pivotObject.transform, false);
+
+                GameObject motionPivotObject = new GameObject("MotionPivot");
+                motionPivotObject.transform.SetParent(
+                    impactPivotObject.transform,
+                    false);
+
+                GameObject lookPitchPivotObject = new GameObject("LookPitchPivot");
+                lookPitchPivotObject.transform.SetParent(
+                    motionPivotObject.transform,
+                    false);
 
                 GameObject cameraObject = new GameObject("FirstPersonCamera");
                 cameraObject.tag = "MainCamera";
-                cameraObject.transform.SetParent(pivotObject.transform, false);
+                cameraObject.transform.SetParent(
+                    lookPitchPivotObject.transform,
+                    false);
                 Camera camera = cameraObject.AddComponent<Camera>();
                 camera.nearClipPlane = 0.03f;
                 camera.farClipPlane = 500f;
-                camera.fieldOfView = 72f;
+                camera.fieldOfView =
+                    FirstPersonCameraFieldOfView.HorizontalToVerticalDegrees(
+                        120f,
+                        16f / 9f);
                 cameraObject.AddComponent<AudioListener>();
+                FirstPersonCameraFieldOfView cameraFieldOfView =
+                    cameraObject.AddComponent<FirstPersonCameraFieldOfView>();
+                cameraFieldOfView.Configure(
+                    camera,
+                    horizontalFieldOfView: 120f,
+                    configuredZoomMultiplier: 0.5f,
+                    transitionSeconds: 0.08f);
 
                 GameObject carryAnchorObject = new GameObject("CarryAnchor");
                 carryAnchorObject.transform.SetParent(cameraObject.transform, false);
-                carryAnchorObject.transform.localPosition = new Vector3(0f, -0.12f, 1.25f);
+                carryAnchorObject.transform.localPosition = new Vector3(0f, -0.1f, 0.82f);
 
                 FirstPersonMotor motor = root.AddComponent<FirstPersonMotor>();
-                motor.Configure(characterController, pivotObject.transform);
+                motor.Configure(
+                    characterController,
+                    leanPivotObject.transform,
+                    pivotObject.transform,
+                    impactPivotObject.transform);
+
+                PlayerLeanImpactFeedbackPresenter impactFeedback =
+                    root.AddComponent<PlayerLeanImpactFeedbackPresenter>();
+                impactFeedback.Configure(motor);
 
                 FirstPersonLook look = root.AddComponent<FirstPersonLook>();
-                look.Configure(root.transform, pivotObject.transform, shouldLockCursor: true);
+                look.Configure(
+                    root.transform,
+                    lookPitchPivotObject.transform,
+                    shouldLockCursor: true);
+
+                FirstPersonCameraMotion cameraMotion =
+                    motionPivotObject.AddComponent<FirstPersonCameraMotion>();
+                cameraMotion.Configure(
+                    motor,
+                    look,
+                    motionPivotObject.transform);
 
                 PhysicalCarryController carry = root.AddComponent<PhysicalCarryController>();
                 carry.Configure(carryAnchorObject.transform, characterController);
@@ -127,8 +181,52 @@ namespace MSC.Editor.PlayerInteraction
                 PlayerInteractionController interaction = root.AddComponent<PlayerInteractionController>();
                 interaction.Configure(query, carry, cameraObject.transform, ~0);
 
+                InteractionOutlinePresenter outline =
+                    root.AddComponent<InteractionOutlinePresenter>();
+                outline.Configure(
+                    interaction,
+                    Color.white,
+                    3f);
+
+                Outlinable outlinable = root.AddComponent<Outlinable>();
+                outlinable.enabled = false;
+                EpoInteractionOutlineAdapter outlineAdapter =
+                    root.AddComponent<EpoInteractionOutlineAdapter>();
+                outlineAdapter.Configure(outline, outlinable);
+
+                HdrpOutliner outliner =
+                    cameraObject.AddComponent<HdrpOutliner>();
+                outliner.PrimaryBufferSizeMode = BufferSizeMode.Native;
+                outliner.PrimaryRendererScale = 1f;
+                outliner.DilateIterations = 1;
+                outliner.DilateQuality = DilateQuality.Base;
+                outliner.DilateShift = 0.75f;
+                outliner.BlurIterations = 0;
+                outliner.BlurShift = 0f;
+                outliner.RenderStage = RenderStage.AfterTransparents;
+
+                var customPassObject = new GameObject(
+                    "Interaction Outline Custom Pass");
+                customPassObject.transform.SetParent(
+                    cameraObject.transform,
+                    worldPositionStays: false);
+                CustomPassVolume customPassVolume =
+                    customPassObject.AddComponent<CustomPassVolume>();
+                customPassVolume.isGlobal = true;
+                customPassVolume.targetCamera = camera;
+                customPassVolume.injectionPoint =
+                    CustomPassInjectionPoint.BeforePostProcess;
+                customPassVolume.priority = 100f;
+                customPassVolume.AddPassOfType<OutlineCustomPass>().name =
+                    "EPO Interaction Outline";
+
                 PlayerInputRouter input = root.AddComponent<PlayerInputRouter>();
-                input.Configure(inputActions, motor, look, interaction);
+                input.Configure(
+                    inputActions,
+                    motor,
+                    look,
+                    cameraFieldOfView,
+                    interaction);
 
                 InteractionDebugOverlay debugOverlay = root.AddComponent<InteractionDebugOverlay>();
                 debugOverlay.Configure(interaction);

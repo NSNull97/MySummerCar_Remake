@@ -20,7 +20,8 @@ namespace MSC.Weather.Persistence
     [Serializable]
     public sealed class WeatherSaveDto
     {
-        public const int CurrentSchemaVersion = 1;
+        public const int CurrentSchemaVersion = 2;
+        public const int LegacySchemaVersion = 1;
 
         public int SchemaVersion = CurrentSchemaVersion;
         public string ConfigId;
@@ -28,6 +29,7 @@ namespace MSC.Weather.Persistence
         public bool IsScheduleFrozen;
         public string CurrentProfileId;
         public string TargetProfileId;
+        public string PreviousProfileId;
         public double FrontDurationSeconds;
         public double TransitionDurationSeconds;
         public double ElapsedSeconds;
@@ -35,6 +37,9 @@ namespace MSC.Weather.Persistence
         public int RandomVersion;
         public long RandomStateBits;
         public long RandomIncrementBits;
+        public List<string> RecentProfileIds = new List<string>();
+        public int HistoryCount;
+        public int HistoryWriteIndex;
         public long NextOverrideSequenceBits;
         public uint Revision;
         public List<WeatherOverrideSaveDto> Overrides = new List<WeatherOverrideSaveDto>();

@@ -1,0 +1,21 @@
+{
+  "name": "MSC.Weather.System.NativeHDRP.Runtime",
+  "rootNamespace": "MSC.Weather.System.NativeHDRP",
+  "references": [
+    "MSC.Weather.Presentation.Runtime",
+    "MSC.Weather.Runtime",
+    "MSC.Weather.System.Runtime",
+    "MSC.Weather.System.Local.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

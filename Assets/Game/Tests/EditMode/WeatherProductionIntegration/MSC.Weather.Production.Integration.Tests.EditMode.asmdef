@@ -8,6 +8,8 @@
     "MSC.Weather.Runtime",
     "MSC.Weather.Production.Runtime",
     "MSC.Weather.Production.LegacyBaseline.Runtime",
+    "MSC.Weather.System.Runtime",
+    "MSC.Weather.System.NativeHDRP.Runtime",
     "MSC.World.Runtime",
     "Enviro3.Runtime",
     "Unity.RenderPipelines.Core.Runtime",

@@ -1,0 +1,17 @@
+{
+  "name": "MSC.MapMigration.Editor",
+  "rootNamespace": "MSCMapMigration",
+  "references": [
+    "MSC.LegacyImport.Runtime",
+    "Unity.Collections"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

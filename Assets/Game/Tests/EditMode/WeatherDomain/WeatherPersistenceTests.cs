@@ -111,6 +111,48 @@ namespace MSC.Tests.EditMode.WeatherDomain
         }
 
         [Test]
+        public void LegacyV1WeatherDto_RestoresAndCapturesAsV2WithHistory()
+        {
+            CreateDomain(
+                73UL,
+                out WeatherDirector source,
+                out GlobalWetnessController sourceWetness,
+                out LightningStrikeDirector sourceLightning);
+            source.Advance(137d);
+            WeatherDomainSaveDto legacy = WeatherDomainPersistence.Capture(
+                source,
+                sourceWetness,
+                sourceLightning);
+            legacy.Weather.SchemaVersion = WeatherSaveDto.LegacySchemaVersion;
+            legacy.Weather.PreviousProfileId = null;
+            legacy.Weather.RecentProfileIds = null;
+            legacy.Weather.HistoryCount = 0;
+            legacy.Weather.HistoryWriteIndex = 0;
+
+            CreateDomain(
+                999UL,
+                out WeatherDirector destination,
+                out GlobalWetnessController destinationWetness,
+                out LightningStrikeDirector destinationLightning);
+            Assert.DoesNotThrow(() => WeatherDomainPersistence.RestoreAtomic(
+                legacy,
+                destination,
+                destinationWetness,
+                destinationLightning));
+
+            WeatherDomainSaveDto upgraded = WeatherDomainPersistence.Capture(
+                destination,
+                destinationWetness,
+                destinationLightning);
+            Assert.That(
+                upgraded.Weather.SchemaVersion,
+                Is.EqualTo(WeatherSaveDto.CurrentSchemaVersion));
+            Assert.That(upgraded.Weather.PreviousProfileId, Is.Not.Empty);
+            Assert.That(upgraded.Weather.RecentProfileIds, Has.Count.EqualTo(1));
+            Assert.That(upgraded.Weather.HistoryCount, Is.EqualTo(1));
+        }
+
+        [Test]
         public void ExternalDto_WithTransientOverridePolicy_IsRejectedWithoutMutation()
         {
             CreateDomain(32UL, out WeatherDirector weather, out GlobalWetnessController wetness, out LightningStrikeDirector lightning);

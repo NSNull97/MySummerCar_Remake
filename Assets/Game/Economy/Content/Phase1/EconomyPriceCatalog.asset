@@ -1,0 +1,252 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46a1b49a1723b0f4baf7781fa19b3fad, type: 3}
+  m_Name: Phase1EconomyPriceCatalog
+  m_EditorClassIdentifier: MSC.Economy.Runtime::MSC.Economy.EconomyPriceCatalog
+  catalogId: catalog.economy.phase1.12a-e1.v1
+  donorSceneSha256: c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4
+  donorGlobalsSha256: 0c232081e5dd2d6611d27ccd06274cbb31f5fabc5ef5e5f901b86d39da25afec
+  initialBalanceMinorUnits: 300000
+  scopes:
+  - scopeId: scope.store.teimo
+    policy: 1
+    inflationBasisPoints: 540
+    restockDayOfWeek: 4
+  prices:
+  - priceId: price.store.juice
+    scopeId: scope.store.teimo
+    donorKey: Juice
+    baseMinorUnits: 1295
+  - priceId: price.store.yeast
+    scopeId: scope.store.teimo
+    donorKey: Yeast
+    baseMinorUnits: 895
+  - priceId: price.store.sugar
+    scopeId: scope.store.teimo
+    donorKey: Sugar
+    baseMinorUnits: 695
+  - priceId: price.store.coffee
+    scopeId: scope.store.teimo
+    donorKey: Coffee
+    baseMinorUnits: 1995
+  - priceId: price.store.chips
+    scopeId: scope.store.teimo
+    donorKey: Chips
+    baseMinorUnits: 1495
+  - priceId: price.store.sausages
+    scopeId: scope.store.teimo
+    donorKey: Sausages
+    baseMinorUnits: 1095
+  - priceId: price.store.beer
+    scopeId: scope.store.teimo
+    donorKey: Beer
+    baseMinorUnits: 14900
+  - priceId: price.store.milk
+    scopeId: scope.store.teimo
+    donorKey: Milk
+    baseMinorUnits: 550
+  - priceId: price.store.macaron-box
+    scopeId: scope.store.teimo
+    donorKey: MacaronBox
+    baseMinorUnits: 1195
+  - priceId: price.store.pizza
+    scopeId: scope.store.teimo
+    donorKey: Pizza
+    baseMinorUnits: 995
+  - priceId: price.store.mosquito-spray
+    scopeId: scope.store.teimo
+    donorKey: MosquitoSpray
+    baseMinorUnits: 3295
+  - priceId: price.store.two-stroke
+    scopeId: scope.store.teimo
+    donorKey: TwoStroke
+    baseMinorUnits: 9900
+  - priceId: price.store.motor-oil
+    scopeId: scope.store.teimo
+    donorKey: MotorOil
+    baseMinorUnits: 14900
+  - priceId: price.store.coolant
+    scopeId: scope.store.teimo
+    donorKey: Coolant
+    baseMinorUnits: 19500
+  - priceId: price.store.fanbelt
+    scopeId: scope.store.teimo
+    donorKey: Fanbelt
+    baseMinorUnits: 29500
+  - priceId: price.store.car-battery
+    scopeId: scope.store.teimo
+    donorKey: CarBattery
+    baseMinorUnits: 49500
+  - priceId: price.store.brake-fluid
+    scopeId: scope.store.teimo
+    donorKey: BrakeFluid
+    baseMinorUnits: 3500
+  - priceId: price.store.extinguisher
+    scopeId: scope.store.teimo
+    donorKey: Extinguisher
+    baseMinorUnits: 24900
+  - priceId: price.store.cigarettes
+    scopeId: scope.store.teimo
+    donorKey: Cigarettes
+    baseMinorUnits: 1395
+  - priceId: price.store.oilfilter
+    scopeId: scope.store.teimo
+    donorKey: Oilfilter
+    baseMinorUnits: 5900
+  - priceId: price.store.charcoal
+    scopeId: scope.store.teimo
+    donorKey: Charcoal
+    baseMinorUnits: 1850
+  - priceId: price.store.sparkplugs
+    scopeId: scope.store.teimo
+    donorKey: Sparkplugs
+    baseMinorUnits: 9900
+  - priceId: price.store.spray-matte01
+    scopeId: scope.store.teimo
+    donorKey: SprayMatte01
+    baseMinorUnits: 2900
+  - priceId: price.store.spray01
+    scopeId: scope.store.teimo
+    donorKey: Spray01
+    baseMinorUnits: 2900
+  - priceId: price.store.spray02
+    scopeId: scope.store.teimo
+    donorKey: Spray02
+    baseMinorUnits: 2900
+  - priceId: price.store.spray03
+    scopeId: scope.store.teimo
+    donorKey: Spray03
+    baseMinorUnits: 2900
+  - priceId: price.store.spray04
+    scopeId: scope.store.teimo
+    donorKey: Spray04
+    baseMinorUnits: 2900
+  - priceId: price.store.spray05
+    scopeId: scope.store.teimo
+    donorKey: Spray05
+    baseMinorUnits: 2900
+  - priceId: price.store.spray06
+    scopeId: scope.store.teimo
+    donorKey: Spray06
+    baseMinorUnits: 2900
+  - priceId: price.store.spray07
+    scopeId: scope.store.teimo
+    donorKey: Spray07
+    baseMinorUnits: 2900
+  - priceId: price.store.spray08
+    scopeId: scope.store.teimo
+    donorKey: Spray08
+    baseMinorUnits: 2900
+  - priceId: price.store.spray09
+    scopeId: scope.store.teimo
+    donorKey: Spray09
+    baseMinorUnits: 2900
+  - priceId: price.store.spray10
+    scopeId: scope.store.teimo
+    donorKey: Spray10
+    baseMinorUnits: 2900
+  - priceId: price.store.spray11
+    scopeId: scope.store.teimo
+    donorKey: Spray11
+    baseMinorUnits: 2900
+  - priceId: price.store.spray12
+    scopeId: scope.store.teimo
+    donorKey: Spray12
+    baseMinorUnits: 2900
+  - priceId: price.store.lightbulb
+    scopeId: scope.store.teimo
+    donorKey: Lightbulb
+    baseMinorUnits: 2795
+  - priceId: price.store.fuse-package
+    scopeId: scope.store.teimo
+    donorKey: FusePackage
+    baseMinorUnits: 1495
+  - priceId: price.store.r20-battery-box
+    scopeId: scope.store.teimo
+    donorKey: R20BatteryBox
+    baseMinorUnits: 3450
+  - priceId: price.store.expanded-shop-buttermilk
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Buttermilk
+    baseMinorUnits: 525
+  - priceId: price.store.expanded-shop-orange-juice
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Orange juice
+    baseMinorUnits: 749
+  - priceId: price.store.expanded-shop-bug-spray
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Bug spray
+    baseMinorUnits: 6995
+  - priceId: price.store.expanded-shop-laundry-detergent
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Laundry detergent
+    baseMinorUnits: 1995
+  - priceId: price.store.expanded-shop-sponge
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Sponge
+    baseMinorUnits: 729
+  - priceId: price.store.expanded-shop-shampoo
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Shampoo
+    baseMinorUnits: 695
+  - priceId: price.store.expanded-shop-hand-soap
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Hand soap
+    baseMinorUnits: 549
+  - priceId: price.store.expanded-shop-dish-soap
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Dish soap
+    baseMinorUnits: 949
+  - priceId: price.store.expanded-shop-soap
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Soap
+    baseMinorUnits: 875
+  - priceId: price.store.expanded-shop-wheat-flour
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Wheat flour
+    baseMinorUnits: 649
+  - priceId: price.store.expanded-shop-rye-flour
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Rye flour
+    baseMinorUnits: 699
+  - priceId: price.store.expanded-shop-mustard
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Mustard
+    baseMinorUnits: 795
+  - priceId: price.store.expanded-shop-ketchup
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Ketchup
+    baseMinorUnits: 895
+  - priceId: price.store.expanded-shop-meat-soup
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Meat soup
+    baseMinorUnits: 979
+  - priceId: price.store.expanded-shop-pea-soup
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Pea soup
+    baseMinorUnits: 849
+  - priceId: price.store.expanded-shop-canned-meatballs
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Canned meatballs
+    baseMinorUnits: 1099
+  - priceId: price.store.expanded-shop-sausage
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Sausage
+    baseMinorUnits: 1579
+  - priceId: price.store.expanded-shop-fishstick-box
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Fishstick box
+    baseMinorUnits: 995
+  - priceId: price.store.expanded-shop-can-opener
+    scopeId: scope.store.teimo
+    donorKey: ExpandedShop:Can opener
+    baseMinorUnits: 7900

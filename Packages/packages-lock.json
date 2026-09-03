@@ -166,6 +166,12 @@
         "com.unity.render-pipelines.core": "17.0.3"
       }
     },
+    "com.unity.rendering.denoising": {
+      "version": "1.0.5",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {}
+    },
     "com.unity.searcher": {
       "version": "4.9.4",
       "depth": 2,
@@ -279,6 +285,12 @@
       "source": "builtin",
       "dependencies": {}
     },
+    "com.unity.modules.amd": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {}
+    },
     "com.unity.modules.androidjni": {
       "version": "1.0.0",
       "depth": 0,
@@ -339,6 +351,12 @@
       "dependencies": {}
     },
     "com.unity.modules.jsonserialize": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {}
+    },
+    "com.unity.modules.nvidia": {
       "version": "1.0.0",
       "depth": 0,
       "source": "builtin",

@@ -1,0 +1,23 @@
+{
+  "name": "MSC.PerformanceAudit.Tests.PlayMode",
+  "rootNamespace": "MSC.Tests.PlayMode.Performance",
+  "references": [
+    "MSC.Bootstrap.Runtime",
+    "MSC.Player.Runtime",
+    "MSC.World.Runtime",
+    "MSC.UI.Presentation.Runtime",
+    "MSC.UI.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

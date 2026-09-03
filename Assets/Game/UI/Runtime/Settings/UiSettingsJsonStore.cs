@@ -229,6 +229,90 @@ namespace MSC.UI.Runtime.Settings
                 return MigrateVersionOne(versionOne);
             }
 
+            if (probe.SchemaVersion == 2)
+            {
+                UiSettingsDocumentV2 versionTwo =
+                    JsonUtility.FromJson<UiSettingsDocumentV2>(json);
+                if (versionTwo == null)
+                {
+                    throw new InvalidDataException(
+                        "UI settings JSON did not produce a version-two document.");
+                }
+
+                migrated = true;
+                return MigrateVersionTwo(versionTwo);
+            }
+
+            if (probe.SchemaVersion == 3)
+            {
+                UiSettingsDocument versionThree =
+                    JsonUtility.FromJson<UiSettingsDocument>(json);
+                if (versionThree == null)
+                {
+                    throw new InvalidDataException(
+                        "UI settings JSON did not produce a version-three document.");
+                }
+                if (versionThree.Graphics == null)
+                {
+                    throw new InvalidDataException(
+                        "Version-three UI settings have no graphics category.");
+                }
+
+                versionThree.SchemaVersion = UiSettingsDocument.CurrentSchemaVersion;
+                versionThree.Graphics.DlssEnabled = false;
+                versionThree.Graphics.DlssQuality = UiDlssQuality.Balanced;
+                ApplyCameraDefaults(versionThree.Graphics);
+                ApplyAntiAliasingDefaultsFromLegacy(versionThree.Graphics);
+                versionThree.Validate();
+                migrated = true;
+                return versionThree;
+            }
+
+            if (probe.SchemaVersion == 4)
+            {
+                UiSettingsDocument versionFour =
+                    JsonUtility.FromJson<UiSettingsDocument>(json);
+                if (versionFour == null)
+                {
+                    throw new InvalidDataException(
+                        "UI settings JSON did not produce a version-four document.");
+                }
+                if (versionFour.Graphics == null)
+                {
+                    throw new InvalidDataException(
+                        "Version-four UI settings have no graphics category.");
+                }
+
+                versionFour.SchemaVersion = UiSettingsDocument.CurrentSchemaVersion;
+                ApplyCameraDefaults(versionFour.Graphics);
+                ApplyAntiAliasingDefaultsFromLegacy(versionFour.Graphics);
+                versionFour.Validate();
+                migrated = true;
+                return versionFour;
+            }
+
+            if (probe.SchemaVersion == 5)
+            {
+                UiSettingsDocument versionFive =
+                    JsonUtility.FromJson<UiSettingsDocument>(json);
+                if (versionFive == null)
+                {
+                    throw new InvalidDataException(
+                        "UI settings JSON did not produce a version-five document.");
+                }
+                if (versionFive.Graphics == null)
+                {
+                    throw new InvalidDataException(
+                        "Version-five UI settings have no graphics category.");
+                }
+
+                versionFive.SchemaVersion = UiSettingsDocument.CurrentSchemaVersion;
+                ApplyAntiAliasingDefaultsFromLegacy(versionFive.Graphics);
+                versionFive.Validate();
+                migrated = true;
+                return versionFive;
+            }
+
             throw new NotSupportedException($"Unsupported UI settings schema {probe.SchemaVersion}.");
         }
 
@@ -238,6 +322,8 @@ namespace MSC.UI.Runtime.Settings
             if (source.Graphics != null)
             {
                 result.Graphics = source.Graphics.DeepClone();
+                ApplyCameraDefaults(result.Graphics);
+                ApplyAntiAliasingDefaultsFromLegacy(result.Graphics);
             }
 
             if (source.Audio != null)
@@ -248,6 +334,7 @@ namespace MSC.UI.Runtime.Settings
             if (source.Gameplay != null)
             {
                 result.Gameplay = source.Gameplay.DeepClone();
+                result.Gameplay.ShowFpsCounter = true;
             }
 
             if (source.Controls != null)
@@ -270,6 +357,90 @@ namespace MSC.UI.Runtime.Settings
             return result;
         }
 
+        private static UiSettingsDocument MigrateVersionTwo(
+            UiSettingsDocumentV2 source)
+        {
+            UiSettingsDocument result = UiSettingsDefaults.Create();
+            if (source.Graphics != null)
+            {
+                result.Graphics = source.Graphics.DeepClone();
+                ApplyCameraDefaults(result.Graphics);
+                ApplyAntiAliasingDefaultsFromLegacy(result.Graphics);
+            }
+
+            if (source.Audio != null)
+            {
+                result.Audio = source.Audio.DeepClone();
+            }
+
+            if (source.Controls != null)
+            {
+                result.Controls = source.Controls.DeepClone();
+            }
+
+            if (source.Gameplay != null)
+            {
+                result.Gameplay = new GameplaySettingsDto
+                {
+                    HudMode = source.Gameplay.HudMode,
+                    Units = source.Gameplay.Units,
+                    LanguageId = source.Gameplay.LanguageId,
+                    FatigueVisualIntensity01 =
+                        source.Gameplay.FatigueVisualIntensity01,
+                    AlcoholVisualIntensity01 =
+                        source.Gameplay.AlcoholVisualIntensity01,
+                    ContextualHints = source.Gameplay.ContextualHints,
+                    InteractionOutlines =
+                        source.Gameplay.InteractionOutlines,
+                    CameraShakeIntensity01 =
+                        source.Gameplay.CameraShakeIntensity01,
+                    DevelopmentUiVisible =
+                        source.Gameplay.DevelopmentUiVisible,
+                    ShowFpsCounter = true,
+                };
+            }
+
+            if (source.Accessibility != null)
+            {
+                result.Accessibility = source.Accessibility.DeepClone();
+            }
+
+            result.SchemaVersion = UiSettingsDocument.CurrentSchemaVersion;
+            result.Validate();
+            return result;
+        }
+
+        private static void ApplyCameraDefaults(GraphicsSettingsDto graphics)
+        {
+            graphics.HorizontalFieldOfViewDegrees =
+                GraphicsSettingsDto.DefaultHorizontalFieldOfViewDegrees;
+            graphics.CameraFarClipMeters =
+                GraphicsSettingsDto.DefaultCameraFarClipMeters;
+        }
+
+        private static void ApplyAntiAliasingDefaultsFromLegacy(
+            GraphicsSettingsDto graphics)
+        {
+            if (graphics.DlssEnabled)
+            {
+                bool maximumQuality =
+                    graphics.DlssQuality == UiDlssQuality.Dlaa;
+                graphics.AntiAliasingPreset = UiAntiAliasingPreset.Custom;
+                graphics.AntiAliasingMode =
+                    maximumQuality
+                        ? UiAntiAliasingMode.MaximumQuality
+                        : UiAntiAliasingMode.TemporalUpscaler;
+                graphics.DlssEnabled = !maximumQuality;
+                graphics.AntiAliasingSharpening =
+                    GraphicsSettingsDto.DefaultAntiAliasingSharpening;
+                return;
+            }
+
+            UiSettingsDefaults.ApplyAntiAliasingPreset(
+                graphics,
+                UiAntiAliasingPreset.High);
+        }
+
         [Serializable]
         private sealed class UiSettingsSchemaProbe
         {
@@ -284,6 +455,31 @@ namespace MSC.UI.Runtime.Settings
             public AudioSettingsDto Audio;
             public ControlsSettingsV1Dto Controls;
             public GameplaySettingsDto Gameplay;
+        }
+
+        [Serializable]
+        private sealed class UiSettingsDocumentV2
+        {
+            public int SchemaVersion;
+            public GraphicsSettingsDto Graphics;
+            public AudioSettingsDto Audio;
+            public ControlsSettingsDto Controls;
+            public GameplaySettingsV2Dto Gameplay;
+            public AccessibilitySettingsDto Accessibility;
+        }
+
+        [Serializable]
+        private sealed class GameplaySettingsV2Dto
+        {
+            public UiHudMode HudMode;
+            public UiUnitSystem Units;
+            public string LanguageId;
+            public float FatigueVisualIntensity01;
+            public float AlcoholVisualIntensity01;
+            public bool ContextualHints;
+            public bool InteractionOutlines;
+            public float CameraShakeIntensity01;
+            public bool DevelopmentUiVisible;
         }
 
         [Serializable]

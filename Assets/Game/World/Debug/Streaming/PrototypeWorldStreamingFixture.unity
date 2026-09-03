@@ -183,6 +183,17 @@ MonoBehaviour:
   audioComposition: {fileID: 0}
   startupMode: 1
   playerPrefab: {fileID: 334472089413303144, guid: 3dbb343a041856b4caee6bb095dc2f54, type: 3}
+  itemDefinitionCatalog: {fileID: 0}
+  itemPlacementCatalog: {fileID: 0}
+  lightingProbeCatalog: {fileID: 0}
+  characterDefinitionCatalog: {fileID: 0}
+  npcFoundationCatalog: {fileID: 0}
+  npcDialogueCatalog: {fileID: 0}
+  characterPresentationCatalog: {fileID: 0}
+  trafficRoadNetworkCatalog: {fileID: 0}
+  trafficPresentationCatalog: {fileID: 0}
+  economyPriceCatalog: {fileID: 0}
+  serviceCatalog: {fileID: 0}
   playerSpawnPosition: {x: 153.495, y: 1.1, z: -1028.03}
   playerSpawnEulerAngles: {x: -0, y: 180, z: 0}
   outOfBoundsMinimumY: -64

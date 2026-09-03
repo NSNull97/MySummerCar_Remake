@@ -40,6 +40,21 @@ namespace MSC.Vehicle.Assembly
 
         public AssemblyOperationResult EvaluateInstall(PartInstance part, MountPointRuntime mount)
         {
+            return EvaluateInstall(part, mount, allowPoseSnap: false);
+        }
+
+        public AssemblyOperationResult EvaluateHandoffInstall(
+            PartInstance part,
+            MountPointRuntime mount)
+        {
+            return EvaluateInstall(part, mount, allowPoseSnap: true);
+        }
+
+        private AssemblyOperationResult EvaluateInstall(
+            PartInstance part,
+            MountPointRuntime mount,
+            bool allowPoseSnap)
+        {
             if (part == null || part.Definition == null || !part.StableId.IsValid)
             {
                 return AssemblyOperationResult.Failure(
@@ -81,8 +96,19 @@ namespace MSC.Vehicle.Assembly
                     "Деталь несовместима с этой точкой установки.");
             }
 
+            AssemblyOwnedMountAuthoring ownedMount = mount.Authoring
+                .GetComponent<AssemblyOwnedMountAuthoring>();
+            bool ownerAvailable = ownedMount != null
+                ? ownedMount.IsAvailable &&
+                  ownedMount.OwnerPart.Definition != null &&
+                  string.Equals(
+                      ownedMount.OwnerPart.Definition.DefinitionId,
+                      mount.Definition.OwnerPartDefinitionId,
+                      StringComparison.Ordinal)
+                : graph.IsPartDefinitionInstalled(
+                    mount.Definition.OwnerPartDefinitionId);
             if (!string.IsNullOrEmpty(mount.Definition.OwnerPartDefinitionId) &&
-                !graph.IsPartDefinitionInstalled(mount.Definition.OwnerPartDefinitionId))
+                !ownerAvailable)
             {
                 return AssemblyOperationResult.Failure(
                     AssemblyOperation.Install,
@@ -98,8 +124,21 @@ namespace MSC.Vehicle.Assembly
                     "Не установлена обязательная деталь.");
             }
 
+            if (!graph.AreMountInstallPrerequisitesMet(
+                    mount,
+                    out string blockingMountId))
+            {
+                return AssemblyOperationResult.Failure(
+                    AssemblyOperation.Install,
+                    AssemblyFailureReason.MissingPrerequisite,
+                    "Сначала соберите связанную точку: " + blockingMountId);
+            }
+
             float distance = Vector3.Distance(part.transform.position, mount.Authoring.Pose.position);
-            if (distance > mount.Definition.Constraint.PositionToleranceMeters)
+            float allowedDistance = allowPoseSnap
+                ? mount.Definition.Constraint.PreviewDistanceMeters
+                : mount.Definition.Constraint.PositionToleranceMeters;
+            if (distance > allowedDistance)
             {
                 return AssemblyOperationResult.Failure(
                     AssemblyOperation.Install,
@@ -108,7 +147,8 @@ namespace MSC.Vehicle.Assembly
             }
 
             float angle = Quaternion.Angle(part.transform.rotation, mount.Authoring.Pose.rotation);
-            if (angle > mount.Definition.Constraint.AngularToleranceDegrees)
+            if (!allowPoseSnap &&
+                angle > mount.Definition.Constraint.AngularToleranceDegrees)
             {
                 return AssemblyOperationResult.Failure(
                     AssemblyOperation.Install,
@@ -202,15 +242,9 @@ namespace MSC.Vehicle.Assembly
                     continue;
                 }
 
-                for (int fastenerIndex = 0; fastenerIndex < mount.Fasteners.Length; fastenerIndex++)
+                if (!mount.FastenerGroup.IsFullySafe)
                 {
-                    FastenerInstance fastener = mount.Fasteners[fastenerIndex];
-                    if (fastener.Definition != null && fastener.Definition.RequiredForRemoval &&
-                        fastener.State != FastenerState.Tightened)
-                    {
-                        unsecured.Add(mount.InstalledPart);
-                        break;
-                    }
+                    unsecured.Add(mount.InstalledPart);
                 }
             }
 

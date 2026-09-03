@@ -1,0 +1,195 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0b03d390205d704db981aa08382043f, type: 3}
+  m_Name: WeatherZoneCellCatalog
+  m_EditorClassIdentifier: MSC.Weather.Production.Runtime::MSC.Weather.Production.WeatherZoneCellCatalog
+  definitions:
+  - stableId: weather.zone.cell_-3_0.teimo.shop.v1
+    displayName: Teimo shop interior
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-3_0_Legacy.unity
+    worldCenter: {x: -1377.4739, y: 6.45, z: 142.78076}
+    worldRotation: {x: -0.6202421, y: 0.3395585, z: 0.3395586, w: 0.62024176}
+    sizeMeters: {x: 6.6733313, y: 10.67478, z: 3.6}
+    priority: 250
+    createFogVoid: 1
+    profile: {fileID: 11400000, guid: d2bdd72ced5393c4d9be4fc6b0a6c7f1, type: 2}
+  - stableId: weather.zone.cell_-3_0.teimo.pub.v1
+    displayName: Teimo pub interior
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-3_0_Legacy.unity
+    worldCenter: {x: -1380.2303, y: 6.45, z: 142.82202}
+    worldRotation: {x: -0.19847305, y: 0.6786816, z: 0.67868125, w: 0.19847289}
+    sizeMeters: {x: 6.251738, y: 9.712752, z: 3.6}
+    priority: 250
+    createFogVoid: 1
+    profile: {fileID: 11400000, guid: d2bdd72ced5393c4d9be4fc6b0a6c7f1, type: 2}
+  - stableId: weather.zone.cell_3_-1.fleetari.workshop.v1
+    displayName: Fleetari workshop interior
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_3_-1_Legacy.unity
+    worldCenter: {x: 1732.8201, y: 8.75, z: -307.565}
+    worldRotation: {x: -0.15141028, y: 0.6907061, z: 0.69070613, w: 0.15141031}
+    sizeMeters: {x: 17.05844, y: 21.653284, z: 5.4}
+    priority: 250
+    createFogVoid: 1
+    profile: {fileID: 11400000, guid: d2bdd72ced5393c4d9be4fc6b0a6c7f1, type: 2}
+  - stableId: weather.zone.cell_0_-1.cabin.interior.v1
+    displayName: Lake cabin interior
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_0_-1_Legacy.unity
+    worldCenter: {x: 4.37427, y: -1.219851, z: -19.98401}
+    worldRotation: {x: -0.7070147, y: -0.011417751, z: -0.011417752, w: 0.70701456}
+    sizeMeters: {x: 4.6, y: 3.1, z: 2.1}
+    priority: 250
+    createFogVoid: 1
+    profile: {fileID: 11400000, guid: d2bdd72ced5393c4d9be4fc6b0a6c7f1, type: 2}
+  - stableId: weather.zone.cell_0_0.cabin.shed.v1
+    displayName: Lake cabin shed shelter
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_0_0_Legacy.unity
+    worldCenter: {x: 0.112701, y: -1.2, z: 0.059082}
+    worldRotation: {x: 0.11463707, y: 0.6977525, z: 0.69775224, w: -0.114636876}
+    sizeMeters: {x: 4.5, y: 3, z: 2.4}
+    priority: 150
+    createFogVoid: 0
+    profile: {fileID: 11400000, guid: 4815f303276732946a80b14344a87ea6, type: 2}
+  - stableId: weather.zone.cell_-2_-2.cottage.interior.v1
+    displayName: Island cottage interior
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-2_-2_Legacy.unity
+    worldCenter: {x: -678.70026, y: 0.05, z: -533.81104}
+    worldRotation: {x: -0.10262026, y: 0.6996206, z: 0.6996207, w: 0.1026203}
+    sizeMeters: {x: 7, y: 9, z: 2.6}
+    priority: 250
+    createFogVoid: 1
+    profile: {fileID: 11400000, guid: d2bdd72ced5393c4d9be4fc6b0a6c7f1, type: 2}
+  - stableId: weather.zone.cell_-3_0.rowhouse.apartment.v1
+    displayName: Perajarvi rowhouse apartment interior
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-3_0_Legacy.unity
+    worldCenter: {x: -1117.8445, y: 4.2, z: 39.125122}
+    worldRotation: {x: -0.34436122, y: 0.61758834, z: 0.61758864, w: 0.3443607}
+    sizeMeters: {x: 9, y: 13, z: 2.2}
+    priority: 250
+    createFogVoid: 1
+    profile: {fileID: 11400000, guid: d2bdd72ced5393c4d9be4fc6b0a6c7f1, type: 2}
+  - stableId: weather.zone.cell_1_0.dancehall.shelter.v1
+    displayName: Dance pavilion shelter
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_1_0_Legacy.unity
+    worldCenter: {x: 624.4209, y: 16.2, z: 277.5377}
+    worldRotation: {x: 0.49999282, y: -0.50000525, z: 0.500007, w: 0.499995}
+    sizeMeters: {x: 15.6, y: 19.5, z: 3}
+    priority: 150
+    createFogVoid: 0
+    profile: {fileID: 11400000, guid: 4815f303276732946a80b14344a87ea6, type: 2}
+  - stableId: weather.zone.cell_-1_-5.jail.interior.v1
+    displayName: Jail cell interior
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-1_-5_Legacy.unity
+    worldCenter: {x: -485.32, y: 7.2, z: -2194.0352}
+    worldRotation: {x: -0.7071069, y: 0, z: 0, w: 0.70710677}
+    sizeMeters: {x: 4.9425206, y: 6.1726527, z: 3.25}
+    priority: 250
+    createFogVoid: 1
+    profile: {fileID: 11400000, guid: d2bdd72ced5393c4d9be4fc6b0a6c7f1, type: 2}
+  - stableId: weather.zone.cell_2_-1.abandoned_house.west.v1
+    displayName: Abandoned house west shelter
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_2_-1_Legacy.unity
+    worldCenter: {x: 1530.33, y: 14.8, z: -233.61212}
+    worldRotation: {x: -0.3036791, y: 0.6385758, z: 0.6385758, w: 0.3036791}
+    sizeMeters: {x: 2.5000021, y: 2.5000007, z: 2.6}
+    priority: 150
+    createFogVoid: 0
+    profile: {fileID: 11400000, guid: 4815f303276732946a80b14344a87ea6, type: 2}
+  - stableId: weather.zone.cell_2_-1.abandoned_house.south.v1
+    displayName: Abandoned house south shelter
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_2_-1_Legacy.unity
+    worldCenter: {x: 1532.8782, y: 14.8, z: -242.01532}
+    worldRotation: {x: -0.3036791, y: 0.6385758, z: 0.6385758, w: 0.30367908}
+    sizeMeters: {x: 2.5, y: 3.0000007, z: 2.6}
+    priority: 150
+    createFogVoid: 0
+    profile: {fileID: 11400000, guid: 4815f303276732946a80b14344a87ea6, type: 2}
+  - stableId: weather.zone.cell_3_-1.abandoned_house.main.v1
+    displayName: Abandoned house main shelter
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_3_-1_Legacy.unity
+    worldCenter: {x: 1538.01, y: 14.8, z: -240.90503}
+    worldRotation: {x: -0.30367902, y: 0.6385759, z: 0.6385757, w: 0.30367905}
+    sizeMeters: {x: 6.0000005, y: 19.5, z: 2.6}
+    priority: 150
+    createFogVoid: 0
+    profile: {fileID: 11400000, guid: 4815f303276732946a80b14344a87ea6, type: 2}
+  - stableId: weather.zone.cell_-3_0.inspection.hall.v1
+    displayName: Inspection hall interior
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-3_0_Legacy.unity
+    worldCenter: {x: -1351.1182, y: 6.55, z: 218.78186}
+    worldRotation: {x: 0.37548485, y: 0.5991751, z: 0.59917533, w: -0.3754854}
+    sizeMeters: {x: 42.57523, y: 15.707606, z: 4}
+    priority: 250
+    createFogVoid: 1
+    profile: {fileID: 11400000, guid: d2bdd72ced5393c4d9be4fc6b0a6c7f1, type: 2}
+  - stableId: weather.zone.cell_-3_0.inspection.office.v1
+    displayName: Inspection office interior
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-3_0_Legacy.unity
+    worldCenter: {x: -1361.4513, y: 6.55, z: 228.3429}
+    worldRotation: {x: -0.15817289, y: 0.68918866, z: 0.68918926, w: 0.15817252}
+    sizeMeters: {x: 23.046154, y: 16.99217, z: 4}
+    priority: 250
+    createFogVoid: 1
+    profile: {fileID: 11400000, guid: d2bdd72ced5393c4d9be4fc6b0a6c7f1, type: 2}
+  - stableId: weather.zone.cell_4_-3.factory.machine_hall.v1
+    displayName: Factory machine hall shelter
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_4_-3_Legacy.unity
+    worldCenter: {x: 2308.372, y: 4.2, z: -1511.4948}
+    worldRotation: {x: -0.70710593, y: 0.0012539818, z: 0.0012539219, w: 0.7071054}
+    sizeMeters: {x: 7.716518, y: 18.880304, z: 3}
+    priority: 150
+    createFogVoid: 0
+    profile: {fileID: 11400000, guid: 4815f303276732946a80b14344a87ea6, type: 2}
+  - stableId: weather.zone.cell_-2_0.farm.machine_hall.v1
+    displayName: Farm machine hall shelter
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-2_0_Legacy.unity
+    worldCenter: {x: -679.6721, y: 6.69, z: 318.30054}
+    worldRotation: {x: -0.4418674, y: 0.46677214, z: 0.55375916, w: 0.52936554}
+    sizeMeters: {x: 7.716517, y: 18.880302, z: 4.2}
+    priority: 150
+    createFogVoid: 0
+    profile: {fileID: 11400000, guid: 4815f303276732946a80b14344a87ea6, type: 2}
+  - stableId: weather.zone.cell_-3_-4.strawberry.machine_hall.v1
+    displayName: Strawberry field machine hall shelter
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_-3_-4_Legacy.unity
+    worldCenter: {x: -1082.9297, y: 5.08, z: -1640.3057}
+    worldRotation: {x: -0.6588833, y: 0.25665745, z: 0.25665763, w: 0.65888286}
+    sizeMeters: {x: 7.716518, y: 18.880304, z: 4.2}
+    priority: 150
+    createFogVoid: 0
+    profile: {fileID: 11400000, guid: 4815f303276732946a80b14344a87ea6, type: 2}
+  - stableId: weather.zone.cell_0_-3.yard.machine_hall.v1
+    displayName: Home yard machine hall shelter
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_0_-3_Legacy.unity
+    worldCenter: {x: 224.95195, y: 3.36, z: -1120.7959}
+    worldRotation: {x: -0.7050418, y: -0.054003656, z: 0.069369115, w: 0.70369565}
+    sizeMeters: {x: 7.7165165, y: 18.880299, z: 4.2}
+    priority: 150
+    createFogVoid: 0
+    profile: {fileID: 11400000, guid: 4815f303276732946a80b14344a87ea6, type: 2}
+  - stableId: weather.zone.cell_3_-1.bridge.dirt.shelter.v1
+    displayName: Dirt-road bridge shelter
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_3_-1_Legacy.unity
+    worldCenter: {x: 1606.0381, y: -1.1989537, z: -291.53296}
+    worldRotation: {x: -0.50755906, y: 0.4924195, z: 0.4967043, w: 0.5031816}
+    sizeMeters: {x: 2.1, y: 14, z: 2.4}
+    priority: 150
+    createFogVoid: 0
+    profile: {fileID: 11400000, guid: 4815f303276732946a80b14344a87ea6, type: 2}
+  - stableId: weather.zone.cell_3_0.bridge.highway.shelter.v1
+    displayName: Highway bridge shelter
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_3_0_Legacy.unity
+    worldCenter: {x: 1615.712, y: 8.281064, z: 34.90747}
+    worldRotation: {x: -0.35601863, y: 0.6109422, z: 0.6109425, w: 0.3560192}
+    sizeMeters: {x: 6, y: 50, z: 2.4}
+    priority: 150
+    createFogVoid: 0
+    profile: {fileID: 11400000, guid: 4815f303276732946a80b14344a87ea6, type: 2}

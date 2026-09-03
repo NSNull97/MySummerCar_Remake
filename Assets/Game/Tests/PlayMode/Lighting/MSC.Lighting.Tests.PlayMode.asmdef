@@ -1,0 +1,25 @@
+{
+  "name": "MSC.Lighting.Tests.PlayMode",
+  "rootNamespace": "MSC.Lighting.Tests.PlayMode",
+  "references": [
+    "MSC.Lighting.Runtime",
+    "MSC.Lighting.ProductionIntegration.Runtime",
+    "MSC.Bootstrap.Runtime",
+    "MSC.Core.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Items.Runtime",
+    "MSC.World.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

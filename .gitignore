@@ -33,9 +33,12 @@ Recordings/
 .DS_Store
 Thumbs.db
 desktop.ini
+__pycache__/
+*.py[cod]
 
 # Machine-specific configuration
 Config/DonorPaths.local.json
+Config/PresentationAssets.local.json
 Config/UnityEditor.local.json
 Config/WorldTransferConfig.local.json
 Config/WorldTransferRules.local.json
@@ -87,11 +90,45 @@ Assets/StreamingAssets/Audio/GeneratedSoundBanks/
 /Assets/Enviro 3 - Sky and Weather.meta
 /Assets/Enviro 3 - Additional Weather Pack/
 /Assets/Enviro 3 - Additional Weather Pack.meta
+/Assets/Plugins/Easy performant outline/
+/Assets/Plugins/Easy performant outline.meta
+/Assets/NatureManufacture Assets/
+/Assets/NatureManufacture Assets.meta
+/Assets/NWH/
+/Assets/NWH.meta
+/Assets/Chernobyl/
+/Assets/Chernobyl.meta
+/Assets/VolumetricLightBeam/
+/Assets/VolumetricLightBeam.meta
+/Assets/Documentation/
+/Assets/Documentation.meta
+/Assets/Game/Presentation/Vegetation/ThirdParty/ALPSpruceTreesPack/Source/
+/Assets/Game/Presentation/Vegetation/ThirdParty/ALPSpruceTreesPack/Source.meta
+/Assets/Game/Presentation/Vegetation/ThirdParty/*/Source/
+/Assets/Game/Presentation/Vegetation/ThirdParty/*/Source.meta
 
 # Local profiling/build artifacts
 PerformanceCaptures/
 TestResults/
 Artifacts/
+
+# Local texture-upscale working data and reversible backups
+Backups/TextureUpscale/
+Tools/TextureUpscale/cache/**
+!Tools/TextureUpscale/cache/.gitkeep
+Tools/TextureUpscale/logs/**
+!Tools/TextureUpscale/logs/.gitkeep
+Tools/TextureUpscale/models/**
+!Tools/TextureUpscale/models/.gitkeep
+Reports/TextureUpscale/Processed/
+Reports/TextureUpscale/apply_request.json
+Reports/TextureUpscale/unity_apply_result.json
+
+# Generated validation output and authoring-tool backups
+/Reports/**/*.log
+/Reports/**/*.xml
+/BlenderWork/**/*.log
+/BlenderWork/**/*.blend1
 
 # Local donor runtime reference media (metadata and hashes only are tracked)
 References/DonorRuntime/

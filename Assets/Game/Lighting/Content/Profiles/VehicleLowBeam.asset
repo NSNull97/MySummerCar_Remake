@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 534e762fb05fab04581331e39eeac996, type: 3}
+  m_Name: VehicleLowBeam
+  m_EditorClassIdentifier: MSC.Lighting.Runtime::MSC.Lighting.LightFixtureProfile
+  profileId: lighting.fixture.vehicle-low-beam
+  category: 8
+  shape: 1
+  lightUnit: 1
+  intensity: 6500
+  rangeMeters: 35
+  colorTemperatureKelvin: 3300
+  lightColor: {r: 1, g: 1, b: 1, a: 1}
+  sourceRadiusMeters: 0.045
+  sourceWidthMeters: 0.14
+  sourceHeightMeters: 0.1
+  innerSpotAngle: 26
+  outerSpotAngle: 48
+  enableSpotReflector: 1
+  cookie: {fileID: 0}
+  iesProfile: {fileID: 0}
+  shadowFadeDistanceMeters: 48
+  nativeVolumetricMultiplier: 0.015
+  beamClearAirIntensity: 0.002
+  beamFogIntensity: 0.025
+  beamRainIntensity: 0.015
+  beamSnowIntensity: 0.02
+  emissiveColor: {r: 1, g: 1, b: 1, a: 1}
+  emissiveIntensity: 4
+  bloomContribution: 0.2
+  turnOnSeconds: 0.08
+  turnOffSeconds: 0.12
+  powerPolicy: 3
+  low:
+    lightDistanceMeters: 50
+    shadowDistanceMeters: 22.5
+    shadowsEnabled: 0
+    contactShadowsEnabled: 0
+    shadowUpdateMode: 2
+    shadowResolution: 256
+    beamQuality: 0
+    beamDistanceMeters: 40
+  medium:
+    lightDistanceMeters: 75
+    shadowDistanceMeters: 33.75
+    shadowsEnabled: 1
+    contactShadowsEnabled: 0
+    shadowUpdateMode: 2
+    shadowResolution: 512
+    beamQuality: 1
+    beamDistanceMeters: 60
+  high:
+    lightDistanceMeters: 110
+    shadowDistanceMeters: 49.5
+    shadowsEnabled: 1
+    contactShadowsEnabled: 1
+    shadowUpdateMode: 2
+    shadowResolution: 768
+    beamQuality: 2
+    beamDistanceMeters: 88
+  ultra:
+    lightDistanceMeters: 160
+    shadowDistanceMeters: 72
+    shadowsEnabled: 1
+    contactShadowsEnabled: 1
+    shadowUpdateMode: 0
+    shadowResolution: 1024
+    beamQuality: 2
+    beamDistanceMeters: 128

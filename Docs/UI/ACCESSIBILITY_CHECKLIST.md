@@ -18,7 +18,7 @@ approved at every viewport or input device.
 | Cancel/back path | `Implemented / PlayModePass` | settings Back and confirmation Cancel return to the expected caller |
 | UI scale | `FoundationImplemented / FocusedPlayModePass / ViewportTestPending` | schema allows 0.75-1.5; current safe presentation applies 0.85-1.25 to authored UI only, while the static menu backdrop remains full-canvas outside scale |
 | 16:9 target | `CapturePass / VisuallyApproved` | canonical 1672x941 set accepted by user on 2026-07-20 |
-| 16:10, ultrawide, 4:3 | `Pending` | safe-frame and focus traversal tests not yet executed |
+| 16:10, ultrawide, 4:3 | `AutomatedViewportPass / ManualVisualReviewPending` | all-route graphic containment passes at `1156x722`, `1024x768` and `2560x1080` with the fixed canonical safe frame |
 | High contrast | `SchemaOnly / AdapterPending` | visible row is disabled and labelled `Adapter Pending`; token-variant application pending |
 | Reduced motion | `SchemaOnly / AdapterPending` | visible row is disabled and labelled `Adapter Pending`; bounded UI has no mandatory large motion |
 | Toggle alternatives for hold actions | `SchemaOnly / AdapterPending` | visible row is disabled; gameplay/input adapter pending |
@@ -28,7 +28,7 @@ approved at every viewport or input device.
 | Reduced loud sounds | `FoundationImplemented` | setting reaches audio backend; subjective/manual validation pending |
 | Text localization | `FoundationImplemented` | English/Russian catalog, runtime locale application and culture-aware format/plural foundation; formal string-table workflow pending |
 | Font fallback | `FoundationImplemented / ProductionFontPending` | Windows chain is accepted only after the full bounded Latin/Cyrillic glyph set validates, with explicit `LegacyRuntime.ttf` fallback; final approved bundled font remains art work |
-| Text resizing/reflow | `Pending` | canonical layout uses fixed pixel geometry; scale/aspect clipping audit pending |
+| Text resizing/reflow | `AspectPass / ScaleReviewPending` | aspect clipping is covered by the fixed safe frame; accessibility scaling above 100% still requires manual visual review |
 | Non-colour disabled reason | `Implemented` | capability rows use explicit unavailable/adapter/reference text |
 | Input rebind cancel | `Implemented / RollbackTestPass` | cancellation restores the previous override without partial mutation; physical Escape-device check remains manual |
 | Input rebind conflict feedback | `Implemented / ConflictTestPass` | duplicate effective path is rejected by focused PlayMode coverage |

@@ -1,0 +1,20 @@
+{
+  "name": "MSC.Vehicle.NWH",
+  "rootNamespace": "MSC.Vehicle.NWH",
+  "references": [
+    "MSC.Characters.Runtime",
+    "MSC.Vehicle.Assembly",
+    "MSC.Vehicle.Simulation",
+    "NWH.Common",
+    "NWH.WheelController"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

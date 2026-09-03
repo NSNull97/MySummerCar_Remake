@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43bcafd18833b66439f28bdf38f01bae, type: 3}
+  m_Name: FinnishSummerGeography
+  m_EditorClassIdentifier: MSC.Weather.System.NativeHDRP.Runtime::MSC.Weather.System.NativeHDRP.WeatherGeographySettings
+  latitude: 62.4
+  longitude: 25.7
+  fallbackDayOfYear: 220
+  timeZoneHours: 3
+  northDirectionDegrees: 0

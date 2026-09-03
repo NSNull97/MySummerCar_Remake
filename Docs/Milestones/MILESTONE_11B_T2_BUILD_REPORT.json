@@ -1,0 +1,19 @@
+{
+    "schemaVersion": 1,
+    "milestoneId": "11B-T2",
+    "classification": "Reimplemented",
+    "sourceSceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4",
+    "roadRouteCount": 16,
+    "roadPointCount": 9320,
+    "graphConnectionCount": 48,
+    "donorHighwayInstanceCount": 10,
+    "persistentActorCount": 11,
+    "routeTransportActorCount": 4,
+    "presentationArchetypeCount": 20,
+    "exactDonorMultiplicityPreserved": true,
+    "usesPhysicalNwhNearPlayer": true,
+    "usesPersistentOffscreenState": true,
+    "donorControllersExcluded": true,
+    "donorHierarchyRuntimeDependency": false,
+    "ambientAudioProfile": "temporary petteri fallback profile; per-model Wwise events pending"
+}

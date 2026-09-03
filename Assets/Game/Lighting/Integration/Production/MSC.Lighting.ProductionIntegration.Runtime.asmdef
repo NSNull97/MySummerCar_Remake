@@ -1,0 +1,31 @@
+{
+  "name": "MSC.Lighting.ProductionIntegration.Runtime",
+  "rootNamespace": "MSC.Lighting.Production",
+  "references": [
+    "MSC.Lighting.Runtime",
+    "MSC.Core.Runtime",
+    "MSC.World.Runtime",
+    "MSC.Weather.Runtime",
+    "MSC.Weather.Production.Runtime",
+    "MSC.Services.Runtime",
+    "MSC.Audio.Runtime",
+    "MSC.Audio.Composition",
+    "MSC.Bootstrap.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Items.Runtime",
+    "MSC.Characters.Runtime",
+    "MSC.LegacyImport.Runtime",
+    "MSC.Home.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

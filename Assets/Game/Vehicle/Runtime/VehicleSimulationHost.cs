@@ -52,6 +52,8 @@ namespace MSC.Vehicle
 
         public event Action SimulationReset;
 
+        public event Action SimulationRestored;
+
         private void Awake()
         {
             if (!TryInitialize(out string failure))
@@ -175,6 +177,27 @@ namespace MSC.Vehicle
             LastInput = VehicleInputState.Neutral();
             FixedTickCount = 0;
             SimulationReset?.Invoke();
+        }
+
+        public bool TryRestoreSimulationState(
+            VehicleSimulationStateDto dto,
+            out string failure)
+        {
+            if (root == null && !TryInitialize(out failure))
+            {
+                return false;
+            }
+
+            if (!root.TryRestoreState(dto, out failure))
+            {
+                return false;
+            }
+
+            LastInput = VehicleInputState.Neutral();
+            FixedTickCount = 0;
+            SimulationRestored?.Invoke();
+            failure = string.Empty;
+            return true;
         }
 
         public void ResetToSpawn()

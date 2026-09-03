@@ -8,17 +8,29 @@ namespace MSC.Tests.EditMode.WeatherDomain
     public sealed class WeatherScheduleTests
     {
         [Test]
-        public void DefaultCatalog_ContainsExactlyEightStableVerticalSliceStates()
+        public void DefaultCatalog_ContainsNineStableWeatherStates()
         {
             WeatherProfileCatalog catalog = WeatherProfileCatalog.CreateRemakeDesignTargets();
 
-            Assert.That(catalog.Profiles.Count, Is.EqualTo(8));
+            Assert.That(catalog.Profiles.Count, Is.EqualTo(9));
             for (int index = 0; index < WeatherStateIds.All.Count; index++)
             {
                 Assert.That(catalog.Contains(WeatherStateIds.All[index]), Is.True);
                 Assert.That(catalog.Get(WeatherStateIds.All[index]).Provenance,
                     Is.EqualTo(WeatherProfileCatalog.RemakeDesignTargetProvenance));
             }
+
+            WeatherProfile denseFog =
+                catalog.Get(WeatherStateIds.DenseFog);
+            Assert.That(
+                denseFog.TargetState.PresentationBindingId,
+                Is.EqualTo("weather.dense_fog"));
+            Assert.That(
+                denseFog.TargetState.FogIntensity01,
+                Is.EqualTo(1f));
+            Assert.That(
+                denseFog.TargetState.VisibilityMeters,
+                Is.EqualTo(80f));
         }
 
         [Test]

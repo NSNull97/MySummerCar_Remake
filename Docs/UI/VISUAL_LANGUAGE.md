@@ -40,6 +40,9 @@ The current token source is
 | `PauseBackdropDim` | RGBA `(0.006, 0.005, 0.004, 0.74)` | dark layer over the frozen pause capture |
 | `MenuGlassNeutral` | RGBA `(0.055, 0.050, 0.045, 0.60)` | neutral menu glass before restrained car-colour mixing |
 | `HudGlassTint` | RGBA `(0.008, 0.009, 0.009, 0.70)` | semi-black HUD glass |
+| `HudMinimalShadow` | RGBA `(0, 0, 0, 0.38)` | soft sub-pixel contrast shadow for minimal HUD graphics |
+| `HudMinimalTrack` | RGBA `(0.94, 0.94, 0.92, 0.30)` | full need track and short corner rules |
+| `HudMinimalFill` | RGBA `(0.96, 0.95, 0.92, 0.78)` | authoritative need fill before the amber indicator |
 | `Panel` | RGBA `(0.055, 0.047, 0.040, 0.88)` | major surfaces |
 | `Card` | RGBA `(0.080, 0.070, 0.060, 0.78)` | secondary surfaces |
 | `Row` | RGBA `(0.150, 0.130, 0.115, 0.72)` | controls/settings rows |
@@ -54,7 +57,9 @@ The current token source is
 
 Current type sizes are 44/22 for the logo family, 28 for page headings, 19
 for sections, 21 for primary actions, 15 for settings rows and 12 for captions.
-These are implementation baselines, not evidence of a licensed reference font.
+Helvetica Neue Roman is the deterministic Latin/Cyrillic face across the main
+menu, pause, settings, save/loading surfaces, HUD, interaction prompts,
+bottom subtitle/status presentation and the development playtest console.
 
 ## Surfaces and radius family
 
@@ -102,12 +107,13 @@ page ends with an equal-size `Apply / Reset / Cancel` row.
 
 ## Typography
 
-The reference calls for a compact condensed automotive sans, but no approved
-font asset is present. On Windows the bounded implementation resolves the first
-available family from Bahnschrift SemiCondensed, Bahnschrift, Arial Narrow and
-Segoe UI, then falls back explicitly to Unity `LegacyRuntime.ttf`. The selected
-source is exposed for diagnostics. This is a licensed/system-font foundation,
-not final font matching; no external font was downloaded or bundled.
+The gameplay reference calls for a neutral, open neo-grotesque sans rather than
+the previously used narrow face. The implementation bundles the user's locally
+licensed Helvetica Neue Roman file for deterministic Latin/Cyrillic rendering
+and to avoid platform drift from whichever font happens to be installed on a
+player machine. Validated Windows families and Unity `LegacyRuntime.ttf` remain
+bounded fallbacks if the project font asset is missing or fails glyph validation.
+The selected source remains exposed for diagnostics.
 
 Text rules:
 
@@ -121,10 +127,12 @@ Text rules:
 
 ## Icons and logo
 
-`UiVisualAssets` generates simple original bitmap sprites at runtime for the
-bounded icon set and rounded surfaces. The logo is rebuilt from project-owned
-text and geometric discs. Reference icons/logo pixels are not cropped, traced
-or baked into the game. A final art pass may replace these assets without
+`UiVisualAssets` loads the six needs symbols (`droplet`, `utensils`, `brain`,
+`toilet`, `bed-double`, `sparkles`) from Lucide under the ISC license and keeps
+the procedural generator as a missing-asset fallback. Rounded surfaces and the
+remaining bounded symbols stay project-generated. The logo is rebuilt from
+project-owned text and geometric discs. Reference icons/logo pixels are not
+cropped, traced or baked into the game. A final art pass may replace these assets without
 changing locked bounds or route semantics.
 
 ## Background and blur ownership
@@ -137,10 +145,10 @@ sharp; only masked glass surfaces sample its softened copy. Its aspect-preserved
 full-canvas frame is outside `UiScale`, so reducing UI scale never reveals the
 prepared gameplay world around the menu.
 
-During gameplay the world remains sharp. Only the two HUD blocks sample a
-stable semi-black translucent surface; they do not request camera capture or
-blur. Pause performs a one-shot `1024x576` project-camera capture, filters it to
-a `512x288`, `ARGBHalf` Gaussian result and places the darker pause dim above
+During gameplay the world remains sharp. The clock, money and needs graphics
+have no panel, camera capture or blur; contrast comes from their shared dark
+shadow. Pause performs a one-shot `1024x576` project-camera capture, filters it
+to a `512x288`, `ARGBHalf` Gaussian result and places the darker pause dim above
 it. Settings/dialogs entered from pause retain that frozen context. This
 asset/effect split is explicit and does not claim that the temporary vehicle is
 the final Phase 1 Satsuma presentation.
@@ -153,11 +161,37 @@ part of the final visual pipeline.
 
 ## HUD language
 
-The HUD is the darkest and most compact application of the token family. At
-100% scale it contains exactly two upper-left blocks: time/day/date plus money,
-then six needs rows. Icons, labels, a short bar and numeric percentages provide
-redundant meaning. The numeric percentage convention is the explicit 08A
-exception to the older generic guardrail.
+The 2026-08-05 user direction makes the HUD the lightest and most
+scene-integrated application of the token family. At 100% scale it places all
+six needs in one vertical upper-left column, with the clock at upper-right and
+money immediately beneath it. Day and date share one baseline with a compact
+4 px field gap. No enclosing card is used. Pure-white 28 px icons, slightly
+larger labels, 150 px gradient tracks and white endpoint dots provide the need
+readout without numeric percentages, while a shared dark one-pixel shadow keeps every thin graphic
+readable over bright sky, water and roads. Urine and Dirtiness
+(`НЕОПРЯТНОСТЬ` in Russian) remain present even though the style image omits
+them. Its illustrated speedometer and gear display are explicitly not part of
+the runtime HUD. When enabled, the FPS counter uses the same panel-free shadowed
+language: pure-white numeric value followed by amber `FPS`, with no decorative
+line; both elements use the same 17 px type size and baseline. The numeric field
+contains digits only, so the amber suffix cannot be duplicated.
+
+The 2026-09-02 direction supersedes the earlier target-anchored context prompt.
+The centre reticle is a tiny white dot in its ordinary state, a compact filled
+open palm while pickup is valid, a white check while a carried item can be
+installed and a white cross while an installed item can be removed. The action
+icons use a stronger two-ring black halo. Zero to three compact rounded black
+plaques sit in the lower-left canonical safe frame. Each binding label has a
+lightly rounded outlined keycap; optional mouse glyphs fill the active button or
+show adjacent wheel arrows. No title or action follows world bounds. Holding
+Alt replaces those rows with H/M/N gesture actions, but Alt itself is
+deliberately not advertised on the HUD.
+
+Explicit target names and subtitles share a dynamic bottom-centre stack in the
+same rounded translucent family. A `15 px` bold target row sits above an `18 px`
+regular wrapping subtitle row; either row disappears without reserving space.
+The pickup palm comes from Material Symbols under Apache-2.0, while check,
+removal cross and mouse bases come from the pinned Lucide source.
 
 ## Motion and accessibility
 
@@ -172,8 +206,8 @@ exception to the older generic guardrail.
   100%.
 - High contrast remains disabled and explicitly `Adapter Pending` until a
   token-variant adapter exists.
-- Colour-independent labels/numerics are required even when status colours are
-  present.
+- Colour-independent labels, icons and endpoint position are required even when
+  gradient colour is present.
 - Transient toast presentation owns its complete rounded panel. When its timer
   expires, the panel and text are both hidden; an empty persistent toast is not
   part of any route.

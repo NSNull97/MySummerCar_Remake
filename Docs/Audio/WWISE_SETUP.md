@@ -1,7 +1,7 @@
 # Wwise setup
 
 Status: **Installed / AuthoringAndRuntimeAutomatedValidated**  
-Audit date: **2026-07-18**
+Audit date: **2026-08-02**
 
 ## Installed versions
 
@@ -41,7 +41,7 @@ the source generated banks.
 
 WAAPI/disk verification in `Logs/M08_WwiseAuthoring.log` records:
 
-- 52 distinct events; runtime aliases are not duplicated;
+- 65 distinct events; runtime aliases are not duplicated;
 - 32 Game Parameters/RTPCs;
 - 4 switch groups;
 - 3 state groups;
@@ -49,14 +49,15 @@ WAAPI/disk verification in `Logs/M08_WwiseAuthoring.log` records:
 - 6 mixer buses;
 - exactly 6 mixer Volume RTPC curves;
 - 7 routed Actor-Mixer roots;
-- exact child OutputBus routing `52/52`;
+- exact child OutputBus routing `65/65`;
 - player footsteps: 10 sounds, 5 random pairs, `9/9` switch assignments and a
   valid Play action;
 - wind shelter curve present, reaching `-24 dB`;
-- generated output: 30 embedded media objects, 0 loose WEM.
+- generated output: 43 embedded media objects, 0 loose WEM.
 
 The mixer curves map `MSC_Mixer_Master`, `Vehicle`, `Effects`, `Ambience`,
-`Music` and `UI` from normalized `0`/`1` to `-96 dB`/`0 dB`. Vehicle routes to
+`Music` and `UI` from normalized `0` to `-96 dB`. Category buses reach `0 dB`;
+the master reaches `+4 dB` to correct the quiet integrated game mix. Vehicle routes to
 Vehicle; Weather and World to Ambience; Interaction to Effects; Music to Music;
 UI to UI.
 
@@ -64,13 +65,13 @@ UI to UI.
 
 | Bank | Bytes | SHA-256 |
 |---|---:|---|
-| `Init.bnk` | 1,877 | `86CA0EFC46DC6878DAB0619F8611B76B3BA939980BBF5B566352D1ED90EEFBF9` |
-| `MSC_Interaction.bnk` | 1,179,302 | `009D7A6E9EFCA2E3750EA8B07412F10203798256A26860DF3A659CCCED64B5D8` |
+| `Init.bnk` | 1,877 | `EF283158EA22C70E04D72B440FEC217E7237ABDC60FE5E811C3BAD53F9BD36EE` |
+| `MSC_Interaction.bnk` | 1,179,302 | `00E47454FE4895E93C73A5EA267D6285E261FC3CD9E6BB2BC8DB91CEB9CD27F0` |
 | `MSC_UI.bnk` | 145 | `F282D401C047128722E5A902FB3F35CFE3E3A23B65529492FC1A1FD9E074E1E1` |
-| `MSC_Vehicle.bnk` | 1,992,969 | `39A777154F4FE0D6C7A2DD5A978A35C32D45EFBF14F3ACF3F1313321350CF2D8` |
-| `MSC_Weather.bnk` | 12,554,129 | `1B598E9165D4521718CE8A03D1D2ACD92C4C1A723F6CED11B9DD50ED3D8D44B3` |
-| `MSC_World.bnk` | 10,387,529 | `273F47B925EBFF41D86B3CB6594F860469C97136D9485BD0CFB1F2536D530B5E` |
-| **Total** | **26,115,951** | per-file hashes above |
+| `MSC_Vehicle.bnk` | 1,992,969 | `A871A4B279A3509B78665D30AFE6AC68B1B189D7674AB242420EDA144D98681F` |
+| `MSC_Weather.bnk` | 12,554,129 | `21A19090D536D5BD6AB196B5B1BF363EDB386556607FD910A9FEB1B3309BFA5F` |
+| `MSC_World.bnk` | 93,600,920 | `FCEBDFF3CA1D9CB4AA5A24792B37D4B3638739EDB1DAB1A39A8DC2F36DA7E5BC` |
+| **Total** | **109,329,342** | per-file hashes above |
 
 Generated banks/caches and temporary originals remain outside Git. `MSC_UI` is
 an intentionally empty/reserved 145-byte bank; later UI/menu sounds are a
@@ -123,6 +124,23 @@ ledger row. Originals/conversions/banks are local ignored
 `TemporaryDirectImport`, non-distributable and not architectural dependencies.
 They are not final production content. Final gameplay/world/weather audio is
 newly authored and mixed; final UI/menu audio is a separate later set.
+
+The 2026-08-02 parity pass imports the full reviewed donor
+`MAP/SoundAmbience` content: morning/day/evening/night birds, separate swamp
+birds, meadow, distant dog, three lake-water emitters and the donor-evidenced
+`chainsaw.ogg`. The runtime follows the donor 06:00/12:00/18:00/24:00 phase
+boundaries but applies project-owned rain/wind attenuation. Per the user
+correction, chainsaw playback is rare, fair-weather-only and fixed near the
+player home rather than copied as a continuously looping donor source.
+
+`wind_chime.ogg`, `mosquito.ogg`, `fly.ogg`, `fly2.ogg` and `wasp_fly2.ogg`
+are also mapped in Wwise, but the donor scene shows them as local/inactive
+gameplay sources rather than the unconditional `MAP/SoundAmbience` bed. Their
+stable events therefore remain gameplay hooks until their owning objects are
+implemented. All 14 world clips remain private `TemporaryDirectImport` Phase 1
+presentation and require Phase 2 replacement. The unusually large temporary
+`MSC_World` bank is accepted only for audible Phase 1 validation; streaming and
+codec/compression tuning must reduce its memory footprint before production.
 
 ## Remaining manual evidence
 

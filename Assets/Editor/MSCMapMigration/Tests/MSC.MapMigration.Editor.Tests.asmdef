@@ -1,0 +1,18 @@
+{
+  "name": "MSC.MapMigration.Editor.Tests",
+  "rootNamespace": "MSCMapMigration.Tests",
+  "references": [
+    "MSC.MapMigration.Editor",
+    "MSC.LegacyImport.Runtime"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": ["TestAssemblies"]
+}

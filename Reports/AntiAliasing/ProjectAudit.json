@@ -1,0 +1,593 @@
+{
+    "GeneratedUtc": "2026-08-17T12:26:08.9961610Z",
+    "UnityVersion": "6000.3.11f1",
+    "HdrpVersion": "17.3.0",
+    "GraphicsDevice": "Null Device",
+    "GraphicsApi": "Null",
+    "ActiveQualityLevel": 0,
+    "ActiveQualityName": "High Fidelity",
+    "AnisotropicFiltering": "ForceEnable",
+    "Pipelines": [
+        {
+            "Path": "Assets/Settings/HDRP Balanced.asset",
+            "Name": "HDRP Balanced",
+            "ActiveGlobal": false,
+            "ActiveForCurrentQuality": false,
+            "MotionVectors": true,
+            "MsaaSamples": "None",
+            "DynamicResolutionEnabled": true,
+            "DynamicResolutionMipBias": false,
+            "DlssDlaaPreset": 1,
+            "DynamicResolutionMinimumPercent": 100.0,
+            "DynamicResolutionMaximumPercent": 100.0,
+            "UpsampleFilter": "CatmullRom",
+            "AdvancedUpscalers": [
+                "DLSS"
+            ]
+        },
+        {
+            "Path": "Assets/Settings/HDRP High Fidelity.asset",
+            "Name": "HDRP High Fidelity",
+            "ActiveGlobal": false,
+            "ActiveForCurrentQuality": true,
+            "MotionVectors": true,
+            "MsaaSamples": "None",
+            "DynamicResolutionEnabled": true,
+            "DynamicResolutionMipBias": false,
+            "DlssDlaaPreset": 1,
+            "DynamicResolutionMinimumPercent": 100.0,
+            "DynamicResolutionMaximumPercent": 100.0,
+            "UpsampleFilter": "CatmullRom",
+            "AdvancedUpscalers": [
+                "DLSS"
+            ]
+        },
+        {
+            "Path": "Assets/Settings/HDRP Performant.asset",
+            "Name": "HDRP Performant",
+            "ActiveGlobal": false,
+            "ActiveForCurrentQuality": false,
+            "MotionVectors": true,
+            "MsaaSamples": "None",
+            "DynamicResolutionEnabled": true,
+            "DynamicResolutionMipBias": false,
+            "DlssDlaaPreset": 1,
+            "DynamicResolutionMinimumPercent": 100.0,
+            "DynamicResolutionMaximumPercent": 100.0,
+            "UpsampleFilter": "CatmullRom",
+            "AdvancedUpscalers": [
+                "DLSS"
+            ]
+        },
+        {
+            "Path": "Assets/Settings/HDRPDefaultResources/HDRenderPipelineAsset.asset",
+            "Name": "HDRenderPipelineAsset",
+            "ActiveGlobal": true,
+            "ActiveForCurrentQuality": false,
+            "MotionVectors": true,
+            "MsaaSamples": "None",
+            "DynamicResolutionEnabled": true,
+            "DynamicResolutionMipBias": false,
+            "DlssDlaaPreset": 1,
+            "DynamicResolutionMinimumPercent": 100.0,
+            "DynamicResolutionMaximumPercent": 100.0,
+            "UpsampleFilter": "TAAU",
+            "AdvancedUpscalers": [
+                "DLSS"
+            ]
+        }
+    ],
+    "GlobalSettings": [
+        {
+            "Path": "Assets/Settings/HDRPDefaultResources/HDRenderPipelineGlobalSettings.asset",
+            "CameraAntialiasing": true,
+            "CameraMotionVectors": true,
+            "CameraObjectMotionVectors": true,
+            "CameraTransparentMotionVectors": true,
+            "CameraMotionBlur": true,
+            "CameraDepthOfField": true
+        }
+    ],
+    "QualityLevels": [
+        {
+            "Index": 0,
+            "Name": "High Fidelity",
+            "PipelineAsset": "Assets/Settings/HDRP High Fidelity.asset"
+        },
+        {
+            "Index": 1,
+            "Name": "Balanced",
+            "PipelineAsset": "Assets/Settings/HDRP Balanced.asset"
+        },
+        {
+            "Index": 2,
+            "Name": "Performant",
+            "PipelineAsset": "Assets/Settings/HDRP Performant.asset"
+        }
+    ],
+    "Cameras": [
+        {
+            "AssetPath": "Assets/Game/Bootstrap/Bootstrap.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "Game Composition Root/ProductionEnvironmentBackend/StartupCameraPlaceholder",
+            "CameraType": "Game",
+            "Enabled": false,
+            "TargetTexture": false,
+            "AllowMsaa": true,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": false,
+            "SerializedAntiAliasing": "Runtime managed",
+            "SerializedDlssAllowed": false,
+            "SerializedFsr2Allowed": false,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/Development/WeatherLab/Scenes/WeatherLab.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "WeatherLab_Root/Cameras/ExteriorCamera",
+            "CameraType": "Game",
+            "Enabled": true,
+            "TargetTexture": false,
+            "AllowMsaa": false,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": true,
+            "SerializedAntiAliasing": "None",
+            "SerializedDlssAllowed": true,
+            "SerializedFsr2Allowed": true,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/Development/WeatherLab/Scenes/WeatherLab.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "WeatherLab_Root/Cameras/InteriorLookingOutCamera",
+            "CameraType": "Game",
+            "Enabled": false,
+            "TargetTexture": false,
+            "AllowMsaa": false,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": true,
+            "SerializedAntiAliasing": "None",
+            "SerializedDlssAllowed": true,
+            "SerializedFsr2Allowed": true,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/Development/WeatherLab/Scenes/WeatherLab.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "WeatherLab_Root/Cameras/VehicleInteriorLookingOutCamera",
+            "CameraType": "Game",
+            "Enabled": false,
+            "TargetTexture": false,
+            "AllowMsaa": false,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": true,
+            "SerializedAntiAliasing": "None",
+            "SerializedDlssAllowed": true,
+            "SerializedFsr2Allowed": true,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/LegacyImport/ReferenceOnly/Comparison/DonorProofComparison.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "Comparison Camera",
+            "CameraType": "Game",
+            "Enabled": true,
+            "TargetTexture": false,
+            "AllowMsaa": true,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": false,
+            "SerializedAntiAliasing": "Runtime managed",
+            "SerializedDlssAllowed": false,
+            "SerializedFsr2Allowed": false,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/LegacyImport/ReferenceOnly/Comparison/GarageM3Comparison.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "M3_GarageScalePivotComparison_REFERENCE_ONLY/Comparison Camera",
+            "CameraType": "Game",
+            "Enabled": true,
+            "TargetTexture": false,
+            "AllowMsaa": false,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": true,
+            "SerializedAntiAliasing": "None",
+            "SerializedDlssAllowed": true,
+            "SerializedFsr2Allowed": true,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/LegacyImport/ReferenceOnly/Comparison/M04A_WorldLayoutPilotComparison.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "Comparison_Camera",
+            "CameraType": "Game",
+            "Enabled": true,
+            "TargetTexture": false,
+            "AllowMsaa": true,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": false,
+            "SerializedAntiAliasing": "Runtime managed",
+            "SerializedDlssAllowed": false,
+            "SerializedFsr2Allowed": false,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/LegacyImport/ReferenceOnly/World/Generated/Scenes/WorldTransfer_Bootstrap.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "REFERENCE_ONLY_WORLD_TRANSFER_BOOTSTRAP/WorldTransfer_FreeFlyCamera",
+            "CameraType": "Game",
+            "Enabled": true,
+            "TargetTexture": false,
+            "AllowMsaa": true,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": false,
+            "SerializedAntiAliasing": "Runtime managed",
+            "SerializedDlssAllowed": false,
+            "SerializedFsr2Allowed": false,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/Vehicle/Content/Simulation/Scenes/VehicleSimulationPrototype.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "M06_VehicleSimulationPrototype/M06_PrototypeCamera",
+            "CameraType": "Game",
+            "Enabled": true,
+            "TargetTexture": false,
+            "AllowMsaa": true,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": false,
+            "SerializedAntiAliasing": "Runtime managed",
+            "SerializedDlssAllowed": false,
+            "SerializedFsr2Allowed": false,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/Vehicle/Content/Validation/Scenes/VehiclePhysicsValidation.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "M06_VehicleSimulationPrototype/M06_PrototypeCamera",
+            "CameraType": "Game",
+            "Enabled": true,
+            "TargetTexture": false,
+            "AllowMsaa": true,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": false,
+            "SerializedAntiAliasing": "Runtime managed",
+            "SerializedDlssAllowed": false,
+            "SerializedFsr2Allowed": false,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/World/Content/GaragePrototype/Scenes/GarageArtPrototype.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "M3_GarageArtPrototype/Main Camera",
+            "CameraType": "Game",
+            "Enabled": true,
+            "TargetTexture": false,
+            "AllowMsaa": false,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": true,
+            "SerializedAntiAliasing": "None",
+            "SerializedDlssAllowed": true,
+            "SerializedFsr2Allowed": true,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/World/Debug/Comparison/WR_HomeShorelineComparison.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "WR_05A_Batch01_Comparison/Pier Comparison Camera",
+            "CameraType": "Game",
+            "Enabled": true,
+            "TargetTexture": false,
+            "AllowMsaa": false,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": true,
+            "SerializedAntiAliasing": "None",
+            "SerializedDlssAllowed": true,
+            "SerializedFsr2Allowed": true,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/World/Debug/Comparison/WR_HomeShorelineComparison.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "WR_05A_Batch01_Comparison/Hedge Comparison Camera",
+            "CameraType": "Game",
+            "Enabled": true,
+            "TargetTexture": false,
+            "AllowMsaa": false,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": true,
+            "SerializedAntiAliasing": "None",
+            "SerializedDlssAllowed": true,
+            "SerializedFsr2Allowed": true,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/World/Debug/Comparison/WR_HomeShorelineComparison.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "WR_05A_Batch01_Comparison/Seam Comparison Camera",
+            "CameraType": "Game",
+            "Enabled": true,
+            "TargetTexture": false,
+            "AllowMsaa": false,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": true,
+            "SerializedAntiAliasing": "None",
+            "SerializedDlssAllowed": true,
+            "SerializedFsr2Allowed": true,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/World/Debug/Comparison/WR_HomeYardComparison.unity",
+            "SourceKind": "Scene",
+            "HierarchyPath": "WR_05A_Comparison/Comparison Camera",
+            "CameraType": "Game",
+            "Enabled": true,
+            "TargetTexture": false,
+            "AllowMsaa": false,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": true,
+            "SerializedAntiAliasing": "None",
+            "SerializedDlssAllowed": true,
+            "SerializedFsr2Allowed": true,
+            "PolicyRole": "Auto (implicit)"
+        },
+        {
+            "AssetPath": "Assets/Game/Player/Content/Prefabs/M4_FirstPersonPlayer.prefab",
+            "SourceKind": "Prefab",
+            "HierarchyPath": "M4_FirstPersonPlayer/LeanPivot/CameraPivot/ImpactPivot/MotionPivot/LookPitchPivot/FirstPersonCamera",
+            "CameraType": "Game",
+            "Enabled": true,
+            "TargetTexture": false,
+            "AllowMsaa": true,
+            "AllowDynamicResolution": false,
+            "HasHdrpAdditionalData": false,
+            "SerializedAntiAliasing": "Runtime managed",
+            "SerializedDlssAllowed": false,
+            "SerializedFsr2Allowed": false,
+            "PolicyRole": "Auto (implicit)"
+        }
+    ],
+    "Volumes": [
+        {
+            "Path": "Assets/Game/Development/WeatherLab/Content/Profiles/WeatherLabHDRPVolume.asset",
+            "Name": "WeatherLabHDRPVolume",
+            "Components": [
+                "VisualEnvironment (active)",
+                "EnviroHDRPSky (active)",
+                "Fog (active)",
+                "Exposure (active)"
+            ],
+            "HasActiveMotionBlur": false,
+            "MotionBlur": "not present",
+            "DepthOfField": "not present"
+        },
+        {
+            "Path": "Assets/Game/Presentation/Lighting/BootstrapGlobalVolume.asset",
+            "Name": "BootstrapGlobalVolume",
+            "Components": [
+                "VisualEnvironment (active)",
+                "PhysicallyBasedSky (active)",
+                "Exposure (active)",
+                "Tonemapping (active)",
+                "Fog (active)"
+            ],
+            "HasActiveMotionBlur": false,
+            "MotionBlur": "not present",
+            "DepthOfField": "not present"
+        },
+        {
+            "Path": "Assets/Game/Presentation/Lighting/GaragePrototype/M3_LateDayVolume.asset",
+            "Name": "M3_LateDayVolume",
+            "Components": [
+                "VisualEnvironment (active)",
+                "PhysicallyBasedSky (active)",
+                "Exposure (active)",
+                "Tonemapping (active)",
+                "Bloom (active)",
+                "Fog (active)"
+            ],
+            "HasActiveMotionBlur": false,
+            "MotionBlur": "not present",
+            "DepthOfField": "not present"
+        },
+        {
+            "Path": "Assets/Game/Presentation/Lighting/GaragePrototype/M3_NeutralVolume.asset",
+            "Name": "M3_NeutralVolume",
+            "Components": [
+                "VisualEnvironment (active)",
+                "PhysicallyBasedSky (active)",
+                "Exposure (active)",
+                "Tonemapping (active)",
+                "Bloom (active)",
+                "Fog (active)"
+            ],
+            "HasActiveMotionBlur": false,
+            "MotionBlur": "not present",
+            "DepthOfField": "not present"
+        },
+        {
+            "Path": "Assets/Game/Weather/Production/Content/Profiles/ProductionEnvironmentHDRPVolume.asset",
+            "Name": "ProductionEnvironmentHDRPVolume",
+            "Components": [
+                "VisualEnvironment (active)",
+                "EnviroHDRPSky (active)",
+                "Fog (active)",
+                "Exposure (active)",
+                "IndirectLightingController (active)"
+            ],
+            "HasActiveMotionBlur": false,
+            "MotionBlur": "not present",
+            "DepthOfField": "not present"
+        },
+        {
+            "Path": "Assets/Game/Weather/Production/Content/Profiles/ProductionEnviroSkyVolume.asset",
+            "Name": "ProductionEnviroSkyVolume",
+            "Components": [
+                "VisualEnvironment (active)",
+                "EnviroHDRPSky (active)"
+            ],
+            "HasActiveMotionBlur": false,
+            "MotionBlur": "not present",
+            "DepthOfField": "not present"
+        },
+        {
+            "Path": "Assets/Game/Weather/Production/Content/Profiles/ProductionNativeHDRPVolume.asset",
+            "Name": "ProductionNativeHDRPVolume",
+            "Components": [
+                "Fog (active)",
+                "Exposure (active)",
+                "IndirectLightingController (active)"
+            ],
+            "HasActiveMotionBlur": false,
+            "MotionBlur": "not present",
+            "DepthOfField": "not present"
+        },
+        {
+            "Path": "Assets/Game/Weather/System/Content/FinnishSummer/NativeHDRPWeatherVolume.asset",
+            "Name": "NativeHDRPWeatherVolume",
+            "Components": [],
+            "HasActiveMotionBlur": false,
+            "MotionBlur": "not present",
+            "DepthOfField": "not present"
+        },
+        {
+            "Path": "Assets/Settings/HDRPDefaultResources/DefaultLookDevProfile.asset",
+            "Name": "DefaultLookDevProfile",
+            "Components": [
+                "Tonemapping (active)",
+                "HDShadowSettings (active)",
+                "ScreenSpaceAmbientOcclusion (active)",
+                "Bloom (active)"
+            ],
+            "HasActiveMotionBlur": false,
+            "MotionBlur": "not present",
+            "DepthOfField": "not present"
+        },
+        {
+            "Path": "Assets/Settings/HDRPDefaultResources/DefaultSettingsVolumeProfile.asset",
+            "Name": "DefaultSettingsVolumeProfile",
+            "Components": [
+                "HDShadowSettings (active)",
+                "ContactShadows (active)",
+                "ScreenSpaceAmbientOcclusion (active)",
+                "Tonemapping (active)",
+                "Bloom (active)",
+                "Exposure (active)",
+                "VisualEnvironment (active)",
+                "HDRISky (active)",
+                "MotionBlur (active)",
+                "DiffusionProfileList (active)",
+                "WaterRendering (active)",
+                "CloudLayer (active)",
+                "Fog (active)",
+                "LightCluster (active)",
+                "ScreenSpaceRefraction (active)",
+                "VolumetricClouds (active)",
+                "ChromaticAberration (active)",
+                "GradientSky (active)",
+                "PathTracing (active)",
+                "ColorAdjustments (active)",
+                "ColorCurves (active)",
+                "ScreenSpaceReflection (active)",
+                "GlobalIllumination (active)",
+                "ScreenSpaceLensFlare (active)",
+                "SplitToning (active)",
+                "WhiteBalance (active)",
+                "PaniniProjection (active)",
+                "IndirectLightingController (active)",
+                "AlphaInjection (active)",
+                "Vignette (active)",
+                "DepthOfField (active)",
+                "LensDistortion (active)",
+                "ShadowsMidtonesHighlights (active)",
+                "HighQualityLineRenderingVolumeComponent (active)",
+                "PhysicallyBasedSky (active)",
+                "RecursiveRendering (active)",
+                "MicroShadowing (active)",
+                "ChromaKeying (active)",
+                "RayTracingSettings (active)",
+                "FilmGrain (active)",
+                "ChannelMixer (active)",
+                "LiftGammaGain (active)",
+                "SubSurfaceScattering (active)",
+                "ProbeVolumesOptions (active)",
+                "EnviroHDRPRenderer (active)",
+                "EnviroHDRPSky (active)"
+            ],
+            "HasActiveMotionBlur": true,
+            "MotionBlur": "active=True, intensity=0,5, override=True",
+            "DepthOfField": "active=True, mode=Off"
+        },
+        {
+            "Path": "Assets/Settings/SkyandFogSettingsProfile.asset",
+            "Name": "SkyandFogSettingsProfile",
+            "Components": [
+                "VisualEnvironment (active)",
+                "PhysicallyBasedSky (active)",
+                "Fog (active)",
+                "Exposure (active)"
+            ],
+            "HasActiveMotionBlur": false,
+            "MotionBlur": "not present",
+            "DepthOfField": "not present"
+        }
+    ],
+    "Materials": {
+        "Total": 739,
+        "MissingOrInvalidShader": 0,
+        "AlphaClipped": 31,
+        "Transparent": 30,
+        "GeometricSpecularAaEnabled": 0,
+        "MotionVectorPassEnabled": 16,
+        "ReferencedTextures": 520,
+        "TexturesWithMipmaps": 514,
+        "TexturesWithoutMipmaps": 1,
+        "AlphaClipMaterialsWithNonMipTexture": 0,
+        "HighRiskAssets": []
+    },
+    "Shaders": [
+        {
+            "Path": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/Items/Source/ExpandedShop/Shader/StandardSpecular.shader",
+            "HasMotionVectorsPass": false,
+            "HasVertexAnimationTime": false,
+            "HasPreviousFrameTime": false
+        },
+        {
+            "Path": "Assets/Game/Presentation/Shaders/Vegetation/MSC_SpruceWindHDRP.shader",
+            "HasMotionVectorsPass": true,
+            "HasVertexAnimationTime": false,
+            "HasPreviousFrameTime": false
+        },
+        {
+            "Path": "Assets/Game/Presentation/Shaders/Vegetation/MSC_VegetationIndirectHDRP.shader",
+            "HasMotionVectorsPass": true,
+            "HasVertexAnimationTime": true,
+            "HasPreviousFrameTime": true
+        },
+        {
+            "Path": "Assets/Game/UI/Presentation/Content/Shaders/M08A_SeparableGaussianBlur.shader",
+            "HasMotionVectorsPass": false,
+            "HasVertexAnimationTime": false,
+            "HasPreviousFrameTime": false
+        }
+    ],
+    "Errors": [],
+    "Warnings": [],
+    "Notes": [
+        "Assets/Game/Bootstrap/Bootstrap.unity:Game Composition Root/ProductionEnvironmentBackend/StartupCameraPlaceholder has no serialized HD camera data; the runtime controller will add non-persistent data when instantiated.",
+        "Assets/Game/Bootstrap/Bootstrap.unity:Game Composition Root/ProductionEnvironmentBackend/StartupCameraPlaceholder serializes allowMSAA=true; the runtime controller disables it for managed HDRP game cameras.",
+        "Assets/Game/LegacyImport/ReferenceOnly/Comparison/DonorProofComparison.unity:Comparison Camera has no serialized HD camera data; the runtime controller will add non-persistent data when instantiated.",
+        "Assets/Game/LegacyImport/ReferenceOnly/Comparison/DonorProofComparison.unity:Comparison Camera serializes allowMSAA=true; the runtime controller disables it for managed HDRP game cameras.",
+        "Assets/Game/LegacyImport/ReferenceOnly/Comparison/M04A_WorldLayoutPilotComparison.unity:Comparison_Camera has no serialized HD camera data; the runtime controller will add non-persistent data when instantiated.",
+        "Assets/Game/LegacyImport/ReferenceOnly/Comparison/M04A_WorldLayoutPilotComparison.unity:Comparison_Camera serializes allowMSAA=true; the runtime controller disables it for managed HDRP game cameras.",
+        "Assets/Game/LegacyImport/ReferenceOnly/World/Generated/Scenes/WorldTransfer_Bootstrap.unity:REFERENCE_ONLY_WORLD_TRANSFER_BOOTSTRAP/WorldTransfer_FreeFlyCamera has no serialized HD camera data; the runtime controller will add non-persistent data when instantiated.",
+        "Assets/Game/LegacyImport/ReferenceOnly/World/Generated/Scenes/WorldTransfer_Bootstrap.unity:REFERENCE_ONLY_WORLD_TRANSFER_BOOTSTRAP/WorldTransfer_FreeFlyCamera serializes allowMSAA=true; the runtime controller disables it for managed HDRP game cameras.",
+        "Assets/Game/Vehicle/Content/Simulation/Scenes/VehicleSimulationPrototype.unity:M06_VehicleSimulationPrototype/M06_PrototypeCamera has no serialized HD camera data; the runtime controller will add non-persistent data when instantiated.",
+        "Assets/Game/Vehicle/Content/Simulation/Scenes/VehicleSimulationPrototype.unity:M06_VehicleSimulationPrototype/M06_PrototypeCamera serializes allowMSAA=true; the runtime controller disables it for managed HDRP game cameras.",
+        "Assets/Game/Vehicle/Content/Validation/Scenes/VehiclePhysicsValidation.unity:M06_VehicleSimulationPrototype/M06_PrototypeCamera has no serialized HD camera data; the runtime controller will add non-persistent data when instantiated.",
+        "Assets/Game/Vehicle/Content/Validation/Scenes/VehiclePhysicsValidation.unity:M06_VehicleSimulationPrototype/M06_PrototypeCamera serializes allowMSAA=true; the runtime controller disables it for managed HDRP game cameras.",
+        "Assets/Game/Player/Content/Prefabs/M4_FirstPersonPlayer.prefab:M4_FirstPersonPlayer/LeanPivot/CameraPivot/ImpactPivot/MotionPivot/LookPitchPivot/FirstPersonCamera has no serialized HD camera data; the runtime controller will add non-persistent data when instantiated.",
+        "Assets/Game/Player/Content/Prefabs/M4_FirstPersonPlayer.prefab:M4_FirstPersonPlayer/LeanPivot/CameraPivot/ImpactPivot/MotionPivot/LookPitchPivot/FirstPersonCamera serializes allowMSAA=true; the runtime controller disables it for managed HDRP game cameras.",
+        "Assets/Settings/HDRPDefaultResources/DefaultSettingsVolumeProfile.asset contains active Motion Blur (active=True, intensity=0,5, override=True); AA comparison captures must override it locally rather than using blur to hide artifacts."
+    ]
+}

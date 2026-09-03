@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "manifestId": "phase1.satsuma-assembly.audio.v1",
+  "classification": "TemporaryDirectImport",
+  "productionReplacementKey": "presentation.audio.satsuma-assembly.phase2",
+  "source": {
+    "stagingRootRelativePath": "raw/world/milestone-04a1/assetripper-unity-project/ExportedProject/Assets",
+    "sceneRelativePath": "_Scenes/GAME.unity",
+    "sceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4"
+  },
+  "clips": [
+    {
+      "clipId": "part-install",
+      "sourceRelativePath": "AudioClip/assemble.wav",
+      "sourceSha256": "7d8611c0d25cbecb77f6ed03362256b35591105a4cb9c289c6ef4c921ab15b71",
+      "generatedFileName": "satsuma_part_install.wav",
+      "generatedGuid": "a3a00000000000000000000000000001"
+    },
+    {
+      "clipId": "part-remove",
+      "sourceRelativePath": "AudioClip/disassemble.wav",
+      "sourceSha256": "c145d02e83ae58b58e59df1d738ee00dca9ed493459880ec95f47e404415461a",
+      "generatedFileName": "satsuma_part_remove.wav",
+      "generatedGuid": "a3a00000000000000000000000000002"
+    },
+    {
+      "clipId": "fastener-turn",
+      "sourceRelativePath": "AudioClip/bolt_screw.wav",
+      "sourceSha256": "922372458c842c2131bb2bd69ade841f1cb7ef6145cf9b24be920876ae06a194",
+      "generatedFileName": "satsuma_fastener_turn.wav",
+      "generatedGuid": "a3a00000000000000000000000000003"
+    },
+    {
+      "clipId": "body-impact-low-01",
+      "sourceRelativePath": "AudioClip/crash_low1.wav",
+      "sourceSha256": "e7e92443e3bdd6f2bd0e83cee4864fa0783eba80b0799e5a91a4e3dfb031d235",
+      "generatedFileName": "satsuma_body_impact_low_01.wav",
+      "generatedGuid": "a3a00000000000000000000000000004"
+    },
+    {
+      "clipId": "body-impact-low-02",
+      "sourceRelativePath": "AudioClip/crash_low2.wav",
+      "sourceSha256": "51131d7ba83be0ccb0b88608c08968467b414e9f228b150df24fe38aed374db9",
+      "generatedFileName": "satsuma_body_impact_low_02.wav",
+      "generatedGuid": "a3a00000000000000000000000000005"
+    },
+    {
+      "clipId": "body-impact-high-01",
+      "sourceRelativePath": "AudioClip/crash_hi1.wav",
+      "sourceSha256": "ea820e9b97c5245d3e53728b8dc3d90a872ca131e429a44e9f2d032a36d23a94",
+      "generatedFileName": "satsuma_body_impact_high_01.wav",
+      "generatedGuid": "a3a00000000000000000000000000006"
+    },
+    {
+      "clipId": "body-impact-high-02",
+      "sourceRelativePath": "AudioClip/crash_hi2.wav",
+      "sourceSha256": "b4593fc5f22e335470bf0f9c8c7fe228c5efad1e8ac1aba9a3976d68ca9a0749",
+      "generatedFileName": "satsuma_body_impact_high_02.wav",
+      "generatedGuid": "a3a00000000000000000000000000007"
+    }
+  ],
+  "events": [
+    {
+      "eventId": "audio.event.interaction.part.install",
+      "clipId": "part-install",
+      "volume": 0.85,
+      "minimumDistanceMeters": 0.8,
+      "maximumDistanceMeters": 30.0
+    },
+    {
+      "eventId": "audio.event.interaction.part.remove",
+      "clipId": "part-remove",
+      "volume": 0.85,
+      "minimumDistanceMeters": 0.8,
+      "maximumDistanceMeters": 30.0
+    },
+    {
+      "eventId": "audio.event.interaction.fastener.tighten",
+      "clipId": "fastener-turn",
+      "volume": 0.72,
+      "minimumDistanceMeters": 0.5,
+      "maximumDistanceMeters": 20.0
+    },
+    {
+      "eventId": "audio.event.interaction.fastener.loosen",
+      "clipId": "fastener-turn",
+      "volume": 0.72,
+      "minimumDistanceMeters": 0.5,
+      "maximumDistanceMeters": 20.0
+    },
+    {
+      "eventId": "audio.event.vehicle.body.impact.low.01",
+      "clipId": "body-impact-low-01",
+      "volume": 0.78,
+      "minimumDistanceMeters": 1.0,
+      "maximumDistanceMeters": 45.0
+    },
+    {
+      "eventId": "audio.event.vehicle.body.impact.low.02",
+      "clipId": "body-impact-low-02",
+      "volume": 0.78,
+      "minimumDistanceMeters": 1.0,
+      "maximumDistanceMeters": 45.0
+    },
+    {
+      "eventId": "audio.event.vehicle.body.impact.high.01",
+      "clipId": "body-impact-high-01",
+      "volume": 0.95,
+      "minimumDistanceMeters": 1.5,
+      "maximumDistanceMeters": 70.0
+    },
+    {
+      "eventId": "audio.event.vehicle.body.impact.high.02",
+      "clipId": "body-impact-high-02",
+      "volume": 0.95,
+      "minimumDistanceMeters": 1.5,
+      "maximumDistanceMeters": 70.0
+    }
+  ]
+}

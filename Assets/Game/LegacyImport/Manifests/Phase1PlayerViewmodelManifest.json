@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 2,
+  "manifestId": "phase1-player-viewmodel-legacy-v2",
+  "classification": "TemporaryDirectImport",
+  "bindingId": "phase1.player.viewmodel.legacy.v1",
+  "productionReplacementKey": "presentation.player.viewmodel.phase2",
+  "drinkGripTransformFileId": 61293,
+  "drinkReadyPresentation": {
+    "readyPoseTimeSeconds": 0.0,
+    "readyRootLocalPositionOffset": {
+      "x": -0.2794778,
+      "y": -0.06109773,
+      "z": 0.541229
+    },
+    "readyRootLocalEulerOffset": {
+      "x": 106.06,
+      "y": -373.656,
+      "z": -357.735
+    },
+    "entryRootLocalPositionOffset": {
+      "x": 0.0,
+      "y": -0.18,
+      "z": 0.04
+    },
+    "transitionDurationSeconds": 0.26
+  },
+  "source": {
+    "donorVersionAuthority": "Docs/Phase1/DONOR_VERSION_LOCK.md",
+    "stagingRootRelativePath": "raw/world/milestone-04a1/assetripper-unity-project/ExportedProject/Assets",
+    "sceneRelativePath": "_Scenes/GAME.unity",
+    "sceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4"
+  },
+  "generatedOutput": {
+    "boundary": "Assets/Game/LegacyImport/RuntimeBaseline/GameplayPresentation/PlayerViewmodel",
+    "prefab": "Assets/Game/LegacyImport/RuntimeBaseline/GameplayPresentation/PlayerViewmodel/Resources/Phase1PlayerViewmodel/Phase1PlayerViewmodelBinding.prefab",
+    "gitPolicy": "ignored-private-phase1-payload"
+  },
+  "actions": [
+    {
+      "id": "drink",
+      "rootTransformFileId": 48437,
+      "animationTargetTransformFileId": 43471,
+      "rendererComponentFileIds": [101847]
+    },
+    {
+      "id": "smoke",
+      "rootTransformFileId": 45404,
+      "animationTargetTransformFileId": 61606,
+      "rendererComponentFileIds": [101694]
+    },
+    {
+      "id": "hello",
+      "rootTransformFileId": 38825,
+      "animationTargetTransformFileId": 56400,
+      "rendererComponentFileIds": [101745]
+    },
+    {
+      "id": "middle-finger",
+      "rootTransformFileId": 53101,
+      "animationTargetTransformFileId": 60764,
+      "rendererComponentFileIds": [101671]
+    },
+    {
+      "id": "push",
+      "rootTransformFileId": 37883,
+      "animationTargetTransformFileId": 39730,
+      "rendererComponentFileIds": [101686, 101901]
+    },
+    {
+      "id": "fist",
+      "rootTransformFileId": 54453,
+      "animationTargetTransformFileId": 51923,
+      "rendererComponentFileIds": [101875]
+    }
+  ],
+  "assets": [
+    {
+      "role": "hand-mesh",
+      "relativePath": "Mesh/hand_rigged.asset",
+      "guid": "c8e77b01315458542a597a83510e5ced",
+      "sha256": "af7c7b90e05d678ba6bb444c60340ae8f63fdaa47371f5bac3f2b24acab4621d"
+    },
+    {
+      "role": "hand-albedo",
+      "relativePath": "Texture2D/hand.png",
+      "guid": "d26bada272add4f4798a1f09dfe68c64",
+      "sha256": "0f922387f00410c759d184a0b62c4aa89cb8221c1949d75ac654b902384dbf21"
+    },
+    {
+      "role": "hand-normal",
+      "relativePath": "Texture2D/hand_normal.png",
+      "guid": "03fd33a690839614985142ae1b9ae5a3",
+      "sha256": "26d4ad0e1abe734243fe6888b29bb99dadfe45712cdac70677d6d8d4ae143737"
+    },
+    {
+      "role": "drink-rotate",
+      "relativePath": "AnimationClip/drink_rotate.anim",
+      "guid": "52ada4bb934442d428dff98e70152fa7",
+      "sha256": "bfc93d60b4d43f85e2e9b539b56d2a43c0a971657690d970fc08b93e903bd9cb"
+    },
+    {
+      "role": "drink-rotate-short",
+      "relativePath": "AnimationClip/drink_rotate_short.anim",
+      "guid": "be3333c2e0ca80946aefb1dcd4dfb9d4",
+      "sha256": "b2a370831bf3fd49473847f269a7be1155e94bb612f8fee76ade53cbd181d1f4"
+    },
+    {
+      "role": "drink-spray",
+      "relativePath": "AnimationClip/drink_spray.anim",
+      "guid": "7741b9ff0c46b2a4ca31765ba072f965",
+      "sha256": "cbb9c574dd3d429133459952e967880160fa025c79c8f715627394bd710ec4a2"
+    },
+    {
+      "role": "drink-throw",
+      "relativePath": "AnimationClip/drink_throw.anim",
+      "guid": "b2fcf0957f32f7242916c69630c3400f",
+      "sha256": "c8f228cdd899da8bbe02e07468cf6e855ff3f263ec9d886e5c2d00ffc35670ee"
+    },
+    {
+      "role": "smoke-in",
+      "relativePath": "AnimationClip/player_smoking_in.anim",
+      "guid": "f173eb0979a47d843affac0edebebe9c",
+      "sha256": "b58e69767c9ebc8e7cd2d454681c169961e1b998fff7e4cf1152b5fd5ed72256"
+    },
+    {
+      "role": "smoke-light-up",
+      "relativePath": "AnimationClip/player_smoking_lightup.anim",
+      "guid": "789b84422d123fb46b1e7bbd2c1a0a13",
+      "sha256": "2076273485f9f17132337b183e61deb541c545906afde63069a85bafd3cb25da"
+    },
+    {
+      "role": "smoke-out",
+      "relativePath": "AnimationClip/player_smoking_out.anim",
+      "guid": "55281760cca483f4bbf2498ad7db9abe",
+      "sha256": "1d528f8b02348f101dc153c33c75041310286ab9fb08e006f1b91123f693cb08"
+    },
+    {
+      "role": "smoke-put-off",
+      "relativePath": "AnimationClip/player_smoking_put_off.anim",
+      "guid": "de34e8a38e1360f4bac2b3a0d03b770e",
+      "sha256": "09790cb22b5924548ba1542283483bde016c6d2683fd91032f9ea188c4a5b36f"
+    },
+    {
+      "role": "smoke-reset",
+      "relativePath": "AnimationClip/player_smoking_reset.anim",
+      "guid": "73a7503cab2287b4483942d20c94c9d3",
+      "sha256": "52a3adc73e39fbb0c110648146c0d8bcb624f426b157ceaf5dffe1dfe25fc615"
+    },
+    {
+      "role": "hello",
+      "relativePath": "AnimationClip/player_waving_hello.anim",
+      "guid": "18c91f02aa68b1b4787e47e8ac9c59f0",
+      "sha256": "ef61350e25471eaaed0e6bdbdc0e5881f5da3184130eb54c4a729576e8edd034"
+    },
+    {
+      "role": "middle-finger",
+      "relativePath": "AnimationClip/middlefinger.anim",
+      "guid": "94492ec53fc532d4d95c73ddaae09ba2",
+      "sha256": "3da9a736a575b228a1cfa48ae5ac1795289dc899e8dd2112183135868f92372a"
+    },
+    {
+      "role": "push-on",
+      "relativePath": "AnimationClip/hand_push_on.anim",
+      "guid": "7567200f02dd773448d93a8b32cf5791",
+      "sha256": "6f5a5825b503b978095ebea1c06659a5d090ebb5a5f9be9279a5ee4bf658e2c3"
+    },
+    {
+      "role": "push-off",
+      "relativePath": "AnimationClip/hand_push_off.anim",
+      "guid": "c53b29d4e14c33e4ea4dda0032629e76",
+      "sha256": "26995a2bf1478b08e2cf3b946d2f74f1f83d120db4b66f2a938bb6ae7b594d1f"
+    },
+    {
+      "role": "fist",
+      "relativePath": "AnimationClip/fist_throw.anim",
+      "guid": "101c5d2b11e9f0c4a9c1e6646ca1888e",
+      "sha256": "f8b88834f5a70aaf31ad1aa97e90a55213ea43c3657821184153206a64c4f478"
+    },
+    {
+      "role": "watch-breathe-catalog",
+      "relativePath": "AnimationClip/hand_watch_breathe.anim",
+      "guid": "2ef2466f8e3c036449bb447e711e4ee6",
+      "sha256": "c3f2c1e080a45887a86dc62bfe5210d27ac983a270b9634aed068c9c22619aad"
+    },
+    {
+      "role": "watch-on-catalog",
+      "relativePath": "AnimationClip/hand_watch_on.anim",
+      "guid": "fe385e9bd7ac2ff49b8ad0c9a3d1d46c",
+      "sha256": "15af6d6114bfbb5cd0fa140dbeb7cb72723c585fd0986dadd4fefdb4492d44ea"
+    },
+    {
+      "role": "watch-off-catalog",
+      "relativePath": "AnimationClip/hand_watch_off.anim",
+      "guid": "965a27b900af9da4092bd44ef10fc25d",
+      "sha256": "633ddaecc46c0bf5a79495a891465cd7e101b57c3a9ef87d8cfcda01be32538b"
+    },
+    {
+      "role": "lift-up-catalog",
+      "relativePath": "AnimationClip/lift_up.anim",
+      "guid": "5207f5ef619762444bda942ff8189063",
+      "sha256": "4a3605e2e3795311c9ade91fb18402e6ca27b2decdf280c637534aaf4b9f6d6f"
+    },
+    {
+      "role": "lift-down-catalog",
+      "relativePath": "AnimationClip/lift_down.anim",
+      "guid": "37f1fe6534b1522408971755221847f1",
+      "sha256": "f23f404615f0f4d074e2815a8ce3d48bde4f85dc60a082ca6d39a298a0d8b8f2"
+    }
+  ],
+  "explicitlyExcluded": [
+    "donor MonoBehaviours",
+    "PlayMaker FSMs",
+    "donor AnimatorControllers",
+    "donor gameplay timing and state",
+    "donor bottle geometry",
+    "donor cigarette geometry",
+    "donor shaders and materials",
+    "donor audio",
+    "full-body first-person presentation"
+  ]
+}

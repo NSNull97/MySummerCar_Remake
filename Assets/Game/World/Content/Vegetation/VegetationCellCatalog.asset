@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb2065344216f2046a2a4626b42e47ed, type: 3}
+  m_Name: VegetationCellCatalog
+  m_EditorClassIdentifier: MSC.World.Runtime::MSC.World.Vegetation.VegetationCellCatalog
+  schemaVersion: 1
+  cells:
+  - {fileID: 11400000, guid: 4b1b1c04eb113ef4e8034346594dd292, type: 2}
+  - {fileID: 11400000, guid: c27b4604b6d680b4b84a444dc89379a0, type: 2}
+  - {fileID: 11400000, guid: bbdbab4c27777a543b511321a528b94d, type: 2}
+  - {fileID: 11400000, guid: 5373c922bb5a3b84fa8a35ddcbb3ec3c, type: 2}
+  - {fileID: 11400000, guid: 8998e32f97bf90c4a9c91a409e00f594, type: 2}
+  - {fileID: 11400000, guid: 567da575035416a4284a88e934f71b5a, type: 2}
+  - {fileID: 11400000, guid: 5bfe16cc2ee350340b36b648da38134f, type: 2}
+  - {fileID: 11400000, guid: bf2706a5b03836548b24fc0544a551fb, type: 2}
+  - {fileID: 11400000, guid: ebff7db5d7d19ab458ee2b7424e49d52, type: 2}
+  - {fileID: 11400000, guid: 3397e3f339da489408eeb9e62219b5f1, type: 2}
+  - {fileID: 11400000, guid: 5acd12f437057d64a9946eb41d29a1e3, type: 2}
+  - {fileID: 11400000, guid: c1a5bff53f6df274b90495122e76c221, type: 2}
+  - {fileID: 11400000, guid: ea5b4e85a35352149be3d161185a6ed9, type: 2}
+  - {fileID: 11400000, guid: fbaba7d3bf742f84fbca23930ac1fd06, type: 2}
+  - {fileID: 11400000, guid: c2830e4ee2b6cfa47818571386718c88, type: 2}
+  - {fileID: 11400000, guid: a7d8c2a81ccb6c34c8f7548707dfe789, type: 2}
+  - {fileID: 11400000, guid: 29f57902e28ed944bb84116785fec292, type: 2}
+  - {fileID: 11400000, guid: e6b403f82b6b26d419c9671e9bf2932c, type: 2}
+  - {fileID: 11400000, guid: 5e2536130bc4fe64691172cd021c665d, type: 2}
+  - {fileID: 11400000, guid: f15b94c6149314d4180ceaa5859b2f7f, type: 2}
+  - {fileID: 11400000, guid: 7fe2eed171614de4490f5b915b34d059, type: 2}
+  - {fileID: 11400000, guid: 7866b2ae4fa1b5342b8fd203ed737fa3, type: 2}
+  - {fileID: 11400000, guid: 352092779a3bc3a4fa71e3d49d0a9f2e, type: 2}
+  - {fileID: 11400000, guid: 3a18f2a7b1310b643a915ad361e5b680, type: 2}
+  - {fileID: 11400000, guid: 9eedb01a729cd6e46a5cd0028b220893, type: 2}
+  - {fileID: 11400000, guid: 2bbfaed5afa836e478dce721fc55f9b9, type: 2}
+  - {fileID: 11400000, guid: a46475d3e4cee1c4c9358a918bc147ba, type: 2}
+  - {fileID: 11400000, guid: 5573e0d215fc35f458f90d4e388f5664, type: 2}
+  - {fileID: 11400000, guid: 540ef63af93a1c24b932d48e535bdca8, type: 2}
+  - {fileID: 11400000, guid: 4e77e44ced5e8b24093c93a5e905b369, type: 2}
+  - {fileID: 11400000, guid: fa38410f1aea1474d96940895459d92d, type: 2}
+  - {fileID: 11400000, guid: 14b18de2188b23b4aa6a30c5024d10a3, type: 2}
+  - {fileID: 11400000, guid: d60e77a0489f36d4694acfe9f7d5d392, type: 2}
+  - {fileID: 11400000, guid: 84a16dcc7372c9742a3fa7e15472f798, type: 2}
+  - {fileID: 11400000, guid: 321364074de115b44810a49e535a3957, type: 2}
+  - {fileID: 11400000, guid: ce1248ca4614bf647aaf9a69253cf16e, type: 2}
+  - {fileID: 11400000, guid: 6f6aa409c7bd15541ab1a46972d439c9, type: 2}
+  - {fileID: 11400000, guid: 7ce857a05b981c040b3f11d6c5485301, type: 2}
+  - {fileID: 11400000, guid: f486e89cbafd77b49b719415839c3749, type: 2}
+  - {fileID: 11400000, guid: 7d47042143dbc3b49bcdf5041379231a, type: 2}
+  - {fileID: 11400000, guid: 6dcb824ad2ad726439ba95d98f3d2b2e, type: 2}
+  - {fileID: 11400000, guid: a2b0958367cf28148a6536b6fa2bd8c4, type: 2}
+  - {fileID: 11400000, guid: 236c8eb9a44bbaa4d8579f3e660afdeb, type: 2}
+  - {fileID: 11400000, guid: 10a8134d3099bef4abc2212ff1ee2b3f, type: 2}
+  - {fileID: 11400000, guid: 9d4eada0ff03aaa49bac57ec7212c8e2, type: 2}
+  - {fileID: 11400000, guid: 4952e18ba425e2b46a0b6f16ba8d5bbf, type: 2}
+  - {fileID: 11400000, guid: 7ce8456d1dec38e45ba3f0bcef0a2f85, type: 2}
+  - {fileID: 11400000, guid: fad234bb25b7e6e478426ed8e847bbaf, type: 2}
+  - {fileID: 11400000, guid: 1ccf8eedfe7993d4ba00b93a699e24fd, type: 2}
+  profiles:
+  - {fileID: 11400000, guid: a9ef1099e13810240a09b2d971323d45, type: 2}
+  - {fileID: 11400000, guid: 55feba959412b7b40890d8ab3f08aa65, type: 2}
+  - {fileID: 11400000, guid: 06119aa28969f40408e16d54046f69bd, type: 2}
+  - {fileID: 11400000, guid: 227210334d4a8bc4d8e23d64dbad1206, type: 2}
+  relevantRaycastLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  candidateRaycastHeight: 2048
+  candidateRaycastDistance: 4096

@@ -149,3 +149,24 @@ prototype baseline on 2026-07-16 (`Accepted / HumanAccepted`). The blocking
 the `Physics.Processing` marker, GPU frame time, player frame pacing and the
 60 FPS production acceptance gate are still unavailable and must be captured
 manually. Only Milestone 06B may follow.
+
+## 2026-09-02 full-game home audit
+
+The first repeatable full-`Bootstrap` Editor PlayMode capture now covers the
+active donor feature-parity world at the player home. Packed woody rendering was
+the dominant measured regression: disabling it reduced the original home view
+from `22.641 ms` p95 to `10.604 ms` p95.
+
+The first hardening pass coalesces already-culled woody matrices into bounded
+prototype/LOD submissions. The final 1920x1080 High capture records
+`14.760 ms` mean / `16.217 ms` p95 with `4,667` mean draw calls, versus `6,051`
+before the batching change. Packed submissions fell from `915` to `255` in the
+home view. Unsafe working-tree HDRP regressions (16K shadow atlases, RT support
+and an inverted Performant feature set) were also removed while preserving the
+separate DLSS/dynamic-resolution work.
+
+This is an Editor CPU/frame-pacing audit, not the final 60 FPS acceptance gate:
+GPU frame time returned zero and Render Thread timing was unavailable. The
+remaining player-build and GPU work, content counts, limitations and exact
+capture command are documented in
+`Docs/Performance/FULL_GAME_PERFORMANCE_AUDIT_2026-09-02.md`.

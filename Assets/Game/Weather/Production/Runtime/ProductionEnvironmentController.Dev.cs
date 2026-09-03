@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 using System;
 using MSC.Core.Time;
 using MSC.Weather.Domain;
@@ -10,9 +10,9 @@ using UnityEngine;
 namespace MSC.Weather.Production
 {
     /// <summary>
-    /// Explicit Editor-only controls for production validation. These methods
-    /// mutate only project-owned domains; Enviro remains behind the presentation
-    /// adapter and none of this API is compiled into player builds.
+    /// Explicit Editor/development-build controls for production validation.
+    /// These methods mutate only project-owned domains; Enviro remains behind
+    /// the presentation adapter and none of this API enters release builds.
     /// </summary>
     public sealed partial class ProductionEnvironmentController
     {
@@ -230,7 +230,6 @@ namespace MSC.Weather.Production
             double gameSeconds,
             out string failure)
         {
-            EnsurePrimaryAndInitialized();
             if (!double.IsFinite(gameSeconds) || gameSeconds <= 0d)
             {
                 failure =
@@ -245,36 +244,7 @@ namespace MSC.Weather.Production
                 return false;
             }
 
-            double gameSecondsPerSimulationSecond =
-                86400d /
-                gameTime.Config.DayLengthSimulationSeconds *
-                gameTime.Snapshot.TimeScale;
-            double simulationDelta =
-                gameSeconds / gameSecondsPerSimulationSecond;
-            if (!DevTryValidateManualAdvance(
-                    gameSeconds,
-                    simulationDelta,
-                    out failure))
-            {
-                return false;
-            }
-
-            try
-            {
-                gameTime.AdvanceWhileRetainingPause(simulationDelta);
-            }
-            catch (GameTimeNotificationException exception)
-            {
-                failure = exception.Message;
-                return false;
-            }
-
-            weather.Advance(gameSeconds);
-            lightning.Advance(gameSeconds);
-            AdvanceWetness(gameSeconds);
-            DevPresentIfReady();
-            failure = string.Empty;
-            return true;
+            return TryAdvanceGameSeconds(gameSeconds, out failure);
         }
 
         public bool DevTrySetWetness(
@@ -315,7 +285,10 @@ namespace MSC.Weather.Production
             weather = new WeatherDirector(
                 weatherCatalog,
                 new WeatherSeed(seed, 7UL),
-                WeatherStateIds.Clear);
+                WeatherStateIds.Clear,
+                CreateWeatherScheduleContext(
+                    gameTime.Snapshot,
+                    weather.CurrentState));
             weather.SetScheduleFrozen(scheduleFrozen);
             initialWeatherSeed = seed;
             return DevTryApplyWeatherOverride(
@@ -345,6 +318,18 @@ namespace MSC.Weather.Production
             return string.IsNullOrEmpty(failure);
         }
 
+        /// <summary>
+        /// Development-menu overload that keeps presentation implementation
+        /// types behind the production-environment assembly boundary.
+        /// </summary>
+        public bool DevTryTriggerAmbientLightningAtListener(
+            out string failure)
+        {
+            return DevTryTriggerAmbientLightningAtListener(
+                out _,
+                out failure);
+        }
+
         public EnvironmentPresentationStatus DevRefreshPresentation()
         {
             EnsurePrimaryAndInitialized();
@@ -365,49 +350,6 @@ namespace MSC.Weather.Production
 
             worldPosition = listener.position;
             return true;
-        }
-
-        private bool DevTryValidateManualAdvance(
-            double gameSeconds,
-            double simulationDelta,
-            out string failure)
-        {
-            try
-            {
-                var timeProbe = new GameTimeService(gameTime.Config);
-                if (!timeProbe.TryRestoreDto(
-                        gameTime.CaptureDto(),
-                        out failure))
-                {
-                    return false;
-                }
-
-                timeProbe.AdvanceWhileRetainingPause(simulationDelta);
-                var weatherProbe = new WeatherDirector(
-                    weatherCatalog,
-                    new WeatherSeed(initialWeatherSeed, 7UL),
-                    WeatherStateIds.Clear);
-                weatherProbe.Restore(weather.CaptureSnapshot());
-                weatherProbe.Advance(gameSeconds);
-                if (!double.IsFinite(
-                        lightning.SimulationSeconds + gameSeconds))
-                {
-                    failure =
-                        "Lightning simulation time would overflow.";
-                    return false;
-                }
-
-                failure = string.Empty;
-                return true;
-            }
-            catch (Exception exception) when (
-                exception is ArgumentException ||
-                exception is InvalidOperationException ||
-                exception is OverflowException)
-            {
-                failure = exception.Message;
-                return false;
-            }
         }
 
         private void DevPresentIfReady()

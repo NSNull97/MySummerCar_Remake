@@ -1,0 +1,27 @@
+{
+  "name": "MSC.Weather.System.Tests.EditMode",
+  "rootNamespace": "MSC.Tests.EditMode.WeatherSystem",
+  "references": [
+    "MSC.Weather.Runtime",
+    "MSC.Weather.Presentation.Runtime",
+    "MSC.Weather.System.Runtime",
+    "MSC.Weather.System.Local.Runtime",
+    "MSC.Weather.System.NativeHDRP.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

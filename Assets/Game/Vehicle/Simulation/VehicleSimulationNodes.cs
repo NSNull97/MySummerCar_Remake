@@ -310,8 +310,11 @@ namespace MSC.Vehicle.Simulation
                     : index == config.RightDrivenWheelIndex
                         ? rightDriveTorque
                         : 0f;
+                float serviceBrakeTorque = index >= 2
+                    ? config.Dynamics.MaximumRearBrakeTorqueNewtonMeters
+                    : config.Dynamics.MaximumBrakeTorqueNewtonMeters;
                 float brakeTorque = Mathf.Clamp01(input.Brake01) *
-                                    config.Dynamics.MaximumBrakeTorqueNewtonMeters;
+                                    serviceBrakeTorque;
                 destination[index] = new WheelPhysicsCommand(
                     driveTorque,
                     brakeTorque,

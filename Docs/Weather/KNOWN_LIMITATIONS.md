@@ -1,6 +1,32 @@
 # Known production weather limitations
 
+## Current celestial ownership (2026-08-13)
+
+- The production Bootstrap selects `EnviroLegacy`. Enviro owns the HDRP sky,
+  moving sun and moon, stars, clouds, and the bounded rain/splash presentation.
+- The project clock and calendar remain authoritative. The
+  `Enviro3EnvironmentAdapter` pushes every accepted date/time revision into
+  Enviro and updates its celestial transforms; a two-minute clock step is
+  smoothed for `0.3 s` instead of being turned into a binary day/night cut.
+- `NativeHdrpWeatherBridge` is the single fog, exposure, and indirect-lighting
+  writer in the hybrid route. The Enviro sky Volume intentionally contains no
+  competing Fog, Exposure, or Indirect Lighting overrides.
+- Full Native HDRP remains a reversible fallback. It has no accepted moon or
+  stars, no longer advertises `SunMoonLighting`, and must not become the
+  production default until that visual parity is implemented and accepted.
+- Headless lifecycle checks do not replace rendered moon-phase, night
+  readability, rain-fidelity, or Windows-player CPU/GPU acceptance.
+- Runtime-only Finnish sky calibration now suppresses the all-night warm horizon,
+  raises the clear-night star floor, enlarges the moon to a readable minimum,
+  and provides an art-directed maximum `8 lux` full-moon light for the accepted
+  `7.25 EV` game camera. The light is cold, phase/cloud/altitude-aware, and is
+  exactly zero at new moon or below the astronomical horizon. The moon remains
+  on Enviro's realistic orbit, so changing weather at one fixed date/time does
+  not guarantee that it is above the horizon.
+
 Дата среза: 2026-07-18.
+
+Дополнение Native HDRP visual correction: 2026-08-13.
 
 Эти ограничения являются частью честного статуса 07C и не должны молча
 переименовываться в PASS.
@@ -73,9 +99,17 @@
   axis-aligned stable-ID volumes.
 - Builder/validator создали и проверили два home house/garage Interior AABB из
   frozen renderer bounds; persistent DDOL root scan покрыт lifecycle tests.
-- Ранее сообщённая rain-проблема в текущем route принята пользователем; fog/wetness,
-  perimeter garage/open-door cases, Teimo и другие интерьеры не имеют полного
-  visual acceptance/authoring coverage.
+- Migration v7 классифицирует все 24 активных donor `NoRain` records: 23
+  static/Phase-1-overlay records имеют project-owned runtime coverage, а
+  динамический bus record закреплён за vehicle-cabin presenter и намеренно не
+  превращён в статическую world zone. Streaming catalog содержит 20 definitions;
+  три home-house records покрывает существующий compound volume. Машинохоллы
+  farm/strawberry/home-yard и оба моста добавлены как open shelters.
+- Teimo shop/pub, Fleetari и inspection hall/office используют точные donor
+  horizontal footprints и ClosedInterior profile. Open-shelter profile оставляет
+  exterior audio/fog/wind/thunder/lighting, поэтому навес больше не должен
+  создавать ложный indoor sound state. Полный visual/audio perimeter route всё
+  ещё не выполнен.
 - Прежняя схема `one AABB -> one max-X/Z ellipsoid` подтверждённо
   давала ложную защиту снаружи. Теперь AABB разбивается на
   детерминированные вписанные ellipsoids, а их vertical stretch не может быть
@@ -84,20 +118,46 @@
   ещё нужен.
 - Rotated/non-box shelter geometry не поддерживается bounded contract.
 - Открытие garage doors динамически не изменяет статический volume; open
-  doors/porches требуют manual review и будущего bounded policy.
+  doors/windows требуют manual review и будущего bounded portal policy.
 
 ## Weather presentation
 
-- Drizzle/steady/heavy rain используют один base Rain source через разные
-  runtime clones и intensity remap.
-- Пре-remediation rain спавнился, но vendor runtime renderer получал
-  `maxParticleSize = 0.001`, поэтому капли были нечитаемы в Game View.
-  Runtime-only floor `0.01` введён без изменения vendor assets; текущий visual
-  rain route подтверждён пользователем.
+- Clear, partly cloudy, bright overcast, heavy overcast, fog, and precipitation
+  states resolve to isolated runtime weather clones. Project `CloudCoverage01`
+  maps monotonically into Enviro coverage. Partly cloudy uses scattered eroded
+  volumes; bright overcast uses a light broken deck rather than a cirrus veil;
+  heavy overcast remains closed and more absorbent. Clear cirrus is restrained.
+- A deterministic weather-map offset changes when the stable weather binding
+  changes, distributing formations across the sky without per-frame noise.
+  The same single cloud layer moves through Enviro's existing animation from
+  the project-owned wind. Dual-layer rendering, map resolution and ray-march
+  budgets are unchanged; final speed and formation fidelity remain manual
+  acceptance items.
+- Finnish midday tint is slightly cooler/neutral and hybrid daylight exposure is
+  `12.65 EV`; the accepted readable-night EV target is unchanged. Final colour
+  and brightness acceptance still requires matched rendered captures.
+- Presentation cloud intensity is optical density rather than ambient
+  readability. Enviro direct sunlight and directional shadow strength now fade
+  continuously from clear to closed cover; the production `0.62` mostly-cloudy
+  profile is approximately `0.20` of clear direct light. This is automated in
+  Bootstrap, but final Finnish colour/contrast and target-GPU acceptance remain
+  manual.
+- Enviro route всё ещё использует один base Rain source через разные runtime
+  clones и intensity remap. Его rain runtime clone использует density multiplier,
+  bounded drop scale `0.25–0.48`; screen-size cap уменьшен до `0.0035` после
+  пользовательского замечания о слишком крупных редких каплях. Collision
+  включает уже существующий vendor-authored `Rain_Splash` sub-emitter и
+  настраивается только на runtime clone; vendor prefab/material не изменены.
+- Full-Native HDRP fallback независимо нормализует существующие
+  camera-local emitters: `4200/s`, максимум `5200` rain particles, footprint
+  `18 x 14 m`, Low/static collision и один impact pool на `600` particles.
+  GPU PlayMode подтвердил реальные roof collisions и impact emission; финальная
+  плотность, размер и читаемость всё ещё требуют ручного visual route.
 - Scheduled transition duration корректно переводится из оставшихся game
   seconds front-а в simulation seconds, но visual easing и lightning bolt
   intensity остаются bounded approximations локального public API.
-- Explicit sky refresh unsupported; regular Enviro update остаётся активным.
+- Native HDRP выполняет sequenced `RequestSkyEnvironmentUpdate`; Enviro route
+  сохраняет regular vendor update.
 - Reflection/ambient refresh запрашивается по binding/`600` game seconds/`25 m`
   listener movement и coalesces до `1 s`, но production cost не измерен.
 - Runtime presentation использует калибровку `60 N`, `27.3 E`, `UTC+3`;
@@ -111,27 +171,32 @@
 
 ## Fog and water
 
+- Active Lake Mist/Dense Fog now targets `80 m` visibility, permits a `20 m`
+  HDRP mean-free-path floor, and caps dense-fog maximum distance at `350 m`.
+  This makes the state structurally denser; final visibility and GPU cost remain
+  manual acceptance items.
 - Прежние fixed `EV 10` и double/misbound fog привели к ручному `FAIL`:
   пересвеченный день/интерьер, crushed night и opaque/red mist.
-- Remediation изолирует production `VolumeProfile`, задаёт детерминированную
-  fixed exposure curve с daylight bias `+0.25 EV` и context offsets
-  `Exterior 0 / Sheltered -0.15 / Interior -0.25 EV`, а также преобразует
-  project visibility в HDRP mean free path в одном fog pass. После сообщения о
-  немного слишком яркой ночи night branch плавно ограничивается минимумом
-  `7.5 EV` на `solarTime 0.43 -> 0.50`; более высокий Fixed Exposure EV
-  затемняет ночь, дневная ветвь не меняется. Скорректированные dawn/night
-  brightness приняты пользователем 2026-07-18 без capture artifact.
+- Full-Native HDRP fallback использует progressive center-weighted Automatic
+  exposure с bounded EV limits и локальной interior compensation. Он больше не
+  подавляет indirect diffuse до прежних `0.18–0.38`; powered fixtures должны
+  оставаться читаемыми, но переход улица/дом и ночь требуют visual acceptance.
 - Production water — temporary transparent proxy, не final HDRP Water system.
-- Shoreline, water fog, transparent windows, headlights и rain impacts не имеют
-  07C captures.
+- Shoreline, water fog, transparent windows и headlights не имеют актуальных
+  matched captures. Rain impacts имеют automated GPU collision evidence, но не
+  ручной fidelity capture.
 - Underwater/swimming/buoyancy отсутствуют.
-- Interior fog leakage не проверена визуально: два home volumes прошли
-  automated authoring/lifecycle gate, но не perimeter route; остальные
-  интерьеры не covered.
+- Native rain теперь уничтожается static world collision и мгновенно очищается
+  при нулевой local precipitation exposure. Interior fog/precipitation leakage
+  всё равно не проверена полным визуальным маршрутом.
+  Все donor-evidenced static зоны теперь authoring/lifecycle-covered, но это не
+  заменяет проход по периметру каждого помещения и проверку дверей/окон.
 
 ## Lightning and audio
 
 - Gameplay lightning остаётся non-lethal до появления damage/health contract.
+- Native presentation имеет deterministic segmented bolt и multi-pulse flash;
+  автоматическая гроза и финальная читаемость/аудиомикс требуют ручной проверки.
 - Forest fire, electrical-grid effects и final attractor content отсутствуют.
 - Enviro audio выключено; Wwise content и final thunder mix не реализованы.
 - Typed audio outputs готовы только как consumer boundary.
@@ -212,3 +277,13 @@ artifacts сохраняются только как historical evidence.
 User-owned 08A/UI diff присутствует в worktree, но не является частью 07C и не
 затрагивался. `AGENTS.md` не редактировался; `CURRENT_STATE` и porting records
 обновлены только фактами 07C.
+## Active presentation route — 2026-08-13
+
+- Production Bootstrap currently selects the Enviro/HDRP hybrid: Enviro owns the
+  sky, sun, moon, stars, clouds and its bounded runtime precipitation; the
+  project-owned HDRP bridge owns fog, exposure and indirect-lighting overrides.
+- The complete Native HDRP backend remains an explicit reversible fallback. Its
+  corrected solar rotation and twilight handling are covered by tests, but it
+  is not the default until moon/star parity and visual acceptance exist.
+- Final visual acceptance and matched Windows-player performance capture are
+  still required for the hybrid route.

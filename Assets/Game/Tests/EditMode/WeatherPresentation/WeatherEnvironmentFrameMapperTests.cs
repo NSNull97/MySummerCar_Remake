@@ -54,12 +54,80 @@ namespace MSC.Tests.EditMode.WeatherPresentation
             Assert.That(failure, Does.Contain("stable presentation binding ID"));
         }
 
+        [Test]
+        public void TryMap_DenseFog_ProducesStrongVolumetricFogFrame()
+        {
+            WeatherEnvironmentOutputs outputs =
+                CreateOutputs(WeatherStateIds.DenseFog);
+
+            bool mapped = WeatherEnvironmentFrameMapper.TryMap(
+                outputs,
+                9UL,
+                EnvironmentQualityTier.High,
+                180f,
+                EnvironmentLightningVisualRequest.None,
+                EnvironmentRefreshRequest.None,
+                out EnvironmentPresentationFrame frame,
+                out string failure);
+
+            Assert.That(mapped, Is.True, failure);
+            Assert.That(
+                frame.BindingId.Value,
+                Is.EqualTo("weather.dense_fog"));
+            Assert.That(frame.FogMistIntensity01, Is.EqualTo(1f));
+            Assert.That(frame.VisibilityMeters, Is.EqualTo(80f));
+            Assert.That(
+                frame.CloudType,
+                Is.EqualTo(EnvironmentCloudType.Overcast));
+        }
+
+        [Test]
+        public void TryMap_ExplicitScheduledTargetBinding_PreservesContinuousValues()
+        {
+            WeatherProfileCatalog catalog =
+                WeatherProfileCatalog.CreateRemakeDesignTargets();
+            WeatherState transitioning = WeatherState.Lerp(
+                catalog.Get(WeatherStateIds.Clear).TargetState,
+                catalog.Get(WeatherStateIds.PartlyCloudy).TargetState,
+                0.1f);
+            WeatherEnvironmentOutputs outputs = CreateOutputs(transitioning);
+
+            bool mapped = WeatherEnvironmentFrameMapper.TryMap(
+                outputs,
+                10UL,
+                EnvironmentQualityTier.High,
+                20f,
+                "weather.partly_cloudy",
+                EnvironmentLightningVisualRequest.None,
+                EnvironmentRefreshRequest.None,
+                out EnvironmentPresentationFrame frame,
+                out string failure);
+
+            Assert.That(mapped, Is.True, failure);
+            Assert.That(
+                frame.BindingId.Value,
+                Is.EqualTo("weather.partly_cloudy"));
+            Assert.That(
+                frame.CloudCoverage01,
+                Is.EqualTo(transitioning.CloudCoverage01));
+            Assert.That(
+                frame.CloudIntensity01,
+                Is.EqualTo(1f - transitioning.AmbientReadability01));
+            Assert.That(frame.TransitionDurationSeconds, Is.EqualTo(20f));
+        }
+
         private static WeatherEnvironmentOutputs CreateOutputs(WeatherStateId id)
         {
             WeatherState state = WeatherProfileCatalog
                 .CreateRemakeDesignTargets()
                 .Get(id)
                 .TargetState;
+            return CreateOutputs(state);
+        }
+
+        private static WeatherEnvironmentOutputs CreateOutputs(
+            WeatherState state)
+        {
             var context = new WeatherEnvironmentOutputContext(
                 new WeatherClockOutput(1995, 8, 1, 0, 0.5f),
                 new WetnessEnvironmentOutputs(

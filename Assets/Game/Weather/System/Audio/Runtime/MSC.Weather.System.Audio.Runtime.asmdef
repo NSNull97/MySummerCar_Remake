@@ -1,0 +1,20 @@
+{
+  "name": "MSC.Weather.System.Audio.Runtime",
+  "rootNamespace": "MSC.Weather.System.Audio",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Weather.Runtime",
+    "MSC.Weather.Production.Runtime",
+    "MSC.Weather.System.Runtime",
+    "MSC.Weather.System.Local.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -207,4 +207,131 @@ namespace MSC.Vehicle.Assembly
             return true;
         }
     }
+
+    public sealed class FastenerGroupState
+    {
+        private readonly FastenerInstance[] fasteners;
+        private bool isBolted;
+
+        public FastenerGroupState(
+            FastenerGroupDefinition definition,
+            FastenerInstance[] mountFasteners)
+        {
+            fasteners = mountFasteners ?? Array.Empty<FastenerInstance>();
+            FastenerGroupDefinition compatibilityDefinition =
+                FastenerGroupDefinition.CreateCompatibility(
+                    GetDefinitions(fasteners));
+
+            // Inline serializable classes added to an existing ScriptableObject
+            // can deserialize as a non-null, default-valued instance. Treat that
+            // shape as legacy missing authoring when the old mount still contains
+            // removal-blocking fasteners; otherwise the part becomes FullySafe
+            // immediately and its bolts never latch IsBolted.
+            Definition = definition == null ||
+                !definition.HasFasteners && compatibilityDefinition.HasFasteners
+                    ? compatibilityDefinition
+                    : definition;
+        }
+
+        public FastenerGroupDefinition Definition { get; }
+
+        public int Tightness
+        {
+            get
+            {
+                int result = 0;
+                string[] ids = Definition.FastenerDefinitionIds;
+                for (int index = 0; index < fasteners.Length; index++)
+                {
+                    FastenerInstance fastener = fasteners[index];
+                    if (fastener?.Definition != null &&
+                        Contains(ids, fastener.Definition.DefinitionId))
+                    {
+                        result += fastener.Stage;
+                    }
+                }
+
+                return Mathf.Clamp(
+                    result,
+                    0,
+                    Definition.AggregateMaximumTightness);
+            }
+        }
+
+        public bool IsBolted => isBolted;
+
+        public bool IsFullySafe =>
+            !Definition.HasFasteners ||
+            Tightness >= Definition.AggregateMaximumTightness;
+
+        public void Reevaluate(bool mountOccupied)
+        {
+            if (!mountOccupied || !Definition.HasFasteners)
+            {
+                isBolted = false;
+                return;
+            }
+
+            int tightness = Tightness;
+            if (isBolted)
+            {
+                if (tightness <= Definition.BoltedOffThreshold)
+                {
+                    isBolted = false;
+                }
+            }
+            else if (tightness >= Definition.BoltedOnThreshold)
+            {
+                isBolted = true;
+            }
+        }
+
+        public bool TryRestoreLatch(bool restoredBolted, bool mountOccupied)
+        {
+            int tightness = Tightness;
+            if (!Definition.IsLatchConsistent(
+                    tightness,
+                    restoredBolted,
+                    mountOccupied))
+            {
+                return false;
+            }
+
+            isBolted = restoredBolted;
+            return true;
+        }
+
+        public void Reset()
+        {
+            isBolted = false;
+        }
+
+        public bool ShouldBreak(float speedKph, float sample01) =>
+            Definition.ShouldBreak(Tightness, speedKph, sample01);
+
+        private static FastenerDefinition[] GetDefinitions(
+            FastenerInstance[] instances)
+        {
+            var definitions = new FastenerDefinition[instances.Length];
+            for (int index = 0; index < instances.Length; index++)
+            {
+                definitions[index] = instances[index]?.Definition;
+            }
+
+            return definitions;
+        }
+
+        private static bool Contains(string[] values, string value)
+        {
+            for (int index = 0; index < values.Length; index++)
+            {
+                if (string.Equals(values[index], value, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
 }

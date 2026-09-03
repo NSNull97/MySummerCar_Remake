@@ -4,6 +4,10 @@
   "references": [
     "MSC.Audio.Runtime",
     "MSC.Core.Runtime",
+    "MSC.Economy.Runtime",
+    "MSC.Needs.Runtime",
+    "MSC.Presentation.AntiAliasing.Runtime",
+    "MSC.Save.Runtime",
     "MSC.UI.Runtime",
     "MSC.UI.Presentation.Runtime",
     "Unity.InputSystem",

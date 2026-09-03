@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a03455088c34d38a0e12add3510d298, type: 3}
+  m_Name: Phase1_Grass_Field_0_-1
+  m_EditorClassIdentifier: MSC.World.Runtime::MSC.World.Presentation.Phase1GrassFieldData
+  localPositions:
+  - {x: 9.376278, y: -2.3104565, z: 485.18878}
+  - {x: 5.908565, y: -2.299511, z: 485.77658}
+  - {x: 7.5140324, y: -2.333849, z: 486.76566}
+  - {x: 7.7888403, y: -2.4273798, z: 490.7117}
+  - {x: 6.3177276, y: -2.238097, z: 483.00537}
+  - {x: 6.3379474, y: -2.3298838, z: 486.9541}
+  - {x: 5.8379602, y: -2.2391467, z: 483.1972}
+  - {x: 10.289366, y: -2.4196167, z: 489.61316}
+  - {x: 9.605364, y: -2.3550754, z: 487.04135}
+  - {x: 11.505448, y: -2.4510384, z: 490.5956}
+  - {x: 5.280445, y: -2.2103984, z: 482.1288}
+  localBounds:
+    m_Center: {x: 8.392947, y: -2.3307185, z: 486.4203}
+    m_Extent: {x: 5.112502, y: 0.62031996, z: 6.291458}

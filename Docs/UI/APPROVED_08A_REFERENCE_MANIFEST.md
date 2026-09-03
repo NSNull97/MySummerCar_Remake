@@ -12,3 +12,8 @@
 Canonical comparison viewport: **1672×941**.
 
 All files are review inputs only and must not become runtime dependencies.
+
+`06_INGAME_HUD_APPROVED.png` remains the hash-verified historical 08A source
+and functional-content reference. Its live layout was superseded by the direct
+2026-08-05 HUD-only user correction recorded in `Docs/UI/HUD_SPEC.md` and
+`UI08A-DEV-028`; the other five references are unchanged.

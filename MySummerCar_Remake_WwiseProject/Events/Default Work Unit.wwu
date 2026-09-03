@@ -9,7 +9,7 @@
 						<Event Name="Play_MSC_Vehicle_Starter_Engage" ID="{0A500C58-8D9E-47CC-8F4F-AEC312921B25}">
 							<Comment>Project-owned mapping: audio.event.vehicle.starter.engaged; bank=MSC_Vehicle</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{0DB97D54-A6CA-450C-8DDA-7340127D4176}" ShortID="1055150873">
+								<Action Name="" ID="{B3EE9F66-202E-4AE4-9F5D-2F8386DB7003}" ShortID="903540375">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Starter_Whine" ID="{F453E213-F732-44AF-9922-DB2904778625}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -21,7 +21,7 @@
 						<Event Name="Stop_MSC_Vehicle_Starter" ID="{54E7E262-C069-4CC8-9CA6-6E4D2851E880}">
 							<Comment>Project-owned mapping: audio.event.vehicle.starter.disengaged; bank=MSC_Vehicle</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{B3725E81-9290-41C3-9D7D-C83861359833}" ShortID="55694686">
+								<Action Name="" ID="{9B7EE9EF-9BCD-45EE-953A-505ED5AB6294}" ShortID="785880848">
 									<PropertyList>
 										<Property Name="ActionType" Type="int16" Value="2"/>
 									</PropertyList>
@@ -36,7 +36,7 @@
 						<Event Name="Play_MSC_Vehicle_Engine_Start" ID="{A96574E2-40BB-47A3-999D-AEFB03F17AB3}">
 							<Comment>Project-owned mapping: audio.event.vehicle.engine.started; bank=MSC_Vehicle</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{189039D5-6343-4793-A8E9-84EB26338FBA}" ShortID="842573546">
+								<Action Name="" ID="{54C82EEB-26BB-407C-A37B-587CDBB3304B}" ShortID="194952770">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Engine_Start" ID="{2C33A154-0842-48A1-A5ED-BFA838F9A8BD}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -48,7 +48,7 @@
 						<Event Name="Stop_MSC_Vehicle_Engine" ID="{24AD4218-9E92-4CE2-9A9C-ADB2703FD464}">
 							<Comment>Project-owned mapping: audio.event.vehicle.engine.stopped; bank=MSC_Vehicle</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{249FF2CC-4344-46B3-8B3E-0CFE0DE4A6B8}" ShortID="911998582">
+								<Action Name="" ID="{C6CD9FBA-06A8-4D3A-BCCA-4A65A0AA8819}" ShortID="488179598">
 									<PropertyList>
 										<Property Name="ActionType" Type="int16" Value="2"/>
 									</PropertyList>
@@ -63,7 +63,7 @@
 						<Event Name="Play_MSC_Vehicle_Engine_Stall" ID="{8D59DD0C-06F3-4DBC-9704-72D3FABC04D8}">
 							<Comment>Project-owned mapping: audio.event.vehicle.engine.stalled; bank=MSC_Vehicle</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{8500118A-1E7A-4236-8F71-72E7B18E03AC}" ShortID="1062052157">
+								<Action Name="" ID="{87CEAF7C-4513-4EA7-A134-F732D02B794C}" ShortID="683941814">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Engine_Stall_Proxy" ID="{1BA2841F-351D-4E08-AA22-742AC10162B8}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -75,7 +75,7 @@
 						<Event Name="Stop_MSC_Vehicle_All" ID="{40923D36-D3CB-4292-9B0F-6A0916E30024}">
 							<Comment>Project-owned mapping: audio.event.vehicle.reset; bank=MSC_Vehicle</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{97457BBB-42E1-4AE9-8356-92AB8699AC81}" ShortID="496710349">
+								<Action Name="" ID="{C6A787E4-458A-4478-89A1-7094BDD1890F}" ShortID="669329836">
 									<PropertyList>
 										<Property Name="ActionType" Type="int16" Value="3"/>
 									</PropertyList>
@@ -86,7 +86,7 @@
 						<Event Name="Play_MSC_Vehicle_Engine_Intake" ID="{0E55AD29-F1A8-4009-A151-6C362DBDDD14}">
 							<Comment>Project-owned mapping: audio.event.vehicle.engine.intake; bank=MSC_Vehicle</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{4E6DBB55-991E-4FD5-BBBF-63E5BA4260BC}" ShortID="476078546">
+								<Action Name="" ID="{05ECF7FD-55EC-42FC-B258-82B900C213B6}" ShortID="888053177">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Engine_Intake" ID="{BE756F25-CFED-42E2-B1CE-069DB9556BAB}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -98,7 +98,7 @@
 						<Event Name="Play_MSC_Vehicle_Engine_Exhaust" ID="{DD414DC5-9A6D-4685-871B-D03AA4B62E07}">
 							<Comment>Project-owned mapping: audio.event.vehicle.engine.exhaust; bank=MSC_Vehicle</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{E2180806-956A-4B32-8F57-C7CFF0B74446}" ShortID="741732785">
+								<Action Name="" ID="{17764D20-8DE0-4524-91B9-94D339094A82}" ShortID="78364230">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Engine_Exhaust" ID="{C300D5C4-E798-4B99-86EB-66CDC4860C27}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -110,7 +110,7 @@
 						<Event Name="Play_MSC_Vehicle_Engine_Mechanical" ID="{C30A15F7-D7EB-4C0B-A302-9AE15F7626C4}">
 							<Comment>Project-owned mapping: audio.event.vehicle.engine.mechanical; bank=MSC_Vehicle</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{7AC4A60D-05F7-4EAB-8CB2-D31EFFAD0DCE}" ShortID="73455950">
+								<Action Name="" ID="{56B7F59A-AA39-4653-AE46-B453EBF32EDC}" ShortID="1072845277">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Engine_Mechanical" ID="{498214D8-7625-4B47-95D3-99F8E3926B3E}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -131,7 +131,7 @@
 						<Event Name="Play_MSC_Vehicle_Tire_Roll" ID="{B13D978F-09B1-405C-9CD2-A49015BC0D84}">
 							<Comment>Project-owned mapping: audio.event.vehicle.tire.roll; bank=MSC_Vehicle</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{6D1E4473-04DA-4C55-BC9A-0D9A58B44D58}" ShortID="925763928">
+								<Action Name="" ID="{785E2541-063B-42D6-91A6-6119E0204151}" ShortID="1040184697">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Tire_Roll" ID="{54213805-E2CC-448D-B74F-825425EC7CCE}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -151,7 +151,7 @@
 						<Event Name="Play_MSC_Weather_Rain_Exterior" ID="{5EE6CF6F-F047-43D4-B88F-A1CD389FDAC2}">
 							<Comment>Project-owned mapping: audio.event.weather.rain.exterior; bank=MSC_Weather</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{5827D0F6-31AD-4CAD-84F2-B1FEDBA8C3B0}" ShortID="1011898093">
+								<Action Name="" ID="{0855D3D5-57E9-4AEB-817E-76537D652A39}" ShortID="515459726">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Rain_Exterior" ID="{02950850-7FD8-40F3-BD19-401A41134255}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -163,7 +163,7 @@
 						<Event Name="Play_MSC_Weather_Rain_Sheltered" ID="{F4ACFBFA-D702-468E-98D3-1CED3C02B2A3}">
 							<Comment>Project-owned mapping: audio.event.weather.rain.sheltered; bank=MSC_Weather</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{CE0D1BFD-A61C-4882-AC4C-E29858B94982}" ShortID="117334825">
+								<Action Name="" ID="{131AF973-ACEC-470A-81AD-7FF7A65FBAFC}" ShortID="312160385">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Rain_Sheltered" ID="{48FBF039-996D-40B8-9542-31B0E4CF42E1}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -175,7 +175,7 @@
 						<Event Name="Play_MSC_Weather_Rain_Interior" ID="{49275C91-0C4E-4D15-B4CE-BFB79497DA48}">
 							<Comment>Project-owned mapping: audio.event.weather.rain.interior; bank=MSC_Weather</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{1A265EA6-543F-40E5-9117-AC7CAFB22E83}" ShortID="725181434">
+								<Action Name="" ID="{27082118-3E02-45D4-8583-5F5F4F32F0C5}" ShortID="923198824">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Rain_Interior" ID="{824431BD-8602-4F57-B19C-E9AEC5D4EF94}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -187,7 +187,7 @@
 						<Event Name="Play_MSC_Weather_Wind" ID="{E8F7D032-A281-42D0-AE50-FA354D90BAAA}">
 							<Comment>Project-owned mapping: audio.event.weather.wind; bank=MSC_Weather</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{300FFC8D-3AFB-48CC-8762-8D3AA0157EF3}" ShortID="534217761">
+								<Action Name="" ID="{56B364C7-866E-46B7-B2F0-51427204F114}" ShortID="980921648">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Wind" ID="{F9F18587-60AD-4840-85D8-FA22EB0C4D82}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -199,7 +199,7 @@
 						<Event Name="Play_MSC_Weather_Thunder" ID="{D781DB05-B8E7-4C7A-9969-0367E0383F90}">
 							<Comment>Project-owned mapping: audio.event.weather.thunder; bank=MSC_Weather</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{8DA7DFA7-8AED-4421-A10E-E898652E764B}" ShortID="425524434">
+								<Action Name="" ID="{C17DCE3B-97B6-4E24-B6A3-6272504150A4}" ShortID="872167843">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Thunder" ID="{75459BCE-2B42-46E7-AEE7-944342CA1073}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -211,7 +211,7 @@
 						<Event Name="Play_MSC_Weather_Thunder_Distant" ID="{3E679DD5-C6D4-49BF-844C-6A2DCC4ACDFF}">
 							<Comment>Project-owned mapping: audio.event.weather.thunder.distant; bank=MSC_Weather</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{D60949D9-0248-473B-90BD-FADE30C8FC1C}" ShortID="1035061707">
+								<Action Name="" ID="{5E03D201-4C56-42E6-B576-C6EA9A3550B7}" ShortID="25695833">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Thunder" ID="{75459BCE-2B42-46E7-AEE7-944342CA1073}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -223,7 +223,7 @@
 						<Event Name="Play_MSC_Weather_Thunder_Strike" ID="{97469B31-E889-4213-A7A2-ABA5EB59970F}">
 							<Comment>Project-owned mapping: audio.event.weather.thunder.strike; bank=MSC_Weather</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{E47E3A1D-A76D-4080-955F-EE4DFCCDB1A8}" ShortID="789415068">
+								<Action Name="" ID="{7D91B62B-F963-4371-8CB3-9B340A29B32F}" ShortID="141231445">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Thunder" ID="{75459BCE-2B42-46E7-AEE7-944342CA1073}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -240,7 +240,7 @@
 						<Event Name="Play_MSC_World_Forest_Ambience" ID="{A579EDBD-1F45-47AE-938F-2E75A1CB9AE3}">
 							<Comment>Project-owned mapping: audio.event.world.forest.ambience; bank=MSC_World</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{42ADF9A7-043B-45A6-A857-48C0AB32648F}" ShortID="391150344">
+								<Action Name="" ID="{155C30E8-F48E-47FC-89BC-1F8F7015D9BB}" ShortID="422626437">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Forest_Ambience" ID="{0BF4191E-C987-4C18-A3F4-A800CE1F9C4A}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -252,7 +252,7 @@
 						<Event Name="Play_MSC_World_Lake_Ambience" ID="{0CAD4318-3F92-42E5-80B8-D1996D601C1F}">
 							<Comment>Project-owned mapping: audio.event.world.lake.ambience; bank=MSC_World</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{D72D101B-F72A-4FF7-B089-155E1D0B404A}" ShortID="559753158">
+								<Action Name="" ID="{A4A11A83-853F-4EC2-9105-14073F39F067}" ShortID="634626185">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Lake_Ambience" ID="{BF5CA20C-14D6-45F2-87CD-D2DD2EF05528}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -273,7 +273,7 @@
 						<Event Name="Play_MSC_World_Birds" ID="{AFFE44BE-39A4-434B-939F-CF8F0F24E12D}">
 							<Comment>Project-owned mapping: audio.event.world.birds; bank=MSC_World</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{ABB29479-9252-43F7-A37B-FF68BB79B977}" ShortID="109587966">
+								<Action Name="" ID="{D4A2A41B-4983-4980-92A1-6948912C6D65}" ShortID="410704930">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Forest_Ambience" ID="{0BF4191E-C987-4C18-A3F4-A800CE1F9C4A}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -284,6 +284,171 @@
 						</Event>
 						<Event Name="Play_MSC_World_Insects" ID="{2B26B7B2-E798-434E-BD37-92BF16EF7516}">
 							<Comment>Project-owned mapping: audio.event.world.insects; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{2ABDF85B-9CDA-4489-98EB-7AE3783B2D01}" ShortID="382886011">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Mosquito" ID="{D0FEA537-C382-4DC8-AFD4-ECF544E42485}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Chainsaw" ID="{CD641734-EBCF-4220-AE7F-6290FA311376}">
+							<Comment>Project-owned mapping: audio.event.world.chainsaw; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{C3607C8B-14F9-4791-B738-4EAFAF6A58C3}" ShortID="61073442">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Distant_Chainsaw" ID="{D2906E63-C04D-4B8E-8D9B-BFA64DB9F96D}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Birds_Morning" ID="{9654D6D7-98BF-421A-A84C-3D530ADF11F7}">
+							<Comment>Project-owned mapping: audio.event.world.birds.morning; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{C9584706-02A3-4C6A-9460-4EB881833979}" ShortID="631963066">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Birds_Morning" ID="{77FAC3F3-4A27-43BD-BCE8-6B8592AFF3A9}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Birds_Day" ID="{64DE3824-1404-4F17-B8D2-28339902E0B9}">
+							<Comment>Project-owned mapping: audio.event.world.birds.day; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{94BDB6C5-62CE-4B04-9755-0BF3826D5955}" ShortID="326742856">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Birds_Day" ID="{9AD53321-2F0F-488C-992F-D5A62C9A07E6}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Birds_Evening" ID="{765A3490-C65A-46DE-AEB8-A4207D6C7DDD}">
+							<Comment>Project-owned mapping: audio.event.world.birds.evening; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{7498D623-CD72-41AE-B30D-CE3F3C72017E}" ShortID="602198243">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Birds_Evening" ID="{446BB6BA-CD7C-462A-B907-2628F52A2952}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Birds_Night" ID="{7B211CD6-C196-4EC7-8E65-1E49FA7CE38F}">
+							<Comment>Project-owned mapping: audio.event.world.birds.night; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{7A2EEFB4-995E-4928-97A2-D8DD19C8E15E}" ShortID="882433083">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Birds_Night" ID="{18539301-5187-4F3F-96C0-393150636DBB}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Birds_Swamp" ID="{41D327E4-3014-4AFF-8E8D-A6DFC1F92BFE}">
+							<Comment>Project-owned mapping: audio.event.world.birds.swamp; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{55433724-4985-4F02-960A-D500621A4575}" ShortID="654813578">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Birds_Swamp" ID="{8FE13379-0325-4BBA-8AF7-53833BB08142}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Meadow" ID="{D87F4A6C-BADC-4833-90E5-3426F8251AF4}">
+							<Comment>Project-owned mapping: audio.event.world.meadow; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{CE1A0180-65E3-4C80-A7A9-7F245577913C}" ShortID="113429511">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Meadow" ID="{9E8B2380-19EE-4483-B4C6-D09014A188CB}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Dog" ID="{7509E407-B07F-4B4D-B2AA-06429AC7A0E2}">
+							<Comment>Project-owned mapping: audio.event.world.dog; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{5BC1A80B-4357-4C27-B578-5B17BD065B8F}" ShortID="265645305">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Distant_Dog" ID="{72EEC724-DA77-4CAE-9E78-CB797DEB7475}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Wind_Chime" ID="{5E6D96E1-4B23-42B5-B41C-EF5271C10364}">
+							<Comment>Project-owned mapping: audio.event.world.wind_chime; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{26E94325-A599-4537-A422-334CA18F418C}" ShortID="661658133">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Wind_Chime" ID="{DFA3AC55-8AC6-4F94-A54E-4977BC16AE06}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Mosquito" ID="{EA092781-D3A2-41B8-9BD7-64934094EEA7}">
+							<Comment>Project-owned mapping: audio.event.world.mosquito; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{BC1D610E-6347-40D6-9DA6-0BA8E0F1829E}" ShortID="37556384">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Mosquito" ID="{D0FEA537-C382-4DC8-AFD4-ECF544E42485}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Fly" ID="{5BD5DDDA-999A-4B06-B54B-ADF9AB435977}">
+							<Comment>Project-owned mapping: audio.event.world.fly; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{3335AADF-0EA2-4884-B1D6-DA61611BD763}" ShortID="69014289">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Fly" ID="{56188CC1-7FFB-4928-97EB-60D1C681F2D9}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Fly_Variant" ID="{B51FC46F-C2C0-4B40-A0FB-63714AD02416}">
+							<Comment>Project-owned mapping: audio.event.world.fly.variant; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{ED6A4BE8-3B28-4ED9-8E9A-2A86BCA1EB2D}" ShortID="362483563">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Fly_Variant" ID="{3A901F4D-BAD7-4761-BE71-A4DCAE3EB268}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_MSC_World_Wasp" ID="{624EF21F-5045-46A1-A7A1-8E01C891172E}">
+							<Comment>Project-owned mapping: audio.event.world.wasp; bank=MSC_World</Comment>
+							<ChildrenList>
+								<Action Name="" ID="{47D7B466-EF99-444A-B075-9E000B5AAD58}" ShortID="541890671">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Wasp" ID="{ABE10C63-7661-4789-85AD-BEDBD4FD7033}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
 						</Event>
 					</ChildrenList>
 				</Folder>
@@ -293,7 +458,7 @@
 						<Event Name="Play_MSC_Interaction_Pickup" ID="{A4656E4B-1315-4A31-8C73-6C0A33226A3A}">
 							<Comment>Project-owned mapping: audio.event.interaction.pickup; bank=MSC_Interaction</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{B4336F61-D49C-4466-A882-CED297C3FF97}" ShortID="124899222">
+								<Action Name="" ID="{F8F11443-F03F-4222-A346-66CDFF5F16DE}" ShortID="291162007">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Pickup" ID="{9D3FD35F-AAEC-4AB9-AC4F-15EE87729686}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -305,7 +470,7 @@
 						<Event Name="Play_MSC_Interaction_Drop" ID="{AB218F8A-B62A-4DC0-B889-0DED17C3940E}">
 							<Comment>Project-owned mapping: audio.event.interaction.drop; bank=MSC_Interaction</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{76E0E876-0FD7-4483-8BEE-F9C984298F3A}" ShortID="653155463">
+								<Action Name="" ID="{86B7C56C-4F37-4E3D-90C4-2744A629F4DE}" ShortID="242407727">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Drop" ID="{AAA4883B-5B64-4E69-84EB-93F87954239A}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -317,7 +482,7 @@
 						<Event Name="Play_MSC_Interaction_Throw" ID="{5438D69E-6115-439B-94B5-3362CB3C7D87}">
 							<Comment>Project-owned mapping: audio.event.interaction.throw; bank=MSC_Interaction</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{FDE18070-5F08-4062-99E3-DFAD9F828A4F}" ShortID="114493409">
+								<Action Name="" ID="{C5DB6071-8F81-453F-8ACF-D757E7DBBBBA}" ShortID="682190072">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Throw" ID="{DDCB41AE-CE62-48B6-8465-A719886D27BE}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -329,7 +494,7 @@
 						<Event Name="Play_MSC_Interaction_Place" ID="{9678D8FE-1C8B-4818-8554-AB6782C14496}">
 							<Comment>Project-owned mapping: audio.event.interaction.place; bank=MSC_Interaction</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{6325D9BA-BAF5-49A3-95FC-7573C48982E6}" ShortID="797741236">
+								<Action Name="" ID="{AFEA700C-3FAA-4B83-B8B1-79BF8E0E6C50}" ShortID="779769575">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Place" ID="{CBEFAB9F-B37D-4BBB-83E7-0E33F2241021}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -341,7 +506,7 @@
 						<Event Name="Play_MSC_Interaction_Mount_Handoff" ID="{AB29AC3A-5107-412C-BC6E-36C458D82251}">
 							<Comment>Project-owned mapping: audio.event.interaction.mount_handoff; bank=MSC_Interaction</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{C2ABA121-F72A-41E4-8DC4-BF8AA4A1A532}" ShortID="672670693">
+								<Action Name="" ID="{94DE6765-92FF-402A-B595-BAB5E7E53298}" ShortID="765646941">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Mount_Handoff" ID="{C3F09C76-A2EB-4803-93F1-00A7F60E2B96}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -353,7 +518,7 @@
 						<Event Name="Play_MSC_Interaction_Impact" ID="{0218BEDB-65A9-426E-9B54-102D5C9D1D97}">
 							<Comment>Project-owned mapping: audio.event.interaction.impact; bank=MSC_Interaction</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{E0F7AE44-1B1F-4E99-B5E3-49AA24542BCD}" ShortID="233238754">
+								<Action Name="" ID="{79B090A5-FD5C-4CBE-AF7F-41D4C5FC4B8B}" ShortID="265634419">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Drop" ID="{AAA4883B-5B64-4E69-84EB-93F87954239A}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -383,7 +548,7 @@
 						<Event Name="Play_MSC_Interaction_Door_Open" ID="{A6FC919B-48AD-4E64-A0C2-64B95A69AA44}">
 							<Comment>Project-owned mapping: audio.event.interaction.door.open; bank=MSC_Interaction</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{9B7D6F91-A991-4A0C-9167-B0D541ADAF14}" ShortID="627887506">
+								<Action Name="" ID="{3ECF16EB-0C7D-434F-813B-70FEF08768D4}" ShortID="961269326">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Door_Open_Proxy" ID="{3F57C54B-8737-4D45-AF32-AD6052F85567}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -395,7 +560,7 @@
 						<Event Name="Play_MSC_Interaction_Door_Close" ID="{3E302617-D0E3-4453-BC35-1660762E2638}">
 							<Comment>Project-owned mapping: audio.event.interaction.door.close; bank=MSC_Interaction</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{D610DCE0-9F8E-4630-B76C-E07F36D11625}" ShortID="1061153532">
+								<Action Name="" ID="{B8A8B98E-8801-41E2-B01D-1FED6C4D95DD}" ShortID="335747306">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Door_Close_Proxy" ID="{3C849821-EC65-49EF-B5C3-4AB8358528C8}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -407,7 +572,7 @@
 						<Event Name="Play_MSC_Interaction_Gate_Open" ID="{1CF5CF64-ACAF-4BFC-8110-8F5859B8E724}">
 							<Comment>Project-owned mapping: audio.event.interaction.gate.open; bank=MSC_Interaction</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{33EC9DFC-1B93-4B53-8DF0-D64EAA15B595}" ShortID="744233677">
+								<Action Name="" ID="{C435A88F-8E87-4AC5-AA77-7DB26B110110}" ShortID="683168615">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Door_Open_Proxy" ID="{3F57C54B-8737-4D45-AF32-AD6052F85567}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -419,7 +584,7 @@
 						<Event Name="Play_MSC_Interaction_Gate_Close" ID="{3C279CEA-9600-4485-B3EE-5940B666FED8}">
 							<Comment>Project-owned mapping: audio.event.interaction.gate.close; bank=MSC_Interaction</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{5E32533E-DEC5-41C3-A03C-0907DBABAD08}" ShortID="1014153515">
+								<Action Name="" ID="{539EFC85-CA2A-4901-8710-AD68661593BB}" ShortID="309891202">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Door_Close_Proxy" ID="{3C849821-EC65-49EF-B5C3-4AB8358528C8}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -431,7 +596,7 @@
 						<Event Name="Play_MSC_Interaction_Window_Open" ID="{BE1B6374-86B1-4294-A9D8-3650141E4C71}">
 							<Comment>Project-owned mapping: audio.event.interaction.window.open; bank=MSC_Interaction</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{E617F0F5-5928-4A2B-BDF8-CD1301153376}" ShortID="791106150">
+								<Action Name="" ID="{C5B1CF4F-23DB-4039-9061-3643E15BEB86}" ShortID="752191322">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Door_Open_Proxy" ID="{3F57C54B-8737-4D45-AF32-AD6052F85567}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -443,7 +608,7 @@
 						<Event Name="Play_MSC_Interaction_Window_Close" ID="{49A1D93B-F713-4575-91B8-6FD366C9ED4C}">
 							<Comment>Project-owned mapping: audio.event.interaction.window.close; bank=MSC_Interaction</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{BDB50559-6E1A-4433-8583-331FCE82BAA6}" ShortID="953061742">
+								<Action Name="" ID="{536C50D6-BB48-4166-9958-9B721671B471}" ShortID="1012356657">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="Door_Close_Proxy" ID="{3C849821-EC65-49EF-B5C3-4AB8358528C8}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>
@@ -455,7 +620,7 @@
 						<Event Name="Play_MSC_Player_Footstep" ID="{F770D05F-0581-4E4C-A432-70E21F15D06D}">
 							<Comment>Project-owned mapping: audio.event.player.footstep; bank=MSC_Interaction</Comment>
 							<ChildrenList>
-								<Action Name="" ID="{89D2A453-ADB5-4A8F-A0E6-3ADA3B1019A4}" ShortID="523018570">
+								<Action Name="" ID="{13B9FFC7-3E77-45BD-8BD1-2B85876D2735}" ShortID="298490215">
 									<ReferenceList>
 										<Reference Name="Target">
 											<ObjectRef Name="MSC_Player_Footsteps" ID="{0FE04640-CBF7-4FD2-A61D-12FCDC0D3593}" WorkUnitID="{A31AA3BA-EB47-4DCC-B202-34AAE3BC34E5}"/>

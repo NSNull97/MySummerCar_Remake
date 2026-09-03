@@ -1,0 +1,35 @@
+{
+    "schemaVersion": 1,
+    "sourceRevisionId": "msc-world-baseline-04a1.1-c3f2f337",
+    "sourceRelativePath": "normalized/world/milestone-04a1/WorldObjectPlacements.csv",
+    "sourceSha256": "B894B8A6416FC1B74EABB1821B71E407CBEDBD3AC9AFABEEE262C7891004758A",
+    "transferClassification": "ConfigurationTransferred",
+    "destinationStableId": "weather.shelter.home.house.interior.v1",
+    "derivationPolicy": "explicit-donor-NoRain-footprints-extruded-to-playable-interior-height-v1",
+    "floorMeters": 0.8,
+    "ceilingMeters": 4.5,
+    "volumes": [
+        {
+            "sourceStableId": "ed8360ed2f0dc062d8a8b58e61f46c75",
+            "sourceHierarchyPath": "YARD/Building/LOD/NoRain",
+            "worldCenter": [162.06999, 2.65, -1037.315],
+            "worldRotation": [-0.70710665, 0.0000000115, -0.0000000049, 0.7071069],
+            "localSizeMeters": [6.0411706, 2.3143263, 3.7]
+        },
+        {
+            "sourceStableId": "75448f8621d2206217a4219ca6d50778",
+            "sourceHierarchyPath": "YARD/Building/LOD/NoRain",
+            "worldCenter": [154.79999, 2.65, -1038.375],
+            "worldRotation": [-0.70710665, 0.0000000115, 0.0000000006, 0.7071069],
+            "localSizeMeters": [8.573909, 10.44192, 3.7]
+        },
+        {
+            "sourceStableId": "83a9b95d1aa3c92e971d0f76f8509876",
+            "sourceHierarchyPath": "YARD/Building/LIVINGROOM/LOD_livingroom/NoRain",
+            "worldCenter": [162.79845, 2.65, -1030.7153],
+            "worldRotation": [-0.7071066, -0.0000000212, -0.0000000286, 0.70710695],
+            "localSizeMeters": [11.431875, 10.848738, 3.7]
+        }
+    ],
+    "notes": "The stable zone ID and closed-interior profile remain unchanged. The superseded low renderer-AABB collider is retained disabled for migration traceability."
+}

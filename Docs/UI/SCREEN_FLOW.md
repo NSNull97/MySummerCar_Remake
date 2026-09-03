@@ -7,9 +7,10 @@ Date: `2026-07-20`
 
 ```text
 Bootstrap
-  -> Loading
-      -> prepared/dormant Main Menu (default production policy)
-          -> New Game -> activate IGameplaySessionGate -> In-Game HUD
+  -> Loading (front-end initialization only)
+      -> lightweight Main Menu; gameplay scenes unloaded (default policy)
+          -> New Game -> prepare world streaming once
+                      -> activate IGameplaySessionGate -> In-Game HUD
           -> Settings -> Graphics <-> Audio <-> Controls <-> Gameplay
                               <-> Accessibility <-> Mods
           -> Credits overlay -> Main Menu
@@ -34,8 +35,8 @@ minimal truthful unavailable placeholder.
 | Route | Reference state | Entry | Exit/current behavior |
 |---|---|---|---|
 | `Boot` | `ReferencePending` | initial enum state | composition immediately opens Loading; no concrete Boot view |
-| `Loading` | `ReferencePending` | initialization | world-ready delegate selects Main Menu or HUD |
-| `MainMenu` | locked | production startup, fresh reload | prepared world remains dormant; New Game activates the session gate; settings, credits, quit |
+| `Loading` | `ReferencePending` | initialization | front-end readiness selects Main Menu; restored/start-in-game sessions still wait for world readiness |
+| `MainMenu` | locked | production startup, fresh reload | gameplay scenes remain unloaded; New Game prepares the world once and activates the session gate; settings, credits, quit |
 | `SettingsGraphics` | locked | Main Menu or Pause | category navigation; Back reverts pending changes |
 | `SettingsAudio` | locked | category navigation | same shared transaction shell |
 | `SettingsControls` | locked | category navigation | same shared transaction shell |
@@ -58,15 +59,21 @@ The primary action order is fixed:
 5. Quit.
 
 Continue and Load must become interactive only after a real save capability is
-provided. New Game activates the explicit idempotent `IGameplaySessionGate`,
-starts a fresh bounded local Bootstrap session and enters the HUD without
-creating or mutating a save/profile. Before that activation, the world may be
-prepared but gameplay camera/environment simulation remain dormant. The full
-new-game setup flow is outside 08A and must not be inferred.
+provided. New Game first calls the optional asynchronous
+`IGameplaySessionPreparationGate`; that is the only point where the streaming
+focus is bound and additive gameplay scenes are loaded. It then activates the
+explicit idempotent `IGameplaySessionGate` and enters the HUD. Before this
+request, gameplay scenes, camera and environment simulation remain dormant. The
+full new-game setup flow is outside 08A and must not be inferred.
 
 The utility order is Settings, Mods, Developer Tools. Developer Tools is
 interactive only in an Editor/development context and is unavailable in a
 release build.
+
+As of 2026-08-05, Developer Tools opens the button-driven development menu
+documented in `Docs/UI/DEVELOPER_MENU.md`. The menu is an independent
+development-only overlay rather than a new 08A route, so it does not alter the
+approved main-menu bounds, route catalogue, settings shell, or HUD composition.
 
 ## Settings navigation and transaction behavior
 

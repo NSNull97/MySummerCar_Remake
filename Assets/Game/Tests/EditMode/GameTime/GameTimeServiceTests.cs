@@ -94,6 +94,10 @@ namespace MSC.Tests.EditMode.GameTime
             Assert.That(
                 GameTimeConfig.RemakeDesignTargetDefaults.TuningClassification,
                 Is.EqualTo(GameTimeTuningClassification.RemakeDesignTarget));
+            Assert.That(
+                GameTimeConfig.RemakeDesignTargetDefaults
+                    .DayLengthSimulationSeconds,
+                Is.EqualTo(7_200d));
 
             Assert.Throws<ArgumentException>(() => new GameTimeConfig(
                 "Invalid ID",

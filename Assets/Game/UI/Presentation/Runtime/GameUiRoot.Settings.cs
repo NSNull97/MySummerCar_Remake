@@ -31,7 +31,7 @@ namespace MSC.UI.Presentation
                 370f,
                 135f,
                 618f,
-                716f,
+                730f,
                 UiGlassKind.MenuTinted,
                 CurrentMenuGlassTint);
             factory.Heading(
@@ -122,26 +122,167 @@ namespace MSC.UI.Presentation
                 value => settings.EditPending(document => document.Graphics.VSync = value));
 
             rowY += 40f;
-            AddUnavailableRow(
+            bool dlssSupported =
+                capabilities.Get(UiCapabilityId.GraphicsUpscaler).IsInteractive;
+            Text antiAliasingPreset = null;
+            Text dlssQuality = null;
+            Slider antiAliasingSharpening = null;
+            bool suppressAntiAliasingSharpeningChange = false;
+
+            Text antiAliasingMode = null;
+            antiAliasingMode = AddStepperRow(
                 panel.transform,
-                "Upscaling",
-                textCatalog.Get("ui.graphics.upscaling"),
+                "AntiAliasing",
+                textCatalog.Get("ui.graphics.anti_aliasing"),
                 rowY,
-                CapabilityText(UiCapabilityId.GraphicsUpscaler));
+                AntiAliasingModeText(pending.AntiAliasingMode),
+                true,
+                direction =>
+                {
+                    UiAntiAliasingMode next = StepAntiAliasingMode(
+                        settings.Pending.Graphics.AntiAliasingMode,
+                        direction,
+                        dlssSupported);
+                    settings.EditPending(document =>
+                    {
+                        GraphicsSettingsDto graphics = document.Graphics;
+                        graphics.AntiAliasingMode = next;
+                        graphics.AntiAliasingPreset =
+                            UiAntiAliasingPreset.Custom;
+                        graphics.DlssEnabled =
+                            next == UiAntiAliasingMode.TemporalUpscaler;
+                        if (next == UiAntiAliasingMode.MaximumQuality)
+                        {
+                            graphics.DlssQuality = UiDlssQuality.Dlaa;
+                        }
+                        else if (graphics.DlssQuality == UiDlssQuality.Dlaa)
+                        {
+                            graphics.DlssQuality = UiDlssQuality.Balanced;
+                        }
+                    });
+                    antiAliasingMode.text = AntiAliasingModeText(next);
+                    if (antiAliasingPreset != null)
+                    {
+                        antiAliasingPreset.text = AntiAliasingPresetText(
+                            UiAntiAliasingPreset.Custom);
+                    }
+                    if (dlssQuality != null)
+                    {
+                        dlssQuality.text = DlssQualityText(
+                            settings.Pending.Graphics.DlssQuality);
+                    }
+                });
+
             rowY += 34f;
-            AddUnavailableRow(
+            antiAliasingPreset = AddStepperRow(
                 panel.transform,
-                "UpscalerQuality",
-                textCatalog.Get("ui.graphics.upscaler_quality"),
+                "AntiAliasingPreset",
+                textCatalog.Get("ui.graphics.aa_preset"),
                 rowY,
-                CapabilityText(UiCapabilityId.GraphicsUpscaler));
+                AntiAliasingPresetText(pending.AntiAliasingPreset),
+                true,
+                direction =>
+                {
+                    UiAntiAliasingPreset next = StepAntiAliasingPreset(
+                        settings.Pending.Graphics.AntiAliasingPreset,
+                        direction);
+                    settings.EditPending(document =>
+                        UiSettingsDefaults.ApplyAntiAliasingPreset(
+                            document.Graphics,
+                            next));
+
+                    GraphicsSettingsDto updated = settings.Pending.Graphics;
+                    antiAliasingPreset.text = AntiAliasingPresetText(next);
+                    antiAliasingMode.text = AntiAliasingModeText(
+                        updated.AntiAliasingMode);
+                    if (antiAliasingSharpening != null)
+                    {
+                        suppressAntiAliasingSharpeningChange = true;
+                        antiAliasingSharpening.value =
+                            Mathf.InverseLerp(
+                                GraphicsSettingsDto.MinimumAntiAliasingSharpening,
+                                GraphicsSettingsDto.MaximumAntiAliasingSharpening,
+                                updated.AntiAliasingSharpening);
+                        suppressAntiAliasingSharpeningChange = false;
+                    }
+                });
+
             rowY += 34f;
-            AddUnavailableRow(
+            if (dlssSupported)
+            {
+                dlssQuality = AddStepperRow(
+                    panel.transform,
+                    "UpscalerQuality",
+                    textCatalog.Get("ui.graphics.upscaler_quality"),
+                    rowY,
+                    DlssQualityText(pending.DlssQuality),
+                    true,
+                    direction =>
+                    {
+                        UiDlssQuality next = StepDlssQuality(
+                            settings.Pending.Graphics.DlssQuality,
+                            direction);
+                        settings.EditPending(document =>
+                        {
+                            GraphicsSettingsDto graphics = document.Graphics;
+                            graphics.DlssQuality = next;
+                            if (graphics.AntiAliasingMode ==
+                                UiAntiAliasingMode.MaximumQuality)
+                            {
+                                graphics.AntiAliasingMode =
+                                    UiAntiAliasingMode.TemporalUpscaler;
+                                graphics.AntiAliasingPreset =
+                                    UiAntiAliasingPreset.Custom;
+                                graphics.DlssEnabled = true;
+                            }
+                        });
+                        dlssQuality.text = DlssQualityText(next);
+                        antiAliasingMode.text = AntiAliasingModeText(
+                            settings.Pending.Graphics.AntiAliasingMode);
+                        antiAliasingPreset.text = AntiAliasingPresetText(
+                            settings.Pending.Graphics.AntiAliasingPreset);
+                    });
+            }
+            else
+            {
+                AddUnavailableRow(
+                    panel.transform,
+                    "UpscalerQuality",
+                    textCatalog.Get("ui.graphics.upscaler_quality"),
+                    rowY,
+                    CapabilityText(UiCapabilityId.GraphicsUpscaler));
+            }
+
+            rowY += 34f;
+            antiAliasingSharpening = AddRangeSliderRow(
                 panel.transform,
                 "Sharpening",
                 textCatalog.Get("ui.graphics.sharpening"),
                 rowY,
-                CapabilityText(UiCapabilityId.GraphicsUpscaler));
+                pending.AntiAliasingSharpening,
+                GraphicsSettingsDto.MinimumAntiAliasingSharpening,
+                GraphicsSettingsDto.MaximumAntiAliasingSharpening,
+                value =>
+                {
+                    if (suppressAntiAliasingSharpeningChange)
+                    {
+                        return;
+                    }
+
+                    float rounded = Mathf.Round(value * 100f) / 100f;
+                    settings.EditPending(document =>
+                    {
+                        document.Graphics.AntiAliasingSharpening = rounded;
+                        document.Graphics.AntiAliasingPreset =
+                            UiAntiAliasingPreset.Custom;
+                    });
+                    if (antiAliasingPreset != null)
+                    {
+                        antiAliasingPreset.text = AntiAliasingPresetText(
+                            UiAntiAliasingPreset.Custom);
+                    }
+                },
+                AntiAliasingSharpeningText);
             rowY += 34f;
             AddUnavailableRow(
                 panel.transform,
@@ -193,8 +334,65 @@ namespace MSC.UI.Presentation
             rowY += 34f;
             AddUnavailableRow(panel.transform, "RayTracing", textCatalog.Get("ui.graphics.ray_tracing"), rowY, CapabilityText(UiCapabilityId.GraphicsRayTracing));
 
+            BuildCameraGraphicsSettingsCard(route.transform, pending);
             BuildStandardSettingsActions(route.transform);
             BuildVersionLabel(route.transform);
+        }
+
+        private void BuildCameraGraphicsSettingsCard(
+            Transform parent,
+            GraphicsSettingsDto pending)
+        {
+            GameObject panel = factory.GlassPanel(
+                "CameraSettingsPanel",
+                parent,
+                1014f,
+                135f,
+                552f,
+                180f,
+                UiGlassKind.MenuTinted,
+                CurrentMenuGlassTint);
+            factory.Heading(
+                panel.transform,
+                textCatalog.Get("ui.graphics.camera"),
+                24f,
+                10f,
+                504f,
+                23);
+            factory.Divider(panel.transform, 24f, 57f, 504f);
+
+            AddRangeSliderRow(
+                panel.transform,
+                "HorizontalFov",
+                textCatalog.Get("ui.graphics.fov"),
+                64f,
+                pending.HorizontalFieldOfViewDegrees,
+                GraphicsSettingsDto.MinimumHorizontalFieldOfViewDegrees,
+                GraphicsSettingsDto.MaximumHorizontalFieldOfViewDegrees,
+                value => settings.EditPending(
+                    document =>
+                        document.Graphics.HorizontalFieldOfViewDegrees =
+                            Mathf.Round(value)),
+                value =>
+                    Mathf.RoundToInt(value).ToString(
+                        CultureInfo.InvariantCulture) + "°",
+                504f);
+            AddRangeSliderRow(
+                panel.transform,
+                "CameraFarClip",
+                textCatalog.Get("ui.graphics.draw_distance"),
+                108f,
+                pending.CameraFarClipMeters,
+                GraphicsSettingsDto.MinimumCameraFarClipMeters,
+                GraphicsSettingsDto.MaximumCameraFarClipMeters,
+                value => settings.EditPending(
+                    document =>
+                        document.Graphics.CameraFarClipMeters =
+                            Mathf.Round(value)),
+                value =>
+                    Mathf.RoundToInt(value).ToString(
+                        CultureInfo.InvariantCulture) + " m",
+                504f);
         }
 
         partial void BuildAudioRoute()
@@ -316,9 +514,49 @@ namespace MSC.UI.Presentation
             factory.Text("SecondaryColumn", bindings.transform, textCatalog.Get("ui.controls.secondary"), 448f, 82f, 160f, 24f, 11, UiThemeTokens.TextMuted, TextAnchor.MiddleCenter, FontStyle.Bold);
 
             List<InputBindingRow> rows = CreateInputBindingRows();
+            const float viewportY = 112f;
+            const float viewportHeight = 603f;
+            const float rowHeight = 38f;
+            GameObject viewport = factory.CreateObject(
+                "BindingViewport",
+                bindings.transform);
+            RectTransform viewportRect = factory.Place(
+                viewport,
+                0f,
+                viewportY,
+                643f,
+                viewportHeight);
+            Image viewportRaycast = viewport.AddComponent<Image>();
+            viewportRaycast.color = new Color(0f, 0f, 0f, 0.001f);
+            viewportRaycast.raycastTarget = true;
+            viewport.AddComponent<RectMask2D>();
+
+            GameObject content = factory.CreateObject(
+                "BindingContent",
+                viewport.transform);
+            RectTransform contentRect = factory.Place(
+                content,
+                0f,
+                0f,
+                643f,
+                Mathf.Max(viewportHeight, rows.Count * rowHeight));
+            ScrollRect scroll = viewport.AddComponent<ScrollRect>();
+            scroll.content = contentRect;
+            scroll.viewport = viewportRect;
+            scroll.horizontal = false;
+            scroll.vertical = true;
+            scroll.movementType = ScrollRect.MovementType.Clamped;
+            scroll.inertia = true;
+            scroll.decelerationRate = 0.135f;
+            scroll.scrollSensitivity = rowHeight;
+            scroll.verticalNormalizedPosition = 1f;
             for (int index = 0; index < rows.Count; index++)
             {
-                BuildInputBindingRow(bindings.transform, rows[index], index, 112f + index * 38f);
+                BuildInputBindingRow(
+                    content.transform,
+                    rows[index],
+                    index,
+                    index * rowHeight);
             }
 
             BuildMouseSettingsCard(route.transform, pending);
@@ -370,6 +608,18 @@ namespace MSC.UI.Presentation
                 textCatalog.Get("ui.common.adapter_pending"),
                 false,
                 null,
+                748f);
+            rowY += 47f;
+
+            AddToggleRow(
+                panel.transform,
+                "ShowFpsCounter",
+                textCatalog.Get("ui.gameplay.fps_counter"),
+                rowY,
+                pending.ShowFpsCounter,
+                value => settings.EditPending(
+                    document =>
+                        document.Gameplay.ShowFpsCounter = value),
                 748f);
             rowY += 47f;
 
@@ -697,7 +947,7 @@ namespace MSC.UI.Presentation
                 rowWidth);
         }
 
-        private void AddRangeSliderRow(
+        private Slider AddRangeSliderRow(
             Transform parent,
             string name,
             string label,
@@ -715,7 +965,7 @@ namespace MSC.UI.Presentation
             factory.Text(name + "Label", parent, label, rowX + 10f, y, rowWidth * 0.46f, 32f, 13, interactable ? UiThemeTokens.TextPrimary : UiThemeTokens.Disabled, TextAnchor.MiddleLeft, FontStyle.Bold);
             Text valueText = factory.Text(name + "Value", parent, format(value), rowX + rowWidth - 64f, y, 54f, 32f, 11, interactable ? UiThemeTokens.TextPrimary : UiThemeTokens.Disabled, TextAnchor.MiddleRight);
             float normalized = Mathf.InverseLerp(minimum, maximum, value);
-            factory.Slider(
+            return factory.Slider(
                 name + "Slider",
                 parent,
                 rowX + rowWidth * 0.49f,
@@ -846,20 +1096,40 @@ namespace MSC.UI.Presentation
         {
             return new List<InputBindingRow>
             {
+                InputBindingRow.Available("ui.controls.move_forward", dependencies.PlayerActions, "c489c841-1492-4add-972b-2bf4a04024b8", "36422f44-d6ee-4824-a2ae-a0a4d87cf2cf", null),
+                InputBindingRow.Available("ui.controls.move_backward", dependencies.PlayerActions, "c489c841-1492-4add-972b-2bf4a04024b8", "434b2dd4-0aa4-4ee2-ac2b-010ffdcddc38", null),
+                InputBindingRow.Available("ui.controls.move_left", dependencies.PlayerActions, "c489c841-1492-4add-972b-2bf4a04024b8", "0f4a48f4-572d-4a40-a67b-635b93fdf253", null),
+                InputBindingRow.Available("ui.controls.move_right", dependencies.PlayerActions, "c489c841-1492-4add-972b-2bf4a04024b8", "8d70ff3c-e9a2-4769-8762-63923f4baacc", null),
+                InputBindingRow.Available("ui.controls.crouch", dependencies.PlayerActions, "65e19a88-fb97-4314-a15d-5f8dd58216cb", "6f3c47bc-fbaa-4c2b-a985-8ac2dcaeea86", "8594b10c-0e9d-4fed-ab32-cf003c308685"),
+                InputBindingRow.Available("ui.controls.run", dependencies.PlayerActions, "74f7e1ca-e27c-4cc7-8e0c-17fdc5a11970", "bc435435-bf1a-4c73-8b25-87c863319c8f", "8f31ae2e-a243-4f55-87e2-54c4a24ec1ed"),
+                InputBindingRow.Available("ui.controls.jump", dependencies.PlayerActions, "884796ac-038a-430f-b96c-b114aa5316cc", "be2828c8-60ec-44b7-ab73-6bcc3c2aa069", "0b96e213-cdfd-4dd7-b41c-834338221d71"),
+                InputBindingRow.Available("ui.controls.zoom", dependencies.PlayerActions, "fa12398a-c937-4f1d-a31a-f02d2782e54f", "5a4dfbb2-9fee-42a6-93b2-f3bc41f08320", "61e8d6d8-264d-4ac2-87bb-a253bf9ff933"),
+                InputBindingRow.Available("ui.controls.forward_lean", dependencies.PlayerActions, "a77f4200-c94b-4d07-b210-101d4e40e8b6", "9e5e827d-af0c-41bd-b64f-e9c8547ff32e", "ab12a25d-4df2-4c53-8aa0-7fd190ec3836"),
+                InputBindingRow.Available("ui.controls.interact", dependencies.PlayerActions, "cf684f16-2e5e-4c3a-a5d7-73ae2cb61914", "9dd4ca49-0bb4-4fca-b1c1-c43e6fa489ea", "c20d80ed-2fb3-4c0e-a524-8349fecad269"),
+                InputBindingRow.Available("ui.controls.throw", dependencies.PlayerActions, "7219cefa-aeba-4689-8d7d-2ca9821d8aef", "cb4ee245-7e85-4dd1-93a8-938fb064928b", "8d71a918-9639-402d-a930-804446fe9017"),
+                InputBindingRow.Available("ui.controls.drop", dependencies.PlayerActions, "11469d83-99b5-4f48-895a-486f10dc6faf", "fe16a5af-f094-48e8-996d-c3e649f48288", null),
+                InputBindingRow.Available("ui.controls.place", dependencies.PlayerActions, "31494268-0f82-4f9b-80d9-2668141f5d8c", "caac4588-d74e-4ee8-be3f-7084c7777712", null),
+                InputBindingRow.Available("ui.controls.rotate_held", dependencies.PlayerActions, "04bf28d7-8fb4-4c63-8984-4935a8f447e4", "64c8816e-6291-474a-868f-9c8f8c0bba53", null),
+                InputBindingRow.Available("ui.controls.tool_activate", dependencies.PlayerActions, "4c69de2d-a0a3-4232-a8ae-ac6a29aa6187", "bb51f205-31c9-443a-97b9-8e764a661ee6", "336d3ba3-b27b-405f-8571-3377d31f610f"),
+                InputBindingRow.Available("ui.controls.urinate", dependencies.PlayerActions, "acbc4019-e313-4ed3-8aae-37b4d7ca15ba", "11a47cb7-6c61-4dad-a897-9493d1984878", "e92b2bfb-6f26-4f3b-a84d-66b651bd4ad4"),
+                InputBindingRow.Available("ui.controls.wave", dependencies.PlayerActions, "0f2edbb8-a029-41b6-8ee3-f469a6803035", "8a47114d-8209-4a5b-8af7-47c799de9306", "5c4656fe-2084-4764-91c1-cf1fbff0307f"),
+                InputBindingRow.Available("ui.controls.middle_finger", dependencies.PlayerActions, "72eab109-6248-4fce-9c5a-646c928f271c", "2029acfe-889e-4532-bd92-ce906b64c56e", "4c2c8cc7-107d-4ffc-a6ba-f829525918d9"),
+                InputBindingRow.Available("ui.controls.swear", dependencies.PlayerActions, "451a19fd-b5cb-4c1b-b8fd-85e386d73b2c", "2afb4162-2d2d-4c49-b758-41ee4ef37457", null),
+                InputBindingRow.Available("ui.controls.pause", dependencies.PlayerActions, "bfc0c808-99f3-46dc-96d6-9475fc19cb55", "aa4ef7e7-4547-4daf-9d75-a6f8dadfa74b", "9c07b5fb-f3d6-4e02-969c-663b269b3702"),
                 InputBindingRow.Available("ui.controls.steer_left", dependencies.VehicleActions, "66bfd821-5205-47af-ad3b-578ae1e93ba2", "2b4f8211-deb2-4f27-bd23-23ab95238cf1", "c219e42d-9e3d-4282-bcb0-8ac45244f7dd"),
                 InputBindingRow.Available("ui.controls.steer_right", dependencies.VehicleActions, "66bfd821-5205-47af-ad3b-578ae1e93ba2", "db12261e-10f5-46f8-b003-45076b736483", "43d60047-3e50-4a90-a082-e9b94740c0aa"),
                 InputBindingRow.Available("ui.controls.throttle", dependencies.VehicleActions, "29de3953-39c3-4528-9da1-5c324cc22c81", "eac5f56e-9c1a-43fb-a47b-fe51456cdb4b", "e232e352-ce5f-4fc0-83a4-e2372695adcd"),
                 InputBindingRow.Available("ui.controls.brake", dependencies.VehicleActions, "9f849c9f-c33c-4973-8181-c758bf841ea3", "16b60199-9620-472c-9f5e-242e39fd9ff8", "cbbbc136-7a4f-452c-bb89-c58cfc28262b"),
-                InputBindingRow.Available("ui.controls.clutch", dependencies.VehicleActions, "e0473ac2-e385-437c-9587-4af8dcff791a", "e91e6daa-3ec6-4cb6-abe9-8f17a5bb611b", null),
-                InputBindingRow.Available("ui.controls.gear_up", dependencies.VehicleActions, "1723286a-a28c-4094-a5ff-a02510b4f6e5", "f895c189-47cd-4892-b705-3bbc66d53b69", null),
-                InputBindingRow.Available("ui.controls.gear_down", dependencies.VehicleActions, "c87b57c5-4dd2-4220-8a31-22b821a14f4e", "8ccb00c8-714b-4d8d-b5e7-14de7fd5ae08", null),
-                InputBindingRow.Available("ui.controls.ignition", dependencies.VehicleActions, "0ded8771-2738-471f-8d69-cfa80d83afa5", "9b1ff1b2-4327-4b5b-88d0-2519d0999d40", null),
+                InputBindingRow.Available("ui.controls.clutch", dependencies.VehicleActions, "e0473ac2-e385-437c-9587-4af8dcff791a", "e91e6daa-3ec6-4cb6-abe9-8f17a5bb611b", "03b4bd18-017a-42db-b35e-6748b8a1d257"),
+                InputBindingRow.Available("ui.controls.gear_up", dependencies.VehicleActions, "1723286a-a28c-4094-a5ff-a02510b4f6e5", "f895c189-47cd-4892-b705-3bbc66d53b69", "fb736234-bfe5-4c27-adf2-2820aa767f58"),
+                InputBindingRow.Available("ui.controls.gear_down", dependencies.VehicleActions, "c87b57c5-4dd2-4220-8a31-22b821a14f4e", "8ccb00c8-714b-4d8d-b5e7-14de7fd5ae08", "ae983dac-f317-49b1-9191-1b70725771fc"),
+                InputBindingRow.Available("ui.controls.ignition", dependencies.VehicleActions, "0ded8771-2738-471f-8d69-cfa80d83afa5", "9b1ff1b2-4327-4b5b-88d0-2519d0999d40", "735e5ea3-24c8-4bc4-9280-9f07219e15d4"),
+                InputBindingRow.Available("ui.controls.starter", dependencies.VehicleActions, "01c1bb31-8d2f-4dfc-94e9-e9c12805483b", "2b31d232-b182-4fd5-92e7-0692ee6a3a8a", "1829259d-5d3c-4008-825d-4894b386dbe3"),
+                InputBindingRow.Available("ui.controls.vehicle_reset", dependencies.VehicleActions, "4117332a-b958-4058-924a-167ce2e44bee", "5733c22b-a332-4121-97a6-1a220719e23a", "fe405d62-2d53-4453-ae7a-4d27bee4d8e3"),
                 InputBindingRow.Missing("ui.controls.handbrake", UiCapabilityId.InputHandbrakeAction),
-                InputBindingRow.Available("ui.controls.interact", dependencies.PlayerActions, "cf684f16-2e5e-4c3a-a5d7-73ae2cb61914", "9dd4ca49-0bb4-4fca-b1c1-c43e6fa489ea", null),
                 InputBindingRow.Missing("ui.controls.inventory", UiCapabilityId.InputInventoryAction),
                 InputBindingRow.Missing("ui.controls.map", UiCapabilityId.InputMapAction),
                 InputBindingRow.Missing("ui.controls.journal", UiCapabilityId.InputJournalAction),
-                InputBindingRow.Available("ui.controls.pause", dependencies.PlayerActions, "bfc0c808-99f3-46dc-96d6-9475fc19cb55", "aa4ef7e7-4547-4daf-9d75-a6f8dadfa74b", null),
             };
         }
 
@@ -1267,6 +1537,112 @@ namespace MSC.UI.Presentation
                     return textCatalog.Get("ui.value.display.exclusive");
                 default:
                     return textCatalog.Get("ui.value.display.borderless");
+            }
+        }
+
+        private string AntiAliasingModeText(UiAntiAliasingMode mode)
+        {
+            switch (mode)
+            {
+                case UiAntiAliasingMode.Fxaa:
+                    return textCatalog.Get("ui.graphics.aa.fxaa");
+                case UiAntiAliasingMode.Smaa:
+                    return textCatalog.Get("ui.graphics.aa.smaa");
+                case UiAntiAliasingMode.Taa:
+                    return textCatalog.Get("ui.graphics.aa.taa");
+                case UiAntiAliasingMode.TemporalUpscaler:
+                    return textCatalog.Get("ui.graphics.dlss");
+                case UiAntiAliasingMode.MaximumQuality:
+                    return textCatalog.Get("ui.graphics.aa.maximum");
+                default:
+                    return textCatalog.Get("ui.common.off");
+            }
+        }
+
+        private string AntiAliasingPresetText(UiAntiAliasingPreset preset)
+        {
+            switch (preset)
+            {
+                case UiAntiAliasingPreset.Low:
+                    return textCatalog.Get("ui.graphics.aa.low");
+                case UiAntiAliasingPreset.Medium:
+                    return textCatalog.Get("ui.graphics.aa.medium");
+                case UiAntiAliasingPreset.Ultra:
+                    return textCatalog.Get("ui.graphics.aa.ultra");
+                case UiAntiAliasingPreset.Custom:
+                    return textCatalog.Get("ui.graphics.aa.custom");
+                default:
+                    return textCatalog.Get("ui.graphics.aa.high");
+            }
+        }
+
+        private static string AntiAliasingSharpeningText(float value)
+        {
+            return Mathf.RoundToInt(value * 100f).ToString(
+                CultureInfo.InvariantCulture) + "%";
+        }
+
+        private static UiAntiAliasingMode StepAntiAliasingMode(
+            UiAntiAliasingMode current,
+            int direction,
+            bool temporalUpscalerSupported)
+        {
+            int count = temporalUpscalerSupported ? 6 : 4;
+            int index = (int)current;
+            if (index < 0 || index >= count)
+            {
+                index = direction >= 0 ? -1 : 0;
+            }
+
+            return (UiAntiAliasingMode)WrapIndex(index + direction, count);
+        }
+
+        private static UiAntiAliasingPreset StepAntiAliasingPreset(
+            UiAntiAliasingPreset current,
+            int direction)
+        {
+            const int authoredPresetCount = 4;
+            int index = (int)current;
+            if (index < 0 || index >= authoredPresetCount)
+            {
+                index = direction >= 0 ? -1 : 0;
+            }
+
+            return (UiAntiAliasingPreset)WrapIndex(
+                index + direction,
+                authoredPresetCount);
+        }
+
+        private static UiDlssQuality StepDlssQuality(
+            UiDlssQuality current,
+            int direction)
+        {
+            const int selectableQualityCount = 4;
+            int index = (int)current;
+            if (index < 0 || index >= selectableQualityCount)
+            {
+                index = direction >= 0 ? -1 : 0;
+            }
+
+            return (UiDlssQuality)WrapIndex(
+                index + direction,
+                selectableQualityCount);
+        }
+
+        private string DlssQualityText(UiDlssQuality quality)
+        {
+            switch (quality)
+            {
+                case UiDlssQuality.Quality:
+                    return textCatalog.Get("ui.graphics.dlss.quality");
+                case UiDlssQuality.Performance:
+                    return textCatalog.Get("ui.graphics.dlss.performance");
+                case UiDlssQuality.UltraPerformance:
+                    return textCatalog.Get("ui.graphics.dlss.ultra_performance");
+                case UiDlssQuality.Dlaa:
+                    return textCatalog.Get("ui.graphics.dlss.dlaa");
+                default:
+                    return textCatalog.Get("ui.graphics.dlss.balanced");
             }
         }
 

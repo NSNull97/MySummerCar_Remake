@@ -3,6 +3,8 @@
   "rootNamespace": "MSC.Tests.EditMode.AudioRuntime",
   "references": [
     "MSC.Audio.Runtime",
+    "MSC.Audio.Composition",
+    "MSC.Audio.UnityFallback",
     "MSC.Core.Runtime"
   ],
   "includePlatforms": [

@@ -1,0 +1,19 @@
+{
+  "name": "MSC.Presentation.InteractionOutline.EPO",
+  "rootNamespace": "MSC.Presentation.InteractionOutline.EPO",
+  "references": [
+    "MSC.Player.Runtime",
+    "EPO.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "HDRP_OUTLINE"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

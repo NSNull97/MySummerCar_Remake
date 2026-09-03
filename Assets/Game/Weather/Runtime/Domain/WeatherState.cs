@@ -31,6 +31,89 @@ namespace MSC.Weather.Domain
             float lightningIntensity01,
             float wetnessInput01,
             float dryingModifier)
+            : this(
+                id,
+                presentationBindingId,
+                cloudCoverage01,
+                precipitationType,
+                precipitationIntensity01,
+                fogIntensity01,
+                visibilityMeters,
+                windDirectionDegrees,
+                windSpeedMetersPerSecond,
+                windGust01,
+                temperatureCelsius,
+                ambientReadability01,
+                lightningRisk01,
+                lightningIntensity01,
+                wetnessInput01,
+                dryingModifier,
+                Math.Min(1f, Math.Max(
+                    cloudCoverage01 * 0.8f,
+                    precipitationIntensity01)),
+                false)
+        {
+        }
+
+        public WeatherState(
+            WeatherStateId id,
+            string presentationBindingId,
+            float cloudCoverage01,
+            WeatherPrecipitationType precipitationType,
+            float precipitationIntensity01,
+            float fogIntensity01,
+            float visibilityMeters,
+            float windDirectionDegrees,
+            float windSpeedMetersPerSecond,
+            float windGust01,
+            float temperatureCelsius,
+            float ambientReadability01,
+            float lightningRisk01,
+            float lightningIntensity01,
+            float wetnessInput01,
+            float dryingModifier,
+            float humidity01)
+            : this(
+                id,
+                presentationBindingId,
+                cloudCoverage01,
+                precipitationType,
+                precipitationIntensity01,
+                fogIntensity01,
+                visibilityMeters,
+                windDirectionDegrees,
+                windSpeedMetersPerSecond,
+                windGust01,
+                temperatureCelsius,
+                ambientReadability01,
+                lightningRisk01,
+                lightningIntensity01,
+                wetnessInput01,
+                dryingModifier,
+                humidity01,
+                true)
+        {
+        }
+
+        private WeatherState(
+            WeatherStateId id,
+            string presentationBindingId,
+            float cloudCoverage01,
+            WeatherPrecipitationType precipitationType,
+            float precipitationIntensity01,
+            float fogIntensity01,
+            float visibilityMeters,
+            float windDirectionDegrees,
+            float windSpeedMetersPerSecond,
+            float windGust01,
+            float temperatureCelsius,
+            float ambientReadability01,
+            float lightningRisk01,
+            float lightningIntensity01,
+            float wetnessInput01,
+            float dryingModifier,
+            float humidity01,
+            bool humidityIsAuthored)
         {
             if (id.IsEmpty)
             {
@@ -55,6 +138,7 @@ namespace MSC.Weather.Domain
             Validate01(lightningIntensity01, nameof(lightningIntensity01));
             Validate01(wetnessInput01, nameof(wetnessInput01));
             ValidateFiniteNonNegative(dryingModifier, nameof(dryingModifier));
+            Validate01(humidity01, nameof(humidity01));
 
             if (precipitationType == WeatherPrecipitationType.None && precipitationIntensity01 > 0f)
             {
@@ -77,6 +161,8 @@ namespace MSC.Weather.Domain
             LightningIntensity01 = lightningIntensity01;
             WetnessInput01 = wetnessInput01;
             DryingModifier = dryingModifier;
+            Humidity01 = humidity01;
+            HumidityIsAuthored = humidityIsAuthored;
         }
 
         public WeatherStateId Id { get; }
@@ -110,6 +196,10 @@ namespace MSC.Weather.Domain
         public float WetnessInput01 { get; }
 
         public float DryingModifier { get; }
+
+        public float Humidity01 { get; }
+
+        public bool HumidityIsAuthored { get; }
 
         public static WeatherState Lerp(in WeatherState from, in WeatherState to, float progress01)
         {
@@ -155,7 +245,9 @@ namespace MSC.Weather.Domain
                 LerpValue(from.LightningRisk01, to.LightningRisk01, progress01),
                 LerpValue(from.LightningIntensity01, to.LightningIntensity01, progress01),
                 LerpValue(from.WetnessInput01, to.WetnessInput01, progress01),
-                LerpValue(from.DryingModifier, to.DryingModifier, progress01));
+                LerpValue(from.DryingModifier, to.DryingModifier, progress01),
+                LerpValue(from.Humidity01, to.Humidity01, progress01),
+                from.HumidityIsAuthored && to.HumidityIsAuthored);
         }
 
         public bool Equals(WeatherState other) =>
@@ -174,7 +266,9 @@ namespace MSC.Weather.Domain
             LightningRisk01.Equals(other.LightningRisk01) &&
             LightningIntensity01.Equals(other.LightningIntensity01) &&
             WetnessInput01.Equals(other.WetnessInput01) &&
-            DryingModifier.Equals(other.DryingModifier);
+            DryingModifier.Equals(other.DryingModifier) &&
+            Humidity01.Equals(other.Humidity01) &&
+            HumidityIsAuthored == other.HumidityIsAuthored;
 
         public override bool Equals(object obj) => obj is WeatherState other && Equals(other);
 
@@ -192,6 +286,8 @@ namespace MSC.Weather.Domain
                 hash = (hash * 397) ^ WindDirectionDegrees.GetHashCode();
                 hash = (hash * 397) ^ WindSpeedMetersPerSecond.GetHashCode();
                 hash = (hash * 397) ^ WindGust01.GetHashCode();
+                hash = (hash * 397) ^ Humidity01.GetHashCode();
+                hash = (hash * 397) ^ HumidityIsAuthored.GetHashCode();
                 return hash;
             }
         }

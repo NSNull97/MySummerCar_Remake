@@ -8,6 +8,7 @@
     "MSC.Audio.WeatherIntegration",
     "MSC.Audio.InteractionIntegration",
     "MSC.Interaction.Runtime",
+    "MSC.Weather.Runtime",
     "MSC.Weather.Production.Runtime"
   ],
   "includePlatforms": [],

@@ -1,0 +1,360 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5933830f0e68ed3448a509cc6aacfb05, type: 3}
+  m_Name: Phase1WorldLightingBindings
+  m_EditorClassIdentifier: MSC.Lighting.ProductionIntegration.Runtime::MSC.Lighting.Production.WorldLightingBindingCatalog
+  catalogId: lighting.world-bindings.phase1.v1
+  sourceCatalog: {fileID: 11400000, guid: ce338940af2318a4eba35a094a0f7b2c, type: 2}
+  bindings:
+  - worldLightId: world.light.0c5d200c7e7bdd606de1b7377d26774f
+    category: 1
+    powerSourceId: source.grid.main
+    circuitId: grid.building.general
+    switchId: 
+    zoneId: zone.interior.other
+    businessId: 
+  - worldLightId: world.light.11bdedc2424f0be3b5605604f147f975
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.141ca6c62d6a240aa5b300f0afab5132
+    category: 3
+    powerSourceId: source.grid.main
+    circuitId: grid.teimo.shop
+    switchId: 
+    zoneId: zone.teimo.shop
+    businessId: service.teimo.shop
+  - worldLightId: world.light.24717fb58a717fdddb2eb49caa4b9033
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.29a30f4762c2e56b22c91263035533f4
+    category: 2
+    powerSourceId: source.grid.main
+    circuitId: grid.building.fluorescent
+    switchId: 
+    zoneId: zone.interior.other
+    businessId: 
+  - worldLightId: world.light.2ba413fd667b5d7d78eb69c64da0e1a2
+    category: 3
+    powerSourceId: source.grid.main
+    circuitId: grid.teimo.shop
+    switchId: 
+    zoneId: zone.teimo.shop
+    businessId: service.teimo.shop
+  - worldLightId: world.light.31cdabdbad11b49e170bdfe1603c063e
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.44779c4c4e4cb4dabce3dbc5e862e68c
+    category: 0
+    powerSourceId: source.grid.main
+    circuitId: grid.home.hallway
+    switchId: switch.home.hallway
+    zoneId: zone.home.hallway
+    businessId: 
+  - worldLightId: world.light.450510e720a076d53aeb44a05dd6480d
+    category: 0
+    powerSourceId: source.grid.main
+    circuitId: grid.home.bedroom-parents
+    switchId: switch.home.bedroom-parents
+    zoneId: zone.home.bedroom-parents
+    businessId: 
+  - worldLightId: world.light.4b838825763b9266233ff52963a2d792
+    category: 0
+    powerSourceId: source.grid.main
+    circuitId: grid.home.toilet
+    switchId: switch.home.toilet
+    zoneId: zone.home.toilet
+    businessId: 
+  - worldLightId: world.light.4f6ac2527ef70e970cb89ef70baaefa9
+    category: 2
+    powerSourceId: source.grid.main
+    circuitId: grid.home.garage
+    switchId: switch.home.garage
+    zoneId: zone.home.garage
+    businessId: 
+  - worldLightId: world.light.501e356e7b562a6d2e32ab24bfee8504
+    category: 3
+    powerSourceId: source.grid.main
+    circuitId: grid.teimo.shop
+    switchId: 
+    zoneId: zone.teimo.shop
+    businessId: service.teimo.shop
+  - worldLightId: world.light.5321706220112780baeed0bbe56912b3
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.544629484281dd807323b76f7ff61558
+    category: 2
+    powerSourceId: source.grid.main
+    circuitId: grid.building.fluorescent
+    switchId: 
+    zoneId: zone.interior.other
+    businessId: 
+  - worldLightId: world.light.5ce3d5eaac2ef08c92a2033c7691107c
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.66481b9e0a97c74cd440dc9268ca28fe
+    category: 2
+    powerSourceId: source.grid.main
+    circuitId: grid.building.fluorescent
+    switchId: 
+    zoneId: zone.interior.other
+    businessId: 
+  - worldLightId: world.light.6a07d52868491a36248ac5e51ecd81d2
+    category: 0
+    powerSourceId: source.grid.main
+    circuitId: grid.home.bathroom
+    switchId: switch.home.bathroom
+    zoneId: zone.home.bathroom
+    businessId: 
+  - worldLightId: world.light.6ec5b3ebe08e5c321e68a7d649fa2d83
+    category: 0
+    powerSourceId: source.grid.main
+    circuitId: grid.home.bedroom-boy
+    switchId: switch.home.bedroom-boy
+    zoneId: zone.home.bedroom-boy
+    businessId: 
+  - worldLightId: world.light.770b22bf8eb3d0bfeacfede083978dca
+    category: 0
+    powerSourceId: source.grid.main
+    circuitId: grid.home.living-room
+    switchId: switch.home.living-room
+    zoneId: zone.home.living-room
+    businessId: 
+  - worldLightId: world.light.78aeb3c71258a73257d315d8e8eeb0ed
+    category: 0
+    powerSourceId: source.grid.main
+    circuitId: grid.home.kitchen
+    switchId: switch.home.kitchen
+    zoneId: zone.home.kitchen
+    businessId: 
+  - worldLightId: world.light.7a9101fe7095437edc6457801233c5ab
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.8946ab55e770546f2c76e72945c54f24
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.8b9d6187517e7976053089bbe5a0a94b
+    category: 2
+    powerSourceId: source.grid.main
+    circuitId: grid.building.fluorescent
+    switchId: 
+    zoneId: zone.interior.other
+    businessId: 
+  - worldLightId: world.light.ae56ee210c250c8df284e03e0ea23dfa
+    category: 1
+    powerSourceId: source.grid.main
+    circuitId: grid.building.general
+    switchId: 
+    zoneId: zone.interior.other
+    businessId: 
+  - worldLightId: world.light.af84f12a8ef6685a1dc382011c75dc65
+    category: 5
+    powerSourceId: source.grid.main
+    circuitId: grid.fleetari.workshop
+    switchId: 
+    zoneId: zone.fleetari.workshop
+    businessId: service.fleetari.workshop
+  - worldLightId: world.light.b0651cf48bfe7aab01faf087e8addd58
+    category: 3
+    powerSourceId: source.grid.main
+    circuitId: grid.teimo.shop
+    switchId: 
+    zoneId: zone.teimo.shop
+    businessId: service.teimo.shop
+  - worldLightId: world.light.b1b4fc61eeb2ced6dd35bce14055a082
+    category: 2
+    powerSourceId: source.grid.main
+    circuitId: grid.building.fluorescent
+    switchId: 
+    zoneId: zone.interior.other
+    businessId: 
+  - worldLightId: world.light.ba653c2356f3c338bf05d8fe6a63d4e8
+    category: 4
+    powerSourceId: source.grid.main
+    circuitId: grid.teimo.pub
+    switchId: 
+    zoneId: zone.teimo.pub
+    businessId: service.teimo.pub
+  - worldLightId: world.light.babe31b77f1e3a06de0caa90083cec81
+    category: 0
+    powerSourceId: source.grid.main
+    circuitId: grid.home.hallway
+    switchId: switch.home.hallway
+    zoneId: zone.home.hallway
+    businessId: 
+  - worldLightId: world.light.beac8b7c6343d893e73426ec32171eae
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.c5a83cc2525c48b5e7231ff5f294cfce
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.c72a32fd19487593b4042d11cf7c384b
+    category: 3
+    powerSourceId: source.grid.main
+    circuitId: grid.teimo.shop
+    switchId: 
+    zoneId: zone.teimo.shop
+    businessId: service.teimo.shop
+  - worldLightId: world.light.c9de305e5deaa8ddf5633da63d994c35
+    category: 2
+    powerSourceId: source.grid.main
+    circuitId: grid.building.fluorescent
+    switchId: 
+    zoneId: zone.interior.other
+    businessId: 
+  - worldLightId: world.light.c9e1e7aaee49435390a6d89a79970856
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.cbf1b6cb6074e84c3c2cc8042b8d3e44
+    category: 2
+    powerSourceId: source.grid.main
+    circuitId: grid.home.garage
+    switchId: switch.home.garage
+    zoneId: zone.home.garage
+    businessId: 
+  - worldLightId: world.light.ccde60f217041c95bee78f676be4eaa6
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.cda8c8cbd2913a9f16e802515f9b230d
+    category: 2
+    powerSourceId: source.grid.main
+    circuitId: grid.home.garage
+    switchId: switch.home.garage
+    zoneId: zone.home.garage
+    businessId: 
+  - worldLightId: world.light.d47572b57298d90c2aa5f707fc5519ff
+    category: 0
+    powerSourceId: source.grid.main
+    circuitId: grid.home.bathroom
+    switchId: switch.home.bathroom
+    zoneId: zone.home.bathroom
+    businessId: 
+  - worldLightId: world.light.d76c0bb63327c058f2b82bc57a699d02
+    category: 22
+    powerSourceId: source.grid.main
+    circuitId: grid.home.garage
+    switchId: switch.home.garage
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.daa0926d1766b35f989095845c1ccbab
+    category: 0
+    powerSourceId: source.grid.main
+    circuitId: grid.home.hallway
+    switchId: switch.home.hallway
+    zoneId: zone.home.hallway
+    businessId: 
+  - worldLightId: world.light.e4fc3a22439b2788e280404f1d96e3d6
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.e9781230cb8afb3af379db626ff4bc32
+    category: 5
+    powerSourceId: source.grid.main
+    circuitId: grid.fleetari.workshop
+    switchId: 
+    zoneId: zone.fleetari.workshop
+    businessId: service.fleetari.workshop
+  - worldLightId: world.light.efb621bf1eae6692037c8d84050aae60
+    category: 1
+    powerSourceId: source.grid.main
+    circuitId: grid.building.general
+    switchId: 
+    zoneId: zone.interior.other
+    businessId: 
+  - worldLightId: world.light.f4fa0862592f9c9059b4e9aa2635ea35
+    category: 2
+    powerSourceId: source.grid.main
+    circuitId: grid.building.fluorescent
+    switchId: 
+    zoneId: zone.interior.other
+    businessId: 
+  - worldLightId: world.light.f60f2a16cce7e3370ec4188973da0f51
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.f8401d3d3a1a46de1551e653cb7184e5
+    category: 6
+    powerSourceId: source.grid.main
+    circuitId: grid.street.public
+    switchId: 
+    zoneId: zone.exterior
+    businessId: 
+  - worldLightId: world.light.teimo.shop.refrigerator.01
+    category: 21
+    powerSourceId: source.grid.main
+    circuitId: grid.teimo.refrigeration
+    switchId: 
+    zoneId: zone.teimo.shop
+    businessId: service.teimo.shop
+  - worldLightId: world.light.teimo.shop.refrigerator.02
+    category: 21
+    powerSourceId: source.grid.main
+    circuitId: grid.teimo.refrigeration
+    switchId: 
+    zoneId: zone.teimo.shop
+    businessId: service.teimo.shop
+  - worldLightId: world.light.teimo.shop.refrigerator.03
+    category: 21
+    powerSourceId: source.grid.main
+    circuitId: grid.teimo.refrigeration
+    switchId: 
+    zoneId: zone.teimo.shop
+    businessId: service.teimo.shop

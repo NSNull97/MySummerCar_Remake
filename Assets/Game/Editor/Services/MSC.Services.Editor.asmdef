@@ -1,0 +1,19 @@
+{
+  "name": "MSC.Services.Editor",
+  "rootNamespace": "MSC.Editor.Services",
+  "references": [
+    "MSC.Bootstrap.Runtime",
+    "MSC.Economy.Runtime",
+    "MSC.Items.Runtime",
+    "MSC.Services.Runtime"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -9,8 +9,9 @@ namespace MSC.Core.Time
     }
 
     /// <summary>
-    /// Immutable time-domain configuration. The built-in defaults are explicitly
-    /// remake design targets because donor timing evidence is currently missing.
+    /// Immutable time-domain configuration. The built-in composite remains a
+    /// remake design target because sunrise/sunset policy is project-owned,
+    /// while its day-length field is now tied to measured donor Clock evidence.
     /// </summary>
     public sealed class GameTimeConfig
     {
@@ -24,7 +25,9 @@ namespace MSC.Core.Time
             "time.remake-default.v1",
             new GameDate(1995, 8, 1),
             12d * 60d * 60d,
-            dayLengthSimulationSeconds: 1_200d,
+            // Donor SUN/Clock FSM evidence: MinutesAdd = 0.2 per real
+            // second, therefore one 24-hour day takes 7,200 real seconds.
+            dayLengthSimulationSeconds: 7_200d,
             defaultTimeScale: 1d,
             sunriseNormalized01: 0.25d,
             sunsetNormalized01: 0.875d,

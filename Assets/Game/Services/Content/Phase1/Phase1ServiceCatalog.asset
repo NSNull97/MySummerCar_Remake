@@ -1,0 +1,1630 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e017b029c081a745be55799175949e4, type: 3}
+  m_Name: Phase1ServiceCatalog
+  m_EditorClassIdentifier: MSC.Services.Runtime::MSC.Services.ServiceCatalog
+  catalogId: catalog.services.phase1.12a-s1.v1
+  donorSceneSha256: c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4
+  locations:
+  - locationId: service.location.teimo-store
+    displayName: Teimo's shop
+    sourceStableId: service.source.store.teimo
+    kind: 0
+    interactionAnchorId: service.anchor.store.teimo.register
+    handoffAnchorId: service.anchor.store.teimo.bag
+    worldPosition: {x: -1381.5675, y: 6.573, z: 141.6774}
+    handoffWorldPosition: {x: -1381.072, y: 6.6149993, z: 142.13538}
+    availability:
+    - dayMask: 126
+      startMinute: 600
+      endMinute: 1200
+  - locationId: service.location.teimo-pub
+    displayName: Teimo's pub
+    sourceStableId: service.source.pub.teimo
+    kind: 1
+    interactionAnchorId: service.anchor.pub.teimo.order
+    handoffAnchorId: service.anchor.pub.teimo.counter
+    worldPosition: {x: -1376.1135, y: 6.573, z: 145.17139}
+    handoffWorldPosition: {x: -1375.6228, y: 6.333628, z: 145.78503}
+    availability:
+    - dayMask: 126
+      startMinute: 1200
+      endMinute: 120
+  - locationId: service.location.teimo-fuel
+    displayName: Teimo gasoline 98 pump
+    sourceStableId: service.source.fuel.teimo.gasoline98
+    kind: 2
+    interactionAnchorId: service.anchor.fuel.teimo.gasoline98
+    handoffAnchorId: service.anchor.fuel.teimo.checkout
+    worldPosition: {x: -1389.9272, y: 5.745, z: 138.3104}
+    handoffWorldPosition: {x: -1389.9272, y: 5.745, z: 138.3104}
+    availability:
+    - dayMask: 126
+      startMinute: 600
+      endMinute: 1200
+  - locationId: service.location.teimo-fuel-diesel
+    displayName: Teimo diesel pump
+    sourceStableId: service.source.fuel.teimo.diesel
+    kind: 2
+    interactionAnchorId: service.anchor.fuel.teimo.diesel
+    handoffAnchorId: service.anchor.fuel.teimo.checkout
+    worldPosition: {x: -1391.6022, y: 5.745, z: 137.2173}
+    handoffWorldPosition: {x: -1391.6022, y: 5.745, z: 137.2173}
+    availability:
+    - dayMask: 126
+      startMinute: 600
+      endMinute: 1200
+  - locationId: service.location.teimo-fuel-oil
+    displayName: Teimo fuel oil pump
+    sourceStableId: service.source.fuel.teimo.fuel-oil
+    kind: 2
+    interactionAnchorId: service.anchor.fuel.teimo.fuel-oil
+    handoffAnchorId: service.anchor.fuel.teimo.checkout
+    worldPosition: {x: -1404.1373, y: 5.889, z: 138.3541}
+    handoffWorldPosition: {x: -1404.1373, y: 5.889, z: 138.3541}
+    availability:
+    - dayMask: 126
+      startMinute: 600
+      endMinute: 1200
+  - locationId: service.location.workshop.fleetari
+    displayName: Fleetari workshop
+    sourceStableId: service.source.workshop.fleetari
+    kind: 3
+    interactionAnchorId: service.anchor.workshop.fleetari.interaction
+    handoffAnchorId: service.anchor.workshop.fleetari.handoff
+    worldPosition: {x: 1725.0482, y: 6.3119974, z: -301.45422}
+    handoffWorldPosition: {x: 1725.0482, y: 6.3119974, z: -301.45422}
+    availability:
+    - dayMask: 62
+      startMinute: 480
+      endMinute: 960
+  - locationId: service.location.inspection-station
+    displayName: Vehicle inspection station
+    sourceStableId: character.inspection-officer
+    kind: 4
+    interactionAnchorId: anchor.service.inspection.order
+    handoffAnchorId: anchor.service.inspection.receipt
+    worldPosition: {x: -1358.9536, y: 5.872081, z: 221.32805}
+    handoffWorldPosition: {x: -1358.6306, y: 5.652081, z: 221.40005}
+    availability:
+    - dayMask: 62
+      startMinute: 480
+      endMinute: 960
+  offers:
+  - offerId: service.store.juice
+    locationId: service.location.teimo-store
+    displayName: Juice concentrate
+    kind: 0
+    priceId: price.store.juice
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.juice-concentrate
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 6
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.yeast
+    locationId: service.location.teimo-store
+    displayName: Yeast
+    kind: 0
+    priceId: price.store.yeast
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.yeast
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 8
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.sugar
+    locationId: service.location.teimo-store
+    displayName: Sugar
+    kind: 0
+    priceId: price.store.sugar
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.sugar
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 9
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.coffee
+    locationId: service.location.teimo-store
+    displayName: Coffee
+    kind: 0
+    priceId: price.store.coffee
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.coffee-package
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 9
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.chips
+    locationId: service.location.teimo-store
+    displayName: Potato chips
+    kind: 0
+    priceId: price.store.chips
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.potato-chips
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 8
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.sausages
+    locationId: service.location.teimo-store
+    displayName: Sausages
+    kind: 0
+    priceId: price.store.sausages
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.sausages-package
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 12
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.beer
+    locationId: service.location.teimo-store
+    displayName: Beer case
+    kind: 0
+    priceId: price.store.beer
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.beer-case
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 5
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.milk
+    locationId: service.location.teimo-store
+    displayName: Milk
+    kind: 0
+    priceId: price.store.milk
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.milk
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 8
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.macaron-box
+    locationId: service.location.teimo-store
+    displayName: Macaroni box
+    kind: 0
+    priceId: price.store.macaron-box
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.macaroni-box
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 8
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.pizza
+    locationId: service.location.teimo-store
+    displayName: Pizza
+    kind: 0
+    priceId: price.store.pizza
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.pizza
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 6
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.mosquito-spray
+    locationId: service.location.teimo-store
+    displayName: Mosquito spray
+    kind: 0
+    priceId: price.store.mosquito-spray
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.mosquito-spray
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 6
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.two-stroke
+    locationId: service.location.teimo-store
+    displayName: Two-stroke oil
+    kind: 0
+    priceId: price.store.two-stroke
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.two-stroke-oil
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 5
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.motor-oil
+    locationId: service.location.teimo-store
+    displayName: Motor oil
+    kind: 0
+    priceId: price.store.motor-oil
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.motor-oil
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 5
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.coolant
+    locationId: service.location.teimo-store
+    displayName: Coolant
+    kind: 0
+    priceId: price.store.coolant
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.coolant
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 4
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.fanbelt
+    locationId: service.location.teimo-store
+    displayName: Alternator belt
+    kind: 0
+    priceId: price.store.fanbelt
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.alternator-belt
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.car-battery
+    locationId: service.location.teimo-store
+    displayName: Car battery
+    kind: 0
+    priceId: price.store.car-battery
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.car-battery
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 4
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.brake-fluid
+    locationId: service.location.teimo-store
+    displayName: Brake fluid
+    kind: 0
+    priceId: price.store.brake-fluid
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.brake-fluid
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 5
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.extinguisher
+    locationId: service.location.teimo-store
+    displayName: Fire extinguisher
+    kind: 0
+    priceId: price.store.extinguisher
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.fire-extinguisher
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.cigarettes
+    locationId: service.location.teimo-store
+    displayName: Cigarettes
+    kind: 0
+    priceId: price.store.cigarettes
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.cigarettes
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 9
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.oilfilter
+    locationId: service.location.teimo-store
+    displayName: Oil filter
+    kind: 0
+    priceId: price.store.oilfilter
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.oil-filter
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 4
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.charcoal
+    locationId: service.location.teimo-store
+    displayName: Charcoal
+    kind: 0
+    priceId: price.store.charcoal
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.charcoal
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 4
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.sparkplugs
+    locationId: service.location.teimo-store
+    displayName: Spark plugs
+    kind: 0
+    priceId: price.store.sparkplugs
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.sparkplug-box
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 5
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.spray-matte01
+    locationId: service.location.teimo-store
+    displayName: Matte spray paint
+    kind: 0
+    priceId: price.store.spray-matte01
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.spray-paint-variants
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.spray01
+    locationId: service.location.teimo-store
+    displayName: Spray paint 01
+    kind: 0
+    priceId: price.store.spray01
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.spray-paint-variants
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 1
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.spray02
+    locationId: service.location.teimo-store
+    displayName: Spray paint 02
+    kind: 0
+    priceId: price.store.spray02
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.spray-paint-variants
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 2
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.spray03
+    locationId: service.location.teimo-store
+    displayName: Spray paint 03
+    kind: 0
+    priceId: price.store.spray03
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.spray-paint-variants
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 3
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.spray04
+    locationId: service.location.teimo-store
+    displayName: Spray paint 04
+    kind: 0
+    priceId: price.store.spray04
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.spray-paint-variants
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 4
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.spray05
+    locationId: service.location.teimo-store
+    displayName: Spray paint 05
+    kind: 0
+    priceId: price.store.spray05
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.spray-paint-variants
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 5
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.spray06
+    locationId: service.location.teimo-store
+    displayName: Spray paint 06
+    kind: 0
+    priceId: price.store.spray06
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.spray-paint-variants
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 6
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.spray07
+    locationId: service.location.teimo-store
+    displayName: Spray paint 07
+    kind: 0
+    priceId: price.store.spray07
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.spray-paint-variants
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 7
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.spray08
+    locationId: service.location.teimo-store
+    displayName: Spray paint 08
+    kind: 0
+    priceId: price.store.spray08
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.spray-paint-variants
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 8
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.spray09
+    locationId: service.location.teimo-store
+    displayName: Spray paint 09
+    kind: 0
+    priceId: price.store.spray09
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.spray-paint-variants
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 9
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.spray10
+    locationId: service.location.teimo-store
+    displayName: Spray paint 10
+    kind: 0
+    priceId: price.store.spray10
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.spray-paint-variants
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 10
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.spray11
+    locationId: service.location.teimo-store
+    displayName: Spray paint 11
+    kind: 0
+    priceId: price.store.spray11
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.spray-paint-variants
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 11
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.spray12
+    locationId: service.location.teimo-store
+    displayName: Spray paint 12
+    kind: 0
+    priceId: price.store.spray12
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.spray-paint-variants
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 12
+    quantityPerUnit: 1
+    stockCapacity: 3
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.lightbulb
+    locationId: service.location.teimo-store
+    displayName: Lightbulb box
+    kind: 0
+    priceId: price.store.lightbulb
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.lightbulb-box
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 4
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.fuse-package
+    locationId: service.location.teimo-store
+    displayName: Fuse package
+    kind: 0
+    priceId: price.store.fuse-package
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.fuse-package
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 5
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.r20-battery-box
+    locationId: service.location.teimo-store
+    displayName: R20 battery box
+    kind: 0
+    priceId: price.store.r20-battery-box
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.r20-battery
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 5
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-buttermilk
+    locationId: service.location.teimo-store
+    displayName: Buttermilk
+    kind: 0
+    priceId: price.store.expanded-shop-buttermilk
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.buttermilk
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 25
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-orange-juice
+    locationId: service.location.teimo-store
+    displayName: Orange juice
+    kind: 0
+    priceId: price.store.expanded-shop-orange-juice
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.orange-juice
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 11
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-bug-spray
+    locationId: service.location.teimo-store
+    displayName: Bug spray
+    kind: 0
+    priceId: price.store.expanded-shop-bug-spray
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.bug-spray
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 8
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-laundry-detergent
+    locationId: service.location.teimo-store
+    displayName: Laundry detergent
+    kind: 0
+    priceId: price.store.expanded-shop-laundry-detergent
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.laundry-detergent
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 5
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-sponge
+    locationId: service.location.teimo-store
+    displayName: Sponge
+    kind: 0
+    priceId: price.store.expanded-shop-sponge
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.sponge
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 9
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-shampoo
+    locationId: service.location.teimo-store
+    displayName: Shampoo
+    kind: 0
+    priceId: price.store.expanded-shop-shampoo
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.shampoo
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 6
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-hand-soap
+    locationId: service.location.teimo-store
+    displayName: Hand soap
+    kind: 0
+    priceId: price.store.expanded-shop-hand-soap
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.hand-soap
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 6
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-dish-soap
+    locationId: service.location.teimo-store
+    displayName: Dish soap
+    kind: 0
+    priceId: price.store.expanded-shop-dish-soap
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.dish-soap
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 7
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-soap
+    locationId: service.location.teimo-store
+    displayName: Soap
+    kind: 0
+    priceId: price.store.expanded-shop-soap
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.soap
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 9
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-wheat-flour
+    locationId: service.location.teimo-store
+    displayName: Wheat flour
+    kind: 0
+    priceId: price.store.expanded-shop-wheat-flour
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.wheat-flour
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 10
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-rye-flour
+    locationId: service.location.teimo-store
+    displayName: Rye flour
+    kind: 0
+    priceId: price.store.expanded-shop-rye-flour
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.rye-flour
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 9
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-mustard
+    locationId: service.location.teimo-store
+    displayName: Mustard
+    kind: 0
+    priceId: price.store.expanded-shop-mustard
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.mustard
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 8
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-ketchup
+    locationId: service.location.teimo-store
+    displayName: Ketchup
+    kind: 0
+    priceId: price.store.expanded-shop-ketchup
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.ketchup
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 11
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-meat-soup
+    locationId: service.location.teimo-store
+    displayName: Meat soup
+    kind: 0
+    priceId: price.store.expanded-shop-meat-soup
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.meat-soup
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 8
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-pea-soup
+    locationId: service.location.teimo-store
+    displayName: Pea soup
+    kind: 0
+    priceId: price.store.expanded-shop-pea-soup
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.pea-soup
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 15
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-canned-meatballs
+    locationId: service.location.teimo-store
+    displayName: Canned meatballs
+    kind: 0
+    priceId: price.store.expanded-shop-canned-meatballs
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.canned-meatballs
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 14
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-sausage
+    locationId: service.location.teimo-store
+    displayName: Sausage
+    kind: 0
+    priceId: price.store.expanded-shop-sausage
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.loose-sausage
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 4
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-fishstick-box
+    locationId: service.location.teimo-store
+    displayName: Fishstick box
+    kind: 0
+    priceId: price.store.expanded-shop-fishstick-box
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.fishstick-box
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 39
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.expanded-shop-can-opener
+    locationId: service.location.teimo-store
+    displayName: Can opener
+    kind: 0
+    priceId: price.store.expanded-shop-can-opener
+    basePriceMinorUnits: 0
+    itemDefinitionId: item.can-opener
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 1
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.store.suomi-dashboard-cover
+    locationId: service.location.teimo-store
+    displayName: SUOMI dashboard cover
+    kind: 0
+    priceId: 
+    basePriceMinorUnits: 29900
+    itemDefinitionId: 
+    effectId: effect.service.store.suomi-dashboard-cover.deferred
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 1
+    restockDayOfWeek: 4
+    restockable: 0
+    fuelGrade: 0
+  - offerId: service.store.suomi-seat-cover
+    locationId: service.location.teimo-store
+    displayName: SUOMI seat cover
+    kind: 0
+    priceId: 
+    basePriceMinorUnits: 16900
+    itemDefinitionId: 
+    effectId: effect.service.store.suomi-seat-cover.deferred
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 1
+    restockDayOfWeek: 4
+    restockable: 0
+    fuelGrade: 0
+  - offerId: service.store.suomi-steering-wheel-cover
+    locationId: service.location.teimo-store
+    displayName: SUOMI steering wheel cover
+    kind: 0
+    priceId: 
+    basePriceMinorUnits: 7900
+    itemDefinitionId: 
+    effectId: effect.service.store.suomi-steering-wheel-cover.deferred
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 1
+    restockDayOfWeek: 4
+    restockable: 0
+    fuelGrade: 0
+  - offerId: service.pub.beer
+    locationId: service.location.teimo-pub
+    displayName: Beer
+    kind: 1
+    priceId: 
+    basePriceMinorUnits: 800
+    itemDefinitionId: item.beer-bottle
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.pub.vodka-shot
+    locationId: service.location.teimo-pub
+    displayName: Vodka shot
+    kind: 1
+    priceId: 
+    basePriceMinorUnits: 3000
+    itemDefinitionId: 
+    effectId: effect.service.pub.vodka-shot.deferred
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.pub.sausage-and-fries
+    locationId: service.location.teimo-pub
+    displayName: Sausage and fries
+    kind: 1
+    priceId: 
+    basePriceMinorUnits: 2500
+    itemDefinitionId: item.sausage-and-potatoes-meal
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.pub.coffee
+    locationId: service.location.teimo-pub
+    displayName: Coffee
+    kind: 1
+    priceId: 
+    basePriceMinorUnits: 700
+    itemDefinitionId: item.coffee-cup
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.pub.cigarettes
+    locationId: service.location.teimo-pub
+    displayName: Cigarettes
+    kind: 1
+    priceId: 
+    basePriceMinorUnits: 1700
+    itemDefinitionId: item.cigarettes
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.fuel.gasoline98
+    locationId: service.location.teimo-fuel
+    displayName: Gasoline 98
+    kind: 2
+    priceId: 
+    basePriceMinorUnits: 0
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.fuel.diesel
+    locationId: service.location.teimo-fuel-diesel
+    displayName: Diesel
+    kind: 2
+    priceId: 
+    basePriceMinorUnits: 0
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 1
+  - offerId: service.fuel.fuel-oil
+    locationId: service.location.teimo-fuel-oil
+    displayName: Fuel oil
+    kind: 2
+    priceId: 
+    basePriceMinorUnits: 0
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 2
+  - offerId: service.workshop.body-repair
+    locationId: service.location.workshop.fleetari
+    displayName: Body repair
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 875000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.door-left
+    locationId: service.location.workshop.fleetari
+    displayName: Left door repair
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 123000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.door-right
+    locationId: service.location.workshop.fleetari
+    displayName: Right door repair
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 123000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.fender-left
+    locationId: service.location.workshop.fleetari
+    displayName: Left fender repair
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 84500
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.fender-right
+    locationId: service.location.workshop.fleetari
+    displayName: Right fender repair
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 84500
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.hood
+    locationId: service.location.workshop.fleetari
+    displayName: Hood repair
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 62000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.bootlid
+    locationId: service.location.workshop.fleetari
+    displayName: Bootlid repair
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 47500
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.bumper-front
+    locationId: service.location.workshop.fleetari
+    displayName: Front bumper repair
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 78000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.bumper-rear
+    locationId: service.location.workshop.fleetari
+    displayName: Rear bumper repair
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 78000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.grille
+    locationId: service.location.workshop.fleetari
+    displayName: Grille repair
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 51000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.toe-alignment
+    locationId: service.location.workshop.fleetari
+    displayName: Toe alignment
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 49500
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.brakes
+    locationId: service.location.workshop.fleetari
+    displayName: Brake service
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 123000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.engine-repair
+    locationId: service.location.workshop.fleetari
+    displayName: Engine repair
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 291500
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.engine-adjustment
+    locationId: service.location.workshop.fleetari
+    displayName: Engine adjustment
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 129000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.engine-tune
+    locationId: service.location.workshop.fleetari
+    displayName: Engine tuning
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 406500
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.windshield
+    locationId: service.location.workshop.fleetari
+    displayName: Windshield replacement
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 211000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.suspension
+    locationId: service.location.workshop.fleetari
+    displayName: Suspension service
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 920000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.rollcage-install
+    locationId: service.location.workshop.fleetari
+    displayName: Install roll cage
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 550000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.rollcage-remove
+    locationId: service.location.workshop.fleetari
+    displayName: Remove roll cage
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 79000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.n2o-bottle-fill
+    locationId: service.location.workshop.fleetari
+    displayName: N2O bottle fill
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 85000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.final-gear
+    locationId: service.location.workshop.fleetari
+    displayName: Final gear ratio
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 135000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.paint-regular
+    locationId: service.location.workshop.fleetari
+    displayName: Regular paint
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 1015000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: service.workshop.group.paint
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.paint-metallic
+    locationId: service.location.workshop.fleetari
+    displayName: Metallic paint
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 1895000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: service.workshop.group.paint
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.paint-art
+    locationId: service.location.workshop.fleetari
+    displayName: Artist paint
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 2170000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: service.workshop.group.paint
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.paint-gt
+    locationId: service.location.workshop.fleetari
+    displayName: GT paint
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 1390000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: service.workshop.group.paint
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.rim-regular
+    locationId: service.location.workshop.fleetari
+    displayName: Regular rim paint
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 115000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: service.workshop.group.rims
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.rim-metallic
+    locationId: service.location.workshop.fleetari
+    displayName: Metallic rim paint
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 192500
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: service.workshop.group.rims
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.rim-polish
+    locationId: service.location.workshop.fleetari
+    displayName: Rim polish
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 63500
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: service.workshop.group.rims
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.tires-standard
+    locationId: service.location.workshop.fleetari
+    displayName: Standard tires
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 175000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: service.workshop.group.tires
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.tires-gommer-gobra
+    locationId: service.location.workshop.fleetari
+    displayName: Gommer Gobra tires
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 211000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: service.workshop.group.tires
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.tires-europeiska
+    locationId: service.location.workshop.fleetari
+    displayName: Europeiska tires
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 320000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: service.workshop.group.tires
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.workshop.tires-sutasiko
+    locationId: service.location.workshop.fleetari
+    displayName: Sutasiko tires
+    kind: 3
+    priceId: 
+    basePriceMinorUnits: 295000
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: service.workshop.group.tires
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  - offerId: service.offer.inspection.vehicle
+    locationId: service.location.inspection-station
+    displayName: Vehicle inspection
+    kind: 4
+    priceId: 
+    basePriceMinorUnits: 32500
+    itemDefinitionId: 
+    effectId: 
+    exclusiveGroupId: 
+    variantIndex: 0
+    quantityPerUnit: 1
+    stockCapacity: 0
+    restockDayOfWeek: 4
+    restockable: 1
+    fuelGrade: 0
+  fuelPrices:
+  - grade: 0
+    initialMinorUnitsPerLiter: 475
+    minimumMinorUnitsPerLiter: 410
+    maximumMinorUnitsPerLiter: 530
+  - grade: 1
+    initialMinorUnitsPerLiter: 423
+    minimumMinorUnitsPerLiter: 330
+    maximumMinorUnitsPerLiter: 405
+  - grade: 2
+    initialMinorUnitsPerLiter: 213
+    minimumMinorUnitsPerLiter: 150
+    maximumMinorUnitsPerLiter: 270

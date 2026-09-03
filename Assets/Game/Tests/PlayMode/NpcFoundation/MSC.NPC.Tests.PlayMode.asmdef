@@ -1,0 +1,25 @@
+{
+  "name": "MSC.NPC.Tests.PlayMode",
+  "rootNamespace": "MSC.NPC.Tests.PlayMode",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Bootstrap.Runtime",
+    "MSC.Characters.Runtime",
+    "MSC.Core.Runtime",
+    "MSC.NPC.Runtime",
+    "MSC.Weather.Production.Runtime",
+    "MSC.World.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

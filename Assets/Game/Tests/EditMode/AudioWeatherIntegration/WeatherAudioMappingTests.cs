@@ -128,6 +128,43 @@ namespace MSC.Tests.EditMode.AudioWeatherIntegration
         }
 
         [Test]
+        public void HybridExposure_ReusesContinuousShelterContextAndExistingRtpc()
+        {
+            var exposure = new WeatherExposureState(
+                0.6f,
+                1f,
+                0.25f,
+                0.4f,
+                0.3f,
+                0.35f,
+                0.7f,
+                0.4f,
+                0.7f);
+
+            float shelter =
+                WeatherAudioPresenter.CalculateExistingShelterParameter(exposure);
+            AudioEnvironmentContext context =
+                AudioListenerContextPresenter.CreateContinuousWeatherContext(
+                    AudioListenerSpace.Interior,
+                    shelter,
+                    0.36f,
+                    0.21f,
+                    0.8f,
+                    0.5f,
+                    0.25f);
+
+            Assert.That(shelter, Is.EqualTo(0.65f).Within(0.0001f));
+            Assert.That(
+                WeatherAudioPresenter.CalculateAudiblePrecipitation(
+                    0.8f,
+                    exposure),
+                Is.EqualTo(0.28f).Within(0.0001f));
+            Assert.That(context.Shelter01, Is.EqualTo(0.65f).Within(0.0001f));
+            Assert.That(context.Obstruction01, Is.EqualTo(0.36f).Within(0.0001f));
+            Assert.That(context.ListenerSpace, Is.EqualTo(AudioListenerSpace.Interior));
+        }
+
+        [Test]
         public void BackendIdentityChange_ReplaysWeatherStateAndRestartsLoops()
         {
             var controllerObject = new GameObject("WeatherController");

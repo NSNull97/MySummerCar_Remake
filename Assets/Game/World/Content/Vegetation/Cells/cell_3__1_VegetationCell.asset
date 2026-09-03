@@ -1,0 +1,1543 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52ca584ae8560a44db47a45844fe5062, type: 3}
+  m_Name: cell_3__1_VegetationCell
+  m_EditorClassIdentifier: MSC.World.Runtime::MSC.World.Vegetation.VegetationCellAsset
+  schemaVersion: 1
+  cellId: cell_3_-1
+  cellX: 3
+  cellZ: -1
+  worldBounds:
+    m_Center: {x: 1792, y: 0, z: -256}
+    m_Extent: {x: 256, y: 2048, z: 256}
+  maskResolution: 512
+  tileSizeMeters: 32
+  densityMask: {fileID: 2800000, guid: 6e83c5d4d3db93b4f9b6dd44cb792286, type: 3}
+  tiles:
+  - tileX: 5
+    tileZ: 6
+    worldBounds:
+      m_Center: {x: 1713.3379, y: 5.9073124, z: -304.10095}
+      m_Extent: {x: 8.892437, y: 1.3139939, z: 7.577068}
+    profileInstances:
+    - profileIndex: 0
+      instances:
+      - worldPosition: {x: 1705.2594, y: 6.399991, z: -308.0469}
+        packedNormal: 2118615276
+        packedYawScale: 255615440
+        packedVariation: 3689333760
+      - worldPosition: {x: 1705.7634, y: 6.395152, z: -307.82925}
+        packedNormal: 2118615276
+        packedYawScale: 275634167
+        packedVariation: 1671845120
+      - worldPosition: {x: 1706.5216, y: 6.4072394, z: -306.96414}
+        packedNormal: 2154332452
+        packedYawScale: 284166971
+        packedVariation: 1658392832
+      - worldPosition: {x: 1707.6172, y: 6.046826, z: -308.92706}
+        packedNormal: 2041873523
+        packedYawScale: 166690960
+        packedVariation: 2040460544
+      - worldPosition: {x: 1707.5914, y: 6.2235427, z: -308.48273}
+        packedNormal: 2041873523
+        packedYawScale: 248023972
+        packedVariation: 2522348544
+      - worldPosition: {x: 1707.5272, y: 6.3352885, z: -306.44095}
+        packedNormal: 2154332452
+        packedYawScale: 224873024
+        packedVariation: 4201766656
+      - worldPosition: {x: 1708.1777, y: 6.036205, z: -307.91437}
+        packedNormal: 2133363142
+        packedYawScale: 176526236
+        packedVariation: 734253312
+      - worldPosition: {x: 1707.7784, y: 6.2996874, z: -307.30334}
+        packedNormal: 2137360737
+        packedYawScale: 272893888
+        packedVariation: 3156229632
+      - worldPosition: {x: 1708.2567, y: 6.2686844, z: -305.60056}
+        packedNormal: 2021491780
+        packedYawScale: 236152766
+        packedVariation: 2490369280
+      - worldPosition: {x: 1708.7595, y: 5.7955523, z: -307.15433}
+        packedNormal: 2144043117
+        packedYawScale: 247393734
+        packedVariation: 2403741440
+      - worldPosition: {x: 1708.4275, y: 5.9359446, z: -306.8871}
+        packedNormal: 2137360737
+        packedYawScale: 234603333
+        packedVariation: 3134191872
+      - worldPosition: {x: 1709.147, y: 6.1363378, z: -310.6269}
+        packedNormal: 2151186375
+        packedYawScale: 168645023
+        packedVariation: 3539942912
+      - worldPosition: {x: 1709.3912, y: 5.8739686, z: -309.63434}
+        packedNormal: 2268431216
+        packedYawScale: 220564571
+        packedVariation: 3576340992
+      - worldPosition: {x: 1708.9713, y: 5.772209, z: -308.87735}
+        packedNormal: 2144043117
+        packedYawScale: 241804784
+        packedVariation: 1906798336
+      - worldPosition: {x: 1709.3975, y: 5.770376, z: -308.16568}
+        packedNormal: 2144043117
+        packedYawScale: 289342378
+        packedVariation: 1698903296
+      - worldPosition: {x: 1708.9015, y: 5.783477, z: -307.9788}
+        packedNormal: 2144043117
+        packedYawScale: 257782967
+        packedVariation: 2255685888
+      - worldPosition: {x: 1709.8442, y: 6.1469245, z: -310.86395}
+        packedNormal: 2151251913
+        packedYawScale: 280916937
+        packedVariation: 1960709888
+      - worldPosition: {x: 1709.754, y: 5.932109, z: -309.94522}
+        packedNormal: 2263581584
+        packedYawScale: 183546502
+        packedVariation: 380056576
+      - worldPosition: {x: 1709.403, y: 5.7596207, z: -309.1503}
+        packedNormal: 2144043117
+        packedYawScale: 227459035
+        packedVariation: 2711187200
+      - worldPosition: {x: 1709.7706, y: 5.78879, z: -308.64017}
+        packedNormal: 2094299545
+        packedYawScale: 257480305
+        packedVariation: 3618822400
+      - worldPosition: {x: 1709.7867, y: 5.826425, z: -308.47305}
+        packedNormal: 2094299545
+        packedYawScale: 191454341
+        packedVariation: 2460858368
+      - worldPosition: {x: 1709.453, y: 5.8355107, z: -307.75125}
+        packedNormal: 2094299545
+        packedYawScale: 260156267
+        packedVariation: 1189659136
+      - worldPosition: {x: 1710.0592, y: 5.9841785, z: -310.22647}
+        packedNormal: 2263581584
+        packedYawScale: 280657882
+        packedVariation: 1099142656
+      - worldPosition: {x: 1710.4667, y: 5.934896, z: -310.18454}
+        packedNormal: 2173466609
+        packedYawScale: 219056960
+        packedVariation: 2596225792
+      - worldPosition: {x: 1710.015, y: 5.7432356, z: -309.40152}
+        packedNormal: 2144043117
+        packedYawScale: 180511039
+        packedVariation: 1229231872
+      - worldPosition: {x: 1710.0592, y: 5.8304925, z: -309.0009}
+        packedNormal: 2094299545
+        packedYawScale: 220621261
+        packedVariation: 3577366016
+      - worldPosition: {x: 1710.4792, y: 6.17446, z: -300.16302}
+        packedNormal: 2186184076
+        packedYawScale: 196744665
+        packedVariation: 2646714112
+      - worldPosition: {x: 1710.3208, y: 6.1519995, z: -299.61725}
+        packedNormal: 2188871071
+        packedYawScale: 213821011
+        packedVariation: 281043968
+      - worldPosition: {x: 1710.4783, y: 5.993999, z: -298.86264}
+        packedNormal: 2185594335
+        packedYawScale: 226712319
+        packedVariation: 3599188480
+      - worldPosition: {x: 1710.7285, y: 6.134461, z: -308.98773}
+        packedNormal: 2113501011
+        packedYawScale: 287300511
+        packedVariation: 683802112
+      - worldPosition: {x: 1710.9615, y: 6.0416017, z: -300.3227}
+        packedNormal: 2186184076
+        packedYawScale: 235779188
+        packedVariation: 3101849600
+      - worldPosition: {x: 1710.8374, y: 6.0404296, z: -300.01508}
+        packedNormal: 2186184076
+        packedYawScale: 236350625
+        packedVariation: 1893410560
+      - worldPosition: {x: 1710.9592, y: 5.8665667, z: -299.07074}
+        packedNormal: 2188871071
+        packedYawScale: 233876895
+        packedVariation: 3432705792
+      - worldPosition: {x: 1711.5546, y: 6.0914216, z: -302.0464}
+        packedNormal: 2187887953
+        packedYawScale: 174212840
+        packedVariation: 2657382656
+      - worldPosition: {x: 1711.0813, y: 6.074884, z: -300.86115}
+        packedNormal: 2186184076
+        packedYawScale: 254673874
+        packedVariation: 3382348544
+      - worldPosition: {x: 1711.5387, y: 5.8766017, z: -300.4682}
+        packedNormal: 2186184076
+        packedYawScale: 285895365
+        packedVariation: 3045642752
+      - worldPosition: {x: 1711.4612, y: 5.868677, z: -300.22845}
+        packedNormal: 2188871071
+        packedYawScale: 254416913
+        packedVariation: 4089449472
+      - worldPosition: {x: 1711.2485, y: 5.8075457, z: -299.31598}
+        packedNormal: 2188871071
+        packedYawScale: 262851469
+        packedVariation: 2673908224
+      - worldPosition: {x: 1711.2983, y: 5.760578, z: -299.0999}
+        packedNormal: 2188871071
+        packedYawScale: 282031489
+        packedVariation: 518449408
+      - worldPosition: {x: 1712.1187, y: 6.0730777, z: -303.1599}
+        packedNormal: 2187887953
+        packedYawScale: 182358534
+        packedVariation: 1294970880
+      - worldPosition: {x: 1711.6865, y: 6.1197085, z: -302.54248}
+        packedNormal: 2187887953
+        packedYawScale: 167644396
+        packedVariation: 1744522240
+      - worldPosition: {x: 1711.7847, y: 6.0310874, z: -302.11804}
+        packedNormal: 2187887953
+        packedYawScale: 197247181
+        packedVariation: 268722432
+      - worldPosition: {x: 1712.1007, y: 5.84343, z: -301.48502}
+        packedNormal: 2189657436
+        packedYawScale: 267115645
+        packedVariation: 814423296
+      - worldPosition: {x: 1711.8014, y: 5.9085603, z: -301.2969}
+        packedNormal: 2189657436
+        packedYawScale: 261003844
+        packedVariation: 3532304896
+      - worldPosition: {x: 1711.7267, y: 5.815918, z: -300.46356}
+        packedNormal: 2188871071
+        packedYawScale: 194649141
+        packedVariation: 2021083136
+      - worldPosition: {x: 1711.6934, y: 5.7811146, z: -300.14386}
+        packedNormal: 2188871071
+        packedYawScale: 265360952
+        packedVariation: 3268422144
+      - worldPosition: {x: 1711.9333, y: 5.8213744, z: -299.43826}
+        packedNormal: 2126347553
+        packedYawScale: 245293408
+        packedVariation: 4084052480
+      - worldPosition: {x: 1711.7137, y: 5.819217, z: -298.9695}
+        packedNormal: 2126347553
+        packedYawScale: 198094275
+        packedVariation: 3205504512
+      - worldPosition: {x: 1711.8632, y: 5.8838277, z: -298.36612}
+        packedNormal: 2126347553
+        packedYawScale: 203569140
+        packedVariation: 3738806272
+      - worldPosition: {x: 1712.6996, y: 6.08123, z: -304.51483}
+        packedNormal: 2184086817
+        packedYawScale: 201240365
+        packedVariation: 453873408
+      - worldPosition: {x: 1712.4132, y: 6.102559, z: -304.01352}
+        packedNormal: 2188084543
+        packedYawScale: 247068511
+        packedVariation: 4110568448
+      - worldPosition: {x: 1712.6938, y: 5.913065, z: -303.26202}
+        packedNormal: 2188739899
+        packedYawScale: 277362465
+        packedVariation: 826134016
+      - worldPosition: {x: 1712.448, y: 5.9452243, z: -302.96216}
+        packedNormal: 2187887953
+        packedYawScale: 201916140
+        packedVariation: 3849659392
+      - worldPosition: {x: 1712.6769, y: 5.779473, z: -302.272}
+        packedNormal: 2189657436
+        packedYawScale: 167591366
+        packedVariation: 260469248
+      - worldPosition: {x: 1712.6223, y: 5.7330036, z: -301.6161}
+        packedNormal: 2163114492
+        packedYawScale: 232630508
+        packedVariation: 3455761664
+      - worldPosition: {x: 1712.2552, y: 5.7453337, z: -301.07996}
+        packedNormal: 2163114492
+        packedYawScale: 287585085
+        packedVariation: 3671477504
+      - worldPosition: {x: 1712.182, y: 5.737383, z: -300.76404}
+        packedNormal: 2163114492
+        packedYawScale: 259499060
+        packedVariation: 1928462592
+      - worldPosition: {x: 1712.1862, y: 5.8185887, z: -300.05484}
+        packedNormal: 2126347553
+        packedYawScale: 255189202
+        packedVariation: 2320324608
+      - worldPosition: {x: 1712.3397, y: 5.8802905, z: -299.5032}
+        packedNormal: 2126347553
+        packedYawScale: 177788363
+        packedVariation: 2000286208
+      - worldPosition: {x: 1712.654, y: 5.9757066, z: -298.8257}
+        packedNormal: 2126347553
+        packedYawScale: 240504085
+        packedVariation: 3147631360
+      - worldPosition: {x: 1712.6346, y: 6.06755, z: -297.4401}
+        packedNormal: 2126347553
+        packedYawScale: 266820915
+        packedVariation: 1800578304
+      - worldPosition: {x: 1713.1732, y: 6.141557, z: -306.09543}
+        packedNormal: 2183628021
+        packedYawScale: 202093649
+        packedVariation: 3407996416
+      - worldPosition: {x: 1713.1453, y: 6.063781, z: -305.41275}
+        packedNormal: 2186839312
+        packedYawScale: 288654715
+        packedVariation: 2863665920
+      - worldPosition: {x: 1713.0054, y: 6.0169096, z: -304.7166}
+        packedNormal: 2184086817
+        packedYawScale: 233374054
+        packedVariation: 2579100672
+      - worldPosition: {x: 1713.1814, y: 5.947275, z: -304.5705}
+        packedNormal: 2184086817
+        packedYawScale: 289660432
+        packedVariation: 1631462656
+      - worldPosition: {x: 1712.7512, y: 5.960396, z: -303.7219}
+        packedNormal: 2188084543
+        packedYawScale: 266344824
+        packedVariation: 267634432
+      - worldPosition: {x: 1712.7212, y: 5.8969564, z: -303.20612}
+        packedNormal: 2188739899
+        packedYawScale: 231466080
+        packedVariation: 3703192832
+      - worldPosition: {x: 1712.941, y: 5.780547, z: -302.84796}
+        packedNormal: 2188739899
+        packedYawScale: 249433543
+        packedVariation: 696988928
+      - worldPosition: {x: 1713.2026, y: 5.712673, z: -302.01764}
+        packedNormal: 2265348475
+        packedYawScale: 184777857
+        packedVariation: 1492240384
+      - worldPosition: {x: 1713.2106, y: 5.668646, z: -301.58044}
+        packedNormal: 2163114492
+        packedYawScale: 289506641
+        packedVariation: 1786995968
+      - worldPosition: {x: 1713.1488, y: 5.660495, z: -301.2848}
+        packedNormal: 2163114492
+        packedYawScale: 237210421
+        packedVariation: 1538926336
+      - worldPosition: {x: 1712.777, y: 5.6749144, z: -300.7804}
+        packedNormal: 2163114492
+        packedYawScale: 218009668
+        packedVariation: 4090605568
+      - worldPosition: {x: 1712.8544, y: 5.916537, z: -299.9072}
+        packedNormal: 2122939809
+        packedYawScale: 280560605
+        packedVariation: 886940416
+      - worldPosition: {x: 1712.836, y: 5.968328, z: -299.22397}
+        packedNormal: 2122939809
+        packedYawScale: 222754855
+        packedVariation: 1084078592
+      - worldPosition: {x: 1713.0376, y: 6.0077834, z: -299.05185}
+        packedNormal: 2122939809
+        packedYawScale: 185900484
+        packedVariation: 1317547008
+      - worldPosition: {x: 1712.9819, y: 6.039724, z: -298.5588}
+        packedNormal: 2122939809
+        packedYawScale: 236980547
+        packedVariation: 1683861248
+      - worldPosition: {x: 1712.8695, y: 6.075769, z: -297.8549}
+        packedNormal: 2126347553
+        packedYawScale: 175287908
+        packedVariation: 2269824256
+      - worldPosition: {x: 1713.735, y: 6.016414, z: -306.3663}
+        packedNormal: 2183628021
+        packedYawScale: 283546618
+        packedVariation: 2074738432
+      - worldPosition: {x: 1713.5723, y: 6.028353, z: -306.08896}
+        packedNormal: 2183628021
+        packedYawScale: 234147675
+        packedVariation: 3075642112
+      - worldPosition: {x: 1713.6128, y: 5.9685965, z: -305.71085}
+        packedNormal: 2186839312
+        packedYawScale: 226678934
+        packedVariation: 642833152
+      - worldPosition: {x: 1713.5642, y: 5.857725, z: -304.75092}
+        packedNormal: 2184086817
+        packedYawScale: 273016519
+        packedVariation: 1759213824
+      - worldPosition: {x: 1713.7665, y: 5.752347, z: -304.42368}
+        packedNormal: 2188084543
+        packedYawScale: 192130953
+        packedVariation: 3090299136
+      - worldPosition: {x: 1713.6827, y: 5.76284, z: -303.6419}
+        packedNormal: 2140700447
+        packedYawScale: 251382008
+        packedVariation: 2426926080
+      - worldPosition: {x: 1713.621, y: 5.762548, z: -303.52142}
+        packedNormal: 2140700447
+        packedYawScale: 256919567
+        packedVariation: 1765728768
+      - worldPosition: {x: 1713.6476, y: 5.809939, z: -302.63547}
+        packedNormal: 2135064168
+        packedYawScale: 176206124
+        packedVariation: 3155110656
+      - worldPosition: {x: 1713.4998, y: 5.819691, z: -302.0698}
+        packedNormal: 2135064168
+        packedYawScale: 265635005
+        packedVariation: 1115817472
+      - worldPosition: {x: 1713.6888, y: 5.7932587, z: -301.74298}
+        packedNormal: 2265348475
+        packedYawScale: 185678829
+        packedVariation: 1427479808
+      - worldPosition: {x: 1713.7716, y: 5.589677, z: -301.1931}
+        packedNormal: 2163114492
+        packedYawScale: 218734392
+        packedVariation: 2697589760
+      - worldPosition: {x: 1713.7877, y: 5.562749, z: -300.68738}
+        packedNormal: 2163114492
+        packedYawScale: 218212710
+        packedVariation: 2507547136
+      - worldPosition: {x: 1713.7834, y: 6.108398, z: -298.98715}
+        packedNormal: 2122939809
+        packedYawScale: 263806893
+        packedVariation: 1438309632
+      - worldPosition: {x: 1713.3645, y: 6.10609, z: -298.33932}
+        packedNormal: 2122939809
+        packedYawScale: 225774082
+        packedVariation: 10047744
+      - worldPosition: {x: 1713.5068, y: 6.1533465, z: -297.97263}
+        packedNormal: 2122939809
+        packedYawScale: 238002952
+        packedVariation: 2238403840
+      - worldPosition: {x: 1713.7788, y: 6.192603, z: -297.51224}
+        packedNormal: 2149220639
+        packedYawScale: 167590069
+        packedVariation: 4160725248
+      - worldPosition: {x: 1714.2136, y: 6.1186123, z: -308.1584}
+        packedNormal: 2186380478
+        packedYawScale: 266313321
+        packedVariation: 2458741504
+      - worldPosition: {x: 1713.889, y: 6.0537043, z: -307.01837}
+        packedNormal: 2189001941
+        packedYawScale: 201200145
+        packedVariation: 2965894400
+      - worldPosition: {x: 1714.2563, y: 5.89471, z: -306.57162}
+        packedNormal: 2183628021
+        packedYawScale: 169026551
+        packedVariation: 3738126592
+      - worldPosition: {x: 1714.0408, y: 5.9027624, z: -306.1431}
+        packedNormal: 2186839312
+        packedYawScale: 252551742
+        packedVariation: 392159488
+      - worldPosition: {x: 1714.0947, y: 5.822054, z: -305.65665}
+        packedNormal: 2186839312
+        packedYawScale: 222424476
+        packedVariation: 4162964480
+      - worldPosition: {x: 1714.172, y: 5.759529, z: -304.83246}
+        packedNormal: 2138734411
+        packedYawScale: 207703650
+        packedVariation: 2649654784
+      - worldPosition: {x: 1713.8313, y: 5.7557034, z: -304.2995}
+        packedNormal: 2140700447
+        packedYawScale: 223586676
+        packedVariation: 3243556096
+      - worldPosition: {x: 1713.8833, y: 5.76716, z: -303.87408}
+        packedNormal: 2140700447
+        packedYawScale: 273761784
+        packedVariation: 3690041344
+      - worldPosition: {x: 1714.1387, y: 5.7874265, z: -303.47748}
+        packedNormal: 2140700447
+        packedYawScale: 197430230
+        packedVariation: 4139957504
+      - worldPosition: {x: 1714.2048, y: 5.8192844, z: -302.7807}
+        packedNormal: 2117828554
+        packedYawScale: 265665304
+        packedVariation: 1185059840
+      - worldPosition: {x: 1713.8053, y: 5.850261, z: -301.95114}
+        packedNormal: 2135064168
+        packedYawScale: 177523716
+        packedVariation: 2596967168
+      - worldPosition: {x: 1713.9607, y: 5.797164, z: -301.49945}
+        packedNormal: 2265348475
+        packedYawScale: 270226034
+        packedVariation: 3566251008
+      - worldPosition: {x: 1714.2848, y: 5.6393957, z: -300.85284}
+        packedNormal: 2265348475
+        packedYawScale: 180126981
+        packedVariation: 1705511680
+      - worldPosition: {x: 1714.2365, y: 5.509265, z: -300.57178}
+        packedNormal: 2163114492
+        packedYawScale: 285969152
+        packedVariation: 4236497664
+      - worldPosition: {x: 1713.994, y: 6.1414437, z: -298.91037}
+        packedNormal: 2122939809
+        packedYawScale: 284355525
+        packedVariation: 593216512
+      - worldPosition: {x: 1713.9355, y: 6.1819425, z: -298.30478}
+        packedNormal: 2122939809
+        packedYawScale: 281021785
+        packedVariation: 1206284288
+      - worldPosition: {x: 1714.5883, y: 6.072711, z: -308.57562}
+        packedNormal: 2186380478
+        packedYawScale: 188043100
+        packedVariation: 3750565376
+      - worldPosition: {x: 1714.616, y: 6.0393486, z: -308.37836}
+        packedNormal: 2186380478
+        packedYawScale: 258211822
+        packedVariation: 4245808640
+      - worldPosition: {x: 1714.564, y: 5.9840336, z: -307.85175}
+        packedNormal: 2186380478
+        packedYawScale: 248146530
+        packedVariation: 3856427008
+      - worldPosition: {x: 1714.4387, y: 5.920142, z: -307.14386}
+        packedNormal: 2189001941
+        packedYawScale: 242941734
+        packedVariation: 1364752128
+      - worldPosition: {x: 1714.7856, y: 5.7728004, z: -306.77545}
+        packedNormal: 2189001941
+        packedYawScale: 189208670
+        packedVariation: 3972510720
+      - worldPosition: {x: 1714.8536, y: 5.761877, z: -306.14835}
+        packedNormal: 2141486905
+        packedYawScale: 211867489
+        packedVariation: 1230524416
+      - worldPosition: {x: 1714.3654, y: 5.753834, z: -305.52066}
+        packedNormal: 2141486905
+        packedYawScale: 196499320
+        packedVariation: 4179279104
+      - worldPosition: {x: 1714.6332, y: 5.779381, z: -304.74405}
+        packedNormal: 2141486905
+        packedYawScale: 239939621
+        packedVariation: 2949052160
+      - worldPosition: {x: 1714.5487, y: 5.7799797, z: -304.596}
+        packedNormal: 2138734411
+        packedYawScale: 268804103
+        packedVariation: 3697879808
+      - worldPosition: {x: 1714.5011, y: 5.791228, z: -304.08588}
+        packedNormal: 2140700447
+        packedYawScale: 289818135
+        packedVariation: 4134384128
+      - worldPosition: {x: 1714.4832, y: 5.806749, z: -303.31854}
+        packedNormal: 2140700447
+        packedYawScale: 209966613
+        packedVariation: 1436364288
+      - worldPosition: {x: 1714.7045, y: 5.8254695, z: -302.92023}
+        packedNormal: 2140700447
+        packedYawScale: 236593875
+        packedVariation: 1834310656
+      - worldPosition: {x: 1714.8037, y: 5.852771, z: -302.4948}
+        packedNormal: 2117828554
+        packedYawScale: 197072164
+        packedVariation: 532574208
+      - worldPosition: {x: 1714.3779, y: 5.918362, z: -301.4542}
+        packedNormal: 2135064168
+        packedYawScale: 182934629
+        packedVariation: 1848553728
+      - worldPosition: {x: 1714.6127, y: 5.9370394, z: -301.201}
+        packedNormal: 2265348475
+        packedYawScale: 211387671
+        packedVariation: 2223138304
+      - worldPosition: {x: 1714.8025, y: 5.6725883, z: -300.44525}
+        packedNormal: 2265348475
+        packedYawScale: 271582268
+        packedVariation: 321483520
+      - worldPosition: {x: 1714.865, y: 5.5718603, z: -300.16644}
+        packedNormal: 2265348475
+        packedYawScale: 171852772
+        packedVariation: 21724672
+      - worldPosition: {x: 1714.6776, y: 6.146309, z: -298.74673}
+        packedNormal: 2149220639
+        packedYawScale: 181374961
+        packedVariation: 3966653440
+      - worldPosition: {x: 1714.6832, y: 6.14277, z: -298.16812}
+        packedNormal: 2149220639
+        packedYawScale: 167229774
+        packedVariation: 2216475392
+      - worldPosition: {x: 1714.7681, y: 6.136157, z: -297.87955}
+        packedNormal: 2149220639
+        packedYawScale: 223527249
+        packedVariation: 3102606848
+      - worldPosition: {x: 1715.4363, y: 5.851119, z: -308.56436}
+        packedNormal: 2221900775
+        packedYawScale: 248080650
+        packedVariation: 3119865856
+      - worldPosition: {x: 1715.1875, y: 5.872143, z: -308.2757}
+        packedNormal: 2186380478
+        packedYawScale: 268990745
+        packedVariation: 2825193472
+      - worldPosition: {x: 1715.0718, y: 5.859994, z: -307.95416}
+        packedNormal: 2189001941
+        packedYawScale: 177011418
+        packedVariation: 346222848
+      - worldPosition: {x: 1714.9368, y: 5.817732, z: -307.3902}
+        packedNormal: 2189001941
+        packedYawScale: 196735291
+        packedVariation: 2744720128
+      - worldPosition: {x: 1715.0836, y: 5.7611017, z: -306.83908}
+        packedNormal: 2145222446
+        packedYawScale: 236290935
+        packedVariation: 3892531712
+      - worldPosition: {x: 1715.3722, y: 5.787435, z: -305.90778}
+        packedNormal: 2140962628
+        packedYawScale: 217389404
+        packedVariation: 3522805248
+      - worldPosition: {x: 1715.1652, y: 5.788785, z: -305.39456}
+        packedNormal: 2141486905
+        packedYawScale: 220893058
+        packedVariation: 1253246208
+      - worldPosition: {x: 1715.2998, y: 5.8038025, z: -304.88895}
+        packedNormal: 2141486905
+        packedYawScale: 232398955
+        packedVariation: 3421958144
+      - worldPosition: {x: 1715.3135, y: 5.812501, z: -304.4573}
+        packedNormal: 2141486905
+        packedYawScale: 254133158
+        packedVariation: 320945152
+      - worldPosition: {x: 1715.3258, y: 5.8233604, z: -304.06464}
+        packedNormal: 2138734411
+        packedYawScale: 252047094
+        packedVariation: 2442902528
+      - worldPosition: {x: 1714.9484, y: 5.8330026, z: -303.09613}
+        packedNormal: 2140700447
+        packedYawScale: 278940605
+        packedVariation: 3101829888
+      - worldPosition: {x: 1715.4408, y: 5.857415, z: -302.98187}
+        packedNormal: 2138734411
+        packedYawScale: 218772477
+        packedVariation: 2866295296
+      - worldPosition: {x: 1715.1797, y: 5.886327, z: -302.1817}
+        packedNormal: 2117828554
+        packedYawScale: 192890423
+        packedVariation: 1342924544
+      - worldPosition: {x: 1715.0732, y: 5.924423, z: -301.76324}
+        packedNormal: 2117828554
+        packedYawScale: 252623117
+        packedVariation: 1399983872
+      - worldPosition: {x: 1715.0786, y: 5.9967113, z: -300.97275}
+        packedNormal: 2135064168
+        packedYawScale: 256069268
+        packedVariation: 276556800
+      - worldPosition: {x: 1715.1395, y: 5.772354, z: -300.36664}
+        packedNormal: 2272492077
+        packedYawScale: 206001212
+        packedVariation: 3310244352
+      - worldPosition: {x: 1715.0409, y: 5.5856867, z: -300.05573}
+        packedNormal: 2272492077
+        packedYawScale: 180276930
+        packedVariation: 4117534720
+      - worldPosition: {x: 1715.4054, y: 6.0996904, z: -298.09793}
+        packedNormal: 2149220639
+        packedYawScale: 258637040
+        packedVariation: 29907200
+      - worldPosition: {x: 1715.646, y: 6.0717983, z: -309.5732}
+        packedNormal: 2226749544
+        packedYawScale: 206656160
+        packedVariation: 2634092288
+      - worldPosition: {x: 1715.9443, y: 5.8364882, z: -308.64014}
+        packedNormal: 2216197901
+        packedYawScale: 258184779
+        packedVariation: 599126272
+      - worldPosition: {x: 1715.9707, y: 5.7894793, z: -308.19882}
+        packedNormal: 2147909396
+        packedYawScale: 218505058
+        packedVariation: 1713168384
+      - worldPosition: {x: 1715.5648, y: 5.7743626, z: -307.88657}
+        packedNormal: 2145222446
+        packedYawScale: 273898877
+        packedVariation: 521858560
+      - worldPosition: {x: 1715.4608, y: 5.776003, z: -307.0234}
+        packedNormal: 2145222446
+        packedYawScale: 251517473
+        packedVariation: 891031552
+      - worldPosition: {x: 1715.9425, y: 5.8009644, z: -306.41843}
+        packedNormal: 2145222446
+        packedYawScale: 222859753
+        packedVariation: 2696375552
+      - worldPosition: {x: 1715.9833, y: 5.807793, z: -306.06586}
+        packedNormal: 2140962628
+        packedYawScale: 199930871
+        packedVariation: 3922079488
+      - worldPosition: {x: 1715.7837, y: 5.806639, z: -305.7442}
+        packedNormal: 2140962628
+        packedYawScale: 257667450
+        packedVariation: 3868926208
+      - worldPosition: {x: 1715.9817, y: 5.8305683, z: -304.9424}
+        packedNormal: 2141486905
+        packedYawScale: 176195511
+        packedVariation: 3305374976
+      - worldPosition: {x: 1715.6774, y: 5.8332453, z: -304.17828}
+        packedNormal: 2138734411
+        packedYawScale: 224823719
+        packedVariation: 2874421504
+      - worldPosition: {x: 1715.5936, y: 5.839347, z: -303.84393}
+        packedNormal: 2138734411
+        packedYawScale: 207077583
+        packedVariation: 3128406272
+      - worldPosition: {x: 1715.4843, y: 5.848098, z: -303.37897}
+        packedNormal: 2138734411
+        packedYawScale: 269708265
+        packedVariation: 1818329600
+      - worldPosition: {x: 1715.5238, y: 5.867933, z: -302.70575}
+        packedNormal: 2140700447
+        packedYawScale: 253841095
+        packedVariation: 10347264
+      - worldPosition: {x: 1715.6752, y: 5.8827033, z: -302.34113}
+        packedNormal: 2140700447
+        packedYawScale: 228962019
+        packedVariation: 1236951296
+      - worldPosition: {x: 1715.9484, y: 5.946313, z: -301.73535}
+        packedNormal: 2111667982
+        packedYawScale: 266367894
+        packedVariation: 3308252672
+      - worldPosition: {x: 1715.5375, y: 6.0142155, z: -300.96057}
+        packedNormal: 2111667982
+        packedYawScale: 258090422
+        packedVariation: 982475008
+      - worldPosition: {x: 1715.8358, y: 5.792445, z: -299.86456}
+        packedNormal: 2272492077
+        packedYawScale: 181577703
+        packedVariation: 7363840
+      - worldPosition: {x: 1715.68, y: 5.626766, z: -299.6419}
+        packedNormal: 2272492077
+        packedYawScale: 240699573
+        packedVariation: 3604461568
+      - worldPosition: {x: 1715.955, y: 5.47641, z: -299.11444}
+        packedNormal: 2272492077
+        packedYawScale: 241781549
+        packedVariation: 97260544
+      - worldPosition: {x: 1715.7177, y: 6.077017, z: -297.33792}
+        packedNormal: 2149220639
+        packedYawScale: 217858287
+        packedVariation: 982120192
+      - worldPosition: {x: 1716.3711, y: 6.097937, z: -309.69946}
+        packedNormal: 2216197901
+        packedYawScale: 268044944
+        packedVariation: 372365824
+      - worldPosition: {x: 1716.0358, y: 5.9911337, z: -309.29916}
+        packedNormal: 2226749544
+        packedYawScale: 184494318
+        packedVariation: 708472832
+      - worldPosition: {x: 1716.0781, y: 5.8887486, z: -308.84082}
+        packedNormal: 2216197901
+        packedYawScale: 187178300
+        packedVariation: 3642970880
+      - worldPosition: {x: 1716.4237, y: 5.8366995, z: -308.44952}
+        packedNormal: 2202304155
+        packedYawScale: 275267992
+        packedVariation: 91708928
+      - worldPosition: {x: 1716.312, y: 5.8057165, z: -307.97067}
+        packedNormal: 2147909396
+        packedYawScale: 226251744
+        packedVariation: 3709421568
+      - worldPosition: {x: 1716.2882, y: 5.8091125, z: -307.3663}
+        packedNormal: 2145222446
+        packedYawScale: 235837309
+        packedVariation: 4116475392
+      - worldPosition: {x: 1716.3146, y: 5.816511, z: -306.48032}
+        packedNormal: 2145222446
+        packedYawScale: 289345189
+        packedVariation: 2059014912
+      - worldPosition: {x: 1716.1656, y: 5.811964, z: -306.21896}
+        packedNormal: 2145222446
+        packedYawScale: 225234114
+        packedVariation: 454950912
+      - worldPosition: {x: 1716.0602, y: 5.8205037, z: -305.58746}
+        packedNormal: 2140962628
+        packedYawScale: 210571907
+        packedVariation: 2211453440
+      - worldPosition: {x: 1716.2594, y: 5.83814, z: -305.09906}
+        packedNormal: 2140962628
+        packedYawScale: 259523946
+        packedVariation: 3288271104
+      - worldPosition: {x: 1716.4213, y: 5.8596725, z: -304.3483}
+        packedNormal: 2141486905
+        packedYawScale: 272594034
+        packedVariation: 2977030400
+      - worldPosition: {x: 1716.2797, y: 5.870242, z: -303.6441}
+        packedNormal: 2138734411
+        packedYawScale: 236970593
+        packedVariation: 1161707520
+      - worldPosition: {x: 1716.3806, y: 5.8839445, z: -303.28204}
+        packedNormal: 2138734411
+        packedYawScale: 258576563
+        packedVariation: 1516119296
+      - worldPosition: {x: 1716.0944, y: 5.881282, z: -302.9937}
+        packedNormal: 2138734411
+        packedYawScale: 200201525
+        packedVariation: 2561049344
+      - worldPosition: {x: 1716.3257, y: 5.9187894, z: -302.49606}
+        packedNormal: 2125233639
+        packedYawScale: 219197502
+        packedVariation: 270586112
+      - worldPosition: {x: 1716.0994, y: 5.990225, z: -301.41882}
+        packedNormal: 2111667982
+        packedYawScale: 172243412
+        packedVariation: 1932354304
+      - worldPosition: {x: 1716.2136, y: 6.0177326, z: -301.229}
+        packedNormal: 2111667982
+        packedYawScale: 214674845
+        packedVariation: 3351148288
+      - worldPosition: {x: 1716.5189, y: 6.038151, z: -300.3231}
+        packedNormal: 2153545607
+        packedYawScale: 265573816
+        packedVariation: 194529280
+      - worldPosition: {x: 1716.1958, y: 6.02477, z: -300.03745}
+        packedNormal: 2153545607
+        packedYawScale: 288875554
+        packedVariation: 3857582080
+      - worldPosition: {x: 1716.7861, y: 6.115908, z: -309.68298}
+        packedNormal: 2216197901
+        packedYawScale: 191488046
+        packedVariation: 3705861632
+      - worldPosition: {x: 1717.0524, y: 6.0743747, z: -309.43774}
+        packedNormal: 2216197901
+        packedYawScale: 231150607
+        packedVariation: 3206315520
+      - worldPosition: {x: 1716.9102, y: 5.9331083, z: -308.78143}
+        packedNormal: 2202304155
+        packedYawScale: 285548584
+        packedVariation: 1777205760
+      - worldPosition: {x: 1717.046, y: 5.8415365, z: -308.2059}
+        packedNormal: 2147909396
+        packedYawScale: 281066484
+        packedVariation: 1261303552
+      - worldPosition: {x: 1717.0203, y: 5.8397627, z: -307.785}
+        packedNormal: 2147909396
+        packedYawScale: 223375120
+        packedVariation: 2254386432
+      - worldPosition: {x: 1717.0468, y: 5.8410945, z: -307.3567}
+        packedNormal: 2144960307
+        packedYawScale: 259984800
+        packedVariation: 3626064384
+      - worldPosition: {x: 1717.042, y: 5.847542, z: -306.50888}
+        packedNormal: 2145222446
+        packedYawScale: 283722575
+        packedVariation: 717480704
+      - worldPosition: {x: 1716.6853, y: 5.839478, z: -305.83966}
+        packedNormal: 2140962628
+        packedYawScale: 253237091
+        packedVariation: 375467264
+      - worldPosition: {x: 1716.6368, y: 5.843859, z: -305.53326}
+        packedNormal: 2140962628
+        packedYawScale: 279500574
+        packedVariation: 3996173056
+      - worldPosition: {x: 1717.0349, y: 5.8753057, z: -304.7436}
+        packedNormal: 2140962628
+        packedYawScale: 219692557
+        packedVariation: 1165564928
+      - worldPosition: {x: 1716.9176, y: 5.8740764, z: -304.58185}
+        packedNormal: 2140962628
+        packedYawScale: 234111512
+        packedVariation: 807560448
+      - worldPosition: {x: 1716.9165, y: 5.8840985, z: -304.08844}
+        packedNormal: 2140962628
+        packedYawScale: 193859717
+        packedVariation: 852876800
+      - worldPosition: {x: 1716.6284, y: 5.8886404, z: -303.44476}
+        packedNormal: 2138734411
+        packedYawScale: 177560890
+        packedVariation: 605930496
+      - worldPosition: {x: 1716.7188, y: 5.9459834, z: -302.73544}
+        packedNormal: 2125233639
+        packedYawScale: 279573604
+        packedVariation: 2457591040
+      - worldPosition: {x: 1716.7823, y: 5.964952, z: -302.07733}
+        packedNormal: 2151251589
+        packedYawScale: 176029299
+        packedVariation: 1058619648
+      - worldPosition: {x: 1716.806, y: 6.0265503, z: -301.41406}
+        packedNormal: 2111667982
+        packedYawScale: 185132632
+        packedVariation: 1286889728
+      - worldPosition: {x: 1716.6815, y: 6.049266, z: -301.16077}
+        packedNormal: 2111667982
+        packedYawScale: 288123828
+        packedVariation: 3527446784
+      - worldPosition: {x: 1716.5615, y: 6.0442924, z: -300.5919}
+        packedNormal: 2153545607
+        packedYawScale: 185987317
+        packedVariation: 19455744
+      - worldPosition: {x: 1717.0431, y: 6.0452795, z: -300.01608}
+        packedNormal: 2153545607
+        packedYawScale: 256332981
+        packedVariation: 1873283328
+      - worldPosition: {x: 1716.5917, y: 5.559722, z: -298.7901}
+        packedNormal: 2272492077
+        packedYawScale: 273848471
+        packedVariation: 2405849600
+      - worldPosition: {x: 1716.5836, y: 5.407386, z: -298.4798}
+        packedNormal: 2272492077
+        packedYawScale: 229206000
+        packedVariation: 3759167744
+      - worldPosition: {x: 1717.1769, y: 5.982662, z: -308.9449}
+        packedNormal: 2202304155
+        packedYawScale: 218509106
+        packedVariation: 2367407360
+      - worldPosition: {x: 1717.4354, y: 5.8722277, z: -308.2165}
+        packedNormal: 2202304155
+        packedYawScale: 197997267
+        packedVariation: 4254153728
+      - worldPosition: {x: 1717.2037, y: 5.848236, z: -307.46042}
+        packedNormal: 2147909396
+        packedYawScale: 240627837
+        packedVariation: 2929260800
+      - worldPosition: {x: 1717.1714, y: 5.847016, z: -307.26746}
+        packedNormal: 2144960307
+        packedYawScale: 238281320
+        packedVariation: 625486592
+      - worldPosition: {x: 1717.5588, y: 5.8669715, z: -306.79407}
+        packedNormal: 2144960307
+        packedYawScale: 268590112
+        packedVariation: 2399956224
+      - worldPosition: {x: 1717.3822, y: 5.8668222, z: -305.84885}
+        packedNormal: 2145222446
+        packedYawScale: 185703857
+        packedVariation: 1003826688
+      - worldPosition: {x: 1717.6044, y: 5.877914, z: -305.69342}
+        packedNormal: 2140962628
+        packedYawScale: 271057780
+        packedVariation: 1883584768
+      - worldPosition: {x: 1717.2191, y: 5.8766446, z: -305.02655}
+        packedNormal: 2140962628
+        packedYawScale: 219037824
+        packedVariation: 2203659264
+      - worldPosition: {x: 1717.448, y: 5.931595, z: -304.25763}
+        packedNormal: 2130935248
+        packedYawScale: 201503169
+        packedVariation: 1460175872
+      - worldPosition: {x: 1717.3508, y: 5.943948, z: -303.80792}
+        packedNormal: 2130935248
+        packedYawScale: 282097585
+        packedVariation: 271446016
+      - worldPosition: {x: 1717.2454, y: 5.9638352, z: -303.31686}
+        packedNormal: 2125233639
+        packedYawScale: 178380102
+        packedVariation: 1387833600
+      - worldPosition: {x: 1717.1692, y: 5.9939475, z: -302.77524}
+        packedNormal: 2125233639
+        packedYawScale: 178612321
+        packedVariation: 4048022016
+      - worldPosition: {x: 1717.2109, y: 5.998633, z: -302.09222}
+        packedNormal: 2151251589
+        packedYawScale: 239372346
+        packedVariation: 1282183168
+      - worldPosition: {x: 1717.3376, y: 6.05157, z: -301.43066}
+        packedNormal: 2111667982
+        packedYawScale: 191280107
+        packedVariation: 752132096
+      - worldPosition: {x: 1717.3629, y: 6.075225, z: -301.18137}
+        packedNormal: 2153545607
+        packedYawScale: 275002576
+        packedVariation: 2521949696
+      - worldPosition: {x: 1717.3984, y: 6.0647326, z: -300.58066}
+        packedNormal: 2153545607
+        packedYawScale: 212819120
+        packedVariation: 2984931072
+      - worldPosition: {x: 1717.1592, y: 6.0463743, z: -299.92258}
+        packedNormal: 2153545607
+        packedYawScale: 252208126
+        packedVariation: 1422309888
+      - worldPosition: {x: 1717.5497, y: 6.047426, z: -299.46884}
+        packedNormal: 2153545607
+        packedYawScale: 175156912
+        packedVariation: 3213785344
+      - worldPosition: {x: 1717.4584, y: 6.0353556, z: -298.95053}
+        packedNormal: 2153545607
+        packedYawScale: 261639222
+        packedVariation: 1162638848
+      - worldPosition: {x: 1717.966, y: 6.021634, z: -308.72446}
+        packedNormal: 2201189701
+        packedYawScale: 208357795
+        packedVariation: 3496854528
+      - worldPosition: {x: 1717.8328, y: 5.914398, z: -308.23532}
+        packedNormal: 2201189701
+        packedYawScale: 184149139
+        packedVariation: 884229632
+      - worldPosition: {x: 1717.6584, y: 5.8704185, z: -307.6003}
+        packedNormal: 2147909396
+        packedYawScale: 236098540
+        packedVariation: 2430628608
+      - worldPosition: {x: 1718.0145, y: 5.913384, z: -307.18396}
+        packedNormal: 2150333694
+        packedYawScale: 175422543
+        packedVariation: 1037566208
+      - worldPosition: {x: 1717.8234, y: 5.8885875, z: -306.49167}
+        packedNormal: 2140306675
+        packedYawScale: 218360587
+        packedVariation: 725877760
+      - worldPosition: {x: 1717.7805, y: 5.896877, z: -305.82822}
+        packedNormal: 2140306675
+        packedYawScale: 239187839
+        packedVariation: 1263448832
+      - worldPosition: {x: 1718.035, y: 5.9385157, z: -305.75473}
+        packedNormal: 2142731534
+        packedYawScale: 249184416
+        packedVariation: 2397057024
+      - worldPosition: {x: 1718.0267, y: 5.963876, z: -304.96817}
+        packedNormal: 2136505620
+        packedYawScale: 180754141
+        packedVariation: 152905728
+      - worldPosition: {x: 1717.8528, y: 5.966589, z: -304.4942}
+        packedNormal: 2130935248
+        packedYawScale: 209150521
+        packedVariation: 3142534656
+      - worldPosition: {x: 1717.9445, y: 6.0107365, z: -303.86224}
+        packedNormal: 2130935248
+        packedYawScale: 246473688
+        packedVariation: 3937586176
+      - worldPosition: {x: 1717.7418, y: 6.0367866, z: -303.0793}
+        packedNormal: 2125233639
+        packedYawScale: 185227926
+        packedVariation: 1644205568
+      - worldPosition: {x: 1718.1528, y: 6.077975, z: -302.57172}
+        packedNormal: 2151251589
+        packedYawScale: 209808850
+        packedVariation: 893852416
+      - worldPosition: {x: 1717.6556, y: 6.035437, z: -302.26288}
+        packedNormal: 2151251589
+        packedYawScale: 174200491
+        packedVariation: 72766720
+      - worldPosition: {x: 1717.789, y: 6.04673, z: -301.67273}
+        packedNormal: 2111667982
+        packedYawScale: 251257446
+        packedVariation: 346482176
+      - worldPosition: {x: 1717.9167, y: 6.089818, z: -301.23007}
+        packedNormal: 2153545607
+        packedYawScale: 225287273
+        packedVariation: 4126567168
+      - worldPosition: {x: 1717.7086, y: 6.0693216, z: -300.41855}
+        packedNormal: 2153545607
+        packedYawScale: 210432042
+        packedVariation: 1472919040
+      - worldPosition: {x: 1718.1241, y: 6.069669, z: -299.895}
+        packedNormal: 2153545607
+        packedYawScale: 195918851
+        packedVariation: 3756608768
+      - worldPosition: {x: 1717.7644, y: 6.05342, z: -299.5057}
+        packedNormal: 2153545607
+        packedYawScale: 222230439
+        packedVariation: 1921999104
+      - worldPosition: {x: 1718.1267, y: 6.0475965, z: -298.7493}
+        packedNormal: 2154659785
+        packedYawScale: 229388593
+        packedVariation: 1570587136
+      - worldPosition: {x: 1718.1676, y: 6.043534, z: -298.54837}
+        packedNormal: 2154659785
+        packedYawScale: 277868969
+        packedVariation: 2957935872
+      - worldPosition: {x: 1718.2238, y: 5.9835014, z: -308.24896}
+        packedNormal: 2188868809
+        packedYawScale: 204161848
+        packedVariation: 1352658176
+      - worldPosition: {x: 1718.5692, y: 6.0051, z: -306.76462}
+        packedNormal: 2140306675
+        packedYawScale: 228671996
+        packedVariation: 1423605248
+      - worldPosition: {x: 1718.3986, y: 6.006879, z: -305.40933}
+        packedNormal: 2136505620
+        packedYawScale: 169656872
+        packedVariation: 1197423872
+      - worldPosition: {x: 1718.2429, y: 6.003911, z: -304.7996}
+        packedNormal: 2136505620
+        packedYawScale: 215160463
+        packedVariation: 3273469952
+      - worldPosition: {x: 1718.4811, y: 6.057496, z: -304.3472}
+        packedNormal: 2136505620
+        packedYawScale: 176811516
+        packedVariation: 1953784064
+      - worldPosition: {x: 1718.5406, y: 6.114762, z: -303.1147}
+        packedNormal: 2151251589
+        packedYawScale: 214586758
+        packedVariation: 2027850240
+      - worldPosition: {x: 1718.4795, y: 6.1077166, z: -301.44543}
+        packedNormal: 2111667982
+        packedYawScale: 251997380
+        packedVariation: 3717859840
+      - worldPosition: {x: 1718.6462, y: 6.106805, z: -301.17612}
+        packedNormal: 2153545607
+        packedYawScale: 208924174
+        packedVariation: 3374109184
+      - worldPosition: {x: 1718.3961, y: 6.094363, z: -300.84494}
+        packedNormal: 2153545607
+        packedYawScale: 247230431
+        packedVariation: 3185736960
+      - worldPosition: {x: 1718.3837, y: 6.074652, z: -299.82523}
+        packedNormal: 2154659785
+        packedYawScale: 264207696
+        packedVariation: 3947350272
+      - worldPosition: {x: 1718.5133, y: 6.0644155, z: -299.30582}
+        packedNormal: 2154659785
+        packedYawScale: 253544257
+        packedVariation: 592169216
+      - worldPosition: {x: 1718.7294, y: 6.052748, z: -298.83655}
+        packedNormal: 2165407824
+        packedYawScale: 194095065
+        packedVariation: 687050752
+      - worldPosition: {x: 1718.252, y: 6.043304, z: -298.52905}
+        packedNormal: 2165407824
+        packedYawScale: 254047360
+        packedVariation: 2236214016
+      - worldPosition: {x: 1718.7451, y: 5.9969144, z: -297.85132}
+        packedNormal: 2165407824
+        packedYawScale: 285298351
+        packedVariation: 2067047680
+      - worldPosition: {x: 1718.7517, y: 6.03657, z: -306.70273}
+        packedNormal: 2140306675
+        packedYawScale: 174981154
+        packedVariation: 1921268992
+      - worldPosition: {x: 1718.8917, y: 6.072427, z: -305.8762}
+        packedNormal: 2142731534
+        packedYawScale: 240846493
+        packedVariation: 186865920
+      - worldPosition: {x: 1718.7874, y: 6.1024947, z: -300.86356}
+        packedNormal: 2154659785
+        packedYawScale: 246508729
+        packedVariation: 2554582016
+      - worldPosition: {x: 1718.9303, y: 6.099732, z: -300.6702}
+        packedNormal: 2154659785
+        packedYawScale: 177960560
+        packedVariation: 380782592
+      - worldPosition: {x: 1719.1621, y: 6.086285, z: -299.95792}
+        packedNormal: 2154659785
+        packedYawScale: 202403780
+        packedVariation: 4193847552
+      - worldPosition: {x: 1718.8948, y: 6.0706763, z: -299.39615}
+        packedNormal: 2154659785
+        packedYawScale: 230717063
+        packedVariation: 585747200
+      - worldPosition: {x: 1718.8429, y: 6.0416865, z: -298.6737}
+        packedNormal: 2165407824
+        packedYawScale: 274414850
+        packedVariation: 3563642112
+      - worldPosition: {x: 1719.2216, y: 6.014172, z: -298.29688}
+        packedNormal: 2165407824
+        packedYawScale: 273955800
+        packedVariation: 2906103296
+      - worldPosition: {x: 1718.9102, y: 5.9838243, z: -297.66736}
+        packedNormal: 2165407824
+        packedYawScale: 168273948
+        packedVariation: 2424447232
+      - worldPosition: {x: 1719.3666, y: 6.0964456, z: -300.30875}
+        packedNormal: 2154659785
+        packedYawScale: 229769702
+        packedVariation: 3999996672
+      - worldPosition: {x: 1719.7794, y: 6.092933, z: -299.94876}
+        packedNormal: 2154659785
+        packedYawScale: 237859950
+        packedVariation: 1093652736
+      - worldPosition: {x: 1719.5728, y: 6.0797105, z: -299.56213}
+        packedNormal: 2165407824
+        packedYawScale: 230092823
+        packedVariation: 3530140160
+      - worldPosition: {x: 1719.7366, y: 6.031656, z: -298.75793}
+        packedNormal: 2165407824
+        packedYawScale: 258168585
+        packedVariation: 3968288256
+      - worldPosition: {x: 1719.6859, y: 6.022182, z: -298.5752}
+        packedNormal: 2165407824
+        packedYawScale: 196994560
+        packedVariation: 2811307776
+      - worldPosition: {x: 1720.2697, y: 6.0958724, z: -300.05298}
+        packedNormal: 2165407824
+        packedYawScale: 255279311
+        packedVariation: 1154152192
+      - worldPosition: {x: 1720.057, y: 6.056928, z: -299.30005}
+        packedNormal: 2165407824
+        packedYawScale: 206911578
+        packedVariation: 2032859392
+      - worldPosition: {x: 1720.2782, y: 6.0463276, z: -299.1608}
+        packedNormal: 2165014513
+        packedYawScale: 224536502
+        packedVariation: 2673319424
+      - worldPosition: {x: 1720.7869, y: 6.0772433, z: -299.67776}
+        packedNormal: 2172878679
+        packedYawScale: 221219910
+        packedVariation: 2724163840
+      - worldPosition: {x: 1720.9769, y: 6.100826, z: -299.88834}
+        packedNormal: 2172878679
+        packedYawScale: 223447348
+        packedVariation: 382662912
+      - worldPosition: {x: 1721.3632, y: 6.0698276, z: -299.33487}
+        packedNormal: 2172878679
+        packedYawScale: 259408570
+        packedVariation: 923886848
+      - worldPosition: {x: 1721.4163, y: 6.0493655, z: -299.0574}
+        packedNormal: 2172878679
+        packedYawScale: 183100863
+        packedVariation: 592854528
+    candidateDebugPositions:
+    - {x: 1696.0902, y: 0, z: -318.45285}
+    - {x: 1696.105, y: 0, z: -315.1993}
+    - {x: 1696.1665, y: 0, z: -311.62244}
+    - {x: 1696.1107, y: 0, z: -310.2801}
+    - {x: 1696.1754, y: 0, z: -310.09485}
+    - {x: 1696.1688, y: 0, z: -308.00485}
+    - {x: 1696.1295, y: 0, z: -307.64102}
+    - {x: 1696.0841, y: 0, z: -306.79193}
+    - {x: 1696.0668, y: 0, z: -305.37628}
+    - {x: 1696.1559, y: 0, z: -302.98462}
+    - {x: 1696.0967, y: 0, z: -302.0615}
+    - {x: 1696.1105, y: 0, z: -301.89886}
+    - {x: 1696.1727, y: 0, z: -300.25714}
+    - {x: 1696.0344, y: 0, z: -299.30185}
+    - {x: 1696.1611, y: 0, z: -298.86438}
+    - {x: 1696.1779, y: 0, z: -296.04916}
+    - {x: 1696.0765, y: 0, z: -295.20105}
+    - {x: 1696.0201, y: 0, z: -291.88177}
+    - {x: 1696.4539, y: 0, z: -319.87378}
+    - {x: 1696.4459, y: 0, z: -319.01096}
+    - {x: 1696.6816, y: 0, z: -318.80038}
+    - {x: 1696.2428, y: 0, z: -317.9492}
+    - {x: 1696.5875, y: 0, z: -317.48712}
+    - {x: 1696.7006, y: 0, z: -316.9416}
+    - {x: 1696.2482, y: 0, z: -316.63556}
+    - {x: 1696.5574, y: 0, z: -315.99805}
+    - {x: 1696.5204, y: 0, z: -315.58408}
+    - {x: 1696.5839, y: 0, z: -315.02588}
+    - {x: 1696.5787, y: 0, z: -314.49}
+    - {x: 1696.5054, y: 0, z: -313.51523}
+    - {x: 1696.6887, y: 0, z: -313.32962}
+    - {x: 1696.3585, y: 0, z: -312.93896}
+    - {x: 1696.2781, y: 0, z: -312.26862}
+    - {x: 1696.579, y: 0, z: -311.6784}
+    - {x: 1696.5985, y: 0, z: -310.8791}
+    - {x: 1696.3357, y: 0, z: -310.40173}
+    - {x: 1696.2751, y: 0, z: -309.74506}
+    - {x: 1696.4551, y: 0, z: -309.31128}
+    - {x: 1696.4697, y: 0, z: -308.72165}
+    - {x: 1696.6274, y: 0, z: -308.16684}
+    - {x: 1696.6775, y: 0, z: -307.9082}
+    - {x: 1696.6151, y: 0, z: -307.43466}
+    - {x: 1696.2874, y: 0, z: -306.77954}
+    - {x: 1696.2013, y: 0, z: -306.17834}
+    - {x: 1696.7466, y: 0, z: -305.74454}
+    - {x: 1696.6912, y: 0, z: -305.1076}
+    - {x: 1696.4403, y: 0, z: -304.16217}
+    - {x: 1696.6387, y: 0, z: -303.89288}
+    - {x: 1696.7109, y: 0, z: -303.12885}
+    - {x: 1696.2275, y: 0, z: -302.74384}
+    - {x: 1696.3815, y: 0, z: -302.29828}
+    - {x: 1696.4973, y: 0, z: -301.7699}
+    - {x: 1696.6857, y: 0, z: -301.3304}
+    - {x: 1696.7147, y: 0, z: -300.7617}
+    - {x: 1696.231, y: 0, z: -299.79953}
+    - {x: 1696.2615, y: 0, z: -299.50684}
+    - {x: 1696.3142, y: 0, z: -299.10156}
+    - {x: 1696.2681, y: 0, z: -298.3741}
+    - {x: 1696.3698, y: 0, z: -297.58737}
+    - {x: 1696.4476, y: 0, z: -297.0351}
+    - {x: 1696.4929, y: 0, z: -296.87335}
+    - {x: 1696.4254, y: 0, z: -295.98203}
+    - {x: 1696.7424, y: 0, z: -295.3977}
+    - {x: 1696.4608, y: 0, z: -294.86578}
+    - {x: 1696.479, y: 0, z: -294.72803}
+    - {x: 1696.6888, y: 0, z: -293.83145}
+    - {x: 1696.2538, y: 0, z: -293.16666}
+    - {x: 1696.431, y: 0, z: -293.12338}
+    - {x: 1696.5426, y: 0, z: -292.4377}
+    - {x: 1696.5317, y: 0, z: -291.5607}
+    - {x: 1696.4375, y: 0, z: -291.08978}
+    - {x: 1696.5355, y: 0, z: -290.90836}
+    - {x: 1696.5983, y: 0, z: -289.93365}
+    - {x: 1696.7245, y: 0, z: -289.63925}
+    - {x: 1696.574, y: 0, z: -289.24524}
+    - {x: 1696.7091, y: 0, z: -288.35834}
+    - {x: 1696.9517, y: 0, z: -319.59543}
+    - {x: 1696.9403, y: 0, z: -319.14987}
+    - {x: 1696.7987, y: 0, z: -318.53085}
+    - {x: 1696.8353, y: 0, z: -317.92596}
+    - {x: 1697.0186, y: 0, z: -317.88083}
+    - {x: 1696.8916, y: 0, z: -317.01654}
+    - {x: 1697.2498, y: 0, z: -316.39047}
+    - {x: 1697.2466, y: 0, z: -316.16736}
+    - {x: 1697.0217, y: 0, z: -315.4047}
+    - {x: 1697.1418, y: 0, z: -314.61807}
+    - {x: 1696.7645, y: 0, z: -314.47702}
+    - {x: 1697.1207, y: 0, z: -313.69632}
+    - {x: 1696.9453, y: 0, z: -313.30725}
+    - {x: 1697.1254, y: 0, z: -312.40656}
+    - {x: 1697.1378, y: 0, z: -312.09805}
+    - {x: 1696.9695, y: 0, z: -311.6806}
+    - {x: 1697.1876, y: 0, z: -310.8584}
+    - {x: 1697.2461, y: 0, z: -310.32687}
+    - {x: 1696.81, y: 0, z: -309.95743}
+    - {x: 1696.7545, y: 0, z: -309.544}
+    - {x: 1697.0405, y: 0, z: -309.09863}
+    - {x: 1697.0648, y: 0, z: -308.34006}
+    - {x: 1697.2487, y: 0, z: -307.99707}
+    - {x: 1696.9375, y: 0, z: -307.16}
+    - {x: 1697.0789, y: 0, z: -306.50208}
+    - {x: 1697.1686, y: 0, z: -306.30527}
+    - {x: 1696.9545, y: 0, z: -305.36725}
+    - {x: 1697.1074, y: 0, z: -305.1129}
+    - {x: 1697.2239, y: 0, z: -304.59567}
+    - {x: 1697.099, y: 0, z: -303.60995}
+    - {x: 1696.8309, y: 0, z: -303.0607}
+    - {x: 1696.7798, y: 0, z: -302.58557}
+    - {x: 1697.2296, y: 0, z: -302.47205}
+    - {x: 1697.062, y: 0, z: -301.7237}
+    - {x: 1697.068, y: 0, z: -301.0196}
+    - {x: 1697.1211, y: 0, z: -300.84543}
+    - {x: 1697.0533, y: 0, z: -300.16748}
+    - {x: 1697.1874, y: 0, z: -299.64484}
+    - {x: 1696.8129, y: 0, z: -298.9446}
+    - {x: 1696.7987, y: 0, z: -298.20752}
+    - {x: 1697.1125, y: 0, z: -298.02875}
+    - {x: 1696.9453, y: 0, z: -297.3731}
+    - {x: 1696.7817, y: 0, z: -296.75903}
+    - {x: 1697.2482, y: 0, z: -296.1244}
+    - {x: 1696.9653, y: 0, z: -295.60718}
+    - {x: 1696.8077, y: 0, z: -295.20877}
+    - {x: 1696.9382, y: 0, z: -294.68588}
+    - {x: 1697.1919, y: 0, z: -294.1155}
+    - {x: 1696.9054, y: 0, z: -293.31393}
+    - {x: 1696.9796, y: 0, z: -293.02026}
+    - {x: 1697.2601, y: 0, z: -292.11664}
+    - {x: 1696.917, y: 0, z: -292.03497}
+    rejectedDebugSamples:
+    - worldPosition: {x: 1696.0902, y: 0, z: -318.45285}
+      reason: 1
+    - worldPosition: {x: 1696.105, y: 0, z: -315.1993}
+      reason: 1
+    - worldPosition: {x: 1696.1665, y: 0, z: -311.62244}
+      reason: 1
+    - worldPosition: {x: 1696.1107, y: 0, z: -310.2801}
+      reason: 1
+    - worldPosition: {x: 1696.1754, y: 0, z: -310.09485}
+      reason: 1
+    - worldPosition: {x: 1696.1688, y: 0, z: -308.00485}
+      reason: 1
+    - worldPosition: {x: 1696.1295, y: 0, z: -307.64102}
+      reason: 1
+    - worldPosition: {x: 1696.0841, y: 0, z: -306.79193}
+      reason: 1
+    - worldPosition: {x: 1696.0668, y: 0, z: -305.37628}
+      reason: 1
+    - worldPosition: {x: 1696.1559, y: 0, z: -302.98462}
+      reason: 1
+    - worldPosition: {x: 1696.0967, y: 0, z: -302.0615}
+      reason: 1
+    - worldPosition: {x: 1696.1105, y: 0, z: -301.89886}
+      reason: 1
+    - worldPosition: {x: 1696.1727, y: 0, z: -300.25714}
+      reason: 1
+    - worldPosition: {x: 1696.0344, y: 0, z: -299.30185}
+      reason: 1
+    - worldPosition: {x: 1696.1611, y: 0, z: -298.86438}
+      reason: 1
+    - worldPosition: {x: 1696.1779, y: 0, z: -296.04916}
+      reason: 1
+    - worldPosition: {x: 1696.0765, y: 0, z: -295.20105}
+      reason: 1
+    - worldPosition: {x: 1696.0201, y: 0, z: -291.88177}
+      reason: 1
+    - worldPosition: {x: 1696.4539, y: 0, z: -319.87378}
+      reason: 1
+    - worldPosition: {x: 1696.4459, y: 0, z: -319.01096}
+      reason: 1
+    - worldPosition: {x: 1696.6816, y: 0, z: -318.80038}
+      reason: 1
+    - worldPosition: {x: 1696.2428, y: 0, z: -317.9492}
+      reason: 1
+    - worldPosition: {x: 1696.5875, y: 0, z: -317.48712}
+      reason: 1
+    - worldPosition: {x: 1696.7006, y: 0, z: -316.9416}
+      reason: 1
+    - worldPosition: {x: 1696.2482, y: 0, z: -316.63556}
+      reason: 1
+    - worldPosition: {x: 1696.5574, y: 0, z: -315.99805}
+      reason: 1
+    - worldPosition: {x: 1696.5204, y: 0, z: -315.58408}
+      reason: 1
+    - worldPosition: {x: 1696.5839, y: 0, z: -315.02588}
+      reason: 1
+    - worldPosition: {x: 1696.5787, y: 0, z: -314.49}
+      reason: 1
+    - worldPosition: {x: 1696.5054, y: 0, z: -313.51523}
+      reason: 1
+    - worldPosition: {x: 1696.6887, y: 0, z: -313.32962}
+      reason: 1
+    - worldPosition: {x: 1696.3585, y: 0, z: -312.93896}
+      reason: 1
+    - worldPosition: {x: 1696.2781, y: 0, z: -312.26862}
+      reason: 1
+    - worldPosition: {x: 1696.579, y: 0, z: -311.6784}
+      reason: 1
+    - worldPosition: {x: 1696.5985, y: 0, z: -310.8791}
+      reason: 1
+    - worldPosition: {x: 1696.3357, y: 0, z: -310.40173}
+      reason: 1
+    - worldPosition: {x: 1696.2751, y: 0, z: -309.74506}
+      reason: 1
+    - worldPosition: {x: 1696.4551, y: 0, z: -309.31128}
+      reason: 1
+    - worldPosition: {x: 1696.4697, y: 0, z: -308.72165}
+      reason: 1
+    - worldPosition: {x: 1696.6274, y: 0, z: -308.16684}
+      reason: 1
+    - worldPosition: {x: 1696.6775, y: 0, z: -307.9082}
+      reason: 1
+    - worldPosition: {x: 1696.6151, y: 0, z: -307.43466}
+      reason: 1
+    - worldPosition: {x: 1696.2874, y: 0, z: -306.77954}
+      reason: 1
+    - worldPosition: {x: 1696.2013, y: 0, z: -306.17834}
+      reason: 1
+    - worldPosition: {x: 1696.7466, y: 0, z: -305.74454}
+      reason: 1
+    - worldPosition: {x: 1696.6912, y: 0, z: -305.1076}
+      reason: 1
+    - worldPosition: {x: 1696.4403, y: 0, z: -304.16217}
+      reason: 1
+    - worldPosition: {x: 1696.6387, y: 0, z: -303.89288}
+      reason: 1
+    - worldPosition: {x: 1696.7109, y: 0, z: -303.12885}
+      reason: 1
+    - worldPosition: {x: 1696.2275, y: 0, z: -302.74384}
+      reason: 1
+    - worldPosition: {x: 1696.3815, y: 0, z: -302.29828}
+      reason: 1
+    - worldPosition: {x: 1696.4973, y: 0, z: -301.7699}
+      reason: 1
+    - worldPosition: {x: 1696.6857, y: 0, z: -301.3304}
+      reason: 1
+    - worldPosition: {x: 1696.7147, y: 0, z: -300.7617}
+      reason: 1
+    - worldPosition: {x: 1696.231, y: 0, z: -299.79953}
+      reason: 1
+    - worldPosition: {x: 1696.2615, y: 0, z: -299.50684}
+      reason: 1
+    - worldPosition: {x: 1696.3142, y: 0, z: -299.10156}
+      reason: 1
+    - worldPosition: {x: 1696.2681, y: 0, z: -298.3741}
+      reason: 1
+    - worldPosition: {x: 1696.3698, y: 0, z: -297.58737}
+      reason: 1
+    - worldPosition: {x: 1696.4476, y: 0, z: -297.0351}
+      reason: 1
+    - worldPosition: {x: 1696.4929, y: 0, z: -296.87335}
+      reason: 1
+    - worldPosition: {x: 1696.4254, y: 0, z: -295.98203}
+      reason: 1
+    - worldPosition: {x: 1696.7424, y: 0, z: -295.3977}
+      reason: 1
+    - worldPosition: {x: 1696.4608, y: 0, z: -294.86578}
+      reason: 1
+    - worldPosition: {x: 1696.479, y: 0, z: -294.72803}
+      reason: 1
+    - worldPosition: {x: 1696.6888, y: 0, z: -293.83145}
+      reason: 1
+    - worldPosition: {x: 1696.2538, y: 0, z: -293.16666}
+      reason: 1
+    - worldPosition: {x: 1696.431, y: 0, z: -293.12338}
+      reason: 1
+    - worldPosition: {x: 1696.5426, y: 0, z: -292.4377}
+      reason: 1
+    - worldPosition: {x: 1696.5317, y: 0, z: -291.5607}
+      reason: 1
+    - worldPosition: {x: 1696.4375, y: 0, z: -291.08978}
+      reason: 1
+    - worldPosition: {x: 1696.5355, y: 0, z: -290.90836}
+      reason: 1
+    - worldPosition: {x: 1696.5983, y: 0, z: -289.93365}
+      reason: 1
+    - worldPosition: {x: 1696.7245, y: 0, z: -289.63925}
+      reason: 1
+    - worldPosition: {x: 1696.574, y: 0, z: -289.24524}
+      reason: 1
+    - worldPosition: {x: 1696.7091, y: 0, z: -288.35834}
+      reason: 1
+    - worldPosition: {x: 1696.9517, y: 0, z: -319.59543}
+      reason: 1
+    - worldPosition: {x: 1696.9403, y: 0, z: -319.14987}
+      reason: 1
+    - worldPosition: {x: 1696.7987, y: 0, z: -318.53085}
+      reason: 1
+    - worldPosition: {x: 1696.8353, y: 0, z: -317.92596}
+      reason: 1
+    - worldPosition: {x: 1697.0186, y: 0, z: -317.88083}
+      reason: 1
+    - worldPosition: {x: 1696.8916, y: 0, z: -317.01654}
+      reason: 1
+    - worldPosition: {x: 1697.2498, y: 0, z: -316.39047}
+      reason: 1
+    - worldPosition: {x: 1697.2466, y: 0, z: -316.16736}
+      reason: 1
+    - worldPosition: {x: 1697.0217, y: 0, z: -315.4047}
+      reason: 1
+    - worldPosition: {x: 1697.1418, y: 0, z: -314.61807}
+      reason: 1
+    - worldPosition: {x: 1696.7645, y: 0, z: -314.47702}
+      reason: 1
+    - worldPosition: {x: 1697.1207, y: 0, z: -313.69632}
+      reason: 1
+    - worldPosition: {x: 1696.9453, y: 0, z: -313.30725}
+      reason: 1
+    - worldPosition: {x: 1697.1254, y: 0, z: -312.40656}
+      reason: 1
+    - worldPosition: {x: 1697.1378, y: 0, z: -312.09805}
+      reason: 1
+    - worldPosition: {x: 1696.9695, y: 0, z: -311.6806}
+      reason: 1
+    - worldPosition: {x: 1697.1876, y: 0, z: -310.8584}
+      reason: 1
+    - worldPosition: {x: 1697.2461, y: 0, z: -310.32687}
+      reason: 1
+    - worldPosition: {x: 1696.81, y: 0, z: -309.95743}
+      reason: 1
+    - worldPosition: {x: 1696.7545, y: 0, z: -309.544}
+      reason: 1
+    - worldPosition: {x: 1697.0405, y: 0, z: -309.09863}
+      reason: 1
+    - worldPosition: {x: 1697.0648, y: 0, z: -308.34006}
+      reason: 1
+    - worldPosition: {x: 1697.2487, y: 0, z: -307.99707}
+      reason: 1
+    - worldPosition: {x: 1696.9375, y: 0, z: -307.16}
+      reason: 1
+    - worldPosition: {x: 1697.0789, y: 0, z: -306.50208}
+      reason: 1
+    - worldPosition: {x: 1697.1686, y: 0, z: -306.30527}
+      reason: 1
+    - worldPosition: {x: 1696.9545, y: 0, z: -305.36725}
+      reason: 1
+    - worldPosition: {x: 1697.1074, y: 0, z: -305.1129}
+      reason: 1
+    - worldPosition: {x: 1697.2239, y: 0, z: -304.59567}
+      reason: 1
+    - worldPosition: {x: 1697.099, y: 0, z: -303.60995}
+      reason: 1
+    - worldPosition: {x: 1696.8309, y: 0, z: -303.0607}
+      reason: 1
+    - worldPosition: {x: 1696.7798, y: 0, z: -302.58557}
+      reason: 1
+    - worldPosition: {x: 1697.2296, y: 0, z: -302.47205}
+      reason: 1
+    - worldPosition: {x: 1697.062, y: 0, z: -301.7237}
+      reason: 1
+    - worldPosition: {x: 1697.068, y: 0, z: -301.0196}
+      reason: 1
+    - worldPosition: {x: 1697.1211, y: 0, z: -300.84543}
+      reason: 1
+    - worldPosition: {x: 1697.0533, y: 0, z: -300.16748}
+      reason: 1
+    - worldPosition: {x: 1697.1874, y: 0, z: -299.64484}
+      reason: 1
+    - worldPosition: {x: 1696.8129, y: 0, z: -298.9446}
+      reason: 1
+    - worldPosition: {x: 1696.7987, y: 0, z: -298.20752}
+      reason: 1
+    - worldPosition: {x: 1697.1125, y: 0, z: -298.02875}
+      reason: 1
+    - worldPosition: {x: 1696.9453, y: 0, z: -297.3731}
+      reason: 1
+    - worldPosition: {x: 1696.7817, y: 0, z: -296.75903}
+      reason: 1
+    - worldPosition: {x: 1697.2482, y: 0, z: -296.1244}
+      reason: 1
+    - worldPosition: {x: 1696.9653, y: 0, z: -295.60718}
+      reason: 1
+    - worldPosition: {x: 1696.8077, y: 0, z: -295.20877}
+      reason: 1
+    - worldPosition: {x: 1696.9382, y: 0, z: -294.68588}
+      reason: 1
+    - worldPosition: {x: 1697.1919, y: 0, z: -294.1155}
+      reason: 1
+    - worldPosition: {x: 1696.9054, y: 0, z: -293.31393}
+      reason: 1
+    - worldPosition: {x: 1696.9796, y: 0, z: -293.02026}
+      reason: 1
+    - worldPosition: {x: 1697.2601, y: 0, z: -292.11664}
+      reason: 1
+    - worldPosition: {x: 1696.917, y: 0, z: -292.03497}
+      reason: 1

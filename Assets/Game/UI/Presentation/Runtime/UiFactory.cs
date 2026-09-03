@@ -113,7 +113,11 @@ namespace MSC.UI.Presentation
                 kind,
                 fallbackTint ?? UiThemeTokens.MenuGlassNeutral,
                 raycastTarget: false);
-            AddBorderLayer(panel, UiThemeTokens.Border);
+            AddBorderLayer(
+                panel,
+                kind == UiGlassKind.HudDark
+                    ? UiThemeTokens.HudBorder
+                    : UiThemeTokens.Border);
             return panel;
         }
 

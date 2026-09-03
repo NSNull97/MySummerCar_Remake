@@ -113,6 +113,10 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 Enviro3EnvironmentBindings.FogIdValue,
                 fog,
                 EnvironmentPresentationPresetKind.Mist);
+            AssertWeather(
+                Enviro3EnvironmentBindings.DenseFogIdValue,
+                fog,
+                EnvironmentPresentationPresetKind.Mist);
         }
 
         [Test]

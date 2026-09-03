@@ -152,10 +152,20 @@ namespace MSC.Bootstrap
         }
 #endif
 
+        internal static bool ShouldBeginInMainMenu(
+            bool configuredStartInMainMenu,
+            bool hasPendingNativeRestore)
+        {
+            return configuredStartInMainMenu && !hasPendingNativeRestore;
+        }
+
         private void Awake()
         {
             ValidateRuntimeConfiguration();
-            worldInstaller.ConfigureGameplayActivationDeferred(startInMainMenu);
+            bool beginInMainMenu = ShouldBeginInMainMenu(
+                startInMainMenu,
+                worldInstaller.NativeSaveSession?.HasPendingRestore == true);
+            worldInstaller.ConfigureGameplayActivationDeferred(beginInMainMenu);
 
             GameObject uiObject = new GameObject("Production Game UI");
             uiObject.transform.SetParent(
@@ -168,7 +178,10 @@ namespace MSC.Bootstrap
                     .GetComponentInChildren<Camera>(includeInactive: true);
                 uiRoot = uiObject.AddComponent<GameUiRoot>();
                 uiRoot.Initialize(new GameUiDependencies(
-                    () => worldInstaller != null && worldInstaller.IsReady,
+                    // The static main menu does not require gameplay scenes.
+                    // Restored sessions still wait for the production world.
+                    () => worldInstaller != null &&
+                        (beginInMainMenu || worldInstaller.IsReady),
                     worldInstaller.Environment != null
                         ? worldInstaller.Environment.GameTime
                         : null,
@@ -182,12 +195,34 @@ namespace MSC.Bootstrap
                         Application.persistentDataPath,
                         SettingsDirectoryName,
                         SettingsFileName),
-                    startInMainMenu,
+                    beginInMainMenu,
                     backdropCamera,
                     mainMenuBackdrop,
                     mainMenuLogo,
                     gameplaySessionGate: worldInstaller,
-                    uiBlurShader: uiBlurShader));
+                    uiBlurShader: uiBlurShader,
+                    saveService: worldInstaller.NativeSaveSession?.SaveService,
+                    requestLoad: worldInstaller.NativeSaveSession != null
+                        ? worldInstaller.NativeSaveSession.RequestLoad
+                        : null,
+                    createSaveRequest: worldInstaller.NativeSaveSession != null
+                        ? worldInstaller.NativeSaveSession.CreateSaveRequest
+                        : null,
+                    preferredSaveSlotId:
+                        worldInstaller.NativeSaveSession?.ActiveSlotId,
+                    initialSaveStatus:
+                        worldInstaller.NativeSaveSession?.LastLoadFailure,
+                    initialSaveReadStatus:
+                        worldInstaller.NativeSaveSession?.LastLoadReadStatus,
+                    playerNeeds: worldInstaller.PlayerNeeds,
+                    playerMoney: worldInstaller.EconomyRuntime,
+                    openDeveloperTools:
+                        worldInstaller.DeveloperConsole == null
+                            ? null
+                            : new Action(
+                                worldInstaller.DeveloperConsole.Open),
+                    configureNewGameVehiclePaint:
+                        worldInstaller.TryConfigureNewGameSatsumaPaint));
             }
             catch
             {

@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06839abe34edc9845858b5a2b93818a4, type: 3}
+  m_Name: AntiAliasingSettings
+  m_EditorClassIdentifier: MSC.Presentation.AntiAliasing.Runtime::MSC.Presentation.AntiAliasing.AntiAliasingSettings
+  defaultPreset: 2
+  persistPlayerSelection: 1
+  low:
+    mode: 1
+    sharpening: 0
+    antiFlicker: 0.35
+    motionVectorRejection: 0.2
+    ringingReduction: 0.25
+    historySharpening: 0.1
+    antiHistoryRinging: 0
+    baseBlendFactor: 0.72
+    jitterScale: 0.8
+  medium:
+    mode: 2
+    sharpening: 0
+    antiFlicker: 0.4
+    motionVectorRejection: 0.25
+    ringingReduction: 0.35
+    historySharpening: 0.12
+    antiHistoryRinging: 0
+    baseBlendFactor: 0.72
+    jitterScale: 0.8
+  high:
+    mode: 3
+    sharpening: 0.24
+    antiFlicker: 0.05
+    motionVectorRejection: 0.95
+    ringingReduction: 0.55
+    historySharpening: 0
+    antiHistoryRinging: 1
+    baseBlendFactor: 0.6
+    jitterScale: 0.7
+  ultra:
+    mode: 3
+    sharpening: 0.3
+    antiFlicker: 0.1
+    motionVectorRejection: 1
+    ringingReduction: 0.68
+    historySharpening: 0.05
+    antiHistoryRinging: 1
+    baseBlendFactor: 0.64
+    jitterScale: 0.75
+  teleportDistanceMeters: 8
+  cameraCutAngleDegrees: 70
+  fieldOfViewJumpDegrees: 5
+  auxiliaryCameraMode: 2
+  transparentMotionVectors: 1
+  showDevelopmentOverlay: 1

@@ -248,7 +248,7 @@ MonoBehaviour:
     supportTransparentBackface: 1
     supportTransparentDepthPrepass: 1
     supportTransparentDepthPostpass: 1
-    colorBufferFormat: 74
+    colorBufferFormat: 48
     depthBufferFormat: 0
     supportCustomPass: 1
     supportVariableRateShading: 1
@@ -297,7 +297,7 @@ MonoBehaviour:
       reflectionCubemapSize: 256
       maxEnvLightsOnScreen: 32
       reflectionCacheCompressed: 1
-      reflectionProbeFormat: 74
+      reflectionProbeFormat: 48
       reflectionProbeTexCacheSize: 4096
       reflectionProbeTexLastValidCubeMip: 3
       reflectionProbeTexLastValidPlanarMip: 0
@@ -365,22 +365,23 @@ MonoBehaviour:
       lutFormat: 48
       bufferFormat: 74
     dynamicResolutionSettings:
-      enabled: 0
+      enabled: 1
       useMipBias: 0
       advancedUpscalersByPriority: 
-      advancedUpscalerNames: []
+      advancedUpscalerNames:
+      - DLSS
       DLSSPerfQualitySetting: 0
       DLSSInjectionPoint: 0
       TAAUInjectionPoint: 0
       STPInjectionPoint: 0
       defaultInjectionPoint: 2
-      DLSSUseOptimalSettings: 0
+      DLSSUseOptimalSettings: 1
       DLSSSharpness: 0
       DLSSRenderPresetForQuality: 0
       DLSSRenderPresetForBalanced: 0
       DLSSRenderPresetForPerformance: 0
       DLSSRenderPresetForUltraPerformance: 0
-      DLSSRenderPresetForDLAA: 0
+      DLSSRenderPresetForDLAA: 1
       FSR2EnableSharpness: 0
       FSR2Sharpness: 0
       FSR2UseOptimalSettings: 0

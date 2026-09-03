@@ -1,10 +1,64 @@
-# Current Repository State — Milestone 06A automated gate passed
+# Current Repository State — Phase 1 audit snapshot
 
-Captured: 2026-07-16
+Captured: 2026-09-02
 
 Open workspace: `E:\GAYmDev_Studio\MySummerCar_Remake`
 
-## Project baseline
+## Current status
+
+- Phase 1 Legacy Feature Complete gate: **NOT MET**.
+- Locked donor: Steam build `20171487`, revision
+  `msc-world-baseline-04a1.1-c3f2f337`.
+- Required parity rows: `517`; formally `Verified`: `4`.
+- Current formal distribution after documentation synchronization:
+  `4 Verified`, `1 KnownDifferenceApproved`, `6 ImplementedUnverified`,
+  `202 PartiallyImplemented`, `303 EvidenceCaptured`, `1 Specified`.
+- Last green Satsuma generator evidence: `11A-V1d.48`, 125 loose parts, 117
+  mounts and 260 fasteners; corrected generated-content rerun `29/29 PASS`.
+  Later current-tree edits now fail compilation on missing
+  `BuildRustHdrpTextures` and `CreatePaintSurfaceBinding` helpers, so this is
+  not a current-tree green build.
+- Native save: document v16, atomic storage/recovery/migrations, 14 registered
+  current-domain participants. Full-game persistence remains incomplete.
+- Jobs, Authority, Rally, Media, Progression and Communications have no
+  dedicated runtime module root and are not implemented as complete gameplay
+  domains.
+- Latest current-tree performance evidence is an Editor 1920x1080 home view:
+  p95 `16.217 ms`; standalone GPU/Render Thread and 2560x1440 acceptance remain
+  missing.
+- No current Windows x64 build represents the active working tree. The newest
+  existing player is the 2026-07-20 Milestone 08A UI-correction build.
+- Current Editor compilation gate: **GREEN** in Unity `6000.3.11f1` batch mode;
+  the prior missing Satsuma helper errors are no longer present in the active
+  working tree.
+- Build Settings currently contain 233 enabled scenes, including five
+  prototype scenes.
+- Phase 2 remains forbidden.
+
+Authoritative current audit:
+`Docs/Reviews/FULL_GAME_PARITY_AUDIT_2026-09-02.md`.
+Row-level authority remains
+`Docs/Phase1/LEGACY_FEATURE_PARITY_MATRIX.csv`; save coverage remains
+`Docs/Save/FULL_GAME_SAVE_COVERAGE.csv`.
+
+## Current compatibility boundary
+
+Accepted implementations through 08A remain protected integration baselines.
+Later save, item, needs, home, NPC, traffic, economy, service, Satsuma and
+vegetation work extends those foundations; it does not make the corresponding
+full donor domain `Verified`. Public APIs, stable IDs, scenes, prefabs and save
+DTOs must not be replaced without the compatibility process in `AGENTS.md`.
+
+The next active closure boundary is **11A-V1 — full Satsuma state**. It still
+requires wiring, fluids, thermal behavior, wear/damage, tuning/electrical,
+inspection/Fleetari integration and a donor-compared build-drive-save-stream
+route.
+
+## Historical project baseline through Milestone 06A
+
+The sections below preserve the detailed 2026-07-16 milestone record. Their
+old status and next-milestone statements are historical and are superseded by
+the current snapshot above.
 
 | Item | Current state |
 |---|---|
@@ -71,7 +125,7 @@ No Player or Interaction source, prefab, scene, input asset or assembly definiti
 
 ## Milestone 04B reference-data state
 
-`MSC.Core.Runtime` now owns the donor-independent reference schema, stable IDs, deterministic serialization, migration, unit conversion and validation. The dataset is `Assets/Game/Core/Configuration/ReferenceCapture/ReferenceCaptureDatabase.json`; separate remake tuning is `ReferenceTuningOverrides.json`. It contains no donor binary payload and performs no donor file I/O.
+`MSC.Core.Runtime` now owns the donor-independent reference schema, stable IDs, deterministic serialization, migration, unit conversion and validation. The evidence dataset is `Assets/Game/Core/Configuration/ReferenceCapture/ReferenceCaptureDatabase.json` (`04B.4`); separate current remake tuning is `ReferenceTuningOverrides.json` (`04B.5`). It contains no donor binary payload and performs no donor file I/O.
 
 `MSC.Editor` owns the dashboard/import/manual-observation/evidence-resolution workflow and batch validator. Absolute roots are resolved only from ignored local configuration. `Docs/ReferenceCapture/` owns procedures, index, source map, missing queue and session log. Raw screenshots, video and audio stay outside Git.
 
@@ -81,7 +135,38 @@ The current dataset `04B.4` contains 40 measurements plus 11 behavior fixtures. 
 
 `MSC.Vehicle.Assembly` owns immutable definitions, mutable runtime state, mount/fastener instances, explicit dependency graph, deterministic queries, operation results, validation and schema-v1 DTOs. It depends only on Core and Interaction. Player and Interaction keep their M4 responsibilities and communicate through the existing handoff/tool/context capabilities.
 
-The shared `M4_FirstPersonPlayer.prefab` also owns a presentation-only `CrossdotPresenter`: a permanent centered dot with a contrast outline that identifies the exact camera-ray direction without changing candidate selection or interaction state. The updated builder is version `1.1.0`; focused Player/Interaction tests pass `8/8` EditMode and `5/5` PlayMode, and both M4 and M05 validators accept the updated prefab.
+The shared `M4_FirstPersonPlayer.prefab` also owns a presentation-only
+`CrossdotPresenter`. Its 2026-09-02 revision keeps the centre dot, substitutes a
+filled open palm/check/cross for pickup, valid installation or valid removal,
+and renders at most three current actions in the lower-left canonical safe
+frame. Rounded keycaps and semantic mouse-button/wheel glyphs reflect live
+bindings. A bottom-centred dynamic stack combines explicit raycast target names
+with transient subtitles through `IPlayerSubtitleSource`. A hidden Alt-held
+layer swaps ordinary rows for the existing H/M/N gestures without showing an
+Alt tutorial. The fixed-capacity snapshot, semantic removal marker and optional
+directional wheel capabilities extend the accepted interaction boundary without
+changing gameplay authority. Player
+builder `1.2.1` now reproduces the donor-sized constant traversal capsule and
+the separated `LeanPivot`, `CameraPivot`, `ImpactPivot` and `LookPitchPivot`
+hierarchy. The lean hinge uses the exact donor local `Y = -0.3 m`, while the
+camera has a `1.7 m` body arm and posture remains camera-only. Historical
+  focused Player/Interaction historical tests pass `29/29` EditMode and
+  `12/12` PlayMode; the expanded context-action filter passes `88/88` EditMode,
+  isolated Alt input passes `1/1`, and the wider player-flow class is `8/9`
+  with one unrelated carry-spring tolerance failure. Locomotion parity passes
+  `6/6`, player-audio integration passes
+`2/2`, and regenerated real M4 garage/house traversal passes `1/1`. Active
+donor-world pit and irregular-wall feel remain manual.
+
+The 2026-08-10 traversal correction replaces the former `1.8 m x 0.32 m`
+controller with the exact donor `0.5 m x 0.12 m` capsule, retains the `0.4 m`
+step in every posture and moves crouch/deep-crouch into the view/head-clearance
+rig. Forward lean is a BetterMSC-evidenced, sphere-cast-limited `40 degree`
+body arc, entering at project-tuned `150 degrees/s` and returning smoothly at
+`120 degrees/s`. A project-owned impact event, camera kick and short eyelid
+response fire only for a forward speed above `3 m/s` against a near-frontal
+wall. A typed audio presenter reuses `audio.event.interaction.impact` through
+the active backend and shared player emitter. The mod DLL is not a dependency.
 
 Post-M05 scale correction makes installation preserve a part's world scale even when consuming an older scaled mount pose. Vehicle Assembly builder `1.1.0` additionally separates unit-scale logical mount transforms from scaled debug marker geometry. Focused M05 PlayMode passes `8/8` both against the current scene and a freshly generated scene.
 
@@ -152,7 +237,7 @@ probe at `z=-970` also retains four contacts. This proves the bounded
 collision/streaming fixture only. Both production cells remain `Rejected` /
 `NeedsRework` for donor visual and spatial parity.
 
-## Next boundary
+## Historical M06A next boundary — superseded
 
 The M06A automated gate is PASS and the user accepted its bounded prototype
 baseline on 2026-07-16; status is `Accepted / HumanAccepted`. The `Physics.Processing`

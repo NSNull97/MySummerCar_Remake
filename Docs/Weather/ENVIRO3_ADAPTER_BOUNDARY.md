@@ -62,12 +62,13 @@ Frame выражает project-owned date/time, cloud type/coverage/intensity, p
 
 | Project ID | Vendor typed asset | GUID | Статус |
 |---|---|---|---|
-| `weather.clear` | `Profiles\Weather Types\Clear Sky.asset` | `3e61e22e1ac8ba045a3b0e53c22b3629` | automated runtime mapping PASS; manual general PASS; capture missing |
-| `weather.overcast` | `Profiles\Weather Types\Cloudy 3.asset` | `11fdd63974de7ae44b1c689d499953f6` | automated runtime mapping PASS; manual general PASS; capture missing |
+| `weather.clear` | `Profiles\Weather Types\Clear Sky.asset` | `3e61e22e1ac8ba045a3b0e53c22b3629` | isolated calibrated runtime clone PASS; Finnish visual recapture pending |
+| `weather.overcast` | `Profiles\Weather Types\Cloudy 3.asset` | `11fdd63974de7ae44b1c689d499953f6` | isolated calibrated runtime clone PASS; dense-cover visual recapture pending |
 | `weather.rain` | `Profiles\Weather Types\Rain.asset` | `f736e404e0b052942bc41c35c50dccad` | automated particle runtime PASS; High visual remediation accepted; capture/Low comparison pending |
 | `weather.storm_visual` | `Profiles\Weather Types\Storm.asset` | `ebf8ae7a51a5cd342a90c81f5182d8a8` | isolated runtime/particles PASS; lightning and rain visible; capture pending |
 | `weather.night` | `Clear Sky.asset` + explicit night time | `3e61e22e1ac8ba045a3b0e53c22b3629` | compound runtime mapping PASS; manual partial; headlights capture missing |
-| `weather.fog` | `Profiles\Weather Types\Foggy.asset` | `9ba6458aa7df92d4494a7a3d40830a15` | automated runtime mapping PASS; manual fog composition PASS; capture missing |
+| `weather.fog` | `Profiles\Weather Types\Foggy.asset` | `9ba6458aa7df92d4494a7a3d40830a15` | isolated calibrated runtime clone PASS; manual fog composition recapture pending |
+| `weather.dense_fog` | `Profiles\Weather Types\Foggy.asset` | `9ba6458aa7df92d4494a7a3d40830a15` | project-owned 80 m visibility target; shared single volumetric fog owner; manual capture pending |
 | `quality.low` | `Profiles\Quality\Low.asset` | `a002704085c17f1439758fcee25df529` | automated runtime mapping PASS; performance pending |
 | `quality.high` | `Profiles\Quality\High.asset` | `60e887b1524da0a4a8f1318ef102e22a` | automated runtime mapping PASS; performance pending |
 
@@ -114,7 +115,16 @@ Manager prefab имеет `dontDestroyOnLoad: false`; WeatherLab lifecycle ос�
 8. выполняет lightning visual только при новом lightning sequence;
 9. публикует status/capabilities/diagnostics без gameplay side effects.
 
-Текущая bounded реализация применяет weather мгновенно через `ChangeWeatherInstant`. Transition duration больше нуля фиксируется warning. `EnvironmentRefresh` capability намеренно не объявлена: WeatherLab использует `EnvironmentRefreshRequest.None`, поэтому финальный preflight не создаёт warning. Только внешний non-None запрос фиксируется warning и не выполняет vendor reflection API или reflection-based fallback.
+Нулевая duration применяется через `ChangeWeatherInstant`; положительная duration
+использует typed `ChangeWeather` и уже настроенные transition speeds runtime-клона.
+Так как Enviro использует экспоненциальный per-field blend, adapter переводит
+project duration в скорость приблизительного `99%` settling и сохраняет bounded
+diagnostic о зависимости точного окончания от кадра и профиля. Production
+controller начинает target binding с нулевого progress текущего weather front и
+передаёт полное оставшееся project-owned время, поэтому cloud/fog preset больше
+не переключается дискретно в середине перехода. `EnvironmentRefresh` capability
+намеренно не объявлена: внешний non-None запрос фиксируется warning и не вызывает
+vendor reflection API или reflection-based fallback.
 
 Unchanged-value spam каждый rendered frame запрещён. Adapter применяется по revision/state changes.
 

@@ -3,7 +3,11 @@
   "rootNamespace": "MSC.Tests.PlayMode.AudioPlayerIntegration",
   "references": [
     "MSC.Audio.Runtime",
+    "MSC.Audio.Composition",
     "MSC.Audio.PlayerIntegration",
+    "MSC.Bootstrap.Runtime",
+    "MSC.Economy.Runtime",
+    "MSC.Needs.Runtime",
     "MSC.Player.Runtime"
   ],
   "includePlatforms": [],

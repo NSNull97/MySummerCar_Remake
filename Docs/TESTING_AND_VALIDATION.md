@@ -221,6 +221,50 @@ Results from 2026-07-14:
 
 The working prefab YAML was also copied into the isolated project after builder validation and passed both M4 and M05 validators. A manual Game View check remains required for subjective dot size and contrast.
 
+## 2026-09-02 contextual-action revision
+
+The player/interaction presentation now covers centre dot/open-palm/check/cross
+states, a lower-left maximum-three-row action stack with rounded binding
+keycaps, semantic mouse-button/wheel glyphs, carried-item release, signed wheel
+actions, a hidden Alt-held H/M/N layer, and a combined bottom-centre
+target/subtitle stack. The interaction, player, vehicle assembly, home, Needs,
+EditMode-test and PlayMode-test source sets compile in Unity `6000.3.11f1`
+batch mode. The focused related EditMode filter passes **88/88**
+(`TestResults/ContextActionUi.Relevant.EditMode.xml`). The isolated real Input
+System Alt press/release fixture passes **1/1**
+(`TestResults/ContextActionUi.Alt.PlayMode.xml`). The complete player-flow class
+passes **8/9** (`TestResults/ContextActionUi.PlayMode.xml`): removal and Alt are
+green; the sole failure is the existing pickup carry-spring tolerance result of
+`0.090994 m` against `<0.08 m`, outside the HUD change.
+The dedicated removal/cross fixture also passes **1/1** in
+`TestResults/ContextActionUi.Removal.PlayMode.xml`.
+
+The M4 validator was executed and remains blocked by existing duplicate stable
+IDs in M06 validation scenes and world comparison/production assets. The M05
+validator was executed and remains blocked by existing invalid aggregate/max/
+on/off fastener thresholds on 14 mounts. Neither failure names the contextual
+HUD, its prefab references or its icon assets. Canonical gameplay capture and
+user visual approval remain pending.
+
+## 2026-08-10 player traversal and lean correction
+
+Executed with Unity `6000.3.11f1` in batch mode after the project editor was
+closed:
+
+- authored prefab/capsule/pivot EditMode: **1/1 passed**;
+- focused Player/Interaction EditMode: **29/29 passed**;
+- focused Player/Interaction PlayMode: **11/11 passed**;
+- new locomotion parity fixture: **5/5 passed**;
+- existing real M4 garage/house traversal: **1/1 passed** in `27.99 s`.
+
+The locomotion fixture covers exact `0.5/0.12/0.4/0.03 m` controller values,
+a `0.36 m` corridor, a `0.28 m` threshold, BetterMSC-style head-sphere wall
+restriction and the `>3 m/s` forward-lean impact gate. Evidence XML is written
+under ignored `TestResults/PlayerLocomotion.*.xml`,
+`TestResults/PlayerInteraction.*.xml` and
+`TestResults/PlayerTraversal.WorldPilot.PlayMode.xml`. Exact active donor-world
+garage-pit and irregular stair acceptance remains a manual gameplay check.
+
 ## Post-M05 installed-part scale correction
 
 The original M05 prototype parented `MountPose` below a `0.13`-scale debug cube. `PartInstance.InstallAt` used local-space reparenting, so an installed part inherited that scale and appeared to disappear. Runtime installation now preserves world scale, while Vehicle Assembly builder `1.1.0` keeps logical mount transforms at unit scale and places marker geometry in a separate child.

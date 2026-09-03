@@ -1,0 +1,22 @@
+{
+  "name": "MSC.NPC.Runtime",
+  "rootNamespace": "MSC.NPC",
+  "references": [
+    "MSC.Audio.Runtime",
+    "MSC.Core.Runtime",
+    "MSC.Characters.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.LegacyImport.Runtime",
+    "MSC.World.Runtime",
+    "MSC.Weather.Production.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

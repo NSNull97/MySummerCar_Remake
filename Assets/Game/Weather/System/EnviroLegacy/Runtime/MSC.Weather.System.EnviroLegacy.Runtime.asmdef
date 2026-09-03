@@ -1,0 +1,21 @@
+{
+  "name": "MSC.Weather.System.EnviroLegacy.Runtime",
+  "rootNamespace": "MSC.Weather.System.EnviroLegacy",
+  "references": [
+    "MSC.Weather.Enviro3Integration",
+    "MSC.Weather.Presentation.Runtime",
+    "MSC.Weather.System.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "ENVIRO_3",
+    "ENVIRO_HDRP"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -1,0 +1,50 @@
+{
+    "schemaVersion": "1.0",
+    "generatedUtc": "2026-08-03T18:30:31.1374089Z",
+    "passed": true,
+    "sourceScene": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/World_Global_Legacy.unity",
+    "outputScene": "Assets/Scenes/Generated/3Buildings_TerrainMigration.unity",
+    "sourceSceneSha256Before": "a4b929ee74b95778f44599e26b081a70e20edcd494f929de7f624c2c632f2322",
+    "sourceSceneSha256After": "a4b929ee74b95778f44599e26b081a70e20edcd494f929de7f624c2c632f2322",
+    "inventoryMeshCount": 2606,
+    "exportedMeshCount": 2606,
+    "terrainTileCount": 72,
+    "tileCountX": 9,
+    "tileCountZ": 8,
+    "heightmapResolution": 513,
+    "tileSize": 1024.0,
+    "sampleSpacing": 2.0,
+    "sourceCoverage": 0.9949820041656494,
+    "meanHeightError": 0.13655781745910645,
+    "maximumHeightError": 3.001997709274292,
+    "maximumHeightErrorSigned": 3.001997709274292,
+    "maximumHeightErrorRecordId": "57504a4ac4413e6b",
+    "maximumHeightErrorPoint": {
+        "x": 7.800697326660156,
+        "y": -6.7164306640625,
+        "z": -2002.82177734375
+    },
+    "maximumSeamError": 0.0,
+    "maximumRoadProtrusion": 0.0,
+    "maximumRoadEdgeGap": 2.205355167388916,
+    "maximumRoadEdgeGapRecordId": "73b438e204df5b5d",
+    "maximumRoadEdgeGapPoint": {
+        "x": 1281.9091796875,
+        "y": 5.059519290924072,
+        "z": -1978.5496826171875
+    },
+    "elevatedRoadTriangleCount": 30,
+    "preservedResidualTriangleCount": 2528,
+    "roadPreservationFailureCount": 0,
+    "bridgeBurialFailureCount": 0,
+    "missingScriptCount": 0,
+    "committedGroundRendererCount": 7,
+    "residualUnsupportedCount": 123,
+    "ambiguousCount": 63,
+    "errors": [],
+    "warnings": [
+        "Official Unity FBX Exporter is not installed; OBJ/MTL is the actual export format.",
+        "30 vertically overlapping road triangles are retained as elevated RoadStructure and excluded from road-bed clearance measurements.",
+        "Maximum measured near-ground road gap is 2,20535517 m at (1281.90918, 5.05951929, -1978.54968) (record 73b438e204df5b5d); manual shoulder review is required."
+    ]
+}

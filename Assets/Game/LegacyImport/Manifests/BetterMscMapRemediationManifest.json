@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "manifestId": "bettermsc-map-remediation-01",
+  "classification": "TemporaryDirectImport",
+  "privatePhase1Only": true,
+  "source": {
+    "modAssemblySha256": "20410adbb59cf7a3252103c36301a91ca8f9c83ae3cc9d1e4f8de0bf0d17e6f8",
+    "assetBundleSha256": "8bb2bca796794f9d70c1629a2fcebfe7ea5a8243b35bf3b07243489f97d42bd6",
+    "navMeshBundleSha256": "fc7cbded988c24f0b024824ef2a348830281fdbae72dd345b229302e9abe84e",
+    "assetRipperVersion": "1.3.14",
+    "stagingRelativeRoot": "raw/bettermsc-reference/assetbundle-export/ExportedProject/Assets",
+    "selectedDependencyCount": 47,
+    "selectedDependencyFingerprintSha256": "6d6a83d5fcd903b23afb415c66e4b56b4aa6ca4ae6d815636e5acf608a69a1a3"
+  },
+  "entries": [
+    {
+      "sourceAsset": "prefabs/summer/MissingTerrain.prefab",
+      "sha256": "e6c2d7578d13e2e43ce20aa2146dd576f955a9c0bd492bf4deaf312dcf8f7762",
+      "purpose": "Close donor terrain voids with matching static collision",
+      "destinationOwner": "World_Global_Legacy"
+    },
+    {
+      "sourceAsset": "prefabs/summer/Forests.prefab",
+      "sha256": "1e054ce3d69bdd5e3d3a295151d9c4203dad1f07a4d704278532d8b33a02716f",
+      "purpose": "Replace most flat forest walls with detailed tree and bush groups plus collision",
+      "destinationOwner": "World_Global_Legacy"
+    },
+    {
+      "sourceAsset": "prefabs/summer and winter/TREEWALL_LOW.prefab",
+      "sha256": "f7550773d1e38b619bb0ddf80571865d847d415a87f25cc67f13c600405691be",
+      "purpose": "Replace the near donor TREEWALL mesh and its active collision",
+      "destinationOwner": "World_Global_Legacy"
+    },
+    {
+      "sourceAsset": "prefabs/summer and winter/TREEWALL_HI.prefab",
+      "sha256": "16404d27d434f72ff48c393029c91b3486c49d3108ac9b5082460c75e43e0115",
+      "purpose": "Replace the distant donor TREEWALL mesh",
+      "destinationOwner": "World_Global_Legacy"
+    },
+    {
+      "sourceAsset": "Texture2D/ForestCollection.png",
+      "sha256": "40b2e0c717a4e0ee9871096297e2fb4a617442b731b1048b3cf36901e20ba69e",
+      "purpose": "Temporary private Phase 1 forest atlas",
+      "destinationOwner": "BetterMscForest_HDRP"
+    }
+  ],
+  "runtimeRules": {
+    "externalBundleDependencyAllowed": false,
+    "donorScriptsAllowed": false,
+    "donorShadersAllowed": false,
+    "globalSceneLifetime": true,
+    "stableProjectOwnedMetadata": true,
+    "phase2ReplacementRequired": true
+  }
+}

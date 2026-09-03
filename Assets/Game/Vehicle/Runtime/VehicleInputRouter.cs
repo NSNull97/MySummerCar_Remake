@@ -158,6 +158,12 @@ namespace MSC.Vehicle
             ignitionOn = value;
         }
 
+        public void RestorePersistentState(bool restoredIgnitionOn)
+        {
+            ignitionOn = restoredIgnitionOn;
+            ClearTransientState();
+        }
+
         private void ResolveActions()
         {
             if (actionsResolved || inputActions == null)

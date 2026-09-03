@@ -1,0 +1,21 @@
+{
+  "name": "MSC.Presentation.AntiAliasing.Tests.PlayMode",
+  "rootNamespace": "MSC.Presentation.AntiAliasing.Tests.PlayMode",
+  "references": [
+    "MSC.Presentation.AntiAliasing.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

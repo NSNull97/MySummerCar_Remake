@@ -1,0 +1,166 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0880931c45ebc94486b4b8bf3c0f82b, type: 3}
+  m_Name: MapVegetationPlacementSettings
+  m_EditorClassIdentifier: MSC.Editor::MSC.Editor.Vegetation.MapVegetationPlacementSettings
+  sourceGlobalScenePath: 
+  sourceCellScenePaths: []
+  seed: 20260831
+  cellSizeMeters: 512
+  donorTranslation: {x: 0, y: 0, z: 0}
+  donorRotationDegrees: {x: 0, y: 0, z: 0}
+  donorScale: {x: 1, y: 1, z: 1}
+  allowedGroundLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  disallowedLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  allowedGroundTags: []
+  disallowedTags: []
+  allowedGroundMaterials: []
+  disallowedMaterials: []
+  canonicalNaturalGroundPaths:
+  - MAP/MESH/TERRAIN_OBJ/Grass1
+  - MAP/MESH/TERRAIN_OBJ/Grass2
+  - MAP/SkijumpHill/grass
+  - BetterMSC/MissingTerrain
+  allowTerrainSurfaces: 0
+  worldHeightRange: {x: -1000, y: 2000}
+  spatialIndexCellMeters: 32
+  exclusionRules: []
+  authoredExclusions: []
+  trafficNetwork: {fileID: 11400000, guid: 8d4b73d98eb32c7489ca741df3a59045, type: 2}
+  trafficRouteHalfWidthMeters: 3
+  grassTextureMaskEnabled: 1
+  grassTextureMinimumGreenExcess: 0.003921569
+  grassTextureMinimumSaturation: 0.1
+  grassTextureMinimumValue: 0.03
+  grassTextureGreenDilationPixels: 3
+  grassTextureCarpetRadiusPixels: 12
+  grassTextureCarpetMinimumGreenFraction: 0.3
+  grassTextureCarpetMinimumSectors: 3
+  grassTextureRejectUnsupported: 1
+  grassTextureCanonicalPaths:
+  - MAP/MESH/TERRAIN_OBJ/Grass1
+  - MAP/MESH/TERRAIN_OBJ/Grass2
+  - MAP/SkijumpHill/grass
+  - BetterMSC/MissingTerrain
+  grassTextureMaterials: []
+  trees:
+    prefabs:
+    - {fileID: 4886997035377027459, guid: d15562c5d64cd9a47ac932343350dc79, type: 3}
+    - {fileID: 7004565679546130129, guid: e0c8687f80ce36047a44891c77a40a4d, type: 3}
+    - {fileID: 1146887108999124258, guid: 66adf03d196bc4e4b9c6925372c06159, type: 3}
+    - {fileID: 7289459881885855359, guid: 12c5693f30afed94c864f4588eff164d, type: 3}
+    - {fileID: 1146992440316333213, guid: 1fd4b2ee3c7677e4c81bf709a9f69aab, type: 3}
+    - {fileID: 5227371626888130660, guid: 6ba00aaf4735c224aac3a4240aa7a818, type: 3}
+    - {fileID: 596943529900246014, guid: 761702ee9032aa1448a58109360daec2, type: 3}
+    - {fileID: 481914824425437627, guid: d035ff98f14f83f4480891f44c17ba6f, type: 3}
+    - {fileID: 7379781425853312432, guid: 8a682bc4c0a4a214d8253ba85a744bd7, type: 3}
+    - {fileID: 904607935288596383, guid: 379ff3d69bd575a40a311cb735fe5f40, type: 3}
+    - {fileID: 5727293444622364513, guid: 7c10f9881bfc5ab43a0e8f7cc7e81825, type: 3}
+    - {fileID: 4612334999232616402, guid: 094b0b07cdb5bb341b34fe47fe6420ce, type: 3}
+    - {fileID: 6931258018452897264, guid: de0957f46d22f8044a96816ab6a4b284, type: 3}
+    - {fileID: 1605401732606490949, guid: fdab057734110594f85f8625927914e5, type: 3}
+    - {fileID: 631353536117284469, guid: e4a261cf12128854d8ff76eaae222e77, type: 3}
+    - {fileID: 2899072401313821696, guid: a994ba8c97ac878489424914d4a6e774, type: 3}
+    - {fileID: 7577086378457508258, guid: cb5cbbfadb89ffa4089db57a1f05b026, type: 3}
+    - {fileID: 8343330939719001105, guid: 39324e82554919f49a538a2ec7120a10, type: 3}
+    maximumSlopeDegrees: 42
+    surfaceOffsetMeters: 0
+    scaleRange: {x: 0.92, y: 1.08}
+    minimumSpacingMeters: 1.5
+    density: 1
+    normalAlignment: 0.15
+  shrubs:
+    prefabs:
+    - {fileID: 3259815717340594955, guid: 98d5b7a2216fa25499348d1afe390778, type: 3}
+    - {fileID: 4572275239719529356, guid: ad93401977f137142aba2b0ff57fa6f3, type: 3}
+    - {fileID: 4717399249737567222, guid: 439133e2a3187804a8e6ba727f70f45e, type: 3}
+    - {fileID: 9008330582626820062, guid: fd94b27c38ac6f14cb0e280639633d5f, type: 3}
+    - {fileID: 7564557449728365914, guid: 4a16b5129533948479e5774b11dfc987, type: 3}
+    maximumSlopeDegrees: 48
+    surfaceOffsetMeters: 0
+    scaleRange: {x: 0.92, y: 1.08}
+    minimumSpacingMeters: 2
+    density: 1
+    normalAlignment: 0.35
+  grass:
+    prefabs: []
+    maximumSlopeDegrees: 52
+    surfaceOffsetMeters: 0
+    scaleRange: {x: 0.92, y: 1.08}
+    minimumSpacingMeters: 1.5
+    density: 1
+    normalAlignment: 0.8
+  clearances:
+  - kind: 1
+    treeMeters: 4.75
+    shrubMeters: 1.5
+    grassMeters: 0.94
+  - kind: 2
+    treeMeters: 4.75
+    shrubMeters: 1.5
+    grassMeters: 0.94
+  - kind: 3
+    treeMeters: 5
+    shrubMeters: 3
+    grassMeters: 1
+  - kind: 4
+    treeMeters: 3.5
+    shrubMeters: 1
+    grassMeters: 0.94
+  - kind: 5
+    treeMeters: 4
+    shrubMeters: 2
+    grassMeters: 0.94
+  - kind: 6
+    treeMeters: 5
+    shrubMeters: 2
+    grassMeters: 0.94
+  - kind: 7
+    treeMeters: 6
+    shrubMeters: 3
+    grassMeters: 0.94
+  - kind: 8
+    treeMeters: 4
+    shrubMeters: 1.5
+    grassMeters: 0.94
+  - kind: 9
+    treeMeters: 4.75
+    shrubMeters: 2
+    grassMeters: 0.94
+  - kind: 10
+    treeMeters: 3.5
+    shrubMeters: 1
+    grassMeters: 0.94
+  - kind: 11
+    treeMeters: 3
+    shrubMeters: 1
+    grassMeters: 0.94
+  - kind: 12
+    treeMeters: 3
+    shrubMeters: 1.5
+    grassMeters: 0.94
+  - kind: 13
+    treeMeters: 2
+    shrubMeters: 1
+    grassMeters: 0.94
+  - kind: 14
+    treeMeters: 2
+    shrubMeters: 1
+    grassMeters: 0.94
+  - kind: 15
+    treeMeters: 3
+    shrubMeters: 1
+    grassMeters: 0.94

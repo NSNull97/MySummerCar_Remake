@@ -278,7 +278,8 @@ namespace MSC.Weather.Enviro3Integration.Editor
             fog.globalLightProbeDimmer.Override(1f);
             Exposure exposure = GetOrAddVolumeComponent<Exposure>(profile);
             exposure.mode.Override(ExposureMode.Fixed);
-            exposure.fixedExposure.Override(10f);
+            exposure.fixedExposure.Override(
+                NativeHdrpExposureMath.FinnishSummerDaylightFixedExposureEv);
             IndirectLightingController indirectLighting =
                 GetOrAddVolumeComponent<IndirectLightingController>(profile);
             indirectLighting.active = true;

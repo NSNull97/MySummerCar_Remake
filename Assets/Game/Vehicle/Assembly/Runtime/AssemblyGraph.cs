@@ -6,7 +6,8 @@ namespace MSC.Vehicle.Assembly
     public enum AssemblyDependencyKind
     {
         InstallRequiresInstalled = 0,
-        RemovalBlockedWhileInstalled = 1
+        RemovalBlockedWhileInstalled = 1,
+        InstallRequiresBolted = 2
     }
 
     [Serializable]
@@ -56,6 +57,10 @@ namespace MSC.Vehicle.Assembly
             {
                 fasteners[i] = new FastenerInstance(definitions[i]);
             }
+
+            FastenerGroup = new FastenerGroupState(
+                authoring.Definition?.FastenerGroup,
+                fasteners);
         }
 
         public MountPointAuthoring Authoring { get; }
@@ -67,6 +72,8 @@ namespace MSC.Vehicle.Assembly
         public PartInstance InstalledPart { get; private set; }
 
         public FastenerInstance[] Fasteners => fasteners;
+
+        public FastenerGroupState FastenerGroup { get; }
 
         public bool IsOccupied => InstalledPart != null;
 
@@ -102,6 +109,9 @@ namespace MSC.Vehicle.Assembly
                 fasteners[i].ResetForInstalledPart();
             }
 
+            FastenerGroup.Reset();
+            FastenerGroup.Reevaluate(mountOccupied: true);
+
             return true;
         }
 
@@ -114,12 +124,24 @@ namespace MSC.Vehicle.Assembly
                 fasteners[i].ResetForEmptyMount();
             }
 
+            FastenerGroup.Reset();
+
             return released;
         }
 
         internal void Reset()
         {
             Release();
+        }
+
+        internal void ReevaluateFastenerGroup()
+        {
+            FastenerGroup.Reevaluate(IsOccupied);
+        }
+
+        internal bool TryRestoreFastenerGroupLatch(bool isBolted)
+        {
+            return FastenerGroup.TryRestoreLatch(isBolted, IsOccupied);
         }
     }
 
@@ -162,6 +184,24 @@ namespace MSC.Vehicle.Assembly
             return false;
         }
 
+        public bool IsPartDefinitionBolted(string partDefinitionId)
+        {
+            for (int index = 0; index < mounts.Length; index++)
+            {
+                MountPointRuntime mount = mounts[index];
+                if (mount?.InstalledPart?.Definition != null &&
+                    string.Equals(
+                        mount.InstalledPart.Definition.DefinitionId,
+                        partDefinitionId,
+                        StringComparison.Ordinal))
+                {
+                    return mount.FastenerGroup.IsBolted;
+                }
+            }
+
+            return false;
+        }
+
         public bool AreInstallPrerequisitesMet(PartDefinition part, out string missingPartId)
         {
             if (part == null)
@@ -174,7 +214,8 @@ namespace MSC.Vehicle.Assembly
             {
                 AssemblyDependency dependency = dependencies[i];
                 if (dependency == null ||
-                    dependency.Kind != AssemblyDependencyKind.InstallRequiresInstalled ||
+                    dependency.Kind != AssemblyDependencyKind.InstallRequiresInstalled &&
+                    dependency.Kind != AssemblyDependencyKind.InstallRequiresBolted ||
                     !string.Equals(
                         dependency.DependentPartDefinitionId,
                         part.DefinitionId,
@@ -183,7 +224,11 @@ namespace MSC.Vehicle.Assembly
                     continue;
                 }
 
-                if (!IsPartDefinitionInstalled(dependency.RelatedPartDefinitionId))
+                bool satisfied = dependency.Kind ==
+                        AssemblyDependencyKind.InstallRequiresBolted
+                    ? IsPartDefinitionBolted(dependency.RelatedPartDefinitionId)
+                    : IsPartDefinitionInstalled(dependency.RelatedPartDefinitionId);
+                if (!satisfied)
                 {
                     missingPartId = dependency.RelatedPartDefinitionId;
                     return false;
@@ -192,6 +237,162 @@ namespace MSC.Vehicle.Assembly
 
             missingPartId = string.Empty;
             return true;
+        }
+
+        public bool AreMountInstallPrerequisitesMet(
+            MountPointRuntime target,
+            out string blockingMountId)
+        {
+            blockingMountId = string.Empty;
+            if (target?.Definition == null)
+            {
+                return false;
+            }
+
+            string[] required = target.Definition.RequiredOccupiedMountIds;
+            for (int index = 0; index < required.Length; index++)
+            {
+                if (!TryGetMount(required[index], out MountPointRuntime mount) ||
+                    !mount.IsOccupied)
+                {
+                    blockingMountId = required[index];
+                    return false;
+                }
+            }
+
+            string[] requiredAny = target.Definition.RequiredAnyOccupiedMountIds;
+            if (requiredAny.Length > 0)
+            {
+                bool anyOccupied = false;
+                for (int index = 0; index < requiredAny.Length; index++)
+                {
+                    if (TryGetMount(requiredAny[index], out MountPointRuntime mount) &&
+                        mount.IsOccupied)
+                    {
+                        anyOccupied = true;
+                        break;
+                    }
+                }
+
+                if (!anyOccupied)
+                {
+                    blockingMountId = requiredAny[0];
+                    return false;
+                }
+            }
+
+            string[] blocked = target.Definition.BlockedWhileOccupiedMountIds;
+            for (int index = 0; index < blocked.Length; index++)
+            {
+                if (TryGetMount(blocked[index], out MountPointRuntime mount) &&
+                    mount.IsOccupied)
+                {
+                    blockingMountId = blocked[index];
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Mount-level Bolted predicates describe structural retention, not
+        /// whether the player may place the next part. InstallRequiresBolted
+        /// dependencies express the separate donor installation checks (e.g.
+        /// front spindle/wishbone); they must not create a retention cascade.
+        /// </summary>
+        public bool AreMountStructuralRetentionPrerequisitesMet(
+            MountPointRuntime target,
+            out string blockingMountId)
+        {
+            blockingMountId = string.Empty;
+            if (target?.Definition == null)
+            {
+                return false;
+            }
+
+            string[] requiredBolted = target.Definition.RequiredBoltedMountIds;
+            for (int index = 0; index < requiredBolted.Length; index++)
+            {
+                if (!TryGetMount(
+                        requiredBolted[index],
+                        out MountPointRuntime mount) ||
+                    !mount.IsOccupied ||
+                    !mount.FastenerGroup.IsBolted)
+                {
+                    blockingMountId = requiredBolted[index];
+                    return false;
+                }
+            }
+
+            string[] requiredAnyBolted =
+                target.Definition.RequiredAnyBoltedMountIds;
+            if (requiredAnyBolted.Length == 0)
+            {
+                return true;
+            }
+
+            string firstOccupiedMountId = string.Empty;
+            for (int index = 0; index < requiredAnyBolted.Length; index++)
+            {
+                if (!TryGetMount(
+                        requiredAnyBolted[index],
+                        out MountPointRuntime mount) ||
+                    !mount.IsOccupied)
+                {
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(firstOccupiedMountId))
+                {
+                    firstOccupiedMountId = mount.MountId;
+                }
+
+                if (mount.FastenerGroup.IsBolted)
+                {
+                    return true;
+                }
+            }
+
+            blockingMountId = !string.IsNullOrEmpty(firstOccupiedMountId)
+                ? firstOccupiedMountId
+                : requiredAnyBolted[0];
+            return false;
+        }
+
+        public bool IsMountDependentOn(
+            MountPointRuntime candidate,
+            MountPointRuntime prerequisite)
+        {
+            if (candidate?.Definition == null || prerequisite == null ||
+                candidate == prerequisite)
+            {
+                return false;
+            }
+
+            PartDefinition prerequisitePart =
+                prerequisite.InstalledPart?.Definition;
+            if (prerequisitePart != null && string.Equals(
+                    candidate.Definition.OwnerPartDefinitionId,
+                    prerequisitePart.DefinitionId,
+                    StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            string mountId = prerequisite.MountId;
+            return Contains(
+                       candidate.Definition.RequiredOccupiedMountIds,
+                       mountId) ||
+                   Contains(
+                       candidate.Definition.RequiredAnyOccupiedMountIds,
+                       mountId) ||
+                   Contains(
+                       candidate.Definition.RequiredBoltedMountIds,
+                       mountId) ||
+                   Contains(
+                       candidate.Definition.RequiredAnyBoltedMountIds,
+                       mountId);
         }
 
         public bool HasInstalledRemovalBlocker(PartDefinition part, out string blockerPartId)
@@ -222,7 +423,131 @@ namespace MSC.Vehicle.Assembly
                 }
             }
 
+            for (int i = 0; i < mounts.Length; i++)
+            {
+                MountPointRuntime mount = mounts[i];
+                if (mount == null || !mount.IsOccupied ||
+                    mount.Definition == null ||
+                    !string.Equals(
+                        mount.Definition.OwnerPartDefinitionId,
+                        part.DefinitionId,
+                        StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                blockerPartId = mount.InstalledPart?.Definition?.DefinitionId ??
+                                mount.MountId;
+                return true;
+            }
+
+            MountPointRuntime installedAt = FindMountForPartDefinition(
+                part.DefinitionId);
+            if (installedAt != null)
+            {
+                for (int index = 0; index < mounts.Length; index++)
+                {
+                    MountPointRuntime candidate = mounts[index];
+                    if (candidate == null || !candidate.IsOccupied ||
+                        candidate.Definition == null || candidate == installedAt)
+                    {
+                        continue;
+                    }
+
+                    if (Contains(
+                            candidate.Definition.RequiredOccupiedMountIds,
+                            installedAt.MountId) ||
+                        Contains(
+                            candidate.Definition.RequiredAnyOccupiedMountIds,
+                            installedAt.MountId) ||
+                        Contains(
+                            candidate.Definition.RequiredBoltedMountIds,
+                            installedAt.MountId) ||
+                        Contains(
+                            candidate.Definition.RequiredAnyBoltedMountIds,
+                            installedAt.MountId))
+                    {
+                        blockerPartId = candidate.InstalledPart?.Definition?.DefinitionId ??
+                            candidate.MountId;
+                        return true;
+                    }
+                }
+            }
+
             blockerPartId = string.Empty;
+            return false;
+        }
+
+        public bool HasInstalledRemovalBlocker(
+            PartInstance part,
+            out string blockerPartId)
+        {
+            if (part?.Definition == null)
+            {
+                blockerPartId = string.Empty;
+                return true;
+            }
+
+            MountPointRuntime installedAt = FindMountForPart(part);
+            if (installedAt?.Definition != null)
+            {
+                string[] blockedMountIds = installedAt.Definition
+                    .RemovalBlockedWhileOccupiedMountIds;
+                for (int index = 0; index < blockedMountIds.Length; index++)
+                {
+                    if (!TryGetMount(
+                            blockedMountIds[index],
+                            out MountPointRuntime blocker) ||
+                        !blocker.IsOccupied)
+                    {
+                        continue;
+                    }
+
+                    blockerPartId = blocker.InstalledPart?.Definition
+                        ?.DefinitionId ?? blocker.MountId;
+                    return true;
+                }
+            }
+
+            return HasInstalledRemovalBlocker(
+                part.Definition,
+                out blockerPartId);
+        }
+
+        private MountPointRuntime FindMountForPartDefinition(
+            string definitionId)
+        {
+            for (int index = 0; index < mounts.Length; index++)
+            {
+                MountPointRuntime mount = mounts[index];
+                if (mount?.InstalledPart?.Definition != null &&
+                    string.Equals(
+                        mount.InstalledPart.Definition.DefinitionId,
+                        definitionId,
+                        StringComparison.Ordinal))
+                {
+                    return mount;
+                }
+            }
+
+            return null;
+        }
+
+        private static bool Contains(string[] values, string value)
+        {
+            if (values == null)
+            {
+                return false;
+            }
+
+            for (int index = 0; index < values.Length; index++)
+            {
+                if (string.Equals(values[index], value, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
             return false;
         }
 
@@ -301,19 +626,7 @@ namespace MSC.Vehicle.Assembly
                     continue;
                 }
 
-                bool secured = true;
-                for (int fastenerIndex = 0; fastenerIndex < mount.Fasteners.Length; fastenerIndex++)
-                {
-                    FastenerInstance fastener = mount.Fasteners[fastenerIndex];
-                    if (fastener.Definition != null && fastener.Definition.RequiredForRemoval &&
-                        fastener.State != FastenerState.Tightened)
-                    {
-                        secured = false;
-                        break;
-                    }
-                }
-
-                if (secured)
+                if (mount.FastenerGroup.IsFullySafe)
                 {
                     completeCount++;
                 }

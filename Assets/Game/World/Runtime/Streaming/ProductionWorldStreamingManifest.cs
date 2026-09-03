@@ -84,6 +84,10 @@ namespace MSC.World.Streaming
         [SerializeField] private ProductionWorldGlobalScene[] globalScenes =
             Array.Empty<ProductionWorldGlobalScene>();
         [SerializeField] private ProductionWorldCellScene[] cells = Array.Empty<ProductionWorldCellScene>();
+        // Optional additive presentation layers preserve existing schema-2
+        // manifests and their gameplay-cell/save identity unchanged.
+        [SerializeField] private ProductionWorldCellLayerScene[] cellLayers =
+            Array.Empty<ProductionWorldCellLayerScene>();
         [SerializeField] private WorldGameplayCellCatalog gameplayCatalog;
 
         public int SchemaVersion => schemaVersion;
@@ -99,6 +103,8 @@ namespace MSC.World.Streaming
         public IReadOnlyList<ProductionWorldGlobalScene> GlobalScenes =>
             globalScenes ?? Array.Empty<ProductionWorldGlobalScene>();
         public IReadOnlyList<ProductionWorldCellScene> Cells => cells ?? Array.Empty<ProductionWorldCellScene>();
+        public IReadOnlyList<ProductionWorldCellLayerScene> CellLayers =>
+            cellLayers ?? Array.Empty<ProductionWorldCellLayerScene>();
         public WorldGameplayCellCatalog GameplayCatalog => gameplayCatalog;
 
         public int GetLoadingRadiusForSpeed(float speedMetersPerSecond)
@@ -283,6 +289,36 @@ namespace MSC.World.Streaming
                     errors);
             }
 
+            var layerIdentities = new HashSet<string>(StringComparer.Ordinal);
+            IReadOnlyList<ProductionWorldCellLayerScene> configuredLayers = CellLayers;
+            for (int index = 0; index < configuredLayers.Count; index++)
+            {
+                ProductionWorldCellLayerScene layer = configuredLayers[index];
+                string prefix = $"Cell layer entry {index}";
+                if (string.IsNullOrWhiteSpace(layer.LayerId))
+                {
+                    errors.Add(prefix + " has no stable layer ID.");
+                }
+                else if (!layerIdentities.Add(layer.LayerId + ":" + layer.CellId))
+                {
+                    errors.Add(prefix + " duplicates layer/cell identity.");
+                }
+
+                if (!string.Equals(layer.CellId, layer.Index.Id, StringComparison.Ordinal))
+                {
+                    errors.Add(prefix + " has a cell ID that does not match its coordinates.");
+                }
+
+                if (layer.MinimumLoadingRadiusCells < 0 ||
+                    layer.MinimumUnloadingRadiusCells < 0)
+                {
+                    errors.Add(prefix + " has a negative streaming radius.");
+                }
+
+                ValidateSceneAddress(prefix, layer.BuildIndex, layer.ScenePath,
+                    buildIndices, scenePaths, errors);
+            }
+
             if (gameplayCatalog != null)
             {
                 IReadOnlyList<string> gameplayErrors =
@@ -304,6 +340,22 @@ namespace MSC.World.Streaming
         }
 
 #if UNITY_EDITOR
+        public void ConfigureGlobalScenesForAuthoring(
+            ProductionWorldGlobalScene[] configuredGlobalScenes)
+        {
+            globalScenes = configuredGlobalScenes != null
+                ? (ProductionWorldGlobalScene[])configuredGlobalScenes.Clone()
+                : Array.Empty<ProductionWorldGlobalScene>();
+        }
+
+        public void ConfigureCellLayersForAuthoring(
+            ProductionWorldCellLayerScene[] configuredLayers)
+        {
+            cellLayers = configuredLayers != null
+                ? (ProductionWorldCellLayerScene[])configuredLayers.Clone()
+                : Array.Empty<ProductionWorldCellLayerScene>();
+        }
+
         public void ConfigureForAuthoring(
             string configuredProfileId,
             ProductionWorldProfileKind configuredProfileKind,

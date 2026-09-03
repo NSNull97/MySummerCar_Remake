@@ -4,6 +4,10 @@
 
 ## Time P0/P1
 
+- [x] Donor clock cadence extracted from the read-only `SUN/Clock` PlayMaker
+  FSM in the locked GAME scene: `MinutesAdd = 0.2` game minutes per real
+  second and `TimeScale = 300` real seconds per game hour. This yields
+  7,200 real seconds (120 minutes) per complete game day at scale 1.
 - [ ] 3 наблюдения не менее 30 real minutes: visible game clock versus monotonic timer.
 - [ ] Game/real-time ratio, display granularity, pause/menu and reload behavior.
 - [ ] Sunrise/sunset, day length and scheduled discontinuities with date/session context.

@@ -67,6 +67,10 @@ namespace MSC.UI.Presentation
             TrackSprite = CreateRoundedSprite(
                 UiThemeTokens.ProceduralTrackResolution,
                 UiThemeTokens.CornerRadiusSmallPixels);
+            NeedGradientSprite = CreateHorizontalGradientSprite(
+                64,
+                UiThemeTokens.TextPrimary,
+                UiThemeTokens.Accent);
         }
 
         public Font TextFont { get; }
@@ -85,6 +89,8 @@ namespace MSC.UI.Presentation
 
         public Sprite TrackSprite { get; }
 
+        public Sprite NeedGradientSprite { get; }
+
         public Sprite GetIcon(UiIconKind kind)
         {
             if (icons.TryGetValue(kind, out Sprite existing))
@@ -92,9 +98,52 @@ namespace MSC.UI.Presentation
                 return existing;
             }
 
-            Sprite created = CreateIcon(kind, UiThemeTokens.ProceduralIconResolution);
+            Sprite created = TryCreateImportedNeedIcon(kind, out Sprite imported)
+                ? imported
+                : CreateIcon(kind, UiThemeTokens.ProceduralIconResolution);
             icons.Add(kind, created);
             return created;
+        }
+
+        private bool TryCreateImportedNeedIcon(
+            UiIconKind kind,
+            out Sprite sprite)
+        {
+            string resourceName = kind switch
+            {
+                UiIconKind.Thirst => "droplet",
+                UiIconKind.Hunger => "utensils",
+                UiIconKind.Stress => "brain",
+                UiIconKind.Urine => "toilet",
+                UiIconKind.Fatigue => "bed-double",
+                UiIconKind.Dirtiness => "sparkles",
+                _ => string.Empty,
+            };
+            if (string.IsNullOrEmpty(resourceName))
+            {
+                sprite = null;
+                return false;
+            }
+
+            Texture2D texture = Resources.Load<Texture2D>(
+                "Icons/Needs/" + resourceName);
+            if (texture == null)
+            {
+                sprite = null;
+                return false;
+            }
+
+            sprite = Sprite.Create(
+                texture,
+                new Rect(0f, 0f, texture.width, texture.height),
+                new Vector2(0.5f, 0.5f),
+                pixelsPerUnit: 100f,
+                extrude: 0,
+                SpriteMeshType.FullRect);
+            sprite.name = "UI08A_Lucide_" + resourceName;
+            sprite.hideFlags = HideFlags.HideAndDontSave;
+            ownedObjects.Add(sprite);
+            return true;
         }
 
         public void Dispose()
@@ -150,6 +199,27 @@ namespace MSC.UI.Presentation
                 size,
                 new Vector4(radius, radius, radius, radius),
                 "UI08A_Rounded");
+        }
+
+        private Sprite CreateHorizontalGradientSprite(
+            int width,
+            Color start,
+            Color end)
+        {
+            int clampedWidth = Mathf.Max(2, width);
+            var pixels = new Color32[clampedWidth];
+            for (int x = 0; x < clampedWidth; x++)
+            {
+                float normalized = x / (float)(clampedWidth - 1);
+                pixels[x] = Color.Lerp(start, end, normalized);
+            }
+
+            return CreateSprite(
+                pixels,
+                clampedWidth,
+                1,
+                Vector4.zero,
+                "UI08A_NeedGradient");
         }
 
         private Sprite CreateRoundedBorderSprite(

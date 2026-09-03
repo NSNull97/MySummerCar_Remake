@@ -23,6 +23,7 @@ namespace MSC.Audio
         private IAudioEventHandle tireRollHandle = AudioEventHandles.Invalid;
         private bool engineLayersRequested;
         private bool tireLayerRequested;
+        private bool continuousEventPlaybackEnabled = true;
         private string activeBackendId = string.Empty;
 
         public VehicleAudioParameters LastVehicleParameters { get; private set; } =
@@ -83,6 +84,20 @@ namespace MSC.Audio
             backend = null;
             StopContinuousEvents(0f);
             activeBackendId = string.Empty;
+        }
+
+        /// <summary>
+        /// Allows a specialized vehicle presenter to retain the typed RTPC,
+        /// switch and state mapping while owning dedicated loop events. The
+        /// production default remains enabled for ordinary vehicles.
+        /// </summary>
+        public void ConfigureContinuousEventPlayback(bool enabledPlayback)
+        {
+            continuousEventPlaybackEnabled = enabledPlayback;
+            if (!continuousEventPlaybackEnabled)
+            {
+                StopContinuousEvents(0.08f);
+            }
         }
 
         public bool TryInitialize(out string failure)
@@ -302,6 +317,11 @@ namespace MSC.Audio
 
         private void UpdateContinuousEvents(in VehicleAudioParameters parameters)
         {
+            if (!continuousEventPlaybackEnabled)
+            {
+                return;
+            }
+
             bool shouldPlayEngine =
                 parameters.EngineState == VehicleAudioEngineState.Cranking ||
                 parameters.EngineState == VehicleAudioEngineState.Running;

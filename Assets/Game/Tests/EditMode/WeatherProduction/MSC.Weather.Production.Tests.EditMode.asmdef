@@ -5,7 +5,9 @@
     "MSC.Core.Runtime",
     "MSC.Weather.Runtime",
     "MSC.Weather.Presentation.Runtime",
-    "MSC.Weather.Production.Runtime"
+    "MSC.Weather.Production.Runtime",
+    "MSC.Weather.Enviro3Integration",
+    "Enviro3.Runtime"
   ],
   "includePlatforms": [
     "Editor"
@@ -15,7 +17,10 @@
   "overrideReferences": false,
   "precompiledReferences": [],
   "autoReferenced": true,
-  "defineConstraints": [],
+  "defineConstraints": [
+    "ENVIRO_3",
+    "ENVIRO_HDRP"
+  ],
   "versionDefines": [],
   "noEngineReferences": false,
   "optionalUnityReferences": [

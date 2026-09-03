@@ -95,7 +95,24 @@ InputActionAsset
 
 `InteractionTargetHost` is an explicit registry of `MonoBehaviour` capability implementations. The query never dispatches by object name. A collider without a host is an invalid/occluding target; a destroyed or unloaded host invalidates the cached candidate. The currently carried Rigidbody is the only explicit query exclusion, allowing a mount behind the held item to remain selectable without making walls or unrelated props transparent.
 
-`CrossdotPresenter` is an independent presentation-only component on the shared player prefab. It draws a small white dot with a dark outline at the exact screen center, allocates its tiny texture only when configured/enabled and does not influence raycast selection or interaction state. `InteractionDebugOverlay` remains responsible only for prompts and diagnostic text.
+`CrossdotPresenter` is an independent presentation-only component on the shared
+player prefab. It draws a centre dot, pickup palm, valid-install check or
+semantic removal cross plus a lower-left stack of at most three actions sourced
+from `PlayerInteractionController.CurrentActionSnapshot`. Effective mouse
+bindings select left/right/middle/scroll glyph variants; textual bindings use a
+rounded keycap. The same presenter draws the explicit raycast target name above
+an optional subtitle through `IPlayerSubtitleSource`, without using renderer
+bounds. It does not influence selection or interaction state.
+`InteractionDebugOverlay` is development-only diagnostic output and is not the
+production prompt renderer.
+
+The snapshot is fixed-capacity and built from the same capability checks used
+by dispatch. Optional directional incremental interfaces expose positive and
+negative mouse-wheel availability without mutating their target. While the
+hidden Alt action is held, presentation preserves the reticle and replaces the
+ordinary rows with H/M/N gesture actions; the HUD deliberately contains no Alt
+instruction row. `IRemovalInteractionTarget` similarly carries removal meaning
+without matching localized strings.
 
 Implemented capabilities have concrete uses:
 
@@ -106,7 +123,7 @@ Implemented capabilities have concrete uses:
 
 ### Physical carrying
 
-`PhysicalCarryController` does not parent the held `Rigidbody` to the camera. It disables gravity temporarily, switches to continuous collision detection, ignores only player/held colliders and drives linear/angular velocity toward a carry anchor in `FixedUpdate`. Excess separation releases the object. Original Rigidbody gravity, interpolation, damping and collision mode are restored on drop/place/throw/handoff and also through idempotent cleanup when the controller is disabled or destroyed during scene/player lifecycle changes.
+`PhysicalCarryController` does not parent the held `Rigidbody` to the camera. It disables gravity temporarily, switches to continuous collision detection, ignores only player/held colliders and drives linear/angular velocity toward a carry anchor in `FixedUpdate`. Pickup preserves the exact selected surface point as the physical grab anchor instead of snapping the Rigidbody pivot to the camera. Excess separation releases the object. Original Rigidbody gravity, interpolation, damping and collision mode are restored on drop/place/throw/handoff and also through idempotent cleanup when the controller is disabled or destroyed during scene/player lifecycle changes.
 
 Placement uses a surface ray plus overlap rejection. Throwing restores normal physics before applying an impulse. Rotation changes the carry target orientation; it does not directly teleport the visual mesh.
 
@@ -117,13 +134,88 @@ Disabling `PlayerInputRouter` clears movement and crouch intent. Mouse look/held
 | Intent | Keyboard/mouse | Gamepad |
 |---|---|---|
 | Move / look | `WASD` / mouse | left / right stick |
-| Crouch | hold `Left Ctrl` | hold right-stick press |
-| Interact, pickup, mount handoff | `E` | west button |
-| Drop | `G` | east button |
-| Place | `F` | south button |
-| Throw | left mouse | right trigger |
-| Rotate held object | hold right mouse + mouse | hold left trigger + right stick |
-| Tool activation | `R` | north button |
+| Crouch posture cycle | `Left Ctrl` | right-stick press |
+| Run | hold `Left Shift` | hold left-stick press |
+| Jump | `Space` | right shoulder |
+| Zoom | hold `C` | hold D-pad left |
+| Forward lean | hold `Q` | hold left shoulder |
+| Interact, pickup, mount handoff | left mouse | west button |
+| Drop | not currently bound | east button |
+| Place | not currently bound | south button |
+| Throw / secondary action | right mouse | right trigger |
+| Rotate held / adjust current target | mouse wheel (`6°` per held-object notch) | left trigger |
+| Free-rotate held object | hold middle mouse + move mouse; camera look is frozen | not currently bound |
+| Tool activation | `F` | north button |
+| Reveal alternative action plaques | hold `Alt` | not currently bound |
+| Wave / middle finger / swear | `H` / `M` / `N` | D-pad up / D-pad right / not currently bound |
+
+### 2026-08-12 player-feel extension
+
+The accepted M4 player was extended in place using the read-only, user-owned
+Cheap Car Repair installation as a secondary behavioral/configuration
+reference. The result keeps the My Summer Car traversal capsule and interaction
+contracts while adding directional speed targets, a per-frame `Lerp` ground
+response, momentum-gated forward run, a single-use `0.1 s` coyote window,
+aspect-correct `120 degree` horizontal FOV, hold zoom, restrained jump/landing
+motion and a sub-degree presentation-only rotational lag. Cyclic headbob and
+speed-FOV pumping remain deliberately absent. Gameplay/body yaw continues to
+follow input immediately; the visual lag is capped and includes only `1.8 cm`
+of lateral counter-sway, so the player cannot rotate like an owl independently
+from the capsule.
+
+The authored `120 degree` horizontal FOV and `500 m` camera far clip remain
+fresh-install defaults. UI settings schema v5 exposes both through the
+project-owned `IPlayerCameraSettingsSink`; Apply persists them independently of
+world saves. FOV remains horizontal/aspect-correct and the far-clip option does
+not retune streaming, LOD or vegetation systems.
+
+Jump input is now committed through a short `0.085 s` preparation phase. The
+presentation rig dips `7 cm` before the existing `1.05 m` launch; the accepted
+fixed traversal capsule is not resized, and the launch remains time-driven
+rather than animation-event-driven.
+Evidence, exact values, validation and limitations are recorded in
+`Docs/Player/CHEAP_CAR_REPAIR_FEEL_TUNING_2026-08-12.md`.
+
+### 2026-08-13 item-interaction feel extension
+
+The same read-only Cheap Car Repair installation was inspected for its separate
+physical grabbing path. The existing project controller now preserves the
+clicked surface point, follows through a direct physical spring with lower
+forced damping, keeps world collision active, holds objects at a closer
+camera-local anchor and supports middle-mouse free rotation without turning the
+camera. A 2026-08-14 follow-up inherits `96%` of player translation before
+solving relative spring motion and preserves the selected point's initial
+forward distance in the `0.32–0.82 m` range, so running produces little trailing
+inertia and deliberately close pickups remain close. The exact evidence,
+adaptation values and remaining manual checks are
+recorded in
+`Docs/Player/CHEAP_CAR_REPAIR_ITEM_INTERACTION_TUNING_2026-08-13.md`.
+
+### 2026-09-03 player mass, jump and posture correction
+
+The existing motor now owns a tunable `6.65 m/s` jump force and reports that
+force with landing impact evidence, allowing a slightly stronger camera dip to
+scale with both impact and take-off strength. A crouched jump commits to
+standing, posture rise is separated from the slower downward transition, and
+all eye-height targets plus the canonical camera pivot are raised by `8 cm`.
+
+The needs-domain weight (donor default `83 kg`) is synchronized into the motor.
+A downward feet probe applies ramped gravity-equivalent fixed-step load only
+when the nearest non-player surface is an upward-facing dynamic support. Static
+ground blocks deeper bodies; a kinematic installed panel routes load only to a
+dynamic Rigidbody in its own parent chain. Five footprint samples, a `0.2 s`
+confirmation window and same-aggregate side-contact rejection stop a low rocker
+from becoming false support. Horizontal nudging is limited to an explicit
+available pickup capability.
+
+The Satsuma's world-facing colliders also exclude the Player layer. Its four
+donor-evidenced `PlayerColl` shapes now belong to a separate kinematic proxy, so
+the controller cannot inject infinite solver momentum into a rolling chassis
+from either side or while crouched. Support rays through that proxy still route
+the controlled weight load to the chassis. The streamed bathroom-scale gauge
+reads the same weight through a stable-ID presentation binding. Exact evidence,
+values, validation and manual acceptance debt are recorded in
+`Docs/Player/PLAYER_MASS_JUMP_AND_POSTURE_TUNING_2026-09-03.md`.
 
 ### Deliberate boundaries
 

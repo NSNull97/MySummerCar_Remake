@@ -9,7 +9,12 @@
     "MSC.Weather.Runtime",
     "MSC.Weather.Presentation.Runtime",
     "MSC.Weather.Production.Runtime",
-    "MSC.Weather.Enviro3Integration"
+    "MSC.Weather.Enviro3Integration",
+    "MSC.Weather.System.Runtime",
+    "MSC.Weather.System.NativeHDRP.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime",
+    "Enviro3.Runtime"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

@@ -18,7 +18,9 @@ namespace MSC.Weather.Production
     /// </summary>
     [DefaultExecutionOrder(-1000)]
     [DisallowMultipleComponent]
-    public sealed partial class ProductionEnvironmentController : MonoBehaviour
+    public sealed partial class ProductionEnvironmentController :
+        MonoBehaviour,
+        IGameTimeAdvanceService
     {
         private const float PresentationIntervalSeconds = 0.25f;
         private const float MaximumNormalizedTimeBelowOne = 0.99999994f;
@@ -33,6 +35,8 @@ namespace MSC.Weather.Production
 
         [SerializeField] private MonoBehaviour adapterBehaviour;
         [SerializeField] private MonoBehaviour wetnessBridgeBehaviour;
+        [SerializeField] private MSC.Weather.System.FinnishSummerClimateProfile
+            climateProfile;
         [SerializeField] private EnvironmentQualityTier initialQuality =
             EnvironmentQualityTier.Medium;
         [SerializeField] private ulong initialWeatherSeed = 19950801UL;
@@ -160,6 +164,12 @@ namespace MSC.Weather.Production
             initialWeatherSeed = authoredWeatherSeed;
         }
 
+        public void ConfigureClimateForAuthoring(
+            MSC.Weather.System.FinnishSummerClimateProfile authoredClimateProfile)
+        {
+            climateProfile = authoredClimateProfile;
+        }
+
         public void InitializeForEditorValidation()
         {
             if (Application.isPlaying)
@@ -187,6 +197,9 @@ namespace MSC.Weather.Production
             }
 
             listener = camera.transform;
+            WeatherExposureResolver exposureResolver =
+                GetComponent<WeatherExposureResolver>();
+            exposureResolver?.TryBindRuntimeCamera(camera);
             if (!(adapter is IEnvironmentPresentationCameraTarget cameraTarget))
             {
                 LastFailure =
@@ -219,6 +232,21 @@ namespace MSC.Weather.Production
                 wetness,
                 lightning);
             pendingRestore = dto;
+        }
+
+        /// <summary>
+        /// Performs the complete environment save preflight without changing
+        /// pending restore state or any live simulation domain.
+        /// </summary>
+        public void ValidateRestore(ProductionEnvironmentSaveDto dto)
+        {
+            EnsurePrimaryAndInitialized();
+            ProductionEnvironmentPersistence.Validate(
+                dto,
+                gameTime,
+                weather,
+                wetness,
+                lightning);
         }
 
         public ProductionEnvironmentSaveDto CaptureState()
@@ -316,6 +344,119 @@ namespace MSC.Weather.Production
         public void StopSimulation()
         {
             simulationActive = false;
+        }
+
+        /// <summary>
+        /// Advances all project-owned environment domains as one gameplay time
+        /// skip. Sleeping uses this boundary so weather, lightning and wetness
+        /// cannot fall behind the authoritative clock.
+        /// </summary>
+        public bool TryAdvanceGameSeconds(
+            double gameSeconds,
+            out string failure)
+        {
+            EnsurePrimaryAndInitialized();
+            if (!double.IsFinite(gameSeconds) || gameSeconds <= 0d)
+            {
+                failure = "Advance amount must be finite and positive.";
+                return false;
+            }
+
+            double gameSecondsPerSimulationSecond =
+                86400d /
+                gameTime.Config.DayLengthSimulationSeconds *
+                gameTime.Snapshot.TimeScale;
+            if (!double.IsFinite(gameSecondsPerSimulationSecond) ||
+                gameSecondsPerSimulationSecond <= 0d)
+            {
+                failure = "Current game-time scale cannot advance gameplay.";
+                return false;
+            }
+
+            double simulationDelta =
+                gameSeconds / gameSecondsPerSimulationSecond;
+            if (!TryValidateManualAdvance(
+                    gameSeconds,
+                    simulationDelta,
+                    out failure))
+            {
+                return false;
+            }
+
+            try
+            {
+                gameTime.AdvanceWhileRetainingPause(simulationDelta);
+            }
+            catch (GameTimeNotificationException exception)
+            {
+                failure = exception.Message;
+                return false;
+            }
+
+            weather.Advance(
+                gameSeconds,
+                CreateWeatherScheduleContext(
+                    gameTime.Snapshot,
+                    weather.CurrentState));
+            lightning.Advance(gameSeconds);
+            AdvanceWetness(gameSeconds);
+            if (IsWorldRevealReady)
+            {
+                PresentCurrentState();
+            }
+
+            failure = string.Empty;
+            return true;
+        }
+
+        private bool TryValidateManualAdvance(
+            double gameSeconds,
+            double simulationDelta,
+            out string failure)
+        {
+            try
+            {
+                var timeProbe = new GameTimeService(gameTime.Config);
+                if (!timeProbe.TryRestoreDto(
+                        gameTime.CaptureDto(),
+                        out failure))
+                {
+                    return false;
+                }
+
+                timeProbe.AdvanceWhileRetainingPause(simulationDelta);
+                var weatherProbe = new WeatherDirector(
+                    weatherCatalog,
+                    new WeatherSeed(initialWeatherSeed, 7UL),
+                    WeatherStateIds.Clear,
+                    CreateWeatherScheduleContext(
+                        timeProbe.Snapshot,
+                        weather.CurrentState));
+                weatherProbe.Restore(weather.CaptureSnapshot());
+                weatherProbe.Advance(
+                    gameSeconds,
+                    CreateWeatherScheduleContext(
+                        timeProbe.Snapshot,
+                        weatherProbe.CurrentState));
+                if (!double.IsFinite(
+                        lightning.SimulationSeconds + gameSeconds))
+                {
+                    failure =
+                        "Lightning simulation time would overflow.";
+                    return false;
+                }
+
+                failure = string.Empty;
+                return true;
+            }
+            catch (Exception exception) when (
+                exception is ArgumentException ||
+                exception is InvalidOperationException ||
+                exception is OverflowException)
+            {
+                failure = exception.Message;
+                return false;
+            }
         }
 
         public EnvironmentPresentationStatus SetQuality(
@@ -429,7 +570,11 @@ namespace MSC.Weather.Production
                 return;
             }
 
-            weather.Advance(gameDeltaSeconds);
+            weather.Advance(
+                gameDeltaSeconds,
+                CreateWeatherScheduleContext(
+                    gameTime.Snapshot,
+                    weather.CurrentState));
             lightning.Advance(gameDeltaSeconds);
             AdvanceWetness(gameDeltaSeconds);
 
@@ -487,12 +632,31 @@ namespace MSC.Weather.Production
 
             materialWetnessBridge =
                 wetnessBridgeBehaviour as IWetnessShaderBridge;
-            weatherCatalog = WeatherProfileCatalog.CreateRemakeDesignTargets();
             gameTime = new GameTimeService();
+            WeatherStateId initialWeatherStateId;
+            if (climateProfile != null)
+            {
+                weatherCatalog =
+                    MSC.Weather.System.FinnishSummerProductionCatalogAdapter.Create(
+                    climateProfile.CreateCatalog(),
+                    out initialWeatherStateId);
+            }
+            else
+            {
+                weatherCatalog =
+                    WeatherProfileCatalog.CreateRemakeDesignTargets();
+                initialWeatherStateId = WeatherStateIds.Clear;
+            }
+
+            WeatherState initialWeatherState =
+                weatherCatalog.Get(initialWeatherStateId).TargetState;
             weather = new WeatherDirector(
                 weatherCatalog,
                 new WeatherSeed(initialWeatherSeed, 7UL),
-                WeatherStateIds.Clear);
+                initialWeatherStateId,
+                CreateWeatherScheduleContext(
+                    gameTime.Snapshot,
+                    initialWeatherState));
             wetness = new GlobalWetnessController(
                 WetnessConfig.CreateRemakeDesignTarget());
             lightning = new LightningStrikeDirector(
@@ -518,6 +682,14 @@ namespace MSC.Weather.Production
                 SurfaceExposureProfile.Exterior));
             ApplyWetnessOutputs();
         }
+
+        private static WeatherScheduleContext CreateWeatherScheduleContext(
+            in GameTimeSnapshot clock,
+            in WeatherState state) => new WeatherScheduleContext(
+            clock.Date.Month,
+            (float)clock.NormalizedTimeOfDay01,
+            state.TemperatureCelsius,
+            state.Humidity01);
 
         private void ApplyWetnessOutputs()
         {
@@ -565,6 +737,8 @@ namespace MSC.Weather.Production
 
             float transitionDurationSeconds =
                 ResolvePresentationTransitionDurationSeconds();
+            string presentationBindingId =
+                ResolvePresentationBindingId();
 
             presentationRevision = NextRevision(presentationRevision);
             if (!WeatherEnvironmentFrameMapper.TryMap(
@@ -572,6 +746,7 @@ namespace MSC.Weather.Production
                     presentationRevision,
                     qualityTier,
                     transitionDurationSeconds,
+                    presentationBindingId,
                     pendingLightningVisual,
                     pendingRefresh,
                     out EnvironmentPresentationFrame frame,
@@ -647,6 +822,24 @@ namespace MSC.Weather.Production
             double simulationSeconds =
                 remainingGameSeconds / gameSecondsPerSimulationSecond;
             return (float)Math.Min(simulationSeconds, float.MaxValue);
+        }
+
+        private string ResolvePresentationBindingId()
+        {
+            // Startup and explicit developer commands carry their own transition
+            // instruction and must present the currently requested logical state.
+            if (float.IsFinite(pendingTransitionDurationSeconds) ||
+                weather.TryGetActiveOverride(out _))
+            {
+                return currentOutputs.Weather.PresentationBindingId;
+            }
+
+            // A scheduled front is already known at progress zero. Start Enviro's
+            // existing preset blend at that point, using the full configured
+            // remaining duration, instead of switching the preset at the
+            // WeatherState.Lerp identity midpoint.
+            WeatherStateId targetId = weather.Timeline.Transition.Front.To;
+            return weatherCatalog.Get(targetId).TargetState.PresentationBindingId;
         }
 
         private void QueueCadencedEnvironmentRefresh(string bindingId)

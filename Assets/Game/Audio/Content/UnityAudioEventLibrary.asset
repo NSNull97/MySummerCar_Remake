@@ -210,7 +210,7 @@ MonoBehaviour:
     pitch: 1
     spatialBlend: 1
     minimumDistanceMeters: 1
-    maximumDistanceMeters: 80
+    maximumDistanceMeters: 1200
   - eventId: audio.event.world.lake.ambience
     clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
     category: 2
@@ -219,7 +219,7 @@ MonoBehaviour:
     pitch: 1
     spatialBlend: 1
     minimumDistanceMeters: 1
-    maximumDistanceMeters: 80
+    maximumDistanceMeters: 150
   - eventId: audio.event.world.garage.roomtone
     clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
     category: 2
@@ -228,7 +228,7 @@ MonoBehaviour:
     pitch: 1
     spatialBlend: 0
     minimumDistanceMeters: 1
-    maximumDistanceMeters: 80
+    maximumDistanceMeters: 1200
   - eventId: audio.event.world.interior.roomtone
     clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
     category: 2
@@ -237,7 +237,7 @@ MonoBehaviour:
     pitch: 1
     spatialBlend: 0
     minimumDistanceMeters: 1
-    maximumDistanceMeters: 80
+    maximumDistanceMeters: 1200
   - eventId: audio.event.world.distant_traffic
     clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
     category: 2
@@ -246,17 +246,80 @@ MonoBehaviour:
     pitch: 1
     spatialBlend: 1
     minimumDistanceMeters: 1
-    maximumDistanceMeters: 80
+    maximumDistanceMeters: 1200
   - eventId: audio.event.world.birds
     clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
     category: 2
-    loop: 0
+    loop: 1
     volume: 0.18
     pitch: 1
     spatialBlend: 1
     minimumDistanceMeters: 1
-    maximumDistanceMeters: 80
-  - eventId: audio.event.world.insects
+    maximumDistanceMeters: 1200
+  - eventId: audio.event.world.birds.morning
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 1200
+  - eventId: audio.event.world.birds.day
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 1200
+  - eventId: audio.event.world.birds.evening
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 1200
+  - eventId: audio.event.world.birds.night
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 1200
+  - eventId: audio.event.world.birds.swamp
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 1200
+  - eventId: audio.event.world.meadow
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 1200
+  - eventId: audio.event.world.dog
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 1200
+  - eventId: audio.event.world.chainsaw
     clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
     category: 2
     loop: 0
@@ -264,7 +327,61 @@ MonoBehaviour:
     pitch: 1
     spatialBlend: 1
     minimumDistanceMeters: 1
-    maximumDistanceMeters: 80
+    maximumDistanceMeters: 1200
+  - eventId: audio.event.world.insects
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 1200
+  - eventId: audio.event.world.wind_chime
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 20
+  - eventId: audio.event.world.mosquito
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 20
+  - eventId: audio.event.world.fly
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 20
+  - eventId: audio.event.world.fly.variant
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 20
+  - eventId: audio.event.world.wasp
+    clip: {fileID: 8300000, guid: 199be7e1c7473b0419b91211a3cd878a, type: 3}
+    category: 2
+    loop: 1
+    volume: 0.18
+    pitch: 1
+    spatialBlend: 1
+    minimumDistanceMeters: 1
+    maximumDistanceMeters: 20
   - eventId: audio.event.interaction.pickup
     clip: {fileID: 8300000, guid: 0697b4c24fb18d94b89f6c10adf268f0, type: 3}
     category: 1

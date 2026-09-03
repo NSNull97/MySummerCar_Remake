@@ -1,0 +1,26 @@
+{
+  "name": "MSC.Weather.System.Tests.PlayMode",
+  "rootNamespace": "MSC.Tests.PlayMode.WeatherSystem",
+  "references": [
+    "MSC.Bootstrap.Runtime",
+    "MSC.Weather.Runtime",
+    "MSC.Weather.Presentation.Runtime",
+    "MSC.Weather.Production.Runtime",
+    "MSC.Weather.System.Runtime",
+    "MSC.Weather.System.NativeHDRP.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

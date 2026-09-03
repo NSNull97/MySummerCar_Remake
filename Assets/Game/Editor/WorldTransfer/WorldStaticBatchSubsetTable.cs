@@ -58,6 +58,28 @@ namespace MSC.Editor.WorldTransfer
             return result;
         }
 
+        public static IReadOnlyDictionary<long, int[]> ParseFrozenScene()
+        {
+            string scenePath = SafeCombine(
+                WorldTransferEditorConfiguration.Load().RawExtractionPath,
+                ExtractedSceneRelativePath);
+            if (!File.Exists(scenePath))
+            {
+                throw new FileNotFoundException(
+                    "Frozen extracted GAME scene is missing.",
+                    scenePath);
+            }
+            if (!Sha256FileHasher.Matches(
+                    scenePath,
+                    ExpectedExtractedSceneSha256))
+            {
+                throw new InvalidDataException(
+                    "Frozen extracted GAME scene hash differs from 04A1 provenance.");
+            }
+
+            return ParseScene(scenePath);
+        }
+
         private static IReadOnlyDictionary<long, int[]> ParseScene(string scenePath)
         {
             var result = new Dictionary<long, int[]>();

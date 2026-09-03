@@ -30,6 +30,98 @@ namespace MSC.Tests.EditMode.WorldBaseline
         }
 
         [Test]
+        public void Phase1JobLocationPlan_RecoversExcludedStaticSitesWithoutDonorLogic()
+        {
+            Phase1JobLocationPresentationPlan plan =
+                Phase1JobLocationPresentationPlan.Load();
+
+            Assert.That(plan.Renderers.Count, Is.EqualTo(306));
+            Assert.That(
+                plan.Renderers.Count(record => record.IsStaticBatchSubset),
+                Is.EqualTo(267));
+            Assert.That(plan.Colliders.Count, Is.EqualTo(102));
+            Assert.That(plan.CellIds, Is.EquivalentTo(new[]
+            {
+                "cell_-3_-4",
+                "cell_-2_-4",
+                "cell_-2_0",
+                "cell_-3_0",
+                "cell_3_-4",
+                "cell_3_-1",
+                "cell_4_-4",
+                "cell_1_-5",
+                "cell_4_-3",
+            }));
+            Assert.That(
+                plan.Renderers.Select(record =>
+                    record.Placement.HierarchyPath),
+                Does.Contain("JOBS/StrawberryField/LOD/field"));
+            Assert.That(
+                plan.Renderers.Count(record =>
+                    record.Placement.HierarchyPath ==
+                    "JOBS/StrawberryField/LOD/Tent"),
+                Is.EqualTo(2));
+            Assert.That(
+                plan.Renderers.Select(record =>
+                    record.Placement.HierarchyPath),
+                Does.Contain(
+                    "JOBS/HouseShit1/WasteWell_2000litre/waste_well"));
+            Assert.That(
+                plan.Renderers.Count(record =>
+                    record.Placement.HierarchyPath.StartsWith(
+                        "JOBS/Farm/", StringComparison.Ordinal)),
+                Is.EqualTo(49));
+            Assert.That(
+                plan.Renderers.Select(record =>
+                    record.Placement.HierarchyPath),
+                Does.Contain("JOBS/Farm/Farmhouse/base")
+                    .And.Contain("JOBS/Farm/Cowhouse/atlas_buildings")
+                    .And.Contain("JOBS/Farm/Graindryer/atlas_buildings")
+                    .And.Contain("JOBS/Farm/MachineHall/hall_base")
+                    .And.Contain("JOBS/Farm/LOD/WaterWell/water_well"));
+            Assert.That(
+                plan.Renderers.Count(record =>
+                    record.Placement.HierarchyPath.StartsWith(
+                        "JOBS/Mummola/LOD/Shed/",
+                        StringComparison.Ordinal)),
+                Is.EqualTo(5),
+                "Grandmother's neighboring shed must be part of the sanitized job-location overlay.");
+            Assert.That(
+                plan.Renderers.Select(record =>
+                    record.Placement.StableId),
+                Does.Contain("26ba07f32895986ad6b5e1af60e8f42f")
+                    .And.Contain("a4fcacc09bcdf19b2870e93c5ae37c1f")
+                    .And.Contain("8009a38a36145d5f2e723307bdab9f5d")
+                    .And.Contain("877425d5f49f92c6ad267866a9225a45"),
+                "Jokke's house facade plus the neighboring shed walls, windows and doors are stable-ID remediated renderers.");
+            Assert.That(
+                plan.Renderers.All(record =>
+                    !record.Placement.HierarchyPath.Contains(
+                        "/ShitNPC/",
+                        StringComparison.OrdinalIgnoreCase) &&
+                    !record.Placement.HierarchyPath.Contains(
+                        "/Functions/",
+                        StringComparison.OrdinalIgnoreCase) &&
+                    !record.Placement.HierarchyPath.Contains(
+                        "/skeleton/",
+                        StringComparison.OrdinalIgnoreCase) &&
+                    !record.Placement.HierarchyPath.Contains(
+                        "/Farmer/",
+                        StringComparison.OrdinalIgnoreCase) &&
+                    !record.Placement.HierarchyPath.Contains(
+                        "/LOD/combine/",
+                        StringComparison.OrdinalIgnoreCase)),
+                Is.True,
+                "Supplemental world presentation must not import donor NPC, combine or gameplay hierarchies.");
+            Assert.That(
+                plan.Colliders.All(record =>
+                    record.ColliderType is "MeshCollider" or "BoxCollider" or
+                        "CapsuleCollider"),
+                Is.True,
+                "Only reviewed non-trigger static collider families are selected.");
+        }
+
+        [Test]
         public void CellizationPlan_RepeatedLoadHasLockedCountsAndFingerprint()
         {
             DonorWorldCellizationPlan first =
@@ -302,11 +394,12 @@ namespace MSC.Tests.EditMode.WorldBaseline
                     ["ExcludedDoorRequiresBinding"] = 79,
                     ["ExcludedDynamicRequiresPresenter"] = 108,
                     ["ExcludedInactive"] = 212,
+                    ["ExcludedLegacyPlayerBoundary"] = 1,
                     ["ExcludedTrigger"] = 414,
                     ["ExcludedVehicle"] = 7,
                     ["ExcludedWeatherShelterVolume"] = 1,
                     ["IncludedSafetyCriticalGlobal"] = 32,
-                    ["IncludedStaticWorldSolid"] = 554
+                    ["IncludedStaticWorldSolid"] = 553
                 };
             Dictionary<string, int> actualDispositionCounts = plan
                 .ColliderDispositions
@@ -466,6 +559,14 @@ namespace MSC.Tests.EditMode.WorldBaseline
             Assert.That(
                 plan.ColliderDispositions.Single(record =>
                     record.ColliderStableId ==
+                    "e4474f2a451172f949123c2f37727a69")
+                    .Disposition,
+                Is.EqualTo("ExcludedLegacyPlayerBoundary"),
+                "Teimo's donor PlayerOnlyColl staff-area boundary must not " +
+                "become structural store collision.");
+            Assert.That(
+                plan.ColliderDispositions.Single(record =>
+                    record.ColliderStableId ==
                     "a66a36c2b13188e125848cbb6c51e4ff")
                     .Disposition,
                 Is.EqualTo("ExcludedDynamicRequiresPresenter"));
@@ -557,6 +658,24 @@ namespace MSC.Tests.EditMode.WorldBaseline
                     DonorWorldSolidCollisionPolicy
                         .WorldSolidPhysicsMaterial),
                 Is.Not.Null);
+        }
+
+        [Test]
+        public void TeimoStorePlayerBoundary_IsAbsentFromActiveCellScene()
+        {
+            string sceneText = File.ReadAllText(
+                Path.GetFullPath(
+                    WorldBaseline06B2Paths.CellScene("cell_-3_0")));
+
+            Assert.That(
+                sceneText,
+                Does.Contain("7d02f149febba255af256479c63313ec"),
+                "The stable metadata-only donor entity must remain auditable.");
+            Assert.That(
+                sceneText,
+                Does.Not.Contain("e4474f2a451172f949123c2f37727a69"),
+                "Teimo's PlayerOnlyColl boundary must be absent from the " +
+                "active streamed cell.");
         }
 
         [Test]

@@ -1,4 +1,5 @@
 using System;
+using MSC.Vehicle.Assembly;
 using MSC.Vehicle.Simulation;
 using UnityEngine;
 
@@ -9,16 +10,38 @@ namespace MSC.Vehicle
     {
         [SerializeField] private string wheelId;
         [SerializeField] private Transform suspensionAnchor;
+        [SerializeField] private string[] requiredOccupiedMountIds;
+        [SerializeField] private string[] requiredAnyOccupiedMountIds;
 
         public RaycastWheelBinding(string id, Transform anchor)
         {
             wheelId = id ?? string.Empty;
             suspensionAnchor = anchor;
+            requiredOccupiedMountIds = Array.Empty<string>();
+            requiredAnyOccupiedMountIds = Array.Empty<string>();
+        }
+
+        public RaycastWheelBinding(
+            string id,
+            Transform anchor,
+            string[] requiredMountIds,
+            string[] requiredAnyMountIds)
+        {
+            wheelId = id ?? string.Empty;
+            suspensionAnchor = anchor;
+            requiredOccupiedMountIds = requiredMountIds ?? Array.Empty<string>();
+            requiredAnyOccupiedMountIds = requiredAnyMountIds ?? Array.Empty<string>();
         }
 
         public string WheelId => wheelId;
 
         public Transform SuspensionAnchor => suspensionAnchor;
+
+        public string[] RequiredOccupiedMountIds =>
+            requiredOccupiedMountIds ?? Array.Empty<string>();
+
+        public string[] RequiredAnyOccupiedMountIds =>
+            requiredAnyOccupiedMountIds ?? Array.Empty<string>();
     }
 
     public readonly struct RaycastWheelVisualState
@@ -63,6 +86,7 @@ namespace MSC.Vehicle
         [SerializeField] private VehicleSimulationConfig config;
         [SerializeField] private RaycastWheelBinding[] wheels = Array.Empty<RaycastWheelBinding>();
         [SerializeField] private LayerMask contactMask = ~0;
+        [SerializeField] private VehicleAssemblyController assemblyController;
 
         private readonly RaycastHit[] raycastBuffer = new RaycastHit[RaycastBufferSize];
         private readonly SuspensionSimulation suspension = new SuspensionSimulation();
@@ -121,6 +145,12 @@ namespace MSC.Vehicle
             contactMask = mask;
         }
 
+        public void ConfigureAssemblySupport(
+            VehicleAssemblyController controller)
+        {
+            assemblyController = controller;
+        }
+
         public void Sample(float fixedDeltaSeconds, WheelPhysicsSample[] destination)
         {
             EnsureReady(destination);
@@ -138,7 +168,8 @@ namespace MSC.Vehicle
             {
                 WheelRuntimeState state = runtime[index];
                 Transform anchor = wheels[index].SuspensionAnchor;
-                if (!TryGetContact(
+                if (!IsWheelSupportPresent(wheels[index]) ||
+                    !TryGetContact(
                         anchor.position,
                         suspensionDirection,
                         maximumRayDistance,
@@ -230,6 +261,42 @@ namespace MSC.Vehicle
             }
 
             hasSampleHistory = true;
+        }
+
+        private bool IsWheelSupportPresent(RaycastWheelBinding binding)
+        {
+            if (assemblyController == null)
+            {
+                return true;
+            }
+
+            AssemblyGraph graph = assemblyController.Graph;
+            string[] required = binding.RequiredOccupiedMountIds;
+            for (int index = 0; index < required.Length; index++)
+            {
+                if (!graph.TryGetMount(required[index], out MountPointRuntime mount) ||
+                    !mount.IsOccupied)
+                {
+                    return false;
+                }
+            }
+
+            string[] requiredAny = binding.RequiredAnyOccupiedMountIds;
+            if (requiredAny.Length == 0)
+            {
+                return true;
+            }
+
+            for (int index = 0; index < requiredAny.Length; index++)
+            {
+                if (graph.TryGetMount(requiredAny[index], out MountPointRuntime mount) &&
+                    mount.IsOccupied)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public void Apply(float fixedDeltaSeconds, WheelPhysicsCommand[] commands)

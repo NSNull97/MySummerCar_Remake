@@ -157,7 +157,20 @@ namespace MSC.Audio.Wwise.Editor
             Event(AudioProjectIds.Events.WorldInteriorRoomTone, "Play_MSC_World_Interior_RoomTone", "MSC_World", false, false),
             Event(AudioProjectIds.Events.WorldDistantTraffic, "Play_MSC_World_Distant_Traffic", "MSC_World", true, false),
             Event(AudioProjectIds.Events.WorldBirds, "Play_MSC_World_Birds", "MSC_World", true, false),
+            Event(AudioProjectIds.Events.WorldBirdsMorning, "Play_MSC_World_Birds_Morning", "MSC_World", true, false),
+            Event(AudioProjectIds.Events.WorldBirdsDay, "Play_MSC_World_Birds_Day", "MSC_World", true, false),
+            Event(AudioProjectIds.Events.WorldBirdsEvening, "Play_MSC_World_Birds_Evening", "MSC_World", true, false),
+            Event(AudioProjectIds.Events.WorldBirdsNight, "Play_MSC_World_Birds_Night", "MSC_World", true, false),
+            Event(AudioProjectIds.Events.WorldBirdsSwamp, "Play_MSC_World_Birds_Swamp", "MSC_World", true, false),
+            Event(AudioProjectIds.Events.WorldMeadow, "Play_MSC_World_Meadow", "MSC_World", true, false),
+            Event(AudioProjectIds.Events.WorldDog, "Play_MSC_World_Dog", "MSC_World", true, false),
+            Event(AudioProjectIds.Events.WorldChainsaw, "Play_MSC_World_Chainsaw", "MSC_World", true, false),
             Event(AudioProjectIds.Events.WorldInsects, "Play_MSC_World_Insects", "MSC_World", true, false),
+            Event(AudioProjectIds.Events.WorldWindChime, "Play_MSC_World_Wind_Chime", "MSC_World", true, false),
+            Event(AudioProjectIds.Events.WorldMosquito, "Play_MSC_World_Mosquito", "MSC_World", true, false),
+            Event(AudioProjectIds.Events.WorldFly, "Play_MSC_World_Fly", "MSC_World", true, false),
+            Event(AudioProjectIds.Events.WorldFlyVariant, "Play_MSC_World_Fly_Variant", "MSC_World", true, false),
+            Event(AudioProjectIds.Events.WorldWasp, "Play_MSC_World_Wasp", "MSC_World", true, false),
             Event(AudioProjectIds.Events.InteractionPickup, "Play_MSC_Interaction_Pickup", "MSC_Interaction"),
             Event(AudioProjectIds.Events.InteractionDrop, "Play_MSC_Interaction_Drop", "MSC_Interaction"),
             Event(AudioProjectIds.Events.InteractionThrow, "Play_MSC_Interaction_Throw", "MSC_Interaction"),
@@ -172,6 +185,10 @@ namespace MSC.Audio.Wwise.Editor
             Event(AudioProjectIds.Events.InteractionPartRemove, "Play_MSC_Interaction_Part_Remove", "MSC_Interaction"),
             Event(AudioProjectIds.Events.InteractionDoorOpen, "Play_MSC_Interaction_Door_Open", "MSC_Interaction"),
             Event(AudioProjectIds.Events.InteractionDoorClose, "Play_MSC_Interaction_Door_Close", "MSC_Interaction"),
+            Event(AudioProjectIds.Events.VehicleBodyImpactLow01, "Play_MSC_Vehicle_Body_Impact_Low_01", "MSC_Vehicle"),
+            Event(AudioProjectIds.Events.VehicleBodyImpactLow02, "Play_MSC_Vehicle_Body_Impact_Low_02", "MSC_Vehicle"),
+            Event(AudioProjectIds.Events.VehicleBodyImpactHigh01, "Play_MSC_Vehicle_Body_Impact_High_01", "MSC_Vehicle"),
+            Event(AudioProjectIds.Events.VehicleBodyImpactHigh02, "Play_MSC_Vehicle_Body_Impact_High_02", "MSC_Vehicle"),
             Event(AudioProjectIds.Events.InteractionGateOpen, "Play_MSC_Interaction_Gate_Open", "MSC_Interaction"),
             Event(AudioProjectIds.Events.InteractionGateClose, "Play_MSC_Interaction_Gate_Close", "MSC_Interaction"),
             Event(AudioProjectIds.Events.InteractionWindowOpen, "Play_MSC_Interaction_Window_Open", "MSC_Interaction"),
@@ -290,6 +307,7 @@ namespace MSC.Audio.Wwise.Editor
                             source.StableId.EndsWith(".wind", StringComparison.Ordinal) ||
                             source.StableId.Contains(".ambience") ||
                             source.StableId.Contains(".roomtone") ||
+                            IsWorldAmbientLoop(source.StableId) ||
                             source.StableId.Contains(".engine.intake") ||
                             source.StableId.Contains(".engine.exhaust") ||
                             source.StableId.Contains(".engine.mechanical") ||
@@ -316,11 +334,41 @@ namespace MSC.Audio.Wwise.Editor
                     1f,
                     source.Spatialized ? 1f : 0f,
                     1f,
-                    world ? 80f : 45f);
+                    world ? GetWorldFallbackMaximumDistance(source.StableId) : 45f);
                 definitions.Add(definition);
             }
 
             return definitions.ToArray();
+        }
+
+        private static bool IsWorldAmbientLoop(string stableEventId) =>
+            stableEventId.StartsWith("audio.event.world.birds", StringComparison.Ordinal) ||
+            stableEventId == AudioProjectIds.Events.WorldMeadow.Value ||
+            stableEventId == AudioProjectIds.Events.WorldDog.Value ||
+            stableEventId == AudioProjectIds.Events.WorldInsects.Value ||
+            stableEventId == AudioProjectIds.Events.WorldWindChime.Value ||
+            stableEventId == AudioProjectIds.Events.WorldMosquito.Value ||
+            stableEventId == AudioProjectIds.Events.WorldFly.Value ||
+            stableEventId == AudioProjectIds.Events.WorldFlyVariant.Value ||
+            stableEventId == AudioProjectIds.Events.WorldWasp.Value;
+
+        private static float GetWorldFallbackMaximumDistance(string stableEventId)
+        {
+            if (stableEventId == AudioProjectIds.Events.WorldWindChime.Value ||
+                stableEventId == AudioProjectIds.Events.WorldMosquito.Value ||
+                stableEventId == AudioProjectIds.Events.WorldFly.Value ||
+                stableEventId == AudioProjectIds.Events.WorldFlyVariant.Value ||
+                stableEventId == AudioProjectIds.Events.WorldWasp.Value)
+            {
+                return 20f;
+            }
+
+            if (stableEventId == AudioProjectIds.Events.WorldLakeAmbience.Value)
+            {
+                return 150f;
+            }
+
+            return 1200f;
         }
 
         private static float GetFallbackVolume(string stableEventId, bool vehicle)

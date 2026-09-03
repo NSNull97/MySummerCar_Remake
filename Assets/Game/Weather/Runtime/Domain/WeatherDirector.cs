@@ -39,6 +39,7 @@ namespace MSC.Weather.Domain
         private readonly WeatherProfileCatalog catalog;
         private readonly WeatherSchedule schedule;
         private readonly List<WeatherOverride> overrides = new List<WeatherOverride>(4);
+        private readonly WeatherStateId[] rollbackHistory;
 
         private double simulationSeconds;
         private bool isScheduleFrozen;
@@ -49,9 +50,27 @@ namespace MSC.Weather.Domain
             WeatherProfileCatalog catalog,
             WeatherSeed seed,
             WeatherStateId initialProfileId)
+            : this(
+                catalog,
+                seed,
+                initialProfileId,
+                WeatherScheduleContext.Default)
+        {
+        }
+
+        public WeatherDirector(
+            WeatherProfileCatalog catalog,
+            WeatherSeed seed,
+            WeatherStateId initialProfileId,
+            in WeatherScheduleContext initialContext)
         {
             this.catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
-            schedule = new WeatherSchedule(catalog, seed, initialProfileId);
+            schedule = new WeatherSchedule(
+                catalog,
+                seed,
+                initialProfileId,
+                initialContext);
+            rollbackHistory = new WeatherStateId[catalog.HistoryLength];
         }
 
         public string ConfigId => catalog.ConfigId;
@@ -92,6 +111,13 @@ namespace MSC.Weather.Domain
 
         public void Advance(double deltaSeconds)
         {
+            Advance(deltaSeconds, WeatherScheduleContext.Default);
+        }
+
+        public void Advance(
+            double deltaSeconds,
+            in WeatherScheduleContext context)
+        {
             if (!WeatherState.IsFinite(deltaSeconds) || deltaSeconds < 0d)
             {
                 throw new ArgumentOutOfRangeException(nameof(deltaSeconds));
@@ -111,10 +137,11 @@ namespace MSC.Weather.Domain
             WeatherState before = CurrentState;
             if (!isScheduleFrozen)
             {
-                WeatherScheduleSnapshot checkpoint = schedule.CaptureSnapshot();
+                WeatherScheduleSnapshot checkpoint =
+                    schedule.CaptureSnapshot(rollbackHistory);
                 try
                 {
-                    schedule.Advance(deltaSeconds);
+                    schedule.Advance(deltaSeconds, context);
                 }
                 catch
                 {

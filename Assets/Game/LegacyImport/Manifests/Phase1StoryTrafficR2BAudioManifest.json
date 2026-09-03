@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "manifestId": "phase1.story-traffic-r2b.audio.v1",
+  "classification": "TemporaryDirectImport",
+  "productionReplacementKey": "presentation.audio.story-traffic.phase2",
+  "source": {
+    "stagingRootRelativePath": "raw/world/milestone-04a1/assetripper-unity-project/ExportedProject/Assets",
+    "sceneRelativePath": "_Scenes/GAME.unity",
+    "sceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4"
+  },
+  "clips": [
+    {
+      "clipId": "jani-engine",
+      "sourceRelativePath": "AudioClip/idle_ulko_pako3.wav",
+      "sourceSha256": "1cd403f6828336b51eaa5359b6a374f45a4600306e2678e5cea3a33d2378428c",
+      "generatedFileName": "jani_engine_loop.wav",
+      "generatedGuid": "b2b00000000000000000000000000001"
+    },
+    {
+      "clipId": "petteri-engine",
+      "sourceRelativePath": "AudioClip/idle_sisa4b.wav",
+      "sourceSha256": "8ff07b8ee9852c7a00c27f9847078434d146414258ce97e6f7c5a0ddd03ada2d",
+      "generatedFileName": "petteri_engine_loop.wav",
+      "generatedGuid": "b2b00000000000000000000000000002"
+    },
+    {
+      "clipId": "jani-music",
+      "sourceRelativePath": "AudioClip/polaventris-kesa_utare.xm",
+      "sourceSha256": "165a92d91b492ef028b87ffd13d41b83c032f44a13d60128f568970e68bfd237",
+      "generatedFileName": "jani_music_loop.xm",
+      "generatedGuid": "b2b00000000000000000000000000003"
+    },
+    {
+      "clipId": "tire-skid",
+      "sourceRelativePath": "AudioClip/car_skid2.ogg",
+      "sourceSha256": "9c1fc5e9d9068aa955d9bf4912893ec1edee88f1fbf703d13ba58981cfeed3d3",
+      "generatedFileName": "story_traffic_skid.ogg",
+      "generatedGuid": "b2b00000000000000000000000000004"
+    },
+    {
+      "clipId": "crash",
+      "sourceRelativePath": "AudioClip/crash_hi1.wav",
+      "sourceSha256": "ea820e9b97c5245d3e53728b8dc3d90a872ca131e429a44e9f2d032a36d23a94",
+      "generatedFileName": "story_traffic_crash.wav",
+      "generatedGuid": "b2b00000000000000000000000000005"
+    },
+    {
+      "clipId": "latanen-bus-stuck-curse",
+      "sourceRelativePath": "AudioClip/vitunvittu.audioclip.resS",
+      "sourceSha256": "07bbad6518a00074cb92d56326480589e0a47d1b42007b9909b3a6744c0951ad",
+      "metadataRelativePath": "AudioClip/vitunvittu.audioclip",
+      "metadataSha256": "298c4bf2fafba4c91a942a817fe40e5733377ea79b7d0091d18e72422baab1d7",
+      "generatedFileName": "latanen_bus_stuck_curse.wav",
+      "generatedGuid": "b2b00000000000000000000000000006"
+    }
+  ],
+  "events": [
+    {
+      "eventId": "audio.event.traffic.jani.engine.loop",
+      "clipId": "jani-engine",
+      "category": "Vehicle",
+      "loop": true,
+      "volume": 0.78,
+      "minimumDistanceMeters": 3.0,
+      "maximumDistanceMeters": 65.0
+    },
+    {
+      "eventId": "audio.event.traffic.petteri.engine.loop",
+      "clipId": "petteri-engine",
+      "category": "Vehicle",
+      "loop": true,
+      "volume": 0.72,
+      "minimumDistanceMeters": 3.0,
+      "maximumDistanceMeters": 65.0
+    },
+    {
+      "eventId": "audio.event.traffic.jani.music",
+      "clipId": "jani-music",
+      "category": "Music",
+      "loop": true,
+      "volume": 0.62,
+      "minimumDistanceMeters": 3.0,
+      "maximumDistanceMeters": 55.0
+    },
+    {
+      "eventId": "audio.event.traffic.jani.tire.skid",
+      "clipId": "tire-skid",
+      "category": "Vehicle",
+      "loop": true,
+      "volume": 0.72,
+      "minimumDistanceMeters": 2.0,
+      "maximumDistanceMeters": 45.0
+    },
+    {
+      "eventId": "audio.event.traffic.petteri.tire.skid",
+      "clipId": "tire-skid",
+      "category": "Vehicle",
+      "loop": true,
+      "volume": 0.72,
+      "minimumDistanceMeters": 2.0,
+      "maximumDistanceMeters": 45.0
+    },
+    {
+      "eventId": "audio.event.traffic.jani.crash",
+      "clipId": "crash",
+      "category": "Effects",
+      "loop": false,
+      "volume": 0.92,
+      "minimumDistanceMeters": 3.0,
+      "maximumDistanceMeters": 80.0
+    },
+    {
+      "eventId": "audio.event.traffic.petteri.crash",
+      "clipId": "crash",
+      "category": "Effects",
+      "loop": false,
+      "volume": 0.92,
+      "minimumDistanceMeters": 3.0,
+      "maximumDistanceMeters": 80.0
+    },
+    {
+      "eventId": "audio.event.npc.latanen.bus-stuck-curse",
+      "clipId": "latanen-bus-stuck-curse",
+      "category": "Dialogue",
+      "loop": false,
+      "volume": 1.0,
+      "minimumDistanceMeters": 2.0,
+      "maximumDistanceMeters": 20.0
+    }
+  ]
+}

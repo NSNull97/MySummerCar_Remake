@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "defaultMaxSize": 4096,
+  "worldMaxSize": 8192,
+  "tileSize": 512,
+  "tileOverlap": 32,
+  "device": "auto",
+  "backend": {
+    "preferred": "realesrgan-ncnn-vulkan",
+    "executable": "Tools/TextureUpscale/models/realesrgan-ncnn-vulkan.exe",
+    "modelName": "realesrgan-x4plus",
+    "modelDirectory": "Tools/TextureUpscale/models",
+    "fallback": "conservative-pillow"
+  },
+  "scalePolicy": [
+    {"maxDimension": 256, "scale": 4},
+    {"maxDimension": 1024, "scale": 2},
+    {"maxDimension": 2048, "scale": 1},
+    {"maxDimension": 1000000, "scale": 1}
+  ],
+  "excludeFolders": [
+    "Assets/Enviro 3 - Sky and Weather/",
+    "Assets/Enviro 3 - Additional Weather Pack/",
+    "Assets/NatureManufacture Assets/",
+    "Assets/Chernobyl/",
+    "Assets/Wwise/",
+    "Assets/Game/LegacyImport/ReferenceOnly/"
+  ],
+  "excludeCategories": [
+    "Lightmap",
+    "Cubemap",
+    "Font Atlas"
+  ],
+  "manualReviewPatterns": [
+    "*/Fonts/*",
+    "*/Font/*",
+    "*Lightmap*",
+    "*ReflectionProbe*"
+  ],
+  "rules": [
+    {
+      "match": {"path": "Assets/Game/UI/Presentation/Content/MainMenu/M08A_MenuLogo.png"},
+      "manualReview": true,
+      "reason": "Approved 08A UI reference-lock asset; concurrent local edit present."
+    },
+    {
+      "match": {"path": "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_96dc1b0079f9ac24d85a201f116eaa98_color.png"},
+      "manualReview": true,
+      "reason": "Purpose-built seamless road-network texture from a separate reviewed task."
+    },
+    {
+      "match": {"category": "Multi-Sprite Atlas"},
+      "scale": 1,
+      "disableAI": true,
+      "reason": "Atlas layout remains byte-dimension compatible during the initial sample."
+    },
+    {
+      "match": {"category": "Normal Map"},
+      "disableAI": true
+    },
+    {
+      "match": {"category": "HDRP Mask Map"},
+      "disableAI": true
+    }
+  ],
+  "validation": {
+    "minimumSsim": 0.86,
+    "minimumPsnr": 24.0,
+    "maximumMeanColorDelta": 5.0,
+    "maximumHistogramL1": 0.14,
+    "maximumAlphaCoverageDelta": 0.04,
+    "maximumSeamRegression": 2.5,
+    "normalMeanLengthTolerance": 0.025
+  }
+}

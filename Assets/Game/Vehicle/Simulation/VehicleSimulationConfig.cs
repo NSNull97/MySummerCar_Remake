@@ -146,6 +146,40 @@ namespace MSC.Vehicle.Simulation
                 new VehicleTorqueSample(7000f, 0f)
             };
         }
+
+        public void Configure(
+            float configuredInertiaKilogramSquareMeters,
+            float configuredIdleTargetRpm,
+            float configuredStartThresholdRpm,
+            float configuredStallRpm,
+            float configuredRedlineRpm,
+            float configuredMaximumRpm,
+            float configuredBaseFrictionNewtonMeters,
+            float configuredViscousFrictionNewtonMetersPerRadian,
+            float configuredEngineBrakingNewtonMeters,
+            float configuredThrottleResponsePerSecond,
+            float configuredStarterTorqueNewtonMeters,
+            float configuredStarterMaximumRpm,
+            float configuredStallDelaySeconds,
+            VehicleTorqueSample[] configuredTorqueCurve)
+        {
+            inertiaKilogramSquareMeters = configuredInertiaKilogramSquareMeters;
+            idleTargetRpm = configuredIdleTargetRpm;
+            startThresholdRpm = configuredStartThresholdRpm;
+            stallRpm = configuredStallRpm;
+            redlineRpm = configuredRedlineRpm;
+            maximumRpm = configuredMaximumRpm;
+            baseFrictionNewtonMeters = configuredBaseFrictionNewtonMeters;
+            viscousFrictionNewtonMetersPerRadian =
+                configuredViscousFrictionNewtonMetersPerRadian;
+            engineBrakingNewtonMeters = configuredEngineBrakingNewtonMeters;
+            throttleResponsePerSecond = configuredThrottleResponsePerSecond;
+            starterTorqueNewtonMeters = configuredStarterTorqueNewtonMeters;
+            starterMaximumRpm = configuredStarterMaximumRpm;
+            stallDelaySeconds = configuredStallDelaySeconds;
+            torqueCurve = configuredTorqueCurve ??
+                Array.Empty<VehicleTorqueSample>();
+        }
     }
 
     [Serializable]
@@ -164,6 +198,16 @@ namespace MSC.Vehicle.Simulation
             maximumTorqueNewtonMeters = 220f;
             slipStiffness = 7.5f;
             engagementExponent = 1.6f;
+        }
+
+        public void Configure(
+            float configuredMaximumTorqueNewtonMeters,
+            float configuredSlipStiffness,
+            float configuredEngagementExponent)
+        {
+            maximumTorqueNewtonMeters = configuredMaximumTorqueNewtonMeters;
+            slipStiffness = configuredSlipStiffness;
+            engagementExponent = configuredEngagementExponent;
         }
     }
 
@@ -212,6 +256,18 @@ namespace MSC.Vehicle.Simulation
             finalDriveRatio = 3.9f;
             efficiency = 0.9f;
         }
+
+        public void Configure(
+            float configuredReverseRatio,
+            float[] configuredForwardRatios,
+            float configuredFinalDriveRatio,
+            float configuredEfficiency)
+        {
+            reverseRatio = configuredReverseRatio;
+            forwardRatios = configuredForwardRatios ?? Array.Empty<float>();
+            finalDriveRatio = configuredFinalDriveRatio;
+            efficiency = configuredEfficiency;
+        }
     }
 
     [Serializable]
@@ -226,6 +282,7 @@ namespace MSC.Vehicle.Simulation
         [SerializeField, Min(0.05f)] private float wheelRadiusMeters = 0.272667f;
         [SerializeField, Min(0.01f)] private float wheelInertiaKilogramSquareMeters = 1.15f;
         [SerializeField, Min(0f)] private float maximumBrakeTorqueNewtonMeters = 1800f;
+        [SerializeField, Min(0f)] private float maximumRearBrakeTorqueNewtonMeters = 1800f;
         [SerializeField, Min(0f)] private float maximumHandbrakeTorqueNewtonMeters = 850f;
         [SerializeField, Range(1f, 60f)] private float maximumSteeringAngleDegrees = 30f;
         [SerializeField, Range(1f, 60f)] private float highSpeedSteeringAngleDegrees = 12f;
@@ -247,6 +304,8 @@ namespace MSC.Vehicle.Simulation
         public float WheelRadiusMeters => wheelRadiusMeters;
         public float WheelInertiaKilogramSquareMeters => wheelInertiaKilogramSquareMeters;
         public float MaximumBrakeTorqueNewtonMeters => maximumBrakeTorqueNewtonMeters;
+        public float MaximumRearBrakeTorqueNewtonMeters =>
+            maximumRearBrakeTorqueNewtonMeters;
         public float MaximumHandbrakeTorqueNewtonMeters => maximumHandbrakeTorqueNewtonMeters;
         public float MaximumSteeringAngleDegrees => maximumSteeringAngleDegrees;
         public float HighSpeedSteeringAngleDegrees => highSpeedSteeringAngleDegrees;
@@ -270,6 +329,7 @@ namespace MSC.Vehicle.Simulation
             wheelRadiusMeters = 0.272667f;
             wheelInertiaKilogramSquareMeters = 1.15f;
             maximumBrakeTorqueNewtonMeters = 1800f;
+            maximumRearBrakeTorqueNewtonMeters = 1800f;
             maximumHandbrakeTorqueNewtonMeters = 850f;
             maximumSteeringAngleDegrees = 30f;
             highSpeedSteeringAngleDegrees = 12f;
@@ -290,6 +350,62 @@ namespace MSC.Vehicle.Simulation
             chassisColliderSizeMeters = new Vector3(1.35f, 0.42f, 3.15f);
             chassisLinearDamping = 0.015f;
             chassisAngularDamping = 0.15f;
+        }
+
+        public void Configure(
+            float configuredMassKilograms,
+            Vector3 configuredCenterOfMassMeters,
+            Vector3 configuredChassisColliderCenterMeters,
+            Vector3 configuredChassisColliderSizeMeters,
+            float configuredChassisLinearDamping,
+            float configuredChassisAngularDamping,
+            float configuredWheelRadiusMeters,
+            float configuredWheelInertiaKilogramSquareMeters,
+            float configuredMaximumBrakeTorqueNewtonMeters,
+            float configuredMaximumRearBrakeTorqueNewtonMeters,
+            float configuredMaximumHandbrakeTorqueNewtonMeters,
+            float configuredMaximumSteeringAngleDegrees,
+            float configuredHighSpeedSteeringAngleDegrees,
+            float configuredSteeringFadeSpeedMetersPerSecond,
+            float configuredSuspensionRestLengthMeters,
+            float configuredSuspensionTravelMeters,
+            float configuredSpringRateNewtonPerMeter,
+            float configuredDamperRateNewtonSecondsPerMeter,
+            float configuredLongitudinalStiffness,
+            float configuredLateralStiffness,
+            float configuredRollingResistanceCoefficient)
+        {
+            provisionalMassKilograms = configuredMassKilograms;
+            centerOfMassMeters = configuredCenterOfMassMeters;
+            chassisColliderCenterMeters =
+                configuredChassisColliderCenterMeters;
+            chassisColliderSizeMeters = configuredChassisColliderSizeMeters;
+            chassisLinearDamping = configuredChassisLinearDamping;
+            chassisAngularDamping = configuredChassisAngularDamping;
+            wheelRadiusMeters = configuredWheelRadiusMeters;
+            wheelInertiaKilogramSquareMeters =
+                configuredWheelInertiaKilogramSquareMeters;
+            maximumBrakeTorqueNewtonMeters =
+                configuredMaximumBrakeTorqueNewtonMeters;
+            maximumRearBrakeTorqueNewtonMeters =
+                configuredMaximumRearBrakeTorqueNewtonMeters;
+            maximumHandbrakeTorqueNewtonMeters =
+                configuredMaximumHandbrakeTorqueNewtonMeters;
+            maximumSteeringAngleDegrees =
+                configuredMaximumSteeringAngleDegrees;
+            highSpeedSteeringAngleDegrees =
+                configuredHighSpeedSteeringAngleDegrees;
+            steeringFadeSpeedMetersPerSecond =
+                configuredSteeringFadeSpeedMetersPerSecond;
+            suspensionRestLengthMeters = configuredSuspensionRestLengthMeters;
+            suspensionTravelMeters = configuredSuspensionTravelMeters;
+            springRateNewtonPerMeter = configuredSpringRateNewtonPerMeter;
+            damperRateNewtonSecondsPerMeter =
+                configuredDamperRateNewtonSecondsPerMeter;
+            longitudinalStiffness = configuredLongitudinalStiffness;
+            lateralStiffness = configuredLateralStiffness;
+            rollingResistanceCoefficient =
+                configuredRollingResistanceCoefficient;
         }
     }
 
@@ -473,6 +589,49 @@ namespace MSC.Vehicle.Simulation
                 "Wheelbase/tracks derive from reviewed wheel roots; candidate tire radius remains NeedsReview and is used only as a plausibility target.");
         }
 
+        public void ConfigureStoryTraffic(
+            string configuredConfigurationId,
+            int configuredSubstepCount,
+            int configuredLeftDrivenWheelIndex,
+            int configuredRightDrivenWheelIndex,
+            VehicleReferenceClassification classification,
+            string source,
+            string notes)
+        {
+            tuningSchemaVersion = CurrentTuningSchemaVersion;
+            configurationId = configuredConfigurationId ?? string.Empty;
+            substepCount = Mathf.Clamp(configuredSubstepCount, 1, 8);
+            leftDrivenWheelIndex = configuredLeftDrivenWheelIndex;
+            rightDrivenWheelIndex = configuredRightDrivenWheelIndex;
+            engine ??= new EngineSimulationConfig();
+            clutch ??= new ClutchSimulationConfig();
+            gearbox ??= new GearboxSimulationConfig();
+            dynamics ??= new VehicleDynamicsConfig();
+            supportSystems ??= new VehicleSupportSystemsConfig();
+            dynamicTuning ??= new VehicleTuningProvenance();
+            geometryReference ??= new VehicleTuningProvenance();
+            supportSystems.ApplyPrototypeDefaults();
+            surfaceResponses = new[]
+            {
+                new VehicleSurfaceResponse(VehicleSurfaceType.Unknown, 0.7f, 1.35f),
+                new VehicleSurfaceResponse(VehicleSurfaceType.Paved, 1f, 1f),
+                new VehicleSurfaceResponse(VehicleSurfaceType.Gravel, 0.72f, 1.45f),
+                new VehicleSurfaceResponse(VehicleSurfaceType.Dirt, 0.62f, 1.75f),
+                new VehicleSurfaceResponse(VehicleSurfaceType.Grass, 0.48f, 2.1f),
+                new VehicleSurfaceResponse(VehicleSurfaceType.MudWet, 0.35f, 2.8f)
+            };
+            dynamicTuning.Configure(
+                classification,
+                "Phase1StoryTrafficTransferredTuning",
+                source,
+                notes);
+            geometryReference.Configure(
+                VehicleReferenceClassification.DerivedReference,
+                "Phase1StoryTrafficDonorGeometry",
+                source,
+                "Wheel anchors and chassis bounds are derived from the locked donor fixture during deterministic import.");
+        }
+
         public bool MigrateLegacyCompositionTuning()
         {
             if (tuningSchemaVersion >= CurrentTuningSchemaVersion)
@@ -557,6 +716,7 @@ namespace MSC.Vehicle.Simulation
                     dynamics.WheelRadiusMeters,
                     dynamics.WheelInertiaKilogramSquareMeters,
                     dynamics.MaximumBrakeTorqueNewtonMeters,
+                    dynamics.MaximumRearBrakeTorqueNewtonMeters,
                     dynamics.MaximumHandbrakeTorqueNewtonMeters,
                     dynamics.MaximumSteeringAngleDegrees,
                     dynamics.HighSpeedSteeringAngleDegrees,
@@ -622,6 +782,7 @@ namespace MSC.Vehicle.Simulation
                 dynamics.WheelRadiusMeters <= 0f ||
                 dynamics.WheelInertiaKilogramSquareMeters <= 0f ||
                 dynamics.MaximumBrakeTorqueNewtonMeters < 0f ||
+                dynamics.MaximumRearBrakeTorqueNewtonMeters < 0f ||
                 dynamics.MaximumHandbrakeTorqueNewtonMeters < 0f ||
                 dynamics.MaximumSteeringAngleDegrees <= 0f ||
                 dynamics.HighSpeedSteeringAngleDegrees <= 0f ||
@@ -722,10 +883,25 @@ namespace MSC.Vehicle.Simulation
                 return false;
             }
 
-            if (dynamicTuning == null || !dynamicTuning.IsProvisional ||
-                dynamicTuning.Classification != VehicleReferenceClassification.RemakeDesignTarget)
+            bool isM06Prototype = configurationId.StartsWith(
+                "m06.",
+                StringComparison.Ordinal);
+            bool validM06Provenance = dynamicTuning != null &&
+                dynamicTuning.IsProvisional &&
+                dynamicTuning.Classification ==
+                VehicleReferenceClassification.RemakeDesignTarget;
+            bool validTransferredProvenance = dynamicTuning != null &&
+                !string.IsNullOrWhiteSpace(dynamicTuning.Label) &&
+                !string.IsNullOrWhiteSpace(dynamicTuning.Source) &&
+                dynamicTuning.Classification !=
+                VehicleReferenceClassification.Unknown;
+            if (isM06Prototype
+                    ? !validM06Provenance
+                    : !validTransferredProvenance)
             {
-                failure = "M06 dynamic values must be labelled ProvisionalProjectTuning.";
+                failure = isM06Prototype
+                    ? "M06 dynamic values must be labelled ProvisionalProjectTuning."
+                    : "Non-M06 vehicle tuning requires explicit non-Unknown provenance, label and source.";
                 return false;
             }
 

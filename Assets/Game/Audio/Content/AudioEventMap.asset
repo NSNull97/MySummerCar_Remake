@@ -148,8 +148,73 @@ MonoBehaviour:
     requiredBankName: MSC_World
     spatialized: 1
     allowMultiple: 0
+  - audioEventId: audio.event.world.birds.morning
+    backendEventName: Play_MSC_World_Birds_Morning
+    requiredBankName: MSC_World
+    spatialized: 1
+    allowMultiple: 0
+  - audioEventId: audio.event.world.birds.day
+    backendEventName: Play_MSC_World_Birds_Day
+    requiredBankName: MSC_World
+    spatialized: 1
+    allowMultiple: 0
+  - audioEventId: audio.event.world.birds.evening
+    backendEventName: Play_MSC_World_Birds_Evening
+    requiredBankName: MSC_World
+    spatialized: 1
+    allowMultiple: 0
+  - audioEventId: audio.event.world.birds.night
+    backendEventName: Play_MSC_World_Birds_Night
+    requiredBankName: MSC_World
+    spatialized: 1
+    allowMultiple: 0
+  - audioEventId: audio.event.world.birds.swamp
+    backendEventName: Play_MSC_World_Birds_Swamp
+    requiredBankName: MSC_World
+    spatialized: 1
+    allowMultiple: 0
+  - audioEventId: audio.event.world.meadow
+    backendEventName: Play_MSC_World_Meadow
+    requiredBankName: MSC_World
+    spatialized: 1
+    allowMultiple: 0
+  - audioEventId: audio.event.world.dog
+    backendEventName: Play_MSC_World_Dog
+    requiredBankName: MSC_World
+    spatialized: 1
+    allowMultiple: 0
+  - audioEventId: audio.event.world.chainsaw
+    backendEventName: Play_MSC_World_Chainsaw
+    requiredBankName: MSC_World
+    spatialized: 1
+    allowMultiple: 0
   - audioEventId: audio.event.world.insects
     backendEventName: Play_MSC_World_Insects
+    requiredBankName: MSC_World
+    spatialized: 1
+    allowMultiple: 0
+  - audioEventId: audio.event.world.wind_chime
+    backendEventName: Play_MSC_World_Wind_Chime
+    requiredBankName: MSC_World
+    spatialized: 1
+    allowMultiple: 0
+  - audioEventId: audio.event.world.mosquito
+    backendEventName: Play_MSC_World_Mosquito
+    requiredBankName: MSC_World
+    spatialized: 1
+    allowMultiple: 0
+  - audioEventId: audio.event.world.fly
+    backendEventName: Play_MSC_World_Fly
+    requiredBankName: MSC_World
+    spatialized: 1
+    allowMultiple: 0
+  - audioEventId: audio.event.world.fly.variant
+    backendEventName: Play_MSC_World_Fly_Variant
+    requiredBankName: MSC_World
+    spatialized: 1
+    allowMultiple: 0
+  - audioEventId: audio.event.world.wasp
+    backendEventName: Play_MSC_World_Wasp
     requiredBankName: MSC_World
     spatialized: 1
     allowMultiple: 0
@@ -221,6 +286,26 @@ MonoBehaviour:
   - audioEventId: audio.event.interaction.door.close
     backendEventName: Play_MSC_Interaction_Door_Close
     requiredBankName: MSC_Interaction
+    spatialized: 1
+    allowMultiple: 1
+  - audioEventId: audio.event.vehicle.body.impact.low.01
+    backendEventName: Play_MSC_Vehicle_Body_Impact_Low_01
+    requiredBankName: MSC_Vehicle
+    spatialized: 1
+    allowMultiple: 1
+  - audioEventId: audio.event.vehicle.body.impact.low.02
+    backendEventName: Play_MSC_Vehicle_Body_Impact_Low_02
+    requiredBankName: MSC_Vehicle
+    spatialized: 1
+    allowMultiple: 1
+  - audioEventId: audio.event.vehicle.body.impact.high.01
+    backendEventName: Play_MSC_Vehicle_Body_Impact_High_01
+    requiredBankName: MSC_Vehicle
+    spatialized: 1
+    allowMultiple: 1
+  - audioEventId: audio.event.vehicle.body.impact.high.02
+    backendEventName: Play_MSC_Vehicle_Body_Impact_High_02
+    requiredBankName: MSC_Vehicle
     spatialized: 1
     allowMultiple: 1
   - audioEventId: audio.event.interaction.gate.open

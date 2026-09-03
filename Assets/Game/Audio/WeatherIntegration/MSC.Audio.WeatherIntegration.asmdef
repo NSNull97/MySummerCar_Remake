@@ -3,6 +3,7 @@
   "rootNamespace": "MSC.Audio.WeatherIntegration",
   "references": [
     "MSC.Audio.Runtime",
+    "MSC.Core.Runtime",
     "MSC.Weather.Runtime",
     "MSC.Weather.Production.Runtime"
   ],

@@ -37,6 +37,24 @@ namespace MSC.UI.Runtime.Settings
             RequireRange(value.RefreshRateNumerator, 1, 1000000, nameof(value.RefreshRateNumerator));
             RequireRange(value.RefreshRateDenominator, 1, 10000, nameof(value.RefreshRateDenominator));
             RequireRange(value.QualityLevel, 0, 64, nameof(value.QualityLevel));
+            RequireEnum(value.DlssQuality, nameof(value.DlssQuality));
+            RequireEnum(value.AntiAliasingMode, nameof(value.AntiAliasingMode));
+            RequireEnum(value.AntiAliasingPreset, nameof(value.AntiAliasingPreset));
+            RequireFloatRange(
+                value.AntiAliasingSharpening,
+                GraphicsSettingsDto.MinimumAntiAliasingSharpening,
+                GraphicsSettingsDto.MaximumAntiAliasingSharpening,
+                nameof(value.AntiAliasingSharpening));
+            RequireFloatRange(
+                value.HorizontalFieldOfViewDegrees,
+                GraphicsSettingsDto.MinimumHorizontalFieldOfViewDegrees,
+                GraphicsSettingsDto.MaximumHorizontalFieldOfViewDegrees,
+                nameof(value.HorizontalFieldOfViewDegrees));
+            RequireFloatRange(
+                value.CameraFarClipMeters,
+                GraphicsSettingsDto.MinimumCameraFarClipMeters,
+                GraphicsSettingsDto.MaximumCameraFarClipMeters,
+                nameof(value.CameraFarClipMeters));
         }
 
         private static void ValidateAudio(AudioSettingsDto value)

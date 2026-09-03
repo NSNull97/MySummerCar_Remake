@@ -1,0 +1,21 @@
+{
+  "name": "MSC.Vehicle.NWH.Tests.PlayMode",
+  "rootNamespace": "MSC.Tests.PlayMode.VehicleNwhIntegration",
+  "references": [
+    "MSC.Characters.Runtime",
+    "MSC.Vehicle.NWH",
+    "MSC.Vehicle.Simulation",
+    "NWH.Common",
+    "NWH.WheelController"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": ["TestAssemblies"]
+}

@@ -170,6 +170,15 @@ namespace MSC.Audio.InteractionIntegration
                 return;
             }
 
+            // A carry handoff only transfers authority to a mount target. It
+            // is not proof that the assembly graph accepted the part. The
+            // vehicle assembly presenter posts the mechanical sound after the
+            // successful mutation, preventing an early placeholder/door sound.
+            if (notification.Action == InteractionActionKind.MountHandoff)
+            {
+                return;
+            }
+
             AudioEventId eventId = MapEvent(notification.Action);
             float intensity01 = ResolveIntensity(notification.Action);
             backend.SetParameter(

@@ -88,6 +88,7 @@ namespace MSC.Weather.Persistence
                 IsScheduleFrozen = snapshot.IsScheduleFrozen,
                 CurrentProfileId = schedule.CurrentProfileId.Value,
                 TargetProfileId = schedule.TargetProfileId.Value,
+                PreviousProfileId = schedule.PreviousProfileId.Value,
                 FrontDurationSeconds = schedule.FrontDurationSeconds,
                 TransitionDurationSeconds = schedule.TransitionDurationSeconds,
                 ElapsedSeconds = schedule.ElapsedSeconds,
@@ -98,6 +99,16 @@ namespace MSC.Weather.Persistence
                 NextOverrideSequenceBits = unchecked((long)snapshot.NextOverrideSequence),
                 Revision = snapshot.Revision,
             };
+
+            WeatherStateId[] recent =
+                schedule.RecentProfileIds ?? Array.Empty<WeatherStateId>();
+            for (int index = 0; index < recent.Length; index++)
+            {
+                dto.RecentProfileIds.Add(recent[index].Value);
+            }
+
+            dto.HistoryCount = schedule.HistoryCount;
+            dto.HistoryWriteIndex = schedule.HistoryWriteIndex;
 
             for (int index = 0; index < snapshot.Overrides.Length; index++)
             {
@@ -199,7 +210,9 @@ namespace MSC.Weather.Persistence
 
         private static WeatherSnapshot DecodeWeather(WeatherSaveDto dto)
         {
-            if (dto == null || dto.SchemaVersion != WeatherSaveDto.CurrentSchemaVersion)
+            if (dto == null ||
+                (dto.SchemaVersion != WeatherSaveDto.CurrentSchemaVersion &&
+                 dto.SchemaVersion != WeatherSaveDto.LegacySchemaVersion))
             {
                 throw new ArgumentException("Unsupported or missing weather DTO.", nameof(dto));
             }
@@ -208,15 +221,45 @@ namespace MSC.Weather.Persistence
                 dto.RandomVersion,
                 unchecked((ulong)dto.RandomStateBits),
                 unchecked((ulong)dto.RandomIncrementBits));
-            var schedule = new WeatherScheduleSnapshot(
-                dto.ConfigId,
-                new WeatherStateId(dto.CurrentProfileId),
-                new WeatherStateId(dto.TargetProfileId),
-                dto.FrontDurationSeconds,
-                dto.TransitionDurationSeconds,
-                dto.ElapsedSeconds,
-                dto.TimelineCursor,
-                randomState);
+            WeatherScheduleSnapshot schedule;
+            if (dto.SchemaVersion == WeatherSaveDto.LegacySchemaVersion)
+            {
+                schedule = new WeatherScheduleSnapshot(
+                    dto.ConfigId,
+                    new WeatherStateId(dto.CurrentProfileId),
+                    new WeatherStateId(dto.TargetProfileId),
+                    dto.FrontDurationSeconds,
+                    dto.TransitionDurationSeconds,
+                    dto.ElapsedSeconds,
+                    dto.TimelineCursor,
+                    randomState);
+            }
+            else
+            {
+                List<string> sourceHistory =
+                    dto.RecentProfileIds ?? new List<string>();
+                var history = new WeatherStateId[sourceHistory.Count];
+                for (int index = 0; index < history.Length; index++)
+                {
+                    history[index] = string.IsNullOrWhiteSpace(sourceHistory[index])
+                        ? default
+                        : new WeatherStateId(sourceHistory[index]);
+                }
+
+                schedule = new WeatherScheduleSnapshot(
+                    dto.ConfigId,
+                    new WeatherStateId(dto.CurrentProfileId),
+                    new WeatherStateId(dto.TargetProfileId),
+                    dto.FrontDurationSeconds,
+                    dto.TransitionDurationSeconds,
+                    dto.ElapsedSeconds,
+                    dto.TimelineCursor,
+                    randomState,
+                    new WeatherStateId(dto.PreviousProfileId),
+                    history,
+                    dto.HistoryCount,
+                    dto.HistoryWriteIndex);
+            }
             List<WeatherOverrideSaveDto> sourceOverrides = dto.Overrides ?? new List<WeatherOverrideSaveDto>();
             var overrides = new WeatherOverride[sourceOverrides.Count];
             for (int index = 0; index < sourceOverrides.Count; index++)

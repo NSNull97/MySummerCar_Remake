@@ -12,12 +12,14 @@ namespace MSC.Audio.UnityFallback
         Ambience = 2,
         Music = 3,
         UserInterface = 4,
+        Dialogue = 5,
     }
 
     /// <summary>
     /// Project-owned Unity Audio mapping used only by the development fallback.
-    /// AudioClip references in this asset must point to project-owned content;
-    /// donor diagnostic clips continue to be loaded from external staging.
+    /// The primary library points to project-owned content. Explicit private
+    /// Phase 1 supplemental libraries may point into the ignored sanitized
+    /// RuntimeBaseline boundary and remain replaceable by stable event ID.
     /// </summary>
     [Serializable]
     public sealed class UnityAudioEventDefinition
@@ -108,6 +110,8 @@ namespace MSC.Audio.UnityFallback
         [NonSerialized] private Dictionary<string, UnityAudioEventDefinition> lookup;
 
         public int DefinitionCount => events?.Length ?? 0;
+        public IReadOnlyList<UnityAudioEventDefinition> Definitions =>
+            events ?? Array.Empty<UnityAudioEventDefinition>();
 
         public bool TryResolve(
             AudioEventId eventId,

@@ -1,7 +1,12 @@
 {
   "name": "MSC.World.Runtime",
   "rootNamespace": "MSC.World",
-  "references": ["MSC.Core.Runtime", "Unity.InputSystem"],
+  "references": [
+    "MSC.Core.Runtime",
+    "Unity.InputSystem",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
+  ],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

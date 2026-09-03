@@ -32,6 +32,7 @@ namespace MSC.UI.Presentation
         private readonly List<IUiVisibilityGate> visibilityGates =
             new List<IUiVisibilityGate>();
         private readonly Queue<float> frameSamples = new Queue<float>(240);
+        private readonly float[] frameSampleBuffer = new float[240];
 
         private GameUiDependencies dependencies;
         private UiVisualAssets visualAssets;
@@ -40,6 +41,7 @@ namespace MSC.UI.Presentation
         private UiCapabilitySet capabilities;
         private UiSettingsJsonStore settingsStore;
         private UiSettingsTransactionService settings;
+        private HdrpDlssRuntimeAdapter dlssRuntime;
         private Canvas canvas;
         private CanvasScaler canvasScaler;
         private RectTransform referenceFrame;
@@ -66,9 +68,14 @@ namespace MSC.UI.Presentation
         private Text hudDayText;
         private Text hudDateText;
         private Text hudMoneyText;
+        private GameObject hudFpsPanel;
+        private Text hudFpsText;
+        private float nextHudFpsRefreshTime;
         private readonly List<NeedHudBinding> needHudBindings =
             new List<NeedHudBinding>();
         private ulong lastClockRevision = ulong.MaxValue;
+        private ulong lastNeedsRevision = ulong.MaxValue;
+        private ulong lastMoneyRevision = ulong.MaxValue;
         private UiLocaleFormatter localeFormatter;
         private GameObject lastSelectedUiObject;
 
@@ -102,11 +109,30 @@ namespace MSC.UI.Presentation
             textCatalog = new UiTextCatalog();
             capabilities = UiCapabilitySet.CreateBounded08ADefaults(
                 Debug.isDebugBuild || Application.isEditor);
+            bool dlssSupported = HdrpDlssRuntimeAdapter.IsHardwareSupported;
+            capabilities.Set(new UiCapabilityState(
+                UiCapabilityId.GraphicsUpscaler,
+                dlssSupported
+                    ? UiCapabilityAvailability.Supported
+                    : UiCapabilityAvailability.Unavailable,
+                dlssSupported
+                     ? "ui.capability.reason.supported"
+                     : "ui.capability.reason.not_available"));
+            capabilities.Set(new UiCapabilityState(
+                UiCapabilityId.PlayerMoneyProvider,
+                dependencies.PlayerMoney != null
+                    ? UiCapabilityAvailability.Supported
+                    : UiCapabilityAvailability.Unavailable,
+                dependencies.PlayerMoney != null
+                    ? "ui.capability.reason.supported"
+                    : "ui.capability.reason.not_available"));
+            dlssRuntime = new HdrpDlssRuntimeAdapter();
 
             settingsStore = new UiSettingsJsonStore(dependencies.SettingsPath);
             UiSettingsLoadResult loaded = settingsStore.LoadOrCreate();
             settings = new UiSettingsTransactionService(loaded.Document);
             textCatalog.LocaleId = loaded.Document.Gameplay.LanguageId;
+            InitializeSaveUi();
             BuildCanvas();
             ApplyDocument(loaded.Document, persist: false);
             LoadBindingOverrides(loaded.Document.Controls);
@@ -116,6 +142,7 @@ namespace MSC.UI.Presentation
             var routeBuildTimer = System.Diagnostics.Stopwatch.StartNew();
 #endif
             BuildAllRoutes();
+            PresentInitialSaveNotice();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             routeBuildTimer.Stop();
             Debug.Log(
@@ -143,6 +170,12 @@ namespace MSC.UI.Presentation
                 StopCoroutine(gameplayActivationCoroutine);
                 gameplayActivationCoroutine = null;
             }
+            if (saveLoadRequestCoroutine != null)
+            {
+                StopCoroutine(saveLoadRequestCoroutine);
+                saveLoadRequestCoroutine = null;
+            }
+            UnbindSaveService();
             UnbindPauseAction();
             RestoreGameplayState();
         }
@@ -151,6 +184,7 @@ namespace MSC.UI.Presentation
         {
             reviewDataEnabled = enabled;
             lastClockRevision = ulong.MaxValue;
+            lastMoneyRevision = ulong.MaxValue;
             RefreshHud(force: true);
         }
 
@@ -211,6 +245,8 @@ namespace MSC.UI.Presentation
             }
 
             RecordFrameSample();
+            RefreshPerformanceGraph();
+            RefreshHudFpsCounter();
             TrackUiSelectionAudio();
             if (!worldReadyHandled && dependencies.IsWorldReady())
             {
@@ -246,6 +282,8 @@ namespace MSC.UI.Presentation
         {
             DisposeActiveRebindForShutdown();
             DisposeBlurredBackdropTexture();
+            dlssRuntime?.Dispose();
+            dlssRuntime = null;
             EndGameSession();
             if (ownedEventSystem != null)
             {
@@ -274,16 +312,24 @@ namespace MSC.UI.Presentation
             canvasScaler.referenceResolution = new Vector2(
                 UiThemeTokens.ReferenceWidth,
                 UiThemeTokens.ReferenceHeight);
-            canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            canvasScaler.matchWidthOrHeight = 0.5f;
+            // Expand keeps at least the complete 1672x941 logical canvas on
+            // every aspect ratio. The fitted reference frame therefore stays
+            // canonical instead of becoming narrower on 16:10/4:3 screens and
+            // pushing right-aligned HUD/menu content outside the viewport.
+            canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
 
             RectTransform glassReferenceFrame = CreateBackdropLayer(canvasObject.transform);
 
             GameObject frameObject = factory.CreateObject("ReferenceFrame_1672x941", canvasObject.transform);
-            referenceFrame = factory.Stretch(frameObject);
-            var fitter = frameObject.AddComponent<AspectRatioFitter>();
-            fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
-            fitter.aspectRatio = UiThemeTokens.ReferenceAspect;
+            referenceFrame = frameObject.GetComponent<RectTransform>();
+            referenceFrame.anchorMin = new Vector2(0.5f, 0.5f);
+            referenceFrame.anchorMax = new Vector2(0.5f, 0.5f);
+            referenceFrame.pivot = new Vector2(0.5f, 0.5f);
+            referenceFrame.anchoredPosition = Vector2.zero;
+            referenceFrame.sizeDelta = new Vector2(
+                UiThemeTokens.ReferenceWidth,
+                UiThemeTokens.ReferenceHeight);
+            referenceFrame.localScale = Vector3.one;
 
             GameObject scaleObject = factory.CreateObject("AccessibleScaleRoot", referenceFrame);
             scaleRoot = factory.Stretch(scaleObject);
@@ -440,6 +486,25 @@ namespace MSC.UI.Presentation
                 return;
             }
 
+            NewGameVehiclePaintHandler paintHandler =
+                dependencies.ConfigureNewGameVehiclePaint;
+            if (paintHandler != null &&
+                !paintHandler(
+                    selectedCarColourIndex,
+                    CarColours[Mathf.Clamp(
+                        selectedCarColourIndex,
+                        0,
+                        CarColours.Length - 1)],
+                    out string paintFailure))
+            {
+                Debug.LogError(
+                    "New Game could not apply the selected Satsuma paint: " +
+                    paintFailure,
+                    this);
+                ShowNotice("ui.notice.gameplay_activation_failed");
+                return;
+            }
+
             gameplayActivationCoroutine = StartCoroutine(
                 ActivateNewGameAfterLoadingFrame());
         }
@@ -447,6 +512,10 @@ namespace MSC.UI.Presentation
         private IEnumerator ActivateNewGameAfterLoadingFrame()
         {
             SetGameplaySuspended(true);
+            if (loadingDetailText != null)
+            {
+                loadingDetailText.text = textCatalog.Get("ui.loading.detail");
+            }
             ShowRoute(UiRouteId.Loading);
 
             // Let the loading route reach the backbuffer before the bounded,
@@ -456,6 +525,45 @@ namespace MSC.UI.Presentation
 
             if (!sessionEnded)
             {
+                IGameplaySessionPreparationGate preparationGate =
+                    dependencies.GameplaySessionGate as
+                        IGameplaySessionPreparationGate;
+                if (preparationGate != null &&
+                    !preparationGate.IsGameplayPrepared)
+                {
+                    if (!preparationGate.TryBeginGameplayPreparation(
+                            out string preparationFailure))
+                    {
+                        Debug.LogError(
+                            "Gameplay preparation could not start: " +
+                            preparationFailure,
+                            this);
+                        ShowNotice("ui.notice.gameplay_activation_failed");
+                        EnterMainMenu();
+                        gameplayActivationCoroutine = null;
+                        yield break;
+                    }
+
+                    while (!sessionEnded &&
+                           preparationGate.IsGameplayPreparationRunning)
+                    {
+                        yield return null;
+                    }
+
+                    if (!sessionEnded &&
+                        !preparationGate.IsGameplayPrepared)
+                    {
+                        Debug.LogError(
+                            "Gameplay preparation failed: " +
+                            preparationGate.LastGameplayPreparationFailure,
+                            this);
+                        ShowNotice("ui.notice.gameplay_activation_failed");
+                        EnterMainMenu();
+                        gameplayActivationCoroutine = null;
+                        yield break;
+                    }
+                }
+
                 EnterGameplay();
                 if (!gameplayStarted)
                 {
@@ -547,7 +655,10 @@ namespace MSC.UI.Presentation
                     MonoBehaviour behaviour = behaviours[index];
                     if (behaviour is IGameplayInputGate inputGate)
                     {
-                        savedInputGateStates[inputGate] = inputGate.IsGameplayInputEnabled;
+                        savedInputGateStates[inputGate] =
+                            CaptureGameplayInputRestoreState(
+                                behaviour,
+                                inputGate);
                         inputGate.SetGameplayInputEnabled(false);
                     }
 
@@ -573,6 +684,21 @@ namespace MSC.UI.Presentation
 
             gameplaySuspended = suspended;
             SetCursorForUi(suspended);
+        }
+
+        private static bool CaptureGameplayInputRestoreState(
+            MonoBehaviour behaviour,
+            IGameplayInputGate inputGate)
+        {
+            // A deferred New Game player hierarchy is inactive behind the main
+            // menu. Its action map correctly reports disabled even though the
+            // authored router component is meant to enable when the session
+            // gate activates that hierarchy. Preserve the component's pending
+            // enabled state in that case; active gates still report their live
+            // input state so intentionally suspended routers remain suspended.
+            return behaviour != null && !behaviour.gameObject.activeInHierarchy
+                ? behaviour.enabled
+                : inputGate.IsGameplayInputEnabled;
         }
 
         private void RestoreGameplayState()
@@ -683,12 +809,17 @@ namespace MSC.UI.Presentation
                     fullScreenMode,
                     refreshRate);
             }
-            QualitySettings.vSyncCount = graphics.VSync ? 1 : 0;
             if (graphics.QualityLevel >= 0 &&
                 graphics.QualityLevel < QualitySettings.names.Length)
             {
                 QualitySettings.SetQualityLevel(graphics.QualityLevel, applyExpensiveChanges: true);
             }
+            // Quality tiers carry their own authored vSync value. Apply the
+            // player's explicit choice after switching tiers so "Off" is not
+            // silently overwritten by the newly selected quality asset.
+            QualitySettings.vSyncCount = graphics.VSync ? 1 : 0;
+            dlssRuntime?.Apply(graphics);
+            ApplyCameraSettings(graphics);
 
             AudioSettingsDto audio = document.Audio;
             dependencies.Audio?.ApplySettings(new AudioSettingsState(
@@ -713,6 +844,13 @@ namespace MSC.UI.Presentation
             ApplyLookSettings(controls);
 
             textCatalog.LocaleId = document.Gameplay.LanguageId;
+            ApplyGameplayLocale(document.Gameplay.LanguageId);
+            if (hudFpsPanel != null)
+            {
+                hudFpsPanel.SetActive(
+                    document.Gameplay.ShowFpsCounter);
+            }
+
             if (scaleRoot != null)
             {
                 float scale = Mathf.Clamp(document.Accessibility.UiScale, 0.85f, 1.25f);
@@ -744,6 +882,45 @@ namespace MSC.UI.Presentation
                         controls.InvertMouseY,
                         controls.GamepadSensitivity,
                         controls.InvertGamepadY);
+                }
+            }
+        }
+
+        private void ApplyGameplayLocale(string localeId)
+        {
+            if (dependencies.GameplayRoot == null)
+            {
+                return;
+            }
+
+            MonoBehaviour[] behaviours = dependencies.GameplayRoot
+                .GetComponentsInChildren<MonoBehaviour>(true);
+            for (int index = 0; index < behaviours.Length; index++)
+            {
+                if (behaviours[index] is IGameplayLocaleSettingsSink sink)
+                {
+                    sink.ApplyGameplayLocale(localeId);
+                }
+            }
+        }
+
+        private void ApplyCameraSettings(GraphicsSettingsDto graphics)
+        {
+            if (dependencies.GameplayRoot == null || graphics == null)
+            {
+                return;
+            }
+
+            MonoBehaviour[] behaviours =
+                dependencies.GameplayRoot.GetComponentsInChildren<MonoBehaviour>(
+                    true);
+            for (int index = 0; index < behaviours.Length; index++)
+            {
+                if (behaviours[index] is IPlayerCameraSettingsSink sink)
+                {
+                    sink.ApplyCameraSettings(
+                        graphics.HorizontalFieldOfViewDegrees,
+                        graphics.CameraFarClipMeters);
                 }
             }
         }
@@ -849,13 +1026,42 @@ namespace MSC.UI.Presentation
                 return textCatalog.Get("ui.main.awaiting_sample");
             }
 
+            return AverageFpsValueText() + " FPS";
+        }
+
+        private string AverageFpsValueText()
+        {
+            if (frameSamples.Count == 0)
+            {
+                return "—";
+            }
+
             double total = 0d;
             foreach (float sample in frameSamples)
             {
                 total += sample;
             }
 
-            return (frameSamples.Count / total).ToString("0", CultureInfo.InvariantCulture) + " FPS";
+            return (frameSamples.Count / total).ToString(
+                "0",
+                CultureInfo.InvariantCulture);
+        }
+
+        private void RefreshHudFpsCounter(bool force = false)
+        {
+            if (hudFpsPanel == null ||
+                hudFpsText == null ||
+                !hudFpsPanel.activeInHierarchy ||
+                !force &&
+                Time.unscaledTime < nextHudFpsRefreshTime)
+            {
+                return;
+            }
+
+            nextHudFpsRefreshTime = Time.unscaledTime + 0.25f;
+            hudFpsText.text = frameSamples.Count < 30
+                ? "—"
+                : AverageFpsValueText();
         }
 
         private UiLocaleFormatter GetLocaleFormatter()
@@ -997,6 +1203,8 @@ namespace MSC.UI.Presentation
         private void OpenSaveStatus(UiRouteId returnRoute)
         {
             saveStatusReturnRoute = returnRoute;
+            RefreshSaveSlotsFromStorage();
+            RefreshSaveUiPresentation();
             ShowRoute(UiRouteId.SaveStatus);
         }
 
@@ -1025,7 +1233,7 @@ namespace MSC.UI.Presentation
             GameObject route = CreateRoute(UiRouteId.Loading);
             GameObject panel = factory.Panel("LoadingCard", route.transform, 586f, 397f, 500f, 146f);
             factory.Heading(panel.transform, textCatalog.Get("ui.loading.title"), 28f, 24f, 444f, 24);
-            factory.Text(
+            loadingDetailText = factory.Text(
                 "LoadingDetail",
                 panel.transform,
                 textCatalog.Get("ui.loading.detail"),
@@ -1114,66 +1322,7 @@ namespace MSC.UI.Presentation
 
         private void BuildSaveStatusRoute()
         {
-            GameObject route = CreateRoute(UiRouteId.SaveStatus);
-            GameObject panel = factory.Panel(
-                "SaveStatusCard",
-                route.transform,
-                536f,
-                252f,
-                600f,
-                436f);
-            factory.Heading(
-                panel.transform,
-                textCatalog.Get("ui.save_status.title"),
-                34f,
-                28f,
-                532f,
-                27);
-            factory.Text(
-                "SaveStatusState",
-                panel.transform,
-                textCatalog.Get("ui.main.no_save"),
-                34f,
-                104f,
-                532f,
-                48f,
-                18,
-                UiThemeTokens.TextPrimary,
-                TextAnchor.MiddleLeft,
-                FontStyle.Bold);
-            factory.Text(
-                "SaveStatusDetail",
-                panel.transform,
-                textCatalog.Get("ui.save_status.detail"),
-                34f,
-                168f,
-                532f,
-                82f,
-                14,
-                UiThemeTokens.TextMuted,
-                TextAnchor.UpperLeft);
-            factory.Text(
-                "SaveStatusReferenceState",
-                panel.transform,
-                textCatalog.Get("ui.common.reference_pending"),
-                34f,
-                270f,
-                532f,
-                22f,
-                10,
-                UiThemeTokens.Disabled,
-                TextAnchor.MiddleLeft,
-                FontStyle.Bold);
-            factory.CompactButton(
-                "SaveStatusBack",
-                panel.transform,
-                textCatalog.Get("ui.common.back"),
-                174f,
-                334f,
-                252f,
-                54f,
-                ReturnFromSaveStatus,
-                primary: true);
+            BuildNativeSaveStatusRoute();
         }
 
         partial void BuildMainMenuRoute();
@@ -1189,18 +1338,37 @@ namespace MSC.UI.Presentation
 
         private readonly struct NeedHudBinding
         {
-            public NeedHudBinding(Text valueText, Image fill, float reviewValue)
+            public NeedHudBinding(
+                Image fillImage,
+                RectTransform indicatorRect,
+                float trackWidth,
+                float reviewValue)
             {
-                ValueText = valueText;
-                Fill = fill;
+                FillImage = fillImage;
+                IndicatorRect = indicatorRect;
+                TrackWidth = trackWidth;
                 ReviewValue = reviewValue;
             }
 
-            public Text ValueText { get; }
+            public Image FillImage { get; }
 
-            public Image Fill { get; }
+            public RectTransform IndicatorRect { get; }
+
+            public float TrackWidth { get; }
 
             public float ReviewValue { get; }
+
+            public void SetNormalized(float value)
+            {
+                float normalized = Mathf.Clamp01(value);
+                bool visible = normalized > 0.0001f;
+                FillImage.gameObject.SetActive(visible);
+                IndicatorRect.gameObject.SetActive(visible);
+                FillImage.fillAmount = normalized;
+                IndicatorRect.anchoredPosition = new Vector2(
+                    TrackWidth * normalized,
+                    0f);
+            }
         }
 
     }

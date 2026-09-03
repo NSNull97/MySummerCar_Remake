@@ -139,6 +139,29 @@ namespace MSC.Bootstrap
                 requireCompleteSet: false);
         }
 
+        /// <summary>
+        /// Creates the production environment/world/audio/native-save binding
+        /// once the 09A save composition has been constructed explicitly.
+        /// </summary>
+        public static GameServiceBindings CreateProductionEnvironmentAudioSavePartial(
+            IGameTimeService gameTime,
+            IWeatherService weather,
+            ISaveService save,
+            IAudioBackend audio,
+            IWorldStreamingService worldStreaming)
+        {
+            return new GameServiceBindings(
+                gameTime: gameTime ?? throw new ArgumentNullException(nameof(gameTime)),
+                weather: weather ?? throw new ArgumentNullException(nameof(weather)),
+                save: save ?? throw new ArgumentNullException(nameof(save)),
+                audio: audio ?? throw new ArgumentNullException(nameof(audio)),
+                interaction: null,
+                entityIds: null,
+                worldStreaming: worldStreaming ??
+                    throw new ArgumentNullException(nameof(worldStreaming)),
+                requireCompleteSet: false);
+        }
+
         public IGameTimeService GameTime { get; }
 
         public IWeatherService Weather { get; }

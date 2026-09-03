@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "manifestId": "phase1-ui-interaction-presentation-v1",
+  "classification": "TemporaryDirectImport",
+  "productionReplacementKey": "ui.interaction.pickup-hand",
+  "source": {
+    "donorVersionAuthority": "Docs/Phase1/DONOR_VERSION_LOCK.md",
+    "stagingRelativePath": "raw/world/milestone-04a1/assetripper-unity-project/ExportedProject/Assets/Texture2D/gui_uset.png",
+    "assetName": "gui_uset.png",
+    "sha256": "7939FE87B8F6F3154595AFF54AE17B0B4A19EA7062DCE3D3281B254266BB62A2",
+    "dimensions": "32x32"
+  },
+  "generatedOutput": {
+    "path": "Assets/Game/LegacyImport/RuntimeBaseline/GameplayPresentation/UI/Interaction/DonorPickupHand.png",
+    "guid": "f627a294dcce4353b85d5269d8d90116",
+    "transformation": "byte-for-byte copy; mipmaps and texture compression disabled by project-owned importer metadata",
+    "gitPolicy": "ignored-private-phase1-payload"
+  },
+  "runtimeBinding": {
+    "prefab": "Assets/Game/Player/Content/Prefabs/M4_FirstPersonPlayer.prefab",
+    "field": "CrossdotPresenter.pickupIcon",
+    "authority": "presentation-only"
+  }
+}

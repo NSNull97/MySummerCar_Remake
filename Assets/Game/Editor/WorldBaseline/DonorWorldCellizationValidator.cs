@@ -62,6 +62,7 @@ namespace MSC.Editor.WorldBaseline
                 typeof(SphereCollider),
                 typeof(DonorWorldStreamingSceneMetadata),
                 typeof(DonorWorldBaselineEntityMetadata),
+                typeof(DonorWorldSupplementalEntityMetadata),
                 typeof(DonorWorldBaselineColliderMetadata),
                 typeof(DonorWorldLegacyReplacementRegistry),
                 typeof(DonorWorldLegacyMaterialBinding),
@@ -1859,7 +1860,10 @@ namespace MSC.Editor.WorldBaseline
             string prefix = "Entity " + entity.StableId + ": ";
             if (!string.Equals(
                     entity.name,
-                    "LegacyWorld_" + expected.Placement.StableId,
+                    DonorWorldBaselineDisplayName.Create(
+                        expected.Placement.HierarchyPath,
+                        expected.Placement.SourceObjectId,
+                        expected.Placement.Category),
                     StringComparison.Ordinal) ||
                 !string.Equals(
                     entity.ReplacementKey,

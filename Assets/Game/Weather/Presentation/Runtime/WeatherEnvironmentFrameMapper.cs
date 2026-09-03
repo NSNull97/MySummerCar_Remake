@@ -20,6 +20,34 @@ namespace MSC.Weather.Presentation
             out EnvironmentPresentationFrame frame,
             out string failure)
         {
+            return TryMap(
+                outputs,
+                presentationRevision,
+                qualityTier,
+                transitionDurationSeconds,
+                outputs.Weather.PresentationBindingId,
+                lightningVisual,
+                environmentRefresh,
+                out frame,
+                out failure);
+        }
+
+        /// <summary>
+        /// Maps a frame while allowing the composition owner to start blending
+        /// toward the scheduled target binding before the interpolated logical
+        /// state's discrete identity crosses its midpoint.
+        /// </summary>
+        public static bool TryMap(
+            in WeatherEnvironmentOutputs outputs,
+            ulong presentationRevision,
+            EnvironmentQualityTier qualityTier,
+            float transitionDurationSeconds,
+            string presentationBindingId,
+            in EnvironmentLightningVisualRequest lightningVisual,
+            in EnvironmentRefreshRequest environmentRefresh,
+            out EnvironmentPresentationFrame frame,
+            out string failure)
+        {
             frame = default;
             if (presentationRevision == 0UL)
             {
@@ -30,7 +58,7 @@ namespace MSC.Weather.Presentation
             WeatherState weather = outputs.Weather;
             if (weather.Id.IsEmpty ||
                 !EnvironmentBindingId.TryParse(
-                    weather.PresentationBindingId,
+                    presentationBindingId,
                     out EnvironmentBindingId bindingId))
             {
                 failure = "Weather output has no valid stable presentation binding ID.";
@@ -66,7 +94,7 @@ namespace MSC.Weather.Presentation
                 bindingId,
                 MapCloudType(weather.Id),
                 weather.CloudCoverage01,
-                weather.AmbientReadability01,
+                1f - weather.AmbientReadability01,
                 weather.PrecipitationType == WeatherPrecipitationType.None
                     ? EnvironmentPrecipitationType.None
                     : EnvironmentPrecipitationType.Rain,

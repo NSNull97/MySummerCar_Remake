@@ -1,0 +1,26 @@
+{
+  "name": "MSC.Lighting.Editor",
+  "rootNamespace": "MSC.Lighting.Editor",
+  "references": [
+    "MSC.Lighting.Runtime",
+    "MSC.Lighting.ProductionIntegration.Runtime",
+    "MSC.Bootstrap.Runtime",
+    "MSC.LegacyImport.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.World.Runtime",
+    "MSC.Weather.Production.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -1,0 +1,22 @@
+{
+  "name": "MSC.Traffic.Tests.PlayMode",
+  "rootNamespace": "MSC.Tests.PlayMode.Traffic",
+  "references": [
+    "MSC.Bootstrap.Runtime",
+    "MSC.Characters.Runtime",
+    "MSC.Core.Runtime",
+    "MSC.NPC.Runtime",
+    "MSC.Traffic.Runtime",
+    "MSC.World.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": ["TestAssemblies"]
+}

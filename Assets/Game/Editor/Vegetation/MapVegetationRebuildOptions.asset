@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82257fa9dd0eea04b9301bb5ccbd8578, type: 3}
+  m_Name: MapVegetationRebuildOptions
+  m_EditorClassIdentifier: MSC.Editor::MSC.Editor.Vegetation.MapVegetationRebuildOptions
+  placement: {fileID: 11400000, guid: 0c589433d951ba341becd7150e96dacd, type: 2}
+  categories: 15
+  selectedCell: cell_-4_-3
+  grassProfiles:
+  - {fileID: 11400000, guid: f7856acdc2e46f542a51de7c507bf0b2, type: 2}
+  - {fileID: 11400000, guid: e4143098d4fefaf4da6e866b4dd99b76, type: 2}
+  - {fileID: 11400000, guid: 6bfad0e99b74ce64099c21dd193372c2, type: 2}
+  materialOverrides:
+  - {fileID: 2100000, guid: 1fdf410a58aaad24d8353e6810f5ecfc, type: 2}
+  - {fileID: 2100000, guid: 889bdb1c338a20646bacbfb6c3cb56f9, type: 2}
+  - {fileID: 2100000, guid: dc20187120fecc2488a167fae7f05130, type: 2}
+  - {fileID: 2100000, guid: 5a5ff488ecf85e440a44abc42a662b42, type: 2}
+  - {fileID: 2100000, guid: e6317ded331920347987a11372a5d986, type: 2}
+  - {fileID: 2100000, guid: f8de36e60546c564d90f89d3d8417afa, type: 2}
+  - {fileID: 2100000, guid: 122464d289b1535438f14e1daca1f2d8, type: 2}
+  - {fileID: 2100000, guid: df0bac9cb63bfe54194b302bdf1a63d1, type: 2}
+  - {fileID: 2100000, guid: c490a672a3b88ef4394f2be0e963710c, type: 2}
+  - {fileID: 2100000, guid: 48171c25c96631b4ba327937f42d563c, type: 2}
+  - {fileID: 2100000, guid: 12a8fa9fb6cff5946be2b260e3b05cac, type: 2}
+  - {fileID: 2100000, guid: 28508824ffd5fc748a7663ef374482bf, type: 2}
+  - {fileID: 2100000, guid: d12a669afab869f47ad338a9ce1d7bdb, type: 2}
+  - {fileID: 2100000, guid: 6bf2cfaafe11e4347be6db023034882b, type: 2}
+  - {fileID: 2100000, guid: 7c305f18a158b394081b62b6f2c4a5ea, type: 2}
+  - {fileID: 2100000, guid: f29d7aa58019e9847abddda3467b11ef, type: 2}
+  - {fileID: 2100000, guid: 927921b01808d0a4d9bc2c970a6f2a4d, type: 2}
+  - {fileID: 2100000, guid: f71207dc83589424887f265b52aaa8e9, type: 2}
+  sprucePercent: 65
+  pinePercent: 20
+  birchPercent: 7.5
+  aspenPercent: 7.5
+  boundaryDepthMeters: 75
+  boundaryFrontHeightRange: {x: 4.5, y: 12}
+  boundaryBackHeightRange: {x: 12, y: 22}
+  boundaryCandidateSpacingMeters: 5
+  boundaryFrontDensity: 0.35
+  boundaryBackDensity: 0.95
+  boundaryMaximumTrees: 12000
+  boundaryMaximumForestFloor: 8000
+  naturalInfillSpacingMeters: 8.5
+  naturalInfillDensity: 0.94
+  naturalInfillMinimumTreeDistanceMeters: 5.75
+  naturalInfillForestInfluenceMeters: 72
+  naturalInfillMinimumDonorTrees: 3
+  naturalInfillAngularSectorCount: 12
+  naturalInfillMaximumEmptyArcDegrees: 180
+  naturalInfillClusterScaleMeters: 48
+  naturalInfillHeightRange: {x: 7, y: 20}
+  naturalInfillMaximumOriginalFraction: 0.65
+  distantForestMinimumBoundaryDistanceMeters: 95
+  distantForestDepthMeters: 650
+  distantForestSpacingMeters: 15
+  distantForestDensity: 0.72
+  distantForestHeightRange: {x: 11, y: 24}
+  distantForestMaximumTrees: 16000
+  distantForestMaximumRenderers: 512
+  distantForestMaximumVertices: 2000000
+  distantForestMaximumVerticesPerBatch: 250000
+  distantForestMaximumVerticesPerScene: 500000
+  distantForestMaximumScenes: 128
+  distantForestLoadingRadiusCells: 2
+  canonicalRockMaximumCount: 128
+  grassSpacingMeters: 0.8
+  grassDensity: 0.96
+  undergrowthSpacingMeters: 9
+  undergrowthDensity: 0.3
+  createTreeColliders: 1
+  createBoundaryColliders: 0
+  forestLoadingRadiusCells: 1
+  maximumPreviewSamples: 8000
+  showPreview: 1
+  showExclusions: 1

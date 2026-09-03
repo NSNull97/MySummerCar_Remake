@@ -21,6 +21,34 @@ namespace MSC.Tests.EditMode.Enviro3Integration
         private const string MissingReferenceDiagnosticCode = "ENVIRO3-ATTACH-001";
 
         [Test]
+        public void HdrpDirectionalLightCompatibility_NormalizesLegacyCandelaToLux()
+        {
+            var lightObject = new GameObject("Legacy Enviro Directional Light");
+            try
+            {
+                Light light = lightObject.AddComponent<Light>();
+                light.type = LightType.Directional;
+                light.lightUnit = LightUnit.Candela;
+
+                MethodInfo method = typeof(Enviro3EnvironmentAdapter).GetMethod(
+                    "EnsureDirectionalLightUsesLux",
+                    BindingFlags.Static | BindingFlags.NonPublic);
+                Assert.That(method, Is.Not.Null);
+
+                bool changed = (bool)method.Invoke(null, new object[] { light });
+                Assert.That(changed, Is.True);
+                Assert.That(light.lightUnit, Is.EqualTo(LightUnit.Lux));
+
+                changed = (bool)method.Invoke(null, new object[] { light });
+                Assert.That(changed, Is.False);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(lightObject);
+            }
+        }
+
+        [Test]
         public void ProductionVisualPolicy_MapsVisibilityAndExposureDeterministically()
         {
             var exposure = AnimationCurve.Linear(0f, 1.2f, 1f, 12.7f);
@@ -38,9 +66,50 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     1200f),
                 Is.EqualTo(306.748f).Within(0.01f));
             Assert.That(
+                Enviro3ProductionVisualPolicy.CalculateFogMeanFreePathMeters(
+                    80f),
+                Is.EqualTo(20.45f).Within(0.01f));
+            Assert.That(
                 Enviro3ProductionVisualPolicy
                     .ResolveRainParticleMaxScreenSize(0.001f),
-                Is.EqualTo(0.01f));
+                Is.EqualTo(0.0035f));
+            Assert.That(
+                Enviro3ProductionVisualPolicy.ResolveRainMaximumEmission(2000f),
+                Is.EqualTo(8000f));
+            Assert.That(
+                Enviro3ProductionVisualPolicy.ResolveRainParticleBudget(25000),
+                Is.EqualTo(8000));
+            Assert.That(
+                Enviro3ProductionVisualPolicy
+                    .ResolveRainSplashParticleBudget(25000),
+                Is.EqualTo(512));
+            Assert.That(
+                Enviro3ProductionVisualPolicy.RainCollisionLayerMask,
+                Is.EqualTo((1 << 0) | (1 << 6) | (1 << 7)));
+            float drizzleDropSize = Enviro3ProductionVisualPolicy
+                .CalculateRainParticleSizeMultiplier(0.22f);
+            float steadyRainDropSize = Enviro3ProductionVisualPolicy
+                .CalculateRainParticleSizeMultiplier(0.55f);
+            float heavyRainDropSize = Enviro3ProductionVisualPolicy
+                .CalculateRainParticleSizeMultiplier(0.86f);
+            float stormDropSize = Enviro3ProductionVisualPolicy
+                .CalculateRainParticleSizeMultiplier(1f);
+            Assert.That(drizzleDropSize, Is.InRange(0.25f, 0.48f));
+            Assert.That(steadyRainDropSize, Is.GreaterThan(drizzleDropSize));
+            Assert.That(heavyRainDropSize, Is.GreaterThan(steadyRainDropSize));
+            Assert.That(stormDropSize, Is.GreaterThan(heavyRainDropSize));
+            Assert.That(stormDropSize, Is.LessThanOrEqualTo(0.48f));
+            Assert.That(
+                Enviro3ProductionVisualPolicy
+                    .ResolveRainSplashMaxScreenSize(0.1f),
+                Is.EqualTo(0.015f));
+            float drizzleSplashSize = Enviro3ProductionVisualPolicy
+                .CalculateRainSplashSizeMultiplier(0.22f);
+            float stormSplashSize = Enviro3ProductionVisualPolicy
+                .CalculateRainSplashSizeMultiplier(1f);
+            Assert.That(drizzleSplashSize, Is.InRange(0.75f, 1.35f));
+            Assert.That(stormSplashSize, Is.GreaterThan(drizzleSplashSize));
+            Assert.That(stormSplashSize, Is.EqualTo(1.35f));
 
             float exterior =
                 Enviro3ProductionVisualPolicy.CalculateExposureEv(
@@ -125,6 +194,236 @@ namespace MSC.Tests.EditMode.Enviro3Integration
         }
 
         [Test]
+        public void ProductionVisualPolicy_OrdersCloudCoverFromClearToStorm()
+        {
+            Enviro3CloudVisualCalibration clear =
+                Enviro3ProductionVisualPolicy.ResolveCloudCalibration(
+                    Enviro3CloudVisualKind.Clear);
+            Enviro3CloudVisualCalibration partly =
+                Enviro3ProductionVisualPolicy.ResolveCloudCalibration(
+                    Enviro3CloudVisualKind.PartlyCloudy);
+            Enviro3CloudVisualCalibration brightOvercast =
+                Enviro3ProductionVisualPolicy.ResolveCloudCalibration(
+                    Enviro3CloudVisualKind.BrightOvercast);
+            Enviro3CloudVisualCalibration overcast =
+                Enviro3ProductionVisualPolicy.ResolveCloudCalibration(
+                    Enviro3CloudVisualKind.Overcast);
+            Enviro3CloudVisualCalibration drizzle =
+                Enviro3ProductionVisualPolicy.ResolveCloudCalibration(
+                    Enviro3CloudVisualKind.Drizzle);
+            Enviro3CloudVisualCalibration rain =
+                Enviro3ProductionVisualPolicy.ResolveCloudCalibration(
+                    Enviro3CloudVisualKind.Rain);
+            Enviro3CloudVisualCalibration heavy =
+                Enviro3ProductionVisualPolicy.ResolveCloudCalibration(
+                    Enviro3CloudVisualKind.HeavyRain);
+            Enviro3CloudVisualCalibration storm =
+                Enviro3ProductionVisualPolicy.ResolveCloudCalibration(
+                    Enviro3CloudVisualKind.Storm);
+
+            Assert.That(clear.CoverageLayer1, Is.LessThan(partly.CoverageLayer1));
+            Assert.That(partly.CoverageLayer1,
+                Is.LessThan(brightOvercast.CoverageLayer1));
+            Assert.That(brightOvercast.CoverageLayer1,
+                Is.LessThan(overcast.CoverageLayer1));
+            Assert.That(overcast.CoverageLayer1, Is.LessThan(drizzle.CoverageLayer1));
+            Assert.That(drizzle.CoverageLayer1, Is.LessThan(rain.CoverageLayer1));
+            Assert.That(rain.CoverageLayer1, Is.LessThan(heavy.CoverageLayer1));
+            Assert.That(heavy.CoverageLayer1, Is.LessThan(storm.CoverageLayer1));
+            Assert.That(clear.CirrusAlpha, Is.LessThan(partly.CirrusAlpha));
+            Assert.That(overcast.AmbientLightIntensity,
+                Is.LessThan(partly.AmbientLightIntensity));
+            Assert.That(brightOvercast.AmbientLightIntensity,
+                Is.GreaterThan(overcast.AmbientLightIntensity));
+
+            Enviro3CloudShapeCalibration partlyShape =
+                Enviro3ProductionVisualPolicy.ResolveCloudShapeCalibration(
+                    Enviro3CloudVisualKind.PartlyCloudy);
+            Enviro3CloudShapeCalibration brightShape =
+                Enviro3ProductionVisualPolicy.ResolveCloudShapeCalibration(
+                    Enviro3CloudVisualKind.BrightOvercast);
+            Enviro3CloudShapeCalibration heavyShape =
+                Enviro3ProductionVisualPolicy.ResolveCloudShapeCalibration(
+                    Enviro3CloudVisualKind.Overcast);
+            Assert.That(partlyShape.BaseErosionIntensityLayer1,
+                Is.GreaterThan(heavyShape.BaseErosionIntensityLayer1));
+            Assert.That(brightShape.DetailErosionIntensityLayer1,
+                Is.GreaterThan(partlyShape.DetailErosionIntensityLayer1));
+            Assert.That(brightShape.LightAbsorptionLayer1,
+                Is.LessThan(heavyShape.LightAbsorptionLayer1));
+
+            float clearCoverage = Enviro3ProductionVisualPolicy
+                .CalculateEnviroCloudCoverage(0.1f);
+            float partlyCoverage = Enviro3ProductionVisualPolicy
+                .CalculateEnviroCloudCoverage(0.36f);
+            float overcastCoverage = Enviro3ProductionVisualPolicy
+                .CalculateEnviroCloudCoverage(0.78f);
+            float heavyCoverage = Enviro3ProductionVisualPolicy
+                .CalculateEnviroCloudCoverage(0.94f);
+            Assert.That(clearCoverage, Is.LessThan(partlyCoverage));
+            Assert.That(partlyCoverage, Is.LessThan(overcastCoverage));
+            Assert.That(partlyCoverage, Is.EqualTo(-0.08f).Within(0.0001f));
+            Assert.That(overcastCoverage, Is.EqualTo(0.34f).Within(0.0001f));
+            Assert.That(heavyCoverage, Is.GreaterThan(overcastCoverage));
+
+            Vector2 firstOffset = Enviro3ProductionVisualPolicy
+                .CalculateCloudFieldOffset(12345u);
+            Vector2 repeatedOffset = Enviro3ProductionVisualPolicy
+                .CalculateCloudFieldOffset(12345u);
+            Vector2 secondOffset = Enviro3ProductionVisualPolicy
+                .CalculateCloudFieldOffset(54321u);
+            Assert.That(repeatedOffset, Is.EqualTo(firstOffset));
+            Assert.That(secondOffset, Is.Not.EqualTo(firstOffset));
+            Assert.That(Mathf.Abs(firstOffset.x),
+                Is.LessThanOrEqualTo(
+                    Enviro3ProductionVisualPolicy.CloudFieldOffsetExtent));
+            Assert.That(Mathf.Abs(firstOffset.y),
+                Is.LessThanOrEqualTo(
+                    Enviro3ProductionVisualPolicy.CloudFieldOffsetExtent));
+        }
+
+        [Test]
+        public void ProductionVisualPolicy_RestrainsNightAndKeepsCelestialsReadable()
+        {
+            Color authoredTwilight = new Color(0.42f, 0.28f, 0.31f, 1f);
+            Color deepNight = Enviro3ProductionVisualPolicy
+                .CalibrateNightSkyColor(authoredTwilight, 0.4f);
+            Color daylight = Enviro3ProductionVisualPolicy
+                .CalibrateNightSkyColor(authoredTwilight, 0.6f);
+
+            Assert.That(deepNight.maxColorComponent,
+                Is.LessThan(authoredTwilight.maxColorComponent * 0.7f));
+            Assert.That(deepNight.b / deepNight.r,
+                Is.GreaterThan(authoredTwilight.b / authoredTwilight.r));
+            Assert.That(deepNight.r, Is.LessThanOrEqualTo(deepNight.g),
+                "A full-night horizon must not retain a pink/red dawn cast.");
+            Assert.That(daylight, Is.EqualTo(authoredTwilight));
+            Assert.That(
+                Enviro3ProductionVisualPolicy.CalculateStarIntensity(
+                    0.5f,
+                    0.42f),
+                Is.GreaterThanOrEqualTo(2.4f));
+            Assert.That(
+                Enviro3ProductionVisualPolicy.CalculateStarIntensity(
+                    0f,
+                    0.7f),
+                Is.Zero);
+            Assert.That(
+                Enviro3ProductionVisualPolicy
+                    .CalculateMoonIlluminationFraction(0f),
+                Is.EqualTo(1f).Within(0.0001f));
+            Assert.That(
+                Enviro3ProductionVisualPolicy
+                    .CalculateMoonIlluminationFraction(1f),
+                Is.EqualTo(0.5f).Within(0.0001f));
+            Assert.That(
+                Enviro3ProductionVisualPolicy
+                    .CalculateMoonIlluminationFraction(2f),
+                Is.Zero.Within(0.0001f));
+
+            float clearFullMoon = Enviro3ProductionVisualPolicy
+                .CalculateMoonlightIlluminanceLux(
+                    0.5f,
+                    0f,
+                    0.08f,
+                    0f);
+            float cloudyFullMoon = Enviro3ProductionVisualPolicy
+                .CalculateMoonlightIlluminanceLux(
+                    0.5f,
+                    0f,
+                    0.94f,
+                    0.5f);
+            float halfMoon = Enviro3ProductionVisualPolicy
+                .CalculateMoonlightIlluminanceLux(
+                    0.5f,
+                    1f,
+                    0.08f,
+                    0f);
+            Assert.That(clearFullMoon, Is.GreaterThan(5f));
+            Assert.That(cloudyFullMoon, Is.LessThan(clearFullMoon * 0.2f));
+            Assert.That(halfMoon, Is.EqualTo(clearFullMoon * 0.5f)
+                .Within(0.0001f));
+            Assert.That(
+                Enviro3ProductionVisualPolicy
+                    .CalculateMoonlightIlluminanceLux(
+                        -0.01f,
+                        0f,
+                        0.08f,
+                        0f),
+                Is.Zero,
+                "A moon below the astronomical horizon must add no light.");
+            Assert.That(
+                Enviro3ProductionVisualPolicy
+                    .CalculateMoonlightIlluminanceLux(
+                        0.5f,
+                        2f,
+                        0.08f,
+                        0f),
+                Is.Zero,
+                "A new moon must add no directional light.");
+            Assert.That(
+                Enviro3ProductionVisualPolicy
+                    .CalculateMoonShadowStrength(clearFullMoon),
+                Is.InRange(
+                    0f,
+                    Enviro3ProductionVisualPolicy
+                        .MaximumMoonShadowStrength));
+
+            Color sandyDaylight = new Color(1f, 0.78f, 0.55f, 1f);
+            Color finnishDaylight = Enviro3ProductionVisualPolicy
+                .CalibrateFinnishDaylightColor(sandyDaylight, 1f);
+            Color finnishSky = Enviro3ProductionVisualPolicy
+                .CalibrateFinnishSkyColor(Color.white, 1f);
+            Color finnishAmbient = Enviro3ProductionVisualPolicy
+                .CalibrateFinnishAmbientDaylightColor(Color.white, 1f);
+            Color finnishDirect = Enviro3ProductionVisualPolicy
+                .CalibrateFinnishDaylightColor(Color.white, 1f);
+            Assert.That(finnishDaylight.b / finnishDaylight.r,
+                Is.GreaterThan(sandyDaylight.b / sandyDaylight.r));
+            Assert.That(finnishSky.b, Is.GreaterThan(finnishSky.g));
+            Assert.That(finnishSky.g, Is.GreaterThan(finnishSky.r));
+            Assert.That(
+                finnishAmbient.b / finnishAmbient.r,
+                Is.GreaterThan(finnishDirect.b / finnishDirect.r),
+                "Sky fill may be cooler than direct sunlight, but the whole " +
+                "frame must not receive a global blue filter.");
+            Assert.That(
+                Enviro3ProductionVisualPolicy
+                    .CalibrateFinnishDaylightColorTemperature(5500f, 1f),
+                Is.GreaterThan(6200f));
+        }
+
+        [Test]
+        public void ProductionVisualPolicy_CloudsAttenuateSunAndHardShadows()
+        {
+            float clearSun = Enviro3ProductionVisualPolicy
+                .CalculateDirectSunlightMultiplier(0.08f, 0f);
+            float overcastSun = Enviro3ProductionVisualPolicy
+                .CalculateDirectSunlightMultiplier(0.62f, 0.18f);
+            float stormSun = Enviro3ProductionVisualPolicy
+                .CalculateDirectSunlightMultiplier(1f, 0.52f);
+            float clearShadows = Enviro3ProductionVisualPolicy
+                .CalculateSunShadowStrength(0.08f, 0f);
+            float overcastShadows = Enviro3ProductionVisualPolicy
+                .CalculateSunShadowStrength(0.62f, 0.18f);
+
+            Assert.That(
+                clearSun,
+                Is.EqualTo(
+                        Enviro3ProductionVisualPolicy
+                            .ClearSkyDirectSunlightMultiplier)
+                    .Within(0.0001f));
+            Assert.That(overcastSun, Is.InRange(
+                clearSun * 0.3f,
+                clearSun * 0.4f));
+            Assert.That(stormSun, Is.LessThan(overcastSun));
+            Assert.That(overcastShadows, Is.LessThan(clearShadows * 0.3f));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                Enviro3ProductionVisualPolicy
+                    .CalculateDirectSunlightMultiplier(float.NaN, 0f));
+        }
+
+        [Test]
         public void ProductionVisualPolicy_RaisesOnlyDaylightDiffuseIndirectByContext()
         {
             float fullNightExterior =
@@ -161,7 +460,7 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     .Within(0.0001f));
             Assert.That(
                 twilightExterior,
-                Is.EqualTo(1.075f).Within(0.0001f));
+                Is.EqualTo(1.175f).Within(0.0001f));
             Assert.That(
                 daylightExterior,
                 Is.EqualTo(
@@ -170,7 +469,7 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     .Within(0.0001f));
             Assert.That(
                 daylightSheltered,
-                Is.EqualTo(1.075f).Within(0.0001f));
+                Is.EqualTo(1.175f).Within(0.0001f));
             Assert.That(
                 daylightInterior,
                 Is.EqualTo(
@@ -332,7 +631,10 @@ namespace MSC.Tests.EditMode.Enviro3Integration
             Assert.That(observations.RuntimeStormIsolated, Is.True);
             Assert.That(observations.RuntimeStormAutomaticLightningDisabled, Is.True);
             Assert.That(observations.SourceStormUnchanged, Is.True);
-            Assert.That(observations.RepeatedAttachStayedReady, Is.True);
+            Assert.That(
+                observations.RepeatedAttachStayedReady,
+                Is.True,
+                observations.RepeatedAttachDetails);
             Assert.That(observations.FirstDetachWasDetached, Is.True);
             Assert.That(observations.SecondDetachWasDetached, Is.True);
             Assert.That(observations.RuntimeStormReleasedOnDetach, Is.True);
@@ -351,6 +653,14 @@ namespace MSC.Tests.EditMode.Enviro3Integration
             Assert.That(observations.MediumQualityMapped, Is.True);
             Assert.That(observations.ProjectOwnedWindApplied, Is.True);
             Assert.That(observations.SingleEnviroWindOwner, Is.True);
+            Assert.That(observations.CloudProfilesAreDistinctAndBroken, Is.True);
+            Assert.That(
+                observations.CloudFieldDistributionAndMotionApplied,
+                Is.True);
+            Assert.That(observations.SourceCloudMotionUnchanged, Is.True);
+            Assert.That(
+                observations.RuntimeMoonLightingUsesPhaseAndHorizon,
+                Is.True);
             Assert.That(observations.AdapterHasSingleBoundedLateUpdateWriter, Is.True);
             Assert.That(observations.LateDuplicateOwnershipFailedClosed, Is.True);
             Assert.That(runtimeLightningMaterialReleased, Is.True);
@@ -519,6 +829,15 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 Manager.Objects.stars.transform.SetParent(
                     managerGameObject.transform,
                     false);
+                GameObject directionalLightObject = new GameObject(
+                    "Enviro Directional Light Test Double");
+                directionalLightObject.transform.SetParent(
+                    managerGameObject.transform,
+                    false);
+                Manager.Objects.directionalLight =
+                    directionalLightObject.AddComponent<Light>();
+                Manager.Objects.directionalLight.type = LightType.Directional;
+                Manager.Objects.directionalLight.lightUnit = LightUnit.Candela;
                 GameObject windZoneObject = new GameObject("Enviro Wind Zone Test Double");
                 windZoneObject.transform.SetParent(managerGameObject.transform, false);
                 Manager.Objects.windZone = windZoneObject.AddComponent<WindZone>();
@@ -595,7 +914,22 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 configuration.fogModule = Create<EnviroFogModule>();
                 configuration.fogModule.Settings = new EnviroFogSettings();
 
-                configuration.volumetricCloudModule = Create<TrackingVolumetricCloudsModule>();
+                configuration.volumetricCloudModule =
+                    Create<TrackingVolumetricCloudsModule>();
+                configuration.volumetricCloudModule.settingsGlobal =
+                    new EnviroCloudGlobalSettings
+                    {
+                        dualLayer = false,
+                        cloudsTravelSpeed = 0f
+                    };
+                configuration.volumetricCloudModule.settingsLayer1 =
+                    new EnviroCloudLayerSettings
+                    {
+                        windSpeedModifier = 0.005f,
+                        locationOffset = Vector2.zero
+                    };
+                configuration.volumetricCloudModule.settingsLayer2 =
+                    new EnviroCloudLayerSettings();
 
                 configuration.Weather = Create<EnviroWeatherModule>();
                 configuration.Weather.Settings = new EnviroWeather();
@@ -663,6 +997,18 @@ namespace MSC.Tests.EditMode.Enviro3Integration
             {
                 return new EnviroLighting
                 {
+                    lightingMode = EnviroLighting.LightingMode.Single,
+                    setDirectLighting = true,
+                    sunIntensityCurveHDRP =
+                        AnimationCurve.Constant(0f, 1f, 10000f),
+                    moonIntensityCurveHDRP =
+                        AnimationCurve.Constant(0f, 1f, 1f),
+                    lightColorTemperatureHDRP =
+                        AnimationCurve.Constant(0f, 1f, 6500f),
+                    lightColorTintHDRP = new Gradient(),
+                    ambientColorTintHDRP = new Gradient(),
+                    sceneExposure =
+                        AnimationCurve.Constant(0f, 1f, 8f),
                     ambientMode = UnityEngine.Rendering.AmbientMode.Flat,
                     ambientIntensityCurve = AnimationCurve.Constant(0f, 1f, 1f),
                     ambientSkyColorGradient = new Gradient(),
@@ -777,6 +1123,8 @@ namespace MSC.Tests.EditMode.Enviro3Integration
 
             public bool RepeatedAttachStayedReady { get; private set; }
 
+            public string RepeatedAttachDetails { get; private set; }
+
             public bool FirstDetachWasDetached { get; private set; }
 
             public bool SecondDetachWasDetached { get; private set; }
@@ -815,6 +1163,22 @@ namespace MSC.Tests.EditMode.Enviro3Integration
 
             public bool SingleEnviroWindOwner { get; private set; }
 
+            public bool CloudProfilesAreDistinctAndBroken { get; private set; }
+
+            public bool CloudFieldDistributionAndMotionApplied
+            {
+                get;
+                private set;
+            }
+
+            public bool SourceCloudMotionUnchanged { get; private set; }
+
+            public bool RuntimeMoonLightingUsesPhaseAndHorizon
+            {
+                get;
+                private set;
+            }
+
             public bool AdapterHasSingleBoundedLateUpdateWriter { get; private set; }
 
             public bool LateDuplicateOwnershipFailedClosed { get; private set; }
@@ -825,6 +1189,16 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 EnviroConfiguration source = fixture.SourceConfiguration;
                 Enviro3EnvironmentAdapter adapter = fixture.Adapter;
                 EnvironmentPresentationStatus initialStatus = adapter.Status;
+                EnviroWeatherType runtimeClear =
+                    GetPrivateField<EnviroWeatherType>(adapter, "runtimeClear");
+                EnviroWeatherType runtimePartlyCloudy =
+                    GetPrivateField<EnviroWeatherType>(
+                        adapter,
+                        "runtimePartlyCloudy");
+                EnviroWeatherType runtimeOvercast =
+                    GetPrivateField<EnviroWeatherType>(
+                        adapter,
+                        "runtimeOvercast");
                 EnviroWeatherType runtimeDrizzle =
                     GetPrivateField<EnviroWeatherType>(adapter, "runtimeDrizzle");
                 EnviroWeatherType runtimeRain =
@@ -989,7 +1363,7 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     normalizedTimeOfDay01: 0.5f,
                     transitionDurationSeconds: 0f));
                 observations.ImmediateBindingChangeUsedInstantPath =
-                    manager.Weather.targetWeatherType == fixture.SourceClear &&
+                    manager.Weather.targetWeatherType == runtimeClear &&
                     GetPrivateField<bool>(manager.Weather, "instantTransition");
 
                 Vector3 requestedLightningPosition = new Vector3(42f, 3f, -17f);
@@ -1112,6 +1486,134 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     activeWindZones.Length == 1 &&
                     activeWindZones[0] == manager.Objects.windZone &&
                     manager.Objects.windZone.transform.IsChildOf(manager.transform);
+
+                adapter.Present(CreateFrame(
+                    14,
+                    Enviro3EnvironmentBindings.PartlyCloudyIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f,
+                    cloudCoverage01: 0.36f,
+                    cloudIntensity01: 0.32f));
+                float partlyCoverage = runtimePartlyCloudy
+                    .cloudsOverride.coverageLayer1;
+                float partlyDensity = runtimePartlyCloudy
+                    .cloudsOverride.densityLayer1;
+                float partlyCirrus = runtimePartlyCloudy
+                    .flatCloudsOverride.cirrusCloudsAlpha;
+                uint partlySeed = adapter.ActiveCloudFieldSeed;
+                Vector2 partlyOffset = adapter.ActiveCloudFieldOffset;
+
+                adapter.Present(CreateFrame(
+                    15,
+                    Enviro3EnvironmentBindings.OvercastIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f,
+                    cloudCoverage01: 0.78f,
+                    cloudIntensity01: 0.08f));
+                float brightCoverage = runtimeOvercast
+                    .cloudsOverride.coverageLayer1;
+                float brightDensity = runtimeOvercast
+                    .cloudsOverride.densityLayer1;
+                float brightDetailErosion = runtimeOvercast
+                    .cloudsOverride.detailErosionIntensityLayer1;
+                float brightLightAbsorption = runtimeOvercast
+                    .cloudsOverride.ligthAbsorbtionLayer1;
+                float brightCirrus = runtimeOvercast
+                    .flatCloudsOverride.cirrusCloudsAlpha;
+                uint brightSeed = adapter.ActiveCloudFieldSeed;
+                Vector2 brightOffset = adapter.ActiveCloudFieldOffset;
+
+                adapter.Present(CreateFrame(
+                    16,
+                    Enviro3EnvironmentBindings.OvercastIdValue,
+                    normalizedTimeOfDay01: 0.5f,
+                    transitionDurationSeconds: 0f,
+                    cloudCoverage01: 0.94f,
+                    cloudIntensity01: 0.18f));
+                float heavyCoverage = runtimeOvercast
+                    .cloudsOverride.coverageLayer1;
+                float heavyDensity = runtimeOvercast
+                    .cloudsOverride.densityLayer1;
+                float heavyLightAbsorption = runtimeOvercast
+                    .cloudsOverride.ligthAbsorbtionLayer1;
+                observations.CloudProfilesAreDistinctAndBroken =
+                    Mathf.Approximately(partlyCoverage, -0.08f) &&
+                    Mathf.Approximately(partlyDensity, 0.95f) &&
+                    partlyCirrus <= 0.05f &&
+                    Mathf.Approximately(brightCoverage, 0.34f) &&
+                    Mathf.Approximately(brightDensity, 0.62f) &&
+                    Mathf.Approximately(brightDetailErosion, 0.58f) &&
+                    Mathf.Approximately(brightLightAbsorption, 0.24f) &&
+                    brightCirrus <= 0.03f &&
+                    Mathf.Approximately(heavyCoverage, 0.58f) &&
+                    Mathf.Approximately(heavyDensity, 0.55f) &&
+                    heavyLightAbsorption > brightLightAbsorption;
+                observations.CloudFieldDistributionAndMotionApplied =
+                    partlySeed != 0u &&
+                    brightSeed != 0u &&
+                    partlySeed != brightSeed &&
+                    partlyOffset != brightOffset &&
+                    Mathf.Approximately(
+                        adapter.ActiveCloudWindSpeedModifier,
+                        Enviro3ProductionVisualPolicy
+                            .CloudFieldWindSpeedModifier) &&
+                    Mathf.Approximately(
+                        adapter.ActiveCloudTravelSpeed,
+                        Enviro3ProductionVisualPolicy
+                            .CloudFieldTravelSpeed) &&
+                    !manager.VolumetricClouds.settingsGlobal.dualLayer;
+                observations.SourceCloudMotionUnchanged =
+                    Mathf.Approximately(
+                        source.volumetricCloudModule.settingsGlobal
+                            .cloudsTravelSpeed,
+                        0f) &&
+                    Mathf.Approximately(
+                        source.volumetricCloudModule.settingsLayer1
+                            .windSpeedModifier,
+                        0.005f) &&
+                    source.volumetricCloudModule.settingsLayer1
+                        .locationOffset == Vector2.zero;
+
+                adapter.Present(CreateFrame(
+                    17,
+                    Enviro3EnvironmentBindings.ClearIdValue,
+                    normalizedTimeOfDay01: 0.05f,
+                    transitionDurationSeconds: 0f));
+                manager.isNight = true;
+                manager.Sky.Settings.moonPhase = 0f;
+                manager.Objects.moon.transform.localPosition =
+                    new Vector3(0f, 0.5f, 0f);
+                manager.Objects.moon.transform.rotation =
+                    Quaternion.Euler(35f, 120f, 0f);
+                InvokePrivate(adapter, "ReassertPhaseAwareMoonLighting");
+                float visibleMoonLux = adapter.ActiveDirectionalLightLux;
+                float visibleMoonShadow =
+                    adapter.ActiveDirectionalLightShadowStrength;
+                bool moonRotationApplied = Quaternion.Angle(
+                    manager.Objects.directionalLight.transform.rotation,
+                    manager.Objects.moon.transform.rotation) < 0.01f;
+                bool moonTemperatureApplied = Mathf.Approximately(
+                    manager.Objects.directionalLight.colorTemperature,
+                    Enviro3ProductionVisualPolicy
+                        .MoonlightColorTemperatureKelvin);
+                manager.Objects.moon.transform.localPosition =
+                    new Vector3(0f, -0.01f, 0f);
+                InvokePrivate(adapter, "ReassertPhaseAwareMoonLighting");
+                observations.RuntimeMoonLightingUsesPhaseAndHorizon =
+                    visibleMoonLux > 5f &&
+                    visibleMoonShadow > 0f &&
+                    visibleMoonShadow <=
+                        Enviro3ProductionVisualPolicy
+                            .MaximumMoonShadowStrength &&
+                    moonRotationApplied &&
+                    moonTemperatureApplied &&
+                    Mathf.Approximately(
+                        adapter.ActiveDirectionalLightLux,
+                        0f) &&
+                    Mathf.Approximately(
+                        adapter.ActiveDirectionalLightShadowStrength,
+                        0f);
+                manager.isNight = false;
                 observations.RuntimeSeasonAutonomyDisabled &=
                     !runtimeEnvironment.changeSeason &&
                     runtimeEnvironment.season == EnviroEnvironment.Seasons.Summer;
@@ -1180,11 +1682,21 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     fixture.LightningPrefab.planeMat == fixture.SourceLightningFlashMaterial;
 
                 EnvironmentPresentationStatus repeatedAttach = adapter.Attach();
+                bool runtimeStormWasReused =
+                    GetPrivateField<EnviroWeatherType>(adapter, "runtimeStorm") ==
+                    runtimeStorm;
                 observations.RepeatedAttachStayedReady =
                     adapter.IsAttached &&
                     repeatedAttach.State == EnvironmentPresentationState.Ready &&
                     repeatedAttach.ErrorCount == 0 &&
-                    GetPrivateField<EnviroWeatherType>(adapter, "runtimeStorm") == runtimeStorm;
+                    runtimeStormWasReused;
+                observations.RepeatedAttachDetails =
+                    $"IsAttached={adapter.IsAttached}, " +
+                    $"State={repeatedAttach.State}, " +
+                    $"Warnings={repeatedAttach.WarningCount}, " +
+                    $"Errors={repeatedAttach.ErrorCount}, " +
+                    $"RuntimeStormReused={runtimeStormWasReused}, " +
+                    $"Diagnostics={string.Join(" | ", adapter.Diagnostics)}";
 
                 var duplicateManagerObject = new GameObject(
                     "Late Additive Enviro Manager Test Double");
@@ -1235,7 +1747,9 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                 EnvironmentQualityTier qualityTier = EnvironmentQualityTier.Low,
                 Vector2 windDirectionXZ = default,
                 float windSpeedMetersPerSecond = 0f,
-                float windGustSpeedMetersPerSecond = 0f)
+                float windGustSpeedMetersPerSecond = 0f,
+                float? cloudCoverage01 = null,
+                float? cloudIntensity01 = null)
             {
                 if (!EnvironmentBindingId.TryParse(
                         bindingValue,
@@ -1249,6 +1763,10 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     bindingValue == Enviro3EnvironmentBindings.RainIdValue ||
                     bindingValue == Enviro3EnvironmentBindings.HeavyRainIdValue ||
                     bindingValue == Enviro3EnvironmentBindings.StormIdValue;
+                float resolvedCloudCoverage =
+                    cloudCoverage01 ?? (isRain ? 0.8f : 0f);
+                float resolvedCloudIntensity =
+                    cloudIntensity01 ?? (isRain ? 0.8f : 0f);
                 return new EnvironmentPresentationFrame(
                     revision,
                     true,
@@ -1257,9 +1775,13 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     15,
                     normalizedTimeOfDay01,
                     bindingId,
-                    isRain ? EnvironmentCloudType.Overcast : EnvironmentCloudType.Clear,
-                    isRain ? 0.8f : 0f,
-                    isRain ? 0.8f : 0f,
+                    resolvedCloudCoverage > 0.55f
+                        ? EnvironmentCloudType.Overcast
+                        : resolvedCloudCoverage > 0.05f
+                            ? EnvironmentCloudType.Scattered
+                            : EnvironmentCloudType.Clear,
+                    resolvedCloudCoverage,
+                    resolvedCloudIntensity,
                     isRain
                         ? EnvironmentPrecipitationType.Rain
                         : EnvironmentPrecipitationType.None,

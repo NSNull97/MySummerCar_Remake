@@ -3,7 +3,9 @@
   "rootNamespace": "MSC.Tests.EditMode.Enviro3Integration",
   "references": [
     "MSC.Weather.Enviro3Integration",
+    "MSC.Weather.Enviro3Integration.Editor",
     "MSC.Weather.Presentation.Runtime",
+    "MSC.Weather.Production.Runtime",
     "MSC.Weather.Runtime",
     "MSC.Core.Runtime",
     "MSC.Development.WeatherLab",

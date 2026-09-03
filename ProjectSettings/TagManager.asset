@@ -13,9 +13,9 @@ TagManager:
   - UI
   - WorldSurface
   - WorldSolid
-  - 
-  - 
-  - 
+  - WorldItem
+  - Player
+  - bolt-gayka-only
   - 
   - 
   - 

@@ -63,7 +63,7 @@
 											</ChildrenList>
 											<ObjectLists>
 												<ObjectList Name="RTPC">
-													<RTPC Name="" ID="{A1F86FF2-46A1-4D8B-AAEE-5D229D0E4FC4}" ShortID="351275981">
+													<RTPC Name="" ID="{E73943CC-3449-49BB-8346-7ABEEDDCB7A4}" ShortID="1047692610">
 														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 														<PropertyList>
 															<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -74,7 +74,7 @@
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
-																	<Curve Name="" ID="{B7129FF8-DB63-46C0-8F06-005DB3A3D926}">
+																	<Curve Name="" ID="{D4B84A1D-10F6-4291-BDA4-B9136DD22843}">
 																		<PropertyList>
 																			<Property Name="Flags" Type="int32" Value="3"/>
 																		</PropertyList>
@@ -100,7 +100,7 @@
 															</Reference>
 														</ReferenceList>
 													</RTPC>
-													<RTPC Name="" ID="{4191B7DE-0165-4707-8033-12E7D246A43F}" ShortID="261574803">
+													<RTPC Name="" ID="{02FA0A39-53E4-434A-905E-6770331F457A}" ShortID="41550955">
 														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 														<PropertyList>
 															<Property Name="PropertyName" Type="string" Value="Pitch"/>
@@ -111,7 +111,7 @@
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
-																	<Curve Name="" ID="{850D7078-026C-4AA6-A641-7E57FB1D8CDB}">
+																	<Curve Name="" ID="{2D227229-0066-437B-B0BF-8F4089E2F295}">
 																		<PropertyList>
 																			<Property Name="Flags" Type="int32" Value="65537"/>
 																		</PropertyList>
@@ -165,7 +165,7 @@
 											</ChildrenList>
 											<ObjectLists>
 												<ObjectList Name="RTPC">
-													<RTPC Name="" ID="{E1FEBFAB-75DF-4717-B33B-4221FEE16031}" ShortID="372189699">
+													<RTPC Name="" ID="{635A3237-BD0A-4AF6-BEFD-8B7AA22E3D7F}" ShortID="465920659">
 														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 														<PropertyList>
 															<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -176,7 +176,7 @@
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
-																	<Curve Name="" ID="{1D6DBCD6-0599-4FA3-945C-BB9EFFC180E1}">
+																	<Curve Name="" ID="{C85AA505-D476-471A-A3A9-EA200C3D54F2}">
 																		<PropertyList>
 																			<Property Name="Flags" Type="int32" Value="3"/>
 																		</PropertyList>
@@ -202,7 +202,7 @@
 															</Reference>
 														</ReferenceList>
 													</RTPC>
-													<RTPC Name="" ID="{D5706592-8F7C-44F6-A1CD-6EC1A6F531F9}" ShortID="1031251337">
+													<RTPC Name="" ID="{05C275C4-E78F-4FE8-B979-EA5843E96915}" ShortID="922843410">
 														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 														<PropertyList>
 															<Property Name="PropertyName" Type="string" Value="Pitch"/>
@@ -213,7 +213,7 @@
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
-																	<Curve Name="" ID="{8BED61AF-C8F0-4BA0-8C6B-668BFC678809}">
+																	<Curve Name="" ID="{D94C29AB-A5A5-4AA8-B24A-0C274F471CB8}">
 																		<PropertyList>
 																			<Property Name="Flags" Type="int32" Value="65537"/>
 																		</PropertyList>
@@ -267,7 +267,7 @@
 											</ChildrenList>
 											<ObjectLists>
 												<ObjectList Name="RTPC">
-													<RTPC Name="" ID="{C494E062-0EBA-4988-AA5C-39B1747C5700}" ShortID="520567328">
+													<RTPC Name="" ID="{EF0E4EAC-8B70-498F-87C1-50647CF5D88B}" ShortID="288108048">
 														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 														<PropertyList>
 															<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -278,7 +278,7 @@
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
-																	<Curve Name="" ID="{F5C04171-AF49-4707-B821-3BD071F662A5}">
+																	<Curve Name="" ID="{D583062F-378F-47F8-9274-A659FCF1AF5A}">
 																		<PropertyList>
 																			<Property Name="Flags" Type="int32" Value="3"/>
 																		</PropertyList>
@@ -299,7 +299,7 @@
 															</Reference>
 														</ReferenceList>
 													</RTPC>
-													<RTPC Name="" ID="{6A0C0126-B5BE-42E9-8927-53FC31EABA3A}" ShortID="75146798">
+													<RTPC Name="" ID="{24E15A43-161D-4E94-91E0-F28824526876}" ShortID="428569596">
 														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 														<PropertyList>
 															<Property Name="PropertyName" Type="string" Value="Pitch"/>
@@ -310,7 +310,7 @@
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
-																	<Curve Name="" ID="{49A47951-931C-454E-B361-9F7BA3B952B9}">
+																	<Curve Name="" ID="{6F9C9888-B2BA-4FB9-9CE9-0412F6E47E29}">
 																		<PropertyList>
 																			<Property Name="Flags" Type="int32" Value="65537"/>
 																		</PropertyList>
@@ -520,7 +520,7 @@
 									</ChildrenList>
 									<ObjectLists>
 										<ObjectList Name="RTPC">
-											<RTPC Name="" ID="{BC3A25FA-5336-403C-9123-301CF04A2297}" ShortID="1006620880">
+											<RTPC Name="" ID="{1A531CD2-D00D-4148-86A5-8800F2207769}" ShortID="764746422">
 												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 												<PropertyList>
 													<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -531,7 +531,7 @@
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{63976642-6052-4DB8-B08B-89BB8E8148D6}">
+															<Curve Name="" ID="{A83E7501-8E4C-4556-B9C7-F492338D4CB5}">
 																<PropertyList>
 																	<Property Name="Flags" Type="int32" Value="3"/>
 																</PropertyList>
@@ -562,7 +562,7 @@
 													</Reference>
 												</ReferenceList>
 											</RTPC>
-											<RTPC Name="" ID="{855AF0E4-147D-4169-9761-88278AE2C2EB}" ShortID="836627633">
+											<RTPC Name="" ID="{9431F925-CF7F-4019-B8D7-570C7F47DC04}" ShortID="226076123">
 												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 												<PropertyList>
 													<Property Name="PropertyName" Type="string" Value="Pitch"/>
@@ -573,7 +573,7 @@
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{A37BF28C-8FF8-4062-9862-76376E87116C}">
+															<Curve Name="" ID="{6D647EA7-925D-4C8E-BE39-082CCFD77B56}">
 																<PropertyList>
 																	<Property Name="Flags" Type="int32" Value="65537"/>
 																</PropertyList>
@@ -650,7 +650,7 @@
 											</ChildrenList>
 											<ObjectLists>
 												<ObjectList Name="RTPC">
-													<RTPC Name="" ID="{DEA30BDA-63F8-478D-99EF-4D86511C1B36}" ShortID="991742013">
+													<RTPC Name="" ID="{3A9BC9FB-E480-438D-B46F-2C15A66BB727}" ShortID="554047248">
 														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 														<PropertyList>
 															<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -661,7 +661,7 @@
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
-																	<Curve Name="" ID="{189B4C65-BF14-4F39-BED1-C5EE5A581F85}">
+																	<Curve Name="" ID="{40281DCD-E750-4443-A2C8-968A409F4C18}">
 																		<PropertyList>
 																			<Property Name="Flags" Type="int32" Value="3"/>
 																		</PropertyList>
@@ -714,7 +714,7 @@
 											</ChildrenList>
 											<ObjectLists>
 												<ObjectList Name="RTPC">
-													<RTPC Name="" ID="{A2CB5396-9200-4ED7-9827-C9C2528AD5A2}" ShortID="441777576">
+													<RTPC Name="" ID="{DAD6C21F-095A-4EE1-AB23-0077F50A2520}" ShortID="405251494">
 														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 														<PropertyList>
 															<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -725,7 +725,7 @@
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
-																	<Curve Name="" ID="{AFCC7096-FFE0-4C3C-A8B3-0785534678DF}">
+																	<Curve Name="" ID="{9E327B17-A4F0-44E2-87D2-D18FC629804D}">
 																		<PropertyList>
 																			<Property Name="Flags" Type="int32" Value="3"/>
 																		</PropertyList>
@@ -778,7 +778,7 @@
 											</ChildrenList>
 											<ObjectLists>
 												<ObjectList Name="RTPC">
-													<RTPC Name="" ID="{5EA09049-D7C6-446B-B1D1-9D72A3495B64}" ShortID="842771257">
+													<RTPC Name="" ID="{51D9E9E1-50E0-45A0-BCBB-D4BAAAA4F787}" ShortID="813304532">
 														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 														<PropertyList>
 															<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -789,7 +789,7 @@
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
-																	<Curve Name="" ID="{0A5F3581-C1F6-4E18-B550-93CEA013FCB4}">
+																	<Curve Name="" ID="{AAE29C7D-9BA5-4EE2-8797-0D48CCB8DF9E}">
 																		<PropertyList>
 																			<Property Name="Flags" Type="int32" Value="3"/>
 																		</PropertyList>
@@ -842,7 +842,7 @@
 											</ChildrenList>
 											<ObjectLists>
 												<ObjectList Name="RTPC">
-													<RTPC Name="" ID="{1A61D931-AC4F-44CD-8DD5-C8427A737012}" ShortID="749092440">
+													<RTPC Name="" ID="{E34E2A0C-8996-4D86-A09B-7E58823D228F}" ShortID="1018118236">
 														<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 														<PropertyList>
 															<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -853,7 +853,7 @@
 															</Reference>
 															<Reference Name="Curve">
 																<Custom>
-																	<Curve Name="" ID="{D6C583F8-FBE5-4584-8862-62C3408BDF81}">
+																	<Curve Name="" ID="{15C698DC-614C-4B85-8989-408226222D7F}">
 																		<PropertyList>
 																			<Property Name="Flags" Type="int32" Value="3"/>
 																		</PropertyList>
@@ -883,7 +883,7 @@
 									</ChildrenList>
 									<ObjectLists>
 										<ObjectList Name="RTPC">
-											<RTPC Name="" ID="{C1DBF532-4ADA-43D0-B8E4-DDB051CFBB40}" ShortID="978169481">
+											<RTPC Name="" ID="{0EF01B71-C247-4045-98DB-A50CDC5D4090}" ShortID="1055251552">
 												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 												<PropertyList>
 													<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -894,7 +894,7 @@
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{9DB5BAE8-B269-48F9-BAA8-3CD49BB9FF3A}">
+															<Curve Name="" ID="{891FD47B-A489-4DDA-A1DA-7628AD47B970}">
 																<PropertyList>
 																	<Property Name="Flags" Type="int32" Value="3"/>
 																</PropertyList>
@@ -943,7 +943,7 @@
 									</ChildrenList>
 									<ObjectLists>
 										<ObjectList Name="RTPC">
-											<RTPC Name="" ID="{78644A0A-B49E-44D2-8148-961D55047630}" ShortID="309078440">
+											<RTPC Name="" ID="{5D77BEBA-A1C6-42A6-98F7-38ABD39C9F10}" ShortID="437315584">
 												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 												<PropertyList>
 													<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -954,7 +954,7 @@
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{A8851258-46FB-4046-926E-B80A2B1D918F}">
+															<Curve Name="" ID="{B66459C8-22C5-4765-AAED-4EB092222A75}">
 																<PropertyList>
 																	<Property Name="Flags" Type="int32" Value="3"/>
 																</PropertyList>
@@ -1016,7 +1016,7 @@
 									</ChildrenList>
 									<ObjectLists>
 										<ObjectList Name="RTPC">
-											<RTPC Name="" ID="{1F53F246-6DAB-4904-8E28-603F3C4DC648}" ShortID="194957445">
+											<RTPC Name="" ID="{E5EF7214-E5A7-43DC-B906-58C8A9F876DD}" ShortID="823859546">
 												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 												<PropertyList>
 													<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -1027,7 +1027,7 @@
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{FB8C2543-58F2-48E4-806F-907DB2503138}">
+															<Curve Name="" ID="{84608FC4-BBE6-4E2D-9893-267EB0A52E40}">
 																<PropertyList>
 																	<Property Name="Flags" Type="int32" Value="3"/>
 																</PropertyList>
@@ -1089,7 +1089,7 @@
 									</ChildrenList>
 									<ObjectLists>
 										<ObjectList Name="RTPC">
-											<RTPC Name="" ID="{A9E53EE6-49E1-44F3-8CD3-C27AF4209E33}" ShortID="772360590">
+											<RTPC Name="" ID="{FEF4E0C2-D6CF-41CB-B1F1-E1BA9CFC9F75}" ShortID="892066813">
 												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 												<PropertyList>
 													<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -1100,7 +1100,7 @@
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{0CE4A625-B11F-4065-BF1E-872C0551B833}">
+															<Curve Name="" ID="{548F8F7A-FA25-49F6-BA54-917F6352D70C}">
 																<PropertyList>
 																	<Property Name="Flags" Type="int32" Value="3"/>
 																</PropertyList>
@@ -1157,7 +1157,7 @@
 									</ChildrenList>
 									<ObjectLists>
 										<ObjectList Name="RTPC">
-											<RTPC Name="" ID="{E8592B81-37B2-446B-A1DD-661F1C4CBE62}" ShortID="823129405">
+											<RTPC Name="" ID="{D9421BDF-102B-45FB-A584-8CEBBB513969}" ShortID="844088769">
 												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 												<PropertyList>
 													<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -1168,7 +1168,7 @@
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{70C90E26-82AB-46C9-AAE6-9C01385844F5}">
+															<Curve Name="" ID="{4479C60F-E9E6-47F8-99FF-88E37FFB147C}">
 																<PropertyList>
 																	<Property Name="Flags" Type="int32" Value="3"/>
 																</PropertyList>
@@ -1194,7 +1194,7 @@
 													</Reference>
 												</ReferenceList>
 											</RTPC>
-											<RTPC Name="" ID="{52468CAF-BC63-4C1A-AD51-EBA18C3CEA0A}" ShortID="1070740545">
+											<RTPC Name="" ID="{00F06CD0-B2FC-4757-9A95-3FCFE2A91A9E}" ShortID="932497915">
 												<Comment>Milestone 08 prototype tuning; project-owned curve.</Comment>
 												<PropertyList>
 													<Property Name="PropertyName" Type="string" Value="Volume"/>
@@ -1205,7 +1205,7 @@
 													</Reference>
 													<Reference Name="Curve">
 														<Custom>
-															<Curve Name="" ID="{A239AABD-CAE6-4C12-BF16-4FF9B2ABC4DB}">
+															<Curve Name="" ID="{6BEE00C0-C1EB-4F42-A3E2-E33D78487DDC}">
 																<PropertyList>
 																	<Property Name="Flags" Type="int32" Value="3"/>
 																</PropertyList>
@@ -1280,6 +1280,11 @@
 										<Property Name="3DSpatialization" Type="int16" Value="1"/>
 										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
 										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-12</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
@@ -1301,6 +1306,442 @@
 									</ChildrenList>
 									<ActiveSourceList>
 										<ActiveSource Name="lake_water-5E3391C19D43" ID="{7E8119F3-1299-4836-AE7F-D77526906D8A}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Distant_Chainsaw" ID="{D2906E63-C04D-4B8E-8D9B-BFA64DB9F96D}" ShortID="291473233">
+									<Comment>TemporaryDirectImport; private prototype only; source=chainsaw.ogg; SHA256=2828D6977693DF60DA88634C6C6EAD030E2B165CEDDF15F404327B47762398AB</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="chainsaw-2828D6977693" ID="{615F6231-1675-4E6F-A484-24ACC42D3A9B}">
+											<Comment>TemporaryDirectImport; private prototype only; source=chainsaw.ogg; SHA256=2828D6977693DF60DA88634C6C6EAD030E2B165CEDDF15F404327B47762398AB</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\chainsaw-2828D6977693.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="375206773"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="chainsaw-2828D6977693" ID="{615F6231-1675-4E6F-A484-24ACC42D3A9B}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Birds_Morning" ID="{77FAC3F3-4A27-43BD-BCE8-6B8592AFF3A9}" ShortID="712705805">
+									<Comment>TemporaryDirectImport; private prototype only; source=birds_morning.ogg; SHA256=00C17DD2C4DCFA544B48B6FF0044CC61DF831B8FAD3406759825FE06F9220283</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-3</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="birds_morning-00C17DD2C4DC" ID="{4A1A7EA7-5CBB-4150-846D-841BA9886A92}">
+											<Comment>TemporaryDirectImport; private prototype only; source=birds_morning.ogg; SHA256=00C17DD2C4DCFA544B48B6FF0044CC61DF831B8FAD3406759825FE06F9220283</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\birds_morning-00C17DD2C4DC.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="473439884"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="birds_morning-00C17DD2C4DC" ID="{4A1A7EA7-5CBB-4150-846D-841BA9886A92}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Birds_Day" ID="{9AD53321-2F0F-488C-992F-D5A62C9A07E6}" ShortID="794466007">
+									<Comment>TemporaryDirectImport; private prototype only; source=birds_day.ogg; SHA256=1AFB133150F2784CA947B4A10D347813A2CF6F3C348D219DB84F0B924ABAC1FC</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-3</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="birds_day-1AFB133150F2" ID="{F722FEE5-00D9-4C2A-B229-DA9F40F82A36}">
+											<Comment>TemporaryDirectImport; private prototype only; source=birds_day.ogg; SHA256=1AFB133150F2784CA947B4A10D347813A2CF6F3C348D219DB84F0B924ABAC1FC</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\birds_day-1AFB133150F2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="713716076"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="birds_day-1AFB133150F2" ID="{F722FEE5-00D9-4C2A-B229-DA9F40F82A36}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Birds_Evening" ID="{446BB6BA-CD7C-462A-B907-2628F52A2952}" ShortID="1004445807">
+									<Comment>TemporaryDirectImport; private prototype only; source=birds_evening.ogg; SHA256=A7C1CEE2C777D7AB4583AA280328B19A69B749649A394626BAC6783B24A6495D</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-3</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="birds_evening-A7C1CEE2C777" ID="{5B0F9D3C-25DD-4237-9BE5-AD26E2DA41D6}">
+											<Comment>TemporaryDirectImport; private prototype only; source=birds_evening.ogg; SHA256=A7C1CEE2C777D7AB4583AA280328B19A69B749649A394626BAC6783B24A6495D</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\birds_evening-A7C1CEE2C777.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="231569780"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="birds_evening-A7C1CEE2C777" ID="{5B0F9D3C-25DD-4237-9BE5-AD26E2DA41D6}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Birds_Night" ID="{18539301-5187-4F3F-96C0-393150636DBB}" ShortID="372945438">
+									<Comment>TemporaryDirectImport; private prototype only; source=birds_night.ogg; SHA256=DB510A6FBA1F18F610FBED06946DA1ECD6D57E168AFBE8D762C263E1B71A3FAF</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="birds_night-DB510A6FBA1F" ID="{4E34791A-0DC7-4873-8E55-D30025FD57A0}">
+											<Comment>TemporaryDirectImport; private prototype only; source=birds_night.ogg; SHA256=DB510A6FBA1F18F610FBED06946DA1ECD6D57E168AFBE8D762C263E1B71A3FAF</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\birds_night-DB510A6FBA1F.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="375325846"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="birds_night-DB510A6FBA1F" ID="{4E34791A-0DC7-4873-8E55-D30025FD57A0}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Birds_Swamp" ID="{8FE13379-0325-4BBA-8AF7-53833BB08142}" ShortID="321747243">
+									<Comment>TemporaryDirectImport; private prototype only; source=birds_swamp.ogg; SHA256=69A6CFF9EF9996DDF02715C9230C6FCCEBE3B6B940B5602F97CD46E5ACE1D402</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-5</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="birds_swamp-69A6CFF9EF99" ID="{537917A0-40A4-41ED-9217-B0DCC85BB52B}">
+											<Comment>TemporaryDirectImport; private prototype only; source=birds_swamp.ogg; SHA256=69A6CFF9EF9996DDF02715C9230C6FCCEBE3B6B940B5602F97CD46E5ACE1D402</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\birds_swamp-69A6CFF9EF99.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="277236884"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="birds_swamp-69A6CFF9EF99" ID="{537917A0-40A4-41ED-9217-B0DCC85BB52B}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Meadow" ID="{9E8B2380-19EE-4483-B4C6-D09014A188CB}" ShortID="237663252">
+									<Comment>TemporaryDirectImport; private prototype only; source=meadow.ogg; SHA256=1CAD7831F4EB0869F3298DD2E9D972889CE0D3B2FE168B0BE53A099560B8A003</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="meadow-1CAD7831F4EB" ID="{89237099-0035-4357-91FC-546D12F529E5}">
+											<Comment>TemporaryDirectImport; private prototype only; source=meadow.ogg; SHA256=1CAD7831F4EB0869F3298DD2E9D972889CE0D3B2FE168B0BE53A099560B8A003</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\meadow-1CAD7831F4EB.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="531007536"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="meadow-1CAD7831F4EB" ID="{89237099-0035-4357-91FC-546D12F529E5}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Distant_Dog" ID="{72EEC724-DA77-4CAE-9E78-CB797DEB7475}" ShortID="792493187">
+									<Comment>TemporaryDirectImport; private prototype only; source=dog.ogg; SHA256=D3C82EC2EC984159455672D9228CD11C17B1ADC730412FF9CD80615B6AE03DB6</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-8</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="dog-D3C82EC2EC98" ID="{967CD5E9-9E67-4A32-9722-BC4422DD8465}">
+											<Comment>TemporaryDirectImport; private prototype only; source=dog.ogg; SHA256=D3C82EC2EC984159455672D9228CD11C17B1ADC730412FF9CD80615B6AE03DB6</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\dog-D3C82EC2EC98.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="47782006"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="dog-D3C82EC2EC98" ID="{967CD5E9-9E67-4A32-9722-BC4422DD8465}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wind_Chime" ID="{DFA3AC55-8AC6-4F94-A54E-4977BC16AE06}" ShortID="890955983">
+									<Comment>TemporaryDirectImport; private prototype only; source=wind_chime.ogg; SHA256=C22FE3F864F756D2A370911A9FCBBCCC2938EE21FC2E3FCAF08EC4670CE78B49</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-4</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="wind_chime-C22FE3F864F7" ID="{E9C409F7-B5C8-46F5-8DF6-EE9A974CA77A}">
+											<Comment>TemporaryDirectImport; private prototype only; source=wind_chime.ogg; SHA256=C22FE3F864F756D2A370911A9FCBBCCC2938EE21FC2E3FCAF08EC4670CE78B49</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\wind_chime-C22FE3F864F7.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="274430164"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="wind_chime-C22FE3F864F7" ID="{E9C409F7-B5C8-46F5-8DF6-EE9A974CA77A}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Mosquito" ID="{D0FEA537-C382-4DC8-AFD4-ECF544E42485}" ShortID="786270537">
+									<Comment>TemporaryDirectImport; private prototype only; source=mosquito.ogg; SHA256=48B471C8C8D3F94B721ECF0A491806FA9BDC8F4FEC835010F23DBB98C060791D</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-5</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="mosquito-48B471C8C8D3" ID="{244D318A-9787-41CA-8334-E14C8A7A14C4}">
+											<Comment>TemporaryDirectImport; private prototype only; source=mosquito.ogg; SHA256=48B471C8C8D3F94B721ECF0A491806FA9BDC8F4FEC835010F23DBB98C060791D</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\mosquito-48B471C8C8D3.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="601161657"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="mosquito-48B471C8C8D3" ID="{244D318A-9787-41CA-8334-E14C8A7A14C4}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Fly" ID="{56188CC1-7FFB-4928-97EB-60D1C681F2D9}" ShortID="402257396">
+									<Comment>TemporaryDirectImport; private prototype only; source=fly.ogg; SHA256=305D793C0BC59911BFC43145D6E347463D2DB3F6CE63A4FEC7350252BEEE3EE9</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-6</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="fly-305D793C0BC5" ID="{9911318E-E975-48C7-BAC2-2660CC50923C}">
+											<Comment>TemporaryDirectImport; private prototype only; source=fly.ogg; SHA256=305D793C0BC59911BFC43145D6E347463D2DB3F6CE63A4FEC7350252BEEE3EE9</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\fly-305D793C0BC5.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="811164662"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="fly-305D793C0BC5" ID="{9911318E-E975-48C7-BAC2-2660CC50923C}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Fly_Variant" ID="{3A901F4D-BAD7-4761-BE71-A4DCAE3EB268}" ShortID="215057831">
+									<Comment>TemporaryDirectImport; private prototype only; source=fly2.ogg; SHA256=47AECC170FF683E48F802BCDD98161CB35149A15FAF89A6DBC6FDB90CBBCF30A</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-6</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="fly2-47AECC170FF6" ID="{730FA583-DC56-4FC7-83C0-0CC1B1933F0D}">
+											<Comment>TemporaryDirectImport; private prototype only; source=fly2.ogg; SHA256=47AECC170FF683E48F802BCDD98161CB35149A15FAF89A6DBC6FDB90CBBCF30A</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\fly2-47AECC170FF6.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="323843345"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="fly2-47AECC170FF6" ID="{730FA583-DC56-4FC7-83C0-0CC1B1933F0D}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Wasp" ID="{ABE10C63-7661-4789-85AD-BEDBD4FD7033}" ShortID="254404621">
+									<Comment>TemporaryDirectImport; private prototype only; source=wasp_fly2.ogg; SHA256=CE11598AA1E77452729376C67CA9C137BF1FCF1F30DA461E9D7A80597961AF41</Comment>
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-6</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{AF52790B-023F-4815-B620-499D71AC9B60}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Ambience" ID="{DE9919C9-E4B8-49A4-8D42-2FAC633BFB6C}" WorkUnitID="{52A91766-D696-43B8-BEFF-641CCD8D5924}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="wasp_fly2-CE11598AA1E7" ID="{4350A576-64A9-4BC7-9346-596EDD820D24}">
+											<Comment>TemporaryDirectImport; private prototype only; source=wasp_fly2.ogg; SHA256=CE11598AA1E77452729376C67CA9C137BF1FCF1F30DA461E9D7A80597961AF41</Comment>
+											<Language>SFX</Language>
+											<AudioFile>TempDonorPrototype\World\wasp_fly2-CE11598AA1E7.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="686194173"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="wasp_fly2-CE11598AA1E7" ID="{4350A576-64A9-4BC7-9346-596EDD820D24}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
 							</ChildrenList>

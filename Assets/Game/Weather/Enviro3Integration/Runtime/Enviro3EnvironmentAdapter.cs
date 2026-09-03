@@ -39,6 +39,8 @@ namespace MSC.Weather.Enviro3Integration
         private const float MaximumTransitionRate = 1000f;
         private const float RefreshCooldownSeconds = 1f;
         private const float MaximumEnviroWindSpeedMetersPerSecond = 20f;
+        private const float CelestialSmoothingDurationSeconds = 0.3f;
+        private const int MaximumCelestialSmoothingStepGameSeconds = 120;
 
         private const EnvironmentPresentationCapabilities SupportedCapabilities =
             EnvironmentPresentationCapabilities.TimeOfDay |
@@ -60,6 +62,7 @@ namespace MSC.Weather.Enviro3Integration
         [SerializeField] private Transform lightningOrigin;
         [SerializeField] private Transform lightningTarget;
         [SerializeField] private bool attachOnStart = true;
+        [SerializeField] private bool hybridNativeHdrpOwnership;
 
         private readonly List<EnvironmentPresentationDiagnostic> diagnostics =
             new List<EnvironmentPresentationDiagnostic>();
@@ -72,6 +75,10 @@ namespace MSC.Weather.Enviro3Integration
         private Exposure runtimeExposure;
         private Fog runtimeFog;
         private IndirectLightingController runtimeIndirectLighting;
+        private EnviroWeatherType runtimeClear;
+        private EnviroWeatherType runtimePartlyCloudy;
+        private EnviroWeatherType runtimeOvercast;
+        private EnviroWeatherType runtimeFogWeather;
         private EnviroWeatherType runtimeDrizzle;
         private EnviroWeatherType runtimeRain;
         private EnviroWeatherType runtimeHeavyRain;
@@ -80,6 +87,11 @@ namespace MSC.Weather.Enviro3Integration
         private Material sourceLightningFlashMaterial;
         private Material runtimeLightningFlashMaterial;
         private ParticleSystem configuredRainParticleSystem;
+        private float configuredRainMaximumEmissionPerSecond;
+        private float configuredRainBaseStartSizeMultiplier;
+        private float configuredRainBaseLengthScale;
+        private ParticleSystem configuredRainSplashParticleSystem;
+        private float configuredRainSplashBaseStartSizeMultiplier;
         private Camera previousCamera;
         private Coroutine delayedAttachRoutine;
         private Coroutine delayedRefreshRoutine;
@@ -93,6 +105,7 @@ namespace MSC.Weather.Enviro3Integration
         private bool hasAppliedDateTime;
         private bool hasAppliedWind;
         private bool hasAppliedVisualPolicy;
+        private bool hasAppliedFinnishSkyPolicy;
         private ulong lastAppliedRevision;
         private uint lastLightningSequence;
         private uint lastRefreshSequence;
@@ -105,6 +118,9 @@ namespace MSC.Weather.Enviro3Integration
         private Vector2 lastWindDirectionXZ = Vector2.up;
         private float lastEnviroWindSpeed01;
         private float lastEnviroWindTurbulence01;
+        private float lastCloudCoverage01 = 0.08f;
+        private float lastCloudOpticalDensity01;
+        private uint activeCloudFieldSeed;
         private float lastVisibilityMeters = 20000f;
         private WeatherExposureContext lastExposureContext =
             WeatherExposureContext.Exterior;
@@ -113,14 +129,39 @@ namespace MSC.Weather.Enviro3Integration
         private bool exposureInitialized;
         private float previousRenderSettingsReflectionIntensity;
         private bool hasPreviousRenderSettingsReflectionIntensity;
+        private AmbientMode previousAmbientMode;
+        private Color previousAmbientSkyColor;
+        private Color previousAmbientEquatorColor;
+        private Color previousAmbientGroundColor;
+        private float previousAmbientIntensity;
+        private Color lastAppliedDonorAmbientColor;
+        private bool hasPreviousWorldAmbientLighting;
+        private bool hasAppliedDonorWorldAmbientLighting;
         private int lastYear;
         private int lastMonth;
         private int lastDay;
         private int lastTimeOfDaySeconds;
+        private Vector3 sunSmoothingStartPosition;
+        private Vector3 sunSmoothingTargetPosition;
+        private Quaternion sunSmoothingStartRotation;
+        private Quaternion sunSmoothingTargetRotation;
+        private Vector3 moonSmoothingStartPosition;
+        private Vector3 moonSmoothingTargetPosition;
+        private Quaternion moonSmoothingStartRotation;
+        private Quaternion moonSmoothingTargetRotation;
+        private float celestialSmoothingStartRealtime;
+        private bool celestialSmoothingActive;
         private float nextRefreshAllowedRealtime;
         private EnvironmentPresentationStatus status = EnvironmentPresentationStatus.Detached;
 
         public bool IsAttached => isAttached;
+
+        /// <summary>
+        /// When enabled, Enviro retains sky/cloud/precipitation presentation but
+        /// writes only inactive private HDRP fog/exposure placeholders. The active
+        /// native overrides are owned by NativeHdrpWeatherBridge.
+        /// </summary>
+        public bool HybridNativeHdrpOwnership => hybridNativeHdrpOwnership;
 
         public EnvironmentPresentationCapabilities Capabilities =>
             isAttached ? SupportedCapabilities : EnvironmentPresentationCapabilities.None;
@@ -190,6 +231,82 @@ namespace MSC.Weather.Enviro3Integration
             }
         }
 
+        public bool IsRainSurfaceSplashConfigured
+        {
+            get
+            {
+                if (configuredRainParticleSystem == null ||
+                    configuredRainSplashParticleSystem == null)
+                {
+                    return false;
+                }
+
+                ParticleSystem.CollisionModule collision =
+                    configuredRainParticleSystem.collision;
+                ParticleSystemRenderer splashRenderer =
+                    configuredRainSplashParticleSystem
+                        .GetComponent<ParticleSystemRenderer>();
+                return collision.enabled &&
+                       collision.type == ParticleSystemCollisionType.World &&
+                       collision.mode == ParticleSystemCollisionMode.Collision3D &&
+                       collision.collidesWith.value ==
+                       Enviro3ProductionVisualPolicy.RainCollisionLayerMask &&
+                       splashRenderer != null && splashRenderer.enabled;
+            }
+        }
+
+        public float ActiveRainSurfaceSplashMaxScreenSize
+        {
+            get
+            {
+                if (configuredRainSplashParticleSystem == null)
+                {
+                    return float.NaN;
+                }
+
+                ParticleSystemRenderer renderer =
+                    configuredRainSplashParticleSystem
+                        .GetComponent<ParticleSystemRenderer>();
+                return renderer == null
+                    ? float.NaN
+                    : renderer.maxParticleSize;
+            }
+        }
+
+        public int ActiveRainParticleBudget =>
+            configuredRainParticleSystem != null
+                ? configuredRainParticleSystem.main.maxParticles
+                : 0;
+
+        public float ActiveRainMaximumEmissionPerSecond =>
+            configuredRainMaximumEmissionPerSecond;
+
+        public int ActiveRainSurfaceSplashParticleBudget =>
+            configuredRainSplashParticleSystem != null
+                ? configuredRainSplashParticleSystem.main.maxParticles
+                : 0;
+
+        public bool IsRainCollisionPerformanceBounded
+        {
+            get
+            {
+                if (configuredRainParticleSystem == null)
+                {
+                    return false;
+                }
+
+                ParticleSystem.CollisionModule collision =
+                    configuredRainParticleSystem.collision;
+                return collision.enabled &&
+                       collision.quality == ParticleSystemCollisionQuality.Low &&
+                       !collision.enableDynamicColliders &&
+                       collision.collidesWith.value ==
+                       Enviro3ProductionVisualPolicy.RainCollisionLayerMask &&
+                       collision.maxCollisionShapes <=
+                       Enviro3ProductionVisualPolicy.RainCollisionShapeBudget;
+            }
+        }
+
         public bool IsProductionTimeLocationApplied =>
             manager != null && manager.Time != null &&
             manager.Time.Settings != null &&
@@ -226,6 +343,160 @@ namespace MSC.Weather.Enviro3Integration
                 ? float.NaN
                 : manager.Objects.sun.transform.localPosition.y;
 
+        public Vector3 ActiveSunDirection =>
+            manager == null || manager.Objects == null ||
+            manager.Objects.sun == null
+                ? Vector3.zero
+                : manager.Objects.sun.transform.forward;
+
+        public float ActiveMoonLocalHeight =>
+            manager == null || manager.Objects == null ||
+            manager.Objects.moon == null
+                ? float.NaN
+                : manager.Objects.moon.transform.localPosition.y;
+
+        public float ActiveStarIntensity =>
+            manager == null || manager.Sky == null ||
+            manager.Sky.Settings == null ||
+            manager.Sky.Settings.starIntensityCurve == null
+                ? float.NaN
+                : manager.Sky.Settings.starIntensityCurve.Evaluate(
+                    manager.solarTime);
+
+        public float ActiveMoonScale =>
+            manager == null || manager.Sky == null ||
+            manager.Sky.Settings == null
+                ? float.NaN
+                : manager.Sky.Settings.moonScale;
+
+        public float ActiveMoonPhaseIllumination01 =>
+            manager == null || manager.Sky == null ||
+            manager.Sky.Settings == null
+                ? float.NaN
+                : Enviro3ProductionVisualPolicy
+                    .CalculateMoonIlluminationFraction(
+                        manager.Sky.Settings.moonPhase);
+
+        public float ActiveMoonHorizonVisibility01 =>
+            manager == null || manager.Objects == null ||
+            manager.Objects.moon == null
+                ? float.NaN
+                : Enviro3ProductionVisualPolicy
+                    .CalculateMoonHorizonVisibility01(
+                        manager.Objects.moon.transform.localPosition.y);
+
+        public float ActiveDirectionalLightLux =>
+            manager == null || manager.Objects == null ||
+            manager.Objects.directionalLight == null
+                ? float.NaN
+                : manager.Objects.directionalLight.intensity;
+
+        public float ActiveDirectSunlightMultiplier =>
+            manager == null || manager.Lighting == null ||
+            manager.Lighting.Settings == null
+                ? float.NaN
+                : manager.Lighting.Settings.directLightIntensityModifier;
+
+        public float ActiveDirectionalLightShadowStrength =>
+            manager == null || manager.Objects == null ||
+            manager.Objects.directionalLight == null
+                ? float.NaN
+                : manager.Objects.directionalLight.shadowStrength;
+
+        public float ActiveTargetCloudCoverage =>
+            manager == null || manager.Weather == null ||
+            manager.Weather.targetWeatherType == null ||
+            manager.Weather.targetWeatherType.cloudsOverride == null
+                ? float.NaN
+                : manager.Weather.targetWeatherType.cloudsOverride
+                    .coverageLayer1;
+
+        public float ActiveTargetCloudDensity =>
+            manager == null || manager.Weather == null ||
+            manager.Weather.targetWeatherType == null ||
+            manager.Weather.targetWeatherType.cloudsOverride == null
+                ? float.NaN
+                : manager.Weather.targetWeatherType.cloudsOverride
+                    .densityLayer1;
+
+        public float ActiveTargetCloudDetailErosion =>
+            manager == null || manager.Weather == null ||
+            manager.Weather.targetWeatherType == null ||
+            manager.Weather.targetWeatherType.cloudsOverride == null
+                ? float.NaN
+                : manager.Weather.targetWeatherType.cloudsOverride
+                    .detailErosionIntensityLayer1;
+
+        public float ActiveTargetCloudLightAbsorption =>
+            manager == null || manager.Weather == null ||
+            manager.Weather.targetWeatherType == null ||
+            manager.Weather.targetWeatherType.cloudsOverride == null
+                ? float.NaN
+                : manager.Weather.targetWeatherType.cloudsOverride
+                    .ligthAbsorbtionLayer1;
+
+        public float ActiveTargetCirrusAlpha =>
+            manager == null || manager.Weather == null ||
+            manager.Weather.targetWeatherType == null ||
+            manager.Weather.targetWeatherType.flatCloudsOverride == null
+                ? float.NaN
+                : manager.Weather.targetWeatherType.flatCloudsOverride
+                    .cirrusCloudsAlpha;
+
+        public Vector2 ActiveCloudFieldOffset =>
+            manager == null || manager.VolumetricClouds == null ||
+            manager.VolumetricClouds.settingsLayer1 == null
+                ? Vector2.zero
+                : manager.VolumetricClouds.settingsLayer1.locationOffset;
+
+        public uint ActiveCloudFieldSeed => activeCloudFieldSeed;
+
+        public float ActiveCloudWindSpeedModifier =>
+            manager == null || manager.VolumetricClouds == null ||
+            manager.VolumetricClouds.settingsLayer1 == null
+                ? float.NaN
+                : manager.VolumetricClouds.settingsLayer1.windSpeedModifier;
+
+        public float ActiveCloudTravelSpeed =>
+            manager == null || manager.VolumetricClouds == null ||
+            manager.VolumetricClouds.settingsGlobal == null
+                ? float.NaN
+                : manager.VolumetricClouds.settingsGlobal.cloudsTravelSpeed;
+
+        public bool HasConfiguredCelestialSky =>
+            manager != null && manager.Objects != null &&
+            manager.Objects.sun != null && manager.Objects.moon != null &&
+            manager.Objects.stars != null && manager.Sky != null &&
+            manager.Sky.Settings != null &&
+            manager.Sky.Settings.moonMode != EnviroSky.MoonMode.Off &&
+            manager.Sky.Settings.moonTex != null &&
+            manager.Sky.Settings.starsTex != null &&
+            manager.Sky.Settings.starIntensityCurve != null;
+
+        public bool HasConfiguredMoonLighting
+        {
+            get
+            {
+                EnviroLighting lighting = manager?.Lighting?.Settings;
+                AnimationCurve curve = lighting?.moonIntensityCurveHDRP;
+                if (lighting == null || !lighting.setDirectLighting ||
+                    curve == null || curve.length == 0)
+                {
+                    return false;
+                }
+
+                for (int index = 0; index < curve.length; index++)
+                {
+                    if (curve[index].value > 0f)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
         public void ConfigureForAuthoring(
             EnviroManager authoredManager,
             Camera authoredCamera,
@@ -240,6 +511,13 @@ namespace MSC.Weather.Enviro3Integration
             lightningTarget = authoredLightningTarget;
             attachOnStart = true;
         }
+
+#if UNITY_EDITOR
+        public void ConfigureHybridOwnershipForAuthoring(bool enabled)
+        {
+            hybridNativeHdrpOwnership = enabled;
+        }
+#endif
 
         public bool TrySetPresentationCamera(Camera camera)
         {
@@ -284,6 +562,7 @@ namespace MSC.Weather.Enviro3Integration
                 return;
             }
 
+            EnsureHdrpDirectionalLightUnits();
             runtimeIsolationPrepared = TryPrepareRuntimeIsolation();
             if (!runtimeIsolationPrepared)
             {
@@ -298,11 +577,15 @@ namespace MSC.Weather.Enviro3Integration
                 yield break;
             }
 
+            EnsureHdrpDirectionalLightUnits();
+
             // EnviroManager.Start clones all module ScriptableObjects a second time.
             // Waiting one frame guarantees those live clones exist before attachment.
             yield return null;
+            EnsureHdrpDirectionalLightUnits();
             startupBarrierPassed = true;
             CaptureLiveManagerModules();
+            ApplyFinnishSkyAndLightingPolicy();
             EnsureRuntimeLightningPrefab();
             ApplyRuntimeRainVisibilityPolicy();
             ApplyAutonomyAndAudioSafety();
@@ -358,11 +641,44 @@ namespace MSC.Weather.Enviro3Integration
                 return;
             }
 
+            EnsureHdrpDirectionalLightUnits();
+
             // Enviro's Weather module writes environment targets during Update. A
             // single adapter-level LateUpdate reasserts project authority after that
             // vendor pass; no per-object wind writers or additional WindZones exist.
             ReassertProjectOwnedEnvironmentAuthority();
+            ReassertWeatherAttenuatedDirectionalLighting();
+            ReassertDonorWorldAmbientLighting();
             ApplyRuntimeRainVisibilityPolicy();
+            ReassertPhaseAwareMoonLighting();
+            AdvanceCelestialSmoothing();
+        }
+
+        private void EnsureHdrpDirectionalLightUnits()
+        {
+            if (manager == null || manager.Objects == null)
+            {
+                return;
+            }
+
+            EnsureDirectionalLightUsesLux(manager.Objects.directionalLight);
+            EnsureDirectionalLightUsesLux(manager.Objects.additionalDirectionalLight);
+        }
+
+        private static bool EnsureDirectionalLightUsesLux(Light light)
+        {
+            if (light == null || light.type != LightType.Directional || light.lightUnit == LightUnit.Lux)
+            {
+                return false;
+            }
+
+            // Enviro 3.0.3 ships a pre-HDRP-17 directional Light serialization that
+            // can deserialize as Candela. HDRP cannot convert Candela to directional
+            // Lux, so Enviro's SetIntensity call throws every frame and leaves the sun
+            // effectively dark. Keep this compatibility normalization project-owned;
+            // vendor assets remain untouched.
+            light.lightUnit = LightUnit.Lux;
+            return true;
         }
 
         public EnvironmentPresentationStatus Attach()
@@ -466,7 +782,7 @@ namespace MSC.Weather.Enviro3Integration
             if (!bindings.TryResolveWeather(
                     frame.BindingId,
                     out EnviroWeatherType weatherType,
-                    out EnvironmentPresentationPresetKind presetKind))
+                    out _))
             {
                 AddError(
                     UnknownBindingCode,
@@ -484,7 +800,7 @@ namespace MSC.Weather.Enviro3Integration
                 return SetStatus(EnvironmentPresentationState.Faulted, true);
             }
 
-            weatherType = ResolveRuntimeWeather(weatherType, frame.BindingId, presetKind);
+            weatherType = ResolveRuntimeWeather(weatherType, frame.BindingId);
             if (weatherType == null)
             {
                 AddError(
@@ -496,12 +812,21 @@ namespace MSC.Weather.Enviro3Integration
 
             try
             {
+                ApplyContinuousCloudPresentation(
+                    weatherType,
+                    frame.BindingId,
+                    frame.CloudCoverage01);
+                ApplyContinuousWeatherLighting(
+                    weatherType,
+                    frame.CloudCoverage01,
+                    frame.CloudIntensity01);
                 ApplyPrecipitationIntensityIfDirty(
                     weatherType,
                     frame.PrecipitationIntensity01);
 
                 if (!hasAppliedWeatherBinding || frame.BindingId != lastWeatherBindingId)
                 {
+                    ApplyCloudFieldDistribution(frame);
                     ApplyWeatherBinding(
                         weatherType,
                         frame.BindingId,
@@ -586,6 +911,7 @@ namespace MSC.Weather.Enviro3Integration
             yield return null;
             delayedAttachRoutine = null;
             CaptureLiveManagerModules();
+            ApplyFinnishSkyAndLightingPolicy();
             ApplyAutonomyAndAudioSafety();
             Attach();
         }
@@ -607,6 +933,12 @@ namespace MSC.Weather.Enviro3Integration
                 previousRenderSettingsReflectionIntensity =
                     RenderSettings.reflectionIntensity;
                 hasPreviousRenderSettingsReflectionIntensity = true;
+                previousAmbientMode = RenderSettings.ambientMode;
+                previousAmbientSkyColor = RenderSettings.ambientSkyColor;
+                previousAmbientEquatorColor = RenderSettings.ambientEquatorColor;
+                previousAmbientGroundColor = RenderSettings.ambientGroundColor;
+                previousAmbientIntensity = RenderSettings.ambientIntensity;
+                hasPreviousWorldAmbientLighting = true;
                 EnviroConfiguration source = bindings.SourceConfiguration;
                 runtimeConfiguration = CloneOwned(source);
                 runtimeConfiguration.name = source.name + " (Runtime Isolated)";
@@ -772,11 +1104,6 @@ namespace MSC.Weather.Enviro3Integration
                     continue;
                 }
 
-                if (configuredRainParticleSystem == effect.mySystem)
-                {
-                    return;
-                }
-
                 ParticleSystemRenderer renderer =
                     effect.mySystem.GetComponent<ParticleSystemRenderer>();
                 if (renderer == null)
@@ -784,15 +1111,119 @@ namespace MSC.Weather.Enviro3Integration
                     return;
                 }
 
-                // The installed vendor prefab caps stretched rain streaks at
-                // 0.001 of screen height, which is effectively sub-pixel in the
-                // production Game View. Adjust only the instantiated renderer;
-                // the package prefab and material remain read-only.
-                renderer.maxParticleSize =
+                if (configuredRainParticleSystem != effect.mySystem)
+                {
+                    // The installed vendor prefab caps stretched rain streaks at
+                    // 0.001 of screen height, which is effectively sub-pixel in
+                    // the production Game View. Adjust only the runtime clone;
+                    // the package prefab, weather presets and material remain
+                    // read-only.
+                    renderer.maxParticleSize =
+                        Enviro3ProductionVisualPolicy
+                            .ResolveRainParticleMaxScreenSize(
+                                renderer.maxParticleSize);
+                    effect.maxEmission =
+                        Enviro3ProductionVisualPolicy
+                            .ResolveRainMaximumEmission(effect.maxEmission);
+                    configuredRainMaximumEmissionPerSecond =
+                        effect.maxEmission;
+                    ParticleSystem.MainModule initialMain =
+                        effect.mySystem.main;
+                    initialMain.maxParticles =
+                        Enviro3ProductionVisualPolicy
+                            .ResolveRainParticleBudget(
+                                initialMain.maxParticles);
+                    configuredRainBaseStartSizeMultiplier =
+                        initialMain.startSizeMultiplier;
+                    configuredRainBaseLengthScale = renderer.lengthScale;
+                    configuredRainParticleSystem = effect.mySystem;
+                    ConfigureRainSurfaceSplashes(effect.mySystem);
+                }
+
+                float intensity01 = Mathf.Clamp01(effect.emissionRate);
+                ParticleSystem.MainModule main = effect.mySystem.main;
+                main.startSizeMultiplier =
+                    configuredRainBaseStartSizeMultiplier *
                     Enviro3ProductionVisualPolicy
-                        .ResolveRainParticleMaxScreenSize(
-                            renderer.maxParticleSize);
-                configuredRainParticleSystem = effect.mySystem;
+                        .CalculateRainParticleSizeMultiplier(intensity01);
+                renderer.lengthScale =
+                    configuredRainBaseLengthScale *
+                    Enviro3ProductionVisualPolicy
+                        .CalculateRainStreakLengthMultiplier(intensity01);
+                if (configuredRainSplashParticleSystem != null)
+                {
+                    ParticleSystem.MainModule splashMain =
+                        configuredRainSplashParticleSystem.main;
+                    splashMain.startSizeMultiplier =
+                        configuredRainSplashBaseStartSizeMultiplier *
+                        Enviro3ProductionVisualPolicy
+                            .CalculateRainSplashSizeMultiplier(intensity01);
+                }
+                return;
+            }
+        }
+
+        private void ConfigureRainSurfaceSplashes(ParticleSystem rainSystem)
+        {
+            configuredRainSplashParticleSystem = null;
+            configuredRainSplashBaseStartSizeMultiplier = 0f;
+
+            ParticleSystem.CollisionModule collision = rainSystem.collision;
+            collision.enabled = true;
+            collision.type = ParticleSystemCollisionType.World;
+            collision.mode = ParticleSystemCollisionMode.Collision3D;
+            collision.collidesWith =
+                Enviro3ProductionVisualPolicy.RainCollisionLayerMask;
+            collision.quality = ParticleSystemCollisionQuality.Low;
+            collision.enableDynamicColliders = false;
+            collision.radiusScale =
+                Enviro3ProductionVisualPolicy.RainCollisionRadiusScale;
+            collision.voxelSize =
+                Enviro3ProductionVisualPolicy.RainCollisionVoxelSize;
+            collision.maxCollisionShapes =
+                Enviro3ProductionVisualPolicy.RainCollisionShapeBudget;
+
+            ParticleSystem.SubEmittersModule subEmitters =
+                rainSystem.subEmitters;
+            for (int index = 0; index < subEmitters.subEmittersCount; index++)
+            {
+                if (subEmitters.GetSubEmitterType(index) !=
+                    ParticleSystemSubEmitterType.Collision)
+                {
+                    continue;
+                }
+
+                ParticleSystem splashSystem =
+                    subEmitters.GetSubEmitterSystem(index);
+                if (splashSystem == null)
+                {
+                    continue;
+                }
+
+                ParticleSystemRenderer splashRenderer =
+                    splashSystem.GetComponent<ParticleSystemRenderer>();
+                if (splashRenderer == null)
+                {
+                    continue;
+                }
+
+                splashRenderer.enabled = true;
+                splashRenderer.maxParticleSize =
+                    Enviro3ProductionVisualPolicy
+                        .ResolveRainSplashMaxScreenSize(
+                            splashRenderer.maxParticleSize);
+                ParticleSystem.MainModule splashMain = splashSystem.main;
+                splashMain.maxParticles =
+                    Enviro3ProductionVisualPolicy
+                        .ResolveRainSplashParticleBudget(
+                            splashMain.maxParticles);
+                subEmitters.SetSubEmitterEmitProbability(
+                    index,
+                    Enviro3ProductionVisualPolicy
+                        .RainSplashCollisionEmissionProbability);
+                configuredRainSplashBaseStartSizeMultiplier =
+                    splashMain.startSizeMultiplier;
+                configuredRainSplashParticleSystem = splashSystem;
                 return;
             }
         }
@@ -1010,6 +1441,26 @@ namespace MSC.Weather.Enviro3Integration
                 return;
             }
 
+            bool maySmooth =
+                hasAppliedDateTime &&
+                frame.Year == lastYear &&
+                frame.Month == lastMonth &&
+                frame.Day == lastDay &&
+                CircularTimeDifferenceSeconds(
+                    lastTimeOfDaySeconds,
+                    totalSeconds) <=
+                    MaximumCelestialSmoothingStepGameSeconds;
+            Transform sun = manager.Objects?.sun?.transform;
+            Transform moon = manager.Objects?.moon?.transform;
+            Vector3 currentSunPosition =
+                sun == null ? default : sun.localPosition;
+            Quaternion currentSunRotation =
+                sun == null ? default : sun.localRotation;
+            Vector3 currentMoonPosition =
+                moon == null ? default : moon.localPosition;
+            Quaternion currentMoonRotation =
+                moon == null ? default : moon.localRotation;
+
             int hours = totalSeconds / 3600;
             int minutes = totalSeconds % 3600 / 60;
             int seconds = totalSeconds % 60;
@@ -1022,11 +1473,415 @@ namespace MSC.Weather.Enviro3Integration
                 frame.Year);
             manager.Time.UpdateSunAndMoonPosition();
 
+            if (maySmooth && sun != null && moon != null)
+            {
+                sunSmoothingStartPosition = currentSunPosition;
+                sunSmoothingStartRotation = currentSunRotation;
+                sunSmoothingTargetPosition = sun.localPosition;
+                sunSmoothingTargetRotation = sun.localRotation;
+                moonSmoothingStartPosition = currentMoonPosition;
+                moonSmoothingStartRotation = currentMoonRotation;
+                moonSmoothingTargetPosition = moon.localPosition;
+                moonSmoothingTargetRotation = moon.localRotation;
+                sun.localPosition = currentSunPosition;
+                sun.localRotation = currentSunRotation;
+                moon.localPosition = currentMoonPosition;
+                moon.localRotation = currentMoonRotation;
+                celestialSmoothingStartRealtime = Time.unscaledTime;
+                celestialSmoothingActive = true;
+            }
+            else
+            {
+                celestialSmoothingActive = false;
+            }
+
             lastYear = frame.Year;
             lastMonth = frame.Month;
             lastDay = frame.Day;
             lastTimeOfDaySeconds = totalSeconds;
             hasAppliedDateTime = true;
+        }
+
+        private void AdvanceCelestialSmoothing()
+        {
+            if (!celestialSmoothingActive ||
+                manager?.Objects?.sun == null ||
+                manager.Objects.moon == null)
+            {
+                return;
+            }
+
+            float normalized = Mathf.Clamp01(
+                (Time.unscaledTime - celestialSmoothingStartRealtime) /
+                CelestialSmoothingDurationSeconds);
+            float eased = normalized * normalized * (3f - 2f * normalized);
+            Transform sun = manager.Objects.sun.transform;
+            Transform moon = manager.Objects.moon.transform;
+            sun.localPosition = Vector3.LerpUnclamped(
+                sunSmoothingStartPosition,
+                sunSmoothingTargetPosition,
+                eased);
+            sun.localRotation = Quaternion.SlerpUnclamped(
+                sunSmoothingStartRotation,
+                sunSmoothingTargetRotation,
+                eased);
+            moon.localPosition = Vector3.LerpUnclamped(
+                moonSmoothingStartPosition,
+                moonSmoothingTargetPosition,
+                eased);
+            moon.localRotation = Quaternion.SlerpUnclamped(
+                moonSmoothingStartRotation,
+                moonSmoothingTargetRotation,
+                eased);
+            if (normalized >= 1f)
+            {
+                celestialSmoothingActive = false;
+            }
+        }
+
+        private static int CircularTimeDifferenceSeconds(
+            int first,
+            int second)
+        {
+            int direct = Mathf.Abs(first - second);
+            return Mathf.Min(direct, 86_400 - direct);
+        }
+
+        private void ApplyFinnishSkyAndLightingPolicy()
+        {
+            if (hasAppliedFinnishSkyPolicy || manager == null ||
+                manager.Sky == null || manager.Sky.Settings == null ||
+                manager.Lighting == null ||
+                manager.Lighting.Settings == null)
+            {
+                return;
+            }
+
+            EnviroSky sky = manager.Sky.Settings;
+            sky.frontColorGradient0 = CalibrateFinnishSkyGradient(
+                sky.frontColorGradient0);
+            sky.frontColorGradient1 = CalibrateFinnishSkyGradient(
+                sky.frontColorGradient1);
+            sky.frontColorGradient2 = CalibrateFinnishSkyGradient(
+                sky.frontColorGradient2);
+            sky.frontColorGradient3 = CalibrateFinnishSkyGradient(
+                sky.frontColorGradient3);
+            sky.frontColorGradient4 = CalibrateFinnishSkyGradient(
+                sky.frontColorGradient4);
+            sky.frontColorGradient5 = CalibrateFinnishSkyGradient(
+                sky.frontColorGradient5);
+            sky.backColorGradient0 = CalibrateFinnishSkyGradient(
+                sky.backColorGradient0);
+            sky.backColorGradient1 = CalibrateFinnishSkyGradient(
+                sky.backColorGradient1);
+            sky.backColorGradient2 = CalibrateFinnishSkyGradient(
+                sky.backColorGradient2);
+            sky.backColorGradient3 = CalibrateFinnishSkyGradient(
+                sky.backColorGradient3);
+            sky.backColorGradient4 = CalibrateFinnishSkyGradient(
+                sky.backColorGradient4);
+            sky.backColorGradient5 = CalibrateFinnishSkyGradient(
+                sky.backColorGradient5);
+            sky.starIntensityCurve = CreateCalibratedStarCurve(
+                sky.starIntensityCurve);
+            sky.moonScale = Mathf.Max(
+                sky.moonScale,
+                Enviro3ProductionVisualPolicy.MinimumVisibleMoonScale);
+
+            EnviroLighting lighting = manager.Lighting.Settings;
+            lighting.lightColorTintHDRP = CalibrateFinnishDaylightGradient(
+                lighting.lightColorTintHDRP);
+            lighting.ambientColorTintHDRP =
+                CalibrateFinnishAmbientDaylightGradient(
+                lighting.ambientColorTintHDRP);
+
+            if (manager.VolumetricClouds != null &&
+                manager.VolumetricClouds.settingsGlobal != null)
+            {
+                manager.VolumetricClouds.settingsGlobal
+                    .sunLightColorGradient =
+                    CalibrateFinnishAmbientDaylightGradient(
+                        manager.VolumetricClouds.settingsGlobal
+                            .sunLightColorGradient);
+            }
+
+            ReassertProjectOwnedCloudMotionPolicy();
+
+            hasAppliedFinnishSkyPolicy = true;
+        }
+
+        private static Gradient CalibrateFinnishSkyGradient(Gradient source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            GradientColorKey[] colorKeys = source.colorKeys;
+            for (int index = 0; index < colorKeys.Length; index++)
+            {
+                GradientColorKey key = colorKeys[index];
+                key.color = Enviro3ProductionVisualPolicy
+                    .CalibrateFinnishSkyColor(key.color, key.time);
+                colorKeys[index] = key;
+            }
+
+            var result = new Gradient
+            {
+                mode = source.mode,
+            };
+            result.SetKeys(colorKeys, source.alphaKeys);
+            return result;
+        }
+
+        private static Gradient CalibrateFinnishDaylightGradient(
+            Gradient source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            GradientColorKey[] colorKeys = source.colorKeys;
+            for (int index = 0; index < colorKeys.Length; index++)
+            {
+                GradientColorKey key = colorKeys[index];
+                key.color = Enviro3ProductionVisualPolicy
+                    .CalibrateFinnishDaylightColor(key.color, key.time);
+                colorKeys[index] = key;
+            }
+
+            var result = new Gradient
+            {
+                mode = source.mode,
+            };
+            result.SetKeys(colorKeys, source.alphaKeys);
+            return result;
+        }
+
+        private static Gradient CalibrateFinnishAmbientDaylightGradient(
+            Gradient source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            GradientColorKey[] colorKeys = source.colorKeys;
+            for (int index = 0; index < colorKeys.Length; index++)
+            {
+                GradientColorKey key = colorKeys[index];
+                key.color = Enviro3ProductionVisualPolicy
+                    .CalibrateFinnishAmbientDaylightColor(
+                        key.color,
+                        key.time);
+                colorKeys[index] = key;
+            }
+
+            var result = new Gradient
+            {
+                mode = source.mode,
+            };
+            result.SetKeys(colorKeys, source.alphaKeys);
+            return result;
+        }
+
+        private static AnimationCurve CreateCalibratedStarCurve(
+            AnimationCurve source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+
+            float[] sampleTimes =
+            {
+                0f, 0.25f, 0.38f, 0.43f,
+                0.47f, 0.52f, 0.58f, 1f,
+            };
+            var keys = new Keyframe[sampleTimes.Length];
+            for (int index = 0; index < sampleTimes.Length; index++)
+            {
+                float sampleTime = sampleTimes[index];
+                keys[index] = new Keyframe(
+                    sampleTime,
+                    Enviro3ProductionVisualPolicy.CalculateStarIntensity(
+                        Mathf.Max(0f, source.Evaluate(sampleTime)),
+                        sampleTime));
+            }
+
+            var result = new AnimationCurve(keys)
+            {
+                preWrapMode = source.preWrapMode,
+                postWrapMode = source.postWrapMode,
+            };
+            for (int index = 0; index < keys.Length; index++)
+            {
+                result.SmoothTangents(index, 0f);
+            }
+
+            return result;
+        }
+
+        private void ReassertPhaseAwareMoonLighting()
+        {
+            if (!hasAppliedFinnishSkyPolicy || manager == null ||
+                !manager.isNight || manager.Sky == null ||
+                manager.Sky.Settings == null || manager.Lighting == null ||
+                manager.Lighting.Settings == null ||
+                manager.Objects == null ||
+                manager.Objects.directionalLight == null ||
+                manager.Objects.moon == null)
+            {
+                return;
+            }
+
+            EnviroLighting lighting = manager.Lighting.Settings;
+            if (!lighting.setDirectLighting ||
+                lighting.lightingMode != EnviroLighting.LightingMode.Single ||
+                lighting.moonIntensityCurveHDRP == null)
+            {
+                return;
+            }
+
+            Light directionalLight = manager.Objects.directionalLight;
+            EnsureDirectionalLightUsesLux(directionalLight);
+
+            float moonlightLux = Enviro3ProductionVisualPolicy
+                .CalculateMoonlightIlluminanceLux(
+                    manager.Objects.moon.transform.localPosition.y,
+                    manager.Sky.Settings.moonPhase,
+                    lastCloudCoverage01,
+                    lastCloudOpticalDensity01);
+            directionalLight.transform.rotation =
+                manager.Objects.moon.transform.rotation;
+            directionalLight.intensity = moonlightLux;
+            directionalLight.shadowStrength =
+                Enviro3ProductionVisualPolicy.CalculateMoonShadowStrength(
+                    moonlightLux);
+
+            Color authoredMoonlight = lighting.lightColorTintHDRP != null
+                ? lighting.lightColorTintHDRP.Evaluate(manager.solarTime)
+                : Color.white;
+            directionalLight.color = Enviro3ProductionVisualPolicy
+                .CalibrateMoonlightColor(authoredMoonlight);
+            directionalLight.useColorTemperature = true;
+            directionalLight.colorTemperature =
+                Enviro3ProductionVisualPolicy
+                    .MoonlightColorTemperatureKelvin;
+        }
+
+        private void ReassertProjectOwnedCloudMotionPolicy()
+        {
+            EnviroVolumetricCloudsModule clouds = manager?.VolumetricClouds;
+            if (clouds == null || clouds.settingsGlobal == null ||
+                clouds.settingsLayer1 == null)
+            {
+                return;
+            }
+
+            // Reuse Enviro's existing weather-map animation and the project-owned
+            // wind vector. This does not enable the second cloud layer or add a
+            // render pass; it only makes the already-rendered field visibly travel.
+            clouds.settingsGlobal.cloudsTravelSpeed =
+                Enviro3ProductionVisualPolicy.CloudFieldTravelSpeed;
+            clouds.settingsLayer1.windSpeedModifier =
+                Enviro3ProductionVisualPolicy.CloudFieldWindSpeedModifier;
+            clouds.settingsLayer1.cloudsWindDirectionXModifier = 1f;
+            clouds.settingsLayer1.cloudsWindDirectionYModifier = 1f;
+
+            if (clouds.settingsGlobal.dualLayer &&
+                clouds.settingsLayer2 != null)
+            {
+                clouds.settingsLayer2.windSpeedModifier =
+                    Enviro3ProductionVisualPolicy
+                        .CloudFieldWindSpeedModifier * 0.8f;
+                clouds.settingsLayer2.cloudsWindDirectionXModifier = 0.85f;
+                clouds.settingsLayer2.cloudsWindDirectionYModifier = 1f;
+            }
+        }
+
+        private void ReassertWeatherAttenuatedDirectionalLighting()
+        {
+            if (!hasAppliedVisualPolicy || manager == null ||
+                manager.Lighting == null ||
+                manager.Lighting.Settings == null ||
+                manager.Objects == null ||
+                manager.Objects.directionalLight == null)
+            {
+                return;
+            }
+
+            EnviroLighting lighting = manager.Lighting.Settings;
+            float sunlightMultiplier = Enviro3ProductionVisualPolicy
+                .CalculateDirectSunlightMultiplier(
+                    lastCloudCoverage01,
+                    lastCloudOpticalDensity01);
+            lighting.directLightIntensityModifier = sunlightMultiplier;
+
+            Light directionalLight = manager.Objects.directionalLight;
+            directionalLight.shadowStrength = Enviro3ProductionVisualPolicy
+                .CalculateSunShadowStrength(
+                    lastCloudCoverage01,
+                    lastCloudOpticalDensity01);
+
+            if (!lighting.setDirectLighting ||
+                (manager.isNight &&
+                 lighting.lightingMode == EnviroLighting.LightingMode.Single) ||
+                lighting.sunIntensityCurveHDRP == null)
+            {
+                return;
+            }
+
+            EnsureDirectionalLightUsesLux(directionalLight);
+            directionalLight.intensity = Mathf.Max(
+                0f,
+                lighting.sunIntensityCurveHDRP.Evaluate(manager.solarTime) *
+                sunlightMultiplier);
+            directionalLight.color = DonorWorldLightingPolicy.EvaluateSunColor(
+                lastTimeOfDaySeconds / 86400f);
+            directionalLight.useColorTemperature = false;
+        }
+
+        private void ReassertDonorWorldAmbientLighting()
+        {
+            if (!hasAppliedDateTime)
+            {
+                return;
+            }
+
+            Color ambient = DonorWorldLightingPolicy.EvaluateAmbientColor(
+                lastTimeOfDaySeconds / 86400f);
+            if (RenderSettings.ambientMode != AmbientMode.Flat)
+            {
+                RenderSettings.ambientMode = AmbientMode.Flat;
+            }
+
+            if (RenderSettings.ambientSkyColor != ambient)
+            {
+                RenderSettings.ambientSkyColor = ambient;
+            }
+
+            if (RenderSettings.ambientEquatorColor != ambient)
+            {
+                RenderSettings.ambientEquatorColor = ambient;
+            }
+
+            if (RenderSettings.ambientGroundColor != ambient)
+            {
+                RenderSettings.ambientGroundColor = ambient;
+            }
+
+            if (!Mathf.Approximately(
+                    RenderSettings.ambientIntensity,
+                    DonorWorldLightingPolicy.DonorAmbientIntensity))
+            {
+                RenderSettings.ambientIntensity =
+                    DonorWorldLightingPolicy.DonorAmbientIntensity;
+            }
+
+            lastAppliedDonorAmbientColor = ambient;
+            hasAppliedDonorWorldAmbientLighting = true;
         }
 
         private void ApplyAutonomyAndAudioSafety()
@@ -1062,15 +1917,27 @@ namespace MSC.Weather.Enviro3Integration
                     manager.Fog.Settings.fog = false;
                 }
 
-                if (!manager.Fog.Settings.controlHDRPFog)
+                bool vendorControlsNativeFog = !hybridNativeHdrpOwnership;
+                if (manager.Fog.Settings.controlHDRPFog !=
+                    vendorControlsNativeFog)
                 {
-                    manager.Fog.Settings.controlHDRPFog = true;
+                    manager.Fog.Settings.controlHDRPFog =
+                        vendorControlsNativeFog;
                 }
 
-                if (!manager.Fog.Settings.controlHDRPVolumetrics)
+                if (manager.Fog.Settings.controlHDRPVolumetrics !=
+                    vendorControlsNativeFog)
                 {
-                    manager.Fog.Settings.controlHDRPVolumetrics = true;
+                    manager.Fog.Settings.controlHDRPVolumetrics =
+                        vendorControlsNativeFog;
                 }
+            }
+
+            if (hybridNativeHdrpOwnership && manager.Lighting != null &&
+                manager.Lighting.Settings != null)
+            {
+                manager.Lighting.Settings.controlExposure = false;
+                manager.Lighting.Settings.controlIndirectLighting = false;
             }
 
             if (manager.Reflections != null && manager.Reflections.Settings != null)
@@ -1155,8 +2022,15 @@ namespace MSC.Weather.Enviro3Integration
                 // single HDRP-native fog owner authoritative in the later bounded
                 // adapter pass even before the first presentation frame arrives.
                 fogSettings.fog = false;
-                fogSettings.controlHDRPFog = true;
-                fogSettings.controlHDRPVolumetrics = true;
+                fogSettings.controlHDRPFog = !hybridNativeHdrpOwnership;
+                fogSettings.controlHDRPVolumetrics =
+                    !hybridNativeHdrpOwnership;
+            }
+
+            if (hybridNativeHdrpOwnership && manager?.Lighting?.Settings != null)
+            {
+                manager.Lighting.Settings.controlExposure = false;
+                manager.Lighting.Settings.controlIndirectLighting = false;
             }
 
             EnviroEnvironment settings = manager?.Environment?.Settings;
@@ -1198,15 +2072,20 @@ namespace MSC.Weather.Enviro3Integration
                 }
             }
 
+            ReassertProjectOwnedCloudMotionPolicy();
+
             ReassertProjectOwnedVisualPolicy();
         }
 
         private void ApplyProjectOwnedVisualPolicy(
             in EnvironmentPresentationFrame frame)
         {
+            lastCloudCoverage01 = frame.CloudCoverage01;
+            lastCloudOpticalDensity01 = frame.CloudIntensity01;
             lastVisibilityMeters = frame.VisibilityMeters;
             lastExposureContext = frame.ExposureContext;
             hasAppliedVisualPolicy = true;
+            ReassertWeatherAttenuatedDirectionalLighting();
             ReassertProjectOwnedVisualPolicy();
         }
 
@@ -1243,6 +2122,23 @@ namespace MSC.Weather.Enviro3Integration
                     Enviro3ProductionVisualPolicy.ExposureAdaptationSeconds,
                     Mathf.Infinity,
                     Mathf.Max(Time.unscaledDeltaTime, 0.0001f));
+            }
+
+            if (hybridNativeHdrpOwnership)
+            {
+                // Enviro 3.0.8 always resolves private Fog/Exposure components
+                // from manager.volumeHDRP. Keep those placeholders inactive and
+                // leave all active HDRP writes to NativeHdrpWeatherBridge.
+                runtimeExposure.active = false;
+                runtimeFog.active = false;
+                runtimeIndirectLighting.active = false;
+                EnviroFogSettings hybridFogSettings = manager.Fog.Settings;
+                hybridFogSettings.fog = false;
+                hybridFogSettings.controlHDRPFog = false;
+                hybridFogSettings.controlHDRPVolumetrics = false;
+                manager.Lighting.Settings.controlExposure = false;
+                manager.Lighting.Settings.controlIndirectLighting = false;
+                return;
             }
 
             runtimeExposure.active = true;
@@ -1514,15 +2410,44 @@ namespace MSC.Weather.Enviro3Integration
 
         private void CreateRuntimeWeatherBindings()
         {
-            runtimeDrizzle = CreateRuntimeWeatherBinding(bindings.Rain, "Drizzle");
-            runtimeRain = CreateRuntimeWeatherBinding(bindings.Rain, "Rain");
-            runtimeHeavyRain = CreateRuntimeWeatherBinding(bindings.Rain, "Heavy Rain");
-            runtimeStorm = CreateRuntimeWeatherBinding(bindings.Storm, "Storm");
+            runtimeClear = CreateRuntimeWeatherBinding(
+                bindings.Clear,
+                "Clear",
+                Enviro3CloudVisualKind.Clear);
+            runtimePartlyCloudy = CreateRuntimeWeatherBinding(
+                bindings.PartlyCloudy,
+                "Partly Cloudy",
+                Enviro3CloudVisualKind.PartlyCloudy);
+            runtimeOvercast = CreateRuntimeWeatherBinding(
+                bindings.Overcast,
+                "Overcast",
+                Enviro3CloudVisualKind.Overcast);
+            runtimeFogWeather = CreateRuntimeWeatherBinding(
+                bindings.Fog,
+                "Fog",
+                Enviro3CloudVisualKind.Fog);
+            runtimeDrizzle = CreateRuntimeWeatherBinding(
+                bindings.Rain,
+                "Drizzle",
+                Enviro3CloudVisualKind.Drizzle);
+            runtimeRain = CreateRuntimeWeatherBinding(
+                bindings.Rain,
+                "Rain",
+                Enviro3CloudVisualKind.Rain);
+            runtimeHeavyRain = CreateRuntimeWeatherBinding(
+                bindings.Rain,
+                "Heavy Rain",
+                Enviro3CloudVisualKind.HeavyRain);
+            runtimeStorm = CreateRuntimeWeatherBinding(
+                bindings.Storm,
+                "Storm",
+                Enviro3CloudVisualKind.Storm);
         }
 
         private EnviroWeatherType CreateRuntimeWeatherBinding(
             EnviroWeatherType source,
-            string label)
+            string label,
+            Enviro3CloudVisualKind cloudVisualKind)
         {
             EnviroWeatherType runtimeWeather = CloneOwned(source);
             runtimeWeather.name = source.name + " (Runtime Visual " + label + ")";
@@ -1532,13 +2457,185 @@ namespace MSC.Weather.Enviro3Integration
             }
 
             runtimeWeather.lightningOverride.lightningStorm = false;
+            ApplyCloudCalibration(runtimeWeather, cloudVisualKind);
             return runtimeWeather;
+        }
+
+        private static void ApplyCloudCalibration(
+            EnviroWeatherType weather,
+            Enviro3CloudVisualKind kind)
+        {
+            if (weather == null)
+            {
+                throw new InvalidOperationException(
+                    "The runtime Enviro weather clone is unavailable.");
+            }
+
+            weather.cloudsOverride ??=
+                new EnviroWeatherTypeCloudsOverride();
+            weather.flatCloudsOverride ??=
+                new EnviroWeatherTypeFlatCloudsOverride();
+
+            Enviro3CloudVisualCalibration calibration =
+                Enviro3ProductionVisualPolicy.ResolveCloudCalibration(kind);
+            weather.cloudsOverride.coverageLayer1 =
+                calibration.CoverageLayer1;
+            weather.cloudsOverride.densityLayer1 =
+                calibration.DensityLayer1;
+            weather.cloudsOverride.densitySmoothnessLayer1 =
+                calibration.DensitySmoothnessLayer1;
+            weather.cloudsOverride.ambientLightIntensity =
+                calibration.AmbientLightIntensity;
+            weather.flatCloudsOverride.cirrusCloudsAlpha =
+                calibration.CirrusAlpha;
+            weather.flatCloudsOverride.cirrusCloudsCoverage =
+                calibration.CirrusCoverage;
+
+            Enviro3CloudShapeCalibration shape =
+                Enviro3ProductionVisualPolicy.ResolveCloudShapeCalibration(
+                    kind);
+            weather.cloudsOverride.dilateCoverageLayer1 =
+                shape.DilateCoverageLayer1;
+            weather.cloudsOverride.dilateTypeLayer1 =
+                shape.DilateTypeLayer1;
+            weather.cloudsOverride.typeModifierLayer1 =
+                shape.TypeModifierLayer1;
+            weather.cloudsOverride.scatteringIntensityLayer1 =
+                shape.ScatteringIntensityLayer1;
+            weather.cloudsOverride.powderIntensityLayer1 =
+                shape.PowderIntensityLayer1;
+            weather.cloudsOverride.silverLiningSpreadLayer1 =
+                shape.SilverLiningSpreadLayer1;
+            weather.cloudsOverride.ligthAbsorbtionLayer1 =
+                shape.LightAbsorptionLayer1;
+            weather.cloudsOverride.baseErosionIntensityLayer1 =
+                shape.BaseErosionIntensityLayer1;
+            weather.cloudsOverride.detailErosionIntensityLayer1 =
+                shape.DetailErosionIntensityLayer1;
+            weather.cloudsOverride.curlIntensityLayer1 =
+                shape.CurlIntensityLayer1;
+        }
+
+        private static void ApplyContinuousCloudPresentation(
+            EnviroWeatherType weather,
+            EnvironmentBindingId bindingId,
+            float projectCloudCoverage01)
+        {
+            if (weather == null || weather.cloudsOverride == null)
+            {
+                throw new InvalidOperationException(
+                    "The runtime Enviro weather clone has no cloud target.");
+            }
+
+            ApplyCloudCalibration(
+                weather,
+                ResolveContinuousCloudVisualKind(
+                    bindingId,
+                    projectCloudCoverage01));
+            weather.cloudsOverride.coverageLayer1 =
+                Enviro3ProductionVisualPolicy.CalculateEnviroCloudCoverage(
+                    projectCloudCoverage01);
+        }
+
+        private static Enviro3CloudVisualKind ResolveContinuousCloudVisualKind(
+            EnvironmentBindingId bindingId,
+            float projectCloudCoverage01)
+        {
+            switch (bindingId.Value)
+            {
+                case Enviro3EnvironmentBindings.ClearIdValue:
+                case Enviro3EnvironmentBindings.NightIdValue:
+                    return Enviro3CloudVisualKind.Clear;
+                case Enviro3EnvironmentBindings.PartlyCloudyIdValue:
+                    return Enviro3CloudVisualKind.PartlyCloudy;
+                case Enviro3EnvironmentBindings.OvercastIdValue:
+                    return projectCloudCoverage01 < 0.86f
+                        ? Enviro3CloudVisualKind.BrightOvercast
+                        : Enviro3CloudVisualKind.Overcast;
+                case Enviro3EnvironmentBindings.FogIdValue:
+                case Enviro3EnvironmentBindings.DenseFogIdValue:
+                    return Enviro3CloudVisualKind.Fog;
+                case Enviro3EnvironmentBindings.DrizzleIdValue:
+                    return Enviro3CloudVisualKind.Drizzle;
+                case Enviro3EnvironmentBindings.RainIdValue:
+                    return Enviro3CloudVisualKind.Rain;
+                case Enviro3EnvironmentBindings.HeavyRainIdValue:
+                    return Enviro3CloudVisualKind.HeavyRain;
+                case Enviro3EnvironmentBindings.StormIdValue:
+                    return Enviro3CloudVisualKind.Storm;
+                default:
+                    return Enviro3CloudVisualKind.Clear;
+            }
+        }
+
+        private void ApplyCloudFieldDistribution(
+            in EnvironmentPresentationFrame frame)
+        {
+            EnviroVolumetricCloudsModule clouds = manager?.VolumetricClouds;
+            if (clouds == null || clouds.settingsLayer1 == null)
+            {
+                return;
+            }
+
+            activeCloudFieldSeed = CalculateCloudFieldSeed(frame);
+            clouds.settingsLayer1.locationOffset =
+                Enviro3ProductionVisualPolicy.CalculateCloudFieldOffset(
+                    activeCloudFieldSeed);
+
+            if (clouds.settingsGlobal != null &&
+                clouds.settingsGlobal.dualLayer &&
+                clouds.settingsLayer2 != null)
+            {
+                clouds.settingsLayer2.locationOffset =
+                    Enviro3ProductionVisualPolicy.CalculateCloudFieldOffset(
+                        activeCloudFieldSeed ^ 0xA511E9B3u);
+            }
+        }
+
+        private static uint CalculateCloudFieldSeed(
+            in EnvironmentPresentationFrame frame)
+        {
+            unchecked
+            {
+                uint hash = 2166136261u;
+                hash = (hash ^ (uint)frame.Year) * 16777619u;
+                hash = (hash ^ (uint)frame.Month) * 16777619u;
+                hash = (hash ^ (uint)frame.Day) * 16777619u;
+                hash = (hash ^ (uint)frame.Revision) * 16777619u;
+                hash = (hash ^ (uint)(frame.Revision >> 32)) * 16777619u;
+                string binding = frame.BindingId.Value;
+                for (int index = 0; index < binding.Length; index++)
+                {
+                    hash = (hash ^ binding[index]) * 16777619u;
+                }
+
+                return hash;
+            }
+        }
+
+        private static void ApplyContinuousWeatherLighting(
+            EnviroWeatherType weather,
+            float projectCloudCoverage01,
+            float projectCloudOpticalDensity01)
+        {
+            if (weather == null)
+            {
+                throw new InvalidOperationException(
+                    "The runtime Enviro weather clone is unavailable.");
+            }
+
+            weather.lightingOverride ??=
+                new EnviroWeatherTypeLightingOverride();
+            weather.lightingOverride.directLightIntensityModifier =
+                Enviro3ProductionVisualPolicy
+                    .CalculateDirectSunlightMultiplier(
+                        projectCloudCoverage01,
+                        projectCloudOpticalDensity01);
         }
 
         private EnviroWeatherType ResolveRuntimeWeather(
             EnviroWeatherType sourceWeather,
-            EnvironmentBindingId bindingId,
-            EnvironmentPresentationPresetKind presetKind)
+            EnvironmentBindingId bindingId)
         {
             if (sourceWeather == null)
             {
@@ -1547,6 +2644,16 @@ namespace MSC.Weather.Enviro3Integration
 
             switch (bindingId.Value)
             {
+                case Enviro3EnvironmentBindings.ClearIdValue:
+                case Enviro3EnvironmentBindings.NightIdValue:
+                    return runtimeClear;
+                case Enviro3EnvironmentBindings.PartlyCloudyIdValue:
+                    return runtimePartlyCloudy;
+                case Enviro3EnvironmentBindings.OvercastIdValue:
+                    return runtimeOvercast;
+                case Enviro3EnvironmentBindings.FogIdValue:
+                case Enviro3EnvironmentBindings.DenseFogIdValue:
+                    return runtimeFogWeather;
                 case Enviro3EnvironmentBindings.DrizzleIdValue:
                     return runtimeDrizzle;
                 case Enviro3EnvironmentBindings.RainIdValue:
@@ -1563,6 +2670,19 @@ namespace MSC.Weather.Enviro3Integration
         private bool IsRuntimeWeather(EnviroWeatherType weather)
         {
             return weather != null &&
+                   (weather == runtimeClear ||
+                    weather == runtimePartlyCloudy ||
+                    weather == runtimeOvercast ||
+                    weather == runtimeFogWeather ||
+                    weather == runtimeDrizzle ||
+                    weather == runtimeRain ||
+                    weather == runtimeHeavyRain ||
+                    weather == runtimeStorm);
+        }
+
+        private bool IsRuntimePrecipitationWeather(EnviroWeatherType weather)
+        {
+            return weather != null &&
                    (weather == runtimeDrizzle ||
                     weather == runtimeRain ||
                     weather == runtimeHeavyRain ||
@@ -1573,7 +2693,7 @@ namespace MSC.Weather.Enviro3Integration
             EnviroWeatherType weather,
             float intensity01)
         {
-            if (!IsRuntimeWeather(weather))
+            if (!IsRuntimePrecipitationWeather(weather))
             {
                 return;
             }
@@ -1750,6 +2870,9 @@ namespace MSC.Weather.Enviro3Integration
             lastWindDirectionXZ = Vector2.up;
             lastEnviroWindSpeed01 = 0f;
             lastEnviroWindTurbulence01 = 0f;
+            lastCloudCoverage01 = 0.08f;
+            lastCloudOpticalDensity01 = 0f;
+            activeCloudFieldSeed = 0u;
             lastVisibilityMeters = 20000f;
             lastExposureContext = WeatherExposureContext.Exterior;
             currentExposureEv = 0f;
@@ -1891,9 +3014,30 @@ namespace MSC.Weather.Enviro3Integration
                 AddOwnedObject(runtimeComponent);
             }
 
-            if (!runtimeVolumeProfile.TryGet(out runtimeExposure) ||
-                !runtimeVolumeProfile.TryGet(out runtimeFog) ||
-                !runtimeVolumeProfile.TryGet(out runtimeIndirectLighting))
+            if (!runtimeVolumeProfile.TryGet(out runtimeExposure))
+            {
+                runtimeExposure = runtimeVolumeProfile.Add<Exposure>(true);
+                runtimeExposure.hideFlags = HideFlags.DontSave;
+                AddOwnedObject(runtimeExposure);
+            }
+
+            if (!runtimeVolumeProfile.TryGet(out runtimeFog))
+            {
+                runtimeFog = runtimeVolumeProfile.Add<Fog>(true);
+                runtimeFog.hideFlags = HideFlags.DontSave;
+                AddOwnedObject(runtimeFog);
+            }
+
+            if (!runtimeVolumeProfile.TryGet(out runtimeIndirectLighting))
+            {
+                runtimeIndirectLighting =
+                    runtimeVolumeProfile.Add<IndirectLightingController>(true);
+                runtimeIndirectLighting.hideFlags = HideFlags.DontSave;
+                AddOwnedObject(runtimeIndirectLighting);
+            }
+
+            if (runtimeExposure == null || runtimeFog == null ||
+                runtimeIndirectLighting == null)
             {
                 throw new InvalidOperationException(
                     "The production HDRP volume requires Exposure, Fog, " +
@@ -1963,6 +3107,10 @@ namespace MSC.Weather.Enviro3Integration
 
         private void DestroyRuntimeWeatherBindings()
         {
+            DestroyRuntimeWeather(ref runtimeClear);
+            DestroyRuntimeWeather(ref runtimePartlyCloudy);
+            DestroyRuntimeWeather(ref runtimeOvercast);
+            DestroyRuntimeWeather(ref runtimeFogWeather);
             DestroyRuntimeWeather(ref runtimeDrizzle);
             DestroyRuntimeWeather(ref runtimeRain);
             DestroyRuntimeWeather(ref runtimeHeavyRain);
@@ -2070,12 +3218,18 @@ namespace MSC.Weather.Enviro3Integration
             sourceLightningFlashMaterial = null;
             runtimeLightningFlashMaterial = null;
             configuredRainParticleSystem = null;
+            configuredRainMaximumEmissionPerSecond = 0f;
+            configuredRainBaseStartSizeMultiplier = 0f;
+            configuredRainBaseLengthScale = 0f;
+            configuredRainSplashParticleSystem = null;
+            configuredRainSplashBaseStartSizeMultiplier = 0f;
             runtimeConfiguration = null;
             previousVolumeProfile = null;
             runtimeVolumeProfile = null;
             runtimeExposure = null;
             runtimeFog = null;
             runtimeIndirectLighting = null;
+            hasAppliedFinnishSkyPolicy = false;
             runtimeIsolationPrepared = false;
 
             if (hasPreviousRenderSettingsReflectionIntensity &&
@@ -2089,6 +3243,31 @@ namespace MSC.Weather.Enviro3Integration
             }
 
             hasPreviousRenderSettingsReflectionIntensity = false;
+            RestorePreviousWorldAmbientLighting();
+        }
+
+        private void RestorePreviousWorldAmbientLighting()
+        {
+            bool stillOwnsAmbient =
+                hasAppliedDonorWorldAmbientLighting &&
+                RenderSettings.ambientMode == AmbientMode.Flat &&
+                RenderSettings.ambientSkyColor == lastAppliedDonorAmbientColor &&
+                RenderSettings.ambientEquatorColor == lastAppliedDonorAmbientColor &&
+                RenderSettings.ambientGroundColor == lastAppliedDonorAmbientColor &&
+                Mathf.Approximately(
+                    RenderSettings.ambientIntensity,
+                    DonorWorldLightingPolicy.DonorAmbientIntensity);
+            if (hasPreviousWorldAmbientLighting && stillOwnsAmbient)
+            {
+                RenderSettings.ambientMode = previousAmbientMode;
+                RenderSettings.ambientSkyColor = previousAmbientSkyColor;
+                RenderSettings.ambientEquatorColor = previousAmbientEquatorColor;
+                RenderSettings.ambientGroundColor = previousAmbientGroundColor;
+                RenderSettings.ambientIntensity = previousAmbientIntensity;
+            }
+
+            hasPreviousWorldAmbientLighting = false;
+            hasAppliedDonorWorldAmbientLighting = false;
         }
 
         private void DisableManagerModulesForTeardown()

@@ -1,0 +1,334 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9bf8a406f128484db72c6a1475aba41, type: 3}
+  m_Name: SatsumaMailOrderCompatibility
+  m_EditorClassIdentifier: MSC.Vehicle.Assembly::MSC.Vehicle.Assembly.VehicleDeliveredPartCompatibilityCatalog
+  catalogId: vehicle.satsuma.mail-order-compatibility.v1
+  entries:
+  - itemDefinitionId: item.mail-order.marker-light-left
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: lighting.marker
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.marker-light-left
+  - itemDefinitionId: item.mail-order.twin-carburators
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: engine.intake
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.carburators-twin
+  - itemDefinitionId: item.mail-order.steel-headers
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: engine.exhaust-manifold
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.headers-steel
+  - itemDefinitionId: item.mail-order.wheel-cover-plush
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: interior.steering-cover
+    resolutionKind: 2
+    partDefinitionIds:
+    - vehicle.satsuma.part.steering-cover-plush
+  - itemDefinitionId: item.mail-order.wheelset-slot
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: chassis.wheels
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.wheel-slot-fl
+    - vehicle.satsuma.part.wheel-slot-fr
+    - vehicle.satsuma.part.wheel-slot-rl
+    - vehicle.satsuma.part.wheel-slot-rr
+  - itemDefinitionId: item.mail-order.window-grille
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: body.rear-window
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.window-grille
+  - itemDefinitionId: item.mail-order.racing-flywheel
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: engine.flywheel
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.flywheel-racing
+  - itemDefinitionId: item.mail-order.seat-cover-leopard
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: interior.seat-covers
+    resolutionKind: 2
+    partDefinitionIds:
+    - vehicle.satsuma.part.seat-cover-leopard-left
+    - vehicle.satsuma.part.seat-cover-leopard-right
+  - itemDefinitionId: item.mail-order.wheelset-steelwide
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: chassis.wheels
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.wheel-steelwide-fl
+    - vehicle.satsuma.part.wheel-steelwide-fr
+    - vehicle.satsuma.part.wheel-steelwide-rl
+    - vehicle.satsuma.part.wheel-steelwide-rr
+  - itemDefinitionId: item.mail-order.subwoofers
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: audio.subwoofers
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.subwoofer-left
+    - vehicle.satsuma.part.subwoofer-right
+  - itemDefinitionId: item.mail-order.ratchet-set
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: tool.ratchet-set
+    resolutionKind: 3
+    partDefinitionIds: []
+  - itemDefinitionId: item.mail-order.tachometer
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: dashboard.tachometer
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.tachometer
+  - itemDefinitionId: item.mail-order.wheelset-racing
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: chassis.wheels
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.wheel-racing-fl
+    - vehicle.satsuma.part.wheel-racing-fr
+    - vehicle.satsuma.part.wheel-racing-rl
+    - vehicle.satsuma.part.wheel-racing-rr
+  - itemDefinitionId: item.mail-order.racing-muffler
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: exhaust.muffler
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.muffler-racing
+  - itemDefinitionId: item.mail-order.dash-cover-leopard
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: interior.dashboard-cover
+    resolutionKind: 2
+    partDefinitionIds:
+    - vehicle.satsuma.part.dashboard-cover-leopard
+  - itemDefinitionId: item.mail-order.racing-exhaust
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: exhaust.pipe
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.exhaust-racing
+  - itemDefinitionId: item.mail-order.rear-spoiler
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: body.rear-spoiler
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.rear-spoiler
+  - itemDefinitionId: item.mail-order.dash-cover-plush
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: interior.dashboard-cover
+    resolutionKind: 2
+    partDefinitionIds:
+    - vehicle.satsuma.part.dashboard-cover-plush
+  - itemDefinitionId: item.mail-order.cd-player
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: audio.head-unit
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.cd-player
+  - itemDefinitionId: item.mail-order.n2o-kit
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: engine.n2o
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.n2o-bottle
+    - vehicle.satsuma.part.n2o-holder
+    - vehicle.satsuma.part.n2o-button
+    - vehicle.satsuma.part.n2o-injector
+  - itemDefinitionId: item.mail-order.seat-cover-zebra
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: interior.seat-covers
+    resolutionKind: 2
+    partDefinitionIds:
+    - vehicle.satsuma.part.seat-cover-zebra-left
+    - vehicle.satsuma.part.seat-cover-zebra-right
+  - itemDefinitionId: item.mail-order.window-black-wrap
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: body.rear-window-finish
+    resolutionKind: 2
+    partDefinitionIds:
+    - vehicle.satsuma.part.window-black-wrap
+  - itemDefinitionId: item.mail-order.rear-spoiler-2
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: body.rear-spoiler
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.rear-spoiler-2
+  - itemDefinitionId: item.mail-order.fender-flares
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: body.fender-flares
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.fender-flare-fl
+    - vehicle.satsuma.part.fender-flare-fr
+    - vehicle.satsuma.part.fender-flare-rl
+    - vehicle.satsuma.part.fender-flare-rr
+  - itemDefinitionId: item.mail-order.racing-harness
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: interior.harness
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.racing-harness-left
+    - vehicle.satsuma.part.racing-harness-right
+  - itemDefinitionId: item.mail-order.sport-wheel
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: interior.steering-wheel
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.steering-wheel-sport
+  - itemDefinitionId: item.mail-order.wheel-cover-zebra
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: interior.steering-cover
+    resolutionKind: 2
+    partDefinitionIds:
+    - vehicle.satsuma.part.steering-cover-zebra
+  - itemDefinitionId: item.mail-order.wheelset-spoke
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: chassis.wheels
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.wheel-spoke-fl
+    - vehicle.satsuma.part.wheel-spoke-fr
+    - vehicle.satsuma.part.wheel-spoke-rl
+    - vehicle.satsuma.part.wheel-spoke-rr
+  - itemDefinitionId: item.mail-order.wheel-cover-leopard
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: interior.steering-cover
+    resolutionKind: 2
+    partDefinitionIds:
+    - vehicle.satsuma.part.steering-cover-leopard
+  - itemDefinitionId: item.mail-order.fuel-mixture-gauge
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: dashboard.gauge.fuel-mixture
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.gauge-fuel-mixture
+  - itemDefinitionId: item.mail-order.extra-gauges
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: dashboard.gauge.cluster
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.gauge-cluster-extra
+  - itemDefinitionId: item.mail-order.wheelset-turbine
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: chassis.wheels
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.wheel-turbine-fl
+    - vehicle.satsuma.part.wheel-turbine-fr
+    - vehicle.satsuma.part.wheel-turbine-rl
+    - vehicle.satsuma.part.wheel-turbine-rr
+  - itemDefinitionId: item.mail-order.seat-cover-plush
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: interior.seat-covers
+    resolutionKind: 2
+    partDefinitionIds:
+    - vehicle.satsuma.part.seat-cover-plush-left
+    - vehicle.satsuma.part.seat-cover-plush-right
+  - itemDefinitionId: item.mail-order.bucket-seats
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: interior.seats
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.bucket-seat-left
+    - vehicle.satsuma.part.bucket-seat-right
+  - itemDefinitionId: item.mail-order.antenna
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: body.antenna
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.antenna
+  - itemDefinitionId: item.mail-order.rally-wheel
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: interior.steering-wheel
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.steering-wheel-rally
+  - itemDefinitionId: item.mail-order.racing-carburators
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: engine.intake
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.carburators-racing
+  - itemDefinitionId: item.mail-order.front-spoiler
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: body.front-spoiler
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.front-spoiler
+  - itemDefinitionId: item.mail-order.exhaust-dual-tip
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: exhaust.tip
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.exhaust-tip-dual
+  - itemDefinitionId: item.mail-order.wheelset-rally
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: chassis.wheels
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.wheel-rally-fl
+    - vehicle.satsuma.part.wheel-rally-fr
+    - vehicle.satsuma.part.wheel-rally-rl
+    - vehicle.satsuma.part.wheel-rally-rr
+  - itemDefinitionId: item.mail-order.wheelset-hayosiko
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: chassis.wheels
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.wheel-hayosiko-fl
+    - vehicle.satsuma.part.wheel-hayosiko-fr
+    - vehicle.satsuma.part.wheel-hayosiko-rl
+    - vehicle.satsuma.part.wheel-hayosiko-rr
+  - itemDefinitionId: item.mail-order.wheelset-octo
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: chassis.wheels
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.wheel-octo-fl
+    - vehicle.satsuma.part.wheel-octo-fr
+    - vehicle.satsuma.part.wheel-octo-rl
+    - vehicle.satsuma.part.wheel-octo-rr
+  - itemDefinitionId: item.mail-order.racing-radiator
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: engine.cooling.radiator
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.radiator-racing
+  - itemDefinitionId: item.mail-order.rally-suspension
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: chassis.suspension-rally
+    resolutionKind: 1
+    partDefinitionIds:
+    - vehicle.satsuma.part.strut-rally-fl
+    - vehicle.satsuma.part.strut-rally-fr
+    - vehicle.satsuma.part.shock-rally-rl
+    - vehicle.satsuma.part.shock-rally-rr
+    - vehicle.satsuma.part.spring-rally-fl
+    - vehicle.satsuma.part.spring-rally-fr
+    - vehicle.satsuma.part.spring-rally-rl
+    - vehicle.satsuma.part.spring-rally-rr
+  - itemDefinitionId: item.mail-order.dash-cover-zebra
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: interior.dashboard-cover
+    resolutionKind: 2
+    partDefinitionIds:
+    - vehicle.satsuma.part.dashboard-cover-zebra
+  - itemDefinitionId: item.mail-order.fiberglass-hood
+    targetVehicleContentId: vehicle.satsuma
+    installationGroupId: body.hood
+    resolutionKind: 0
+    partDefinitionIds:
+    - vehicle.satsuma.part.hood-fiberglass

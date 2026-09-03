@@ -321,7 +321,10 @@ namespace MSC.Editor.WorldBaseline
                 WorldBaselineSanitationEntry entry =
                     assignment.SanitationEntry;
                 var entity = new GameObject(
-                    "LegacyWorld_" + entry.Placement.StableId);
+                    DonorWorldBaselineDisplayName.Create(
+                        entry.Placement.HierarchyPath,
+                        entry.Placement.SourceObjectId,
+                        entry.Placement.Category));
                 entity.layer = 0;
                 entity.transform.SetParent(content.transform, false);
                 entity.transform.SetPositionAndRotation(

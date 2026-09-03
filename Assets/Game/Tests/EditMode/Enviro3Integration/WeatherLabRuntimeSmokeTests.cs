@@ -522,14 +522,14 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     manager,
                     EnvironmentPresentationPresetKind.Clear,
                     bindings.Clear,
-                    expectRuntimeClone: false,
+                    expectRuntimeClone: true,
                     ref mappingsExact);
                 statesOperational &= ApplyAndCheck(
                     controller,
                     manager,
                     EnvironmentPresentationPresetKind.Overcast,
                     bindings.Overcast,
-                    expectRuntimeClone: false,
+                    expectRuntimeClone: true,
                     ref mappingsExact);
                 statesOperational &= ApplyAndCheck(
                     controller,
@@ -550,14 +550,14 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     manager,
                     EnvironmentPresentationPresetKind.Night,
                     bindings.Clear,
-                    expectRuntimeClone: false,
+                    expectRuntimeClone: true,
                     ref mappingsExact);
                 statesOperational &= ApplyAndCheck(
                     controller,
                     manager,
                     EnvironmentPresentationPresetKind.Mist,
                     bindings.Fog,
-                    expectRuntimeClone: false,
+                    expectRuntimeClone: true,
                     ref mappingsExact);
 
                 EnvironmentPresentationStatus lowStatus =

@@ -1,0 +1,25 @@
+{
+  "name": "MSC.Lighting.Tests.EditMode",
+  "rootNamespace": "MSC.Lighting.Tests.EditMode",
+  "references": [
+    "MSC.Lighting.Runtime",
+    "MSC.Lighting.Editor",
+    "MSC.Lighting.ProductionIntegration.Runtime",
+    "MSC.World.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

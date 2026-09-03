@@ -1,11 +1,57 @@
-# CURRENT PROJECT STATE — USER CONFIRMED
+# CURRENT PROJECT STATE — 2026-09-02 AUDIT SNAPSHOT
 
-Updated through the bounded Milestone 07C dawn/night follow-up automated gate
-and user visual acceptance on 2026-07-18. Current generated-material contract
-remediation, matched-fidelity and Development Player performance acceptance
-remain pending.
+Current gate: **Phase 1 Legacy Feature Complete is NOT MET**.
+
+Authoritative summary:
+`Docs/Reviews/FULL_GAME_PARITY_AUDIT_2026-09-02.md`.
+
+Current row-level authorities:
+
+- `Docs/Phase1/LEGACY_FEATURE_PARITY_MATRIX.csv` — 534 total rows, 517 required;
+- `Docs/Save/FULL_GAME_SAVE_COVERAGE.csv` — 557 save-coverage rows: 534
+  parity features plus 23 explicit domain contracts;
+- `Docs/Phase1/PHASE1_DEFINITION_OF_DONE.md` — Phase 1 gate contract;
+- `Docs/Phase1/DONOR_VERSION_LOCK.md` — locked donor evidence.
+
+Current required-row result after synchronization: `4 Verified`,
+`1 KnownDifferenceApproved`, `6 ImplementedUnverified`,
+`202 PartiallyImplemented`, `303 EvidenceCaptured`, `1 Specified`.
 
 ## Active milestone
+
+The only active closure boundary is **11A-V1 — full Satsuma state**. The last
+green `11A-V1d.48` evidence is `29/29 PASS`, but later current-tree edits fail
+Editor compilation on missing `BuildRustHdrpTextures` and
+`CreatePaintSurfaceBinding` helpers (`CS0103` x3). The complete
+wiring/fluids/thermal/wear/damage/tuning/electrical/inspection/Fleetari and
+donor-compared build-drive-save-stream gates remain open.
+
+Phase 2 is not allowed. Existing foundations through 08A and the later bounded
+save/items/home/NPC/traffic/economy/service work must be reused.
+
+## Current high-level status
+
+- native save v16 exists with atomic recovery, migrations, slots and 14 current
+  participants; full-game fresh/mid/late persistence is still Partial;
+- exact donor map identity and 49-cell streaming are Verified;
+- temporary donor/third-party presentation is private Phase 1 content and is
+  not ProductionReady;
+- player, needs, home, all 99 item rows, NPC, traffic, economy, services and
+  Satsuma are Partial at domain level;
+- Jobs, Authority, Rally, Media and Progression are not implemented as runtime
+  domains; Communications contains only the partial catalog-order slice;
+- no current Windows x64 player represents the active tree;
+- current Editor script compilation is red in the Satsuma baseline builder;
+- the 60 FPS standalone acceptance gate is open;
+- full-suite test status is not green.
+
+## Historical 07C snapshot — superseded for current status
+
+The remaining sections preserve the 2026-07-18 accepted weather/world record.
+They remain useful implementation evidence but their active-milestone and
+next-sequence statements are superseded by the snapshot above.
+
+## Historical active milestone
 
 - The next and only active milestone is
   `07C_PRODUCTION_WEATHER_ROLLOUT_AND_VALIDATION.md`.
@@ -174,7 +220,7 @@ explicit rights.
 Replace the baseline cell by cell through production override layers while
 preserving coordinates, stable IDs, gameplay anchors, saves and streaming.
 
-## Next allowed sequence
+## Historical next allowed sequence
 
 Current allowed sequence:
 

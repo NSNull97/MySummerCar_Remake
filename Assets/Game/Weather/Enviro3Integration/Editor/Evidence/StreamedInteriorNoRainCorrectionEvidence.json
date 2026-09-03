@@ -1,0 +1,52 @@
+{
+    "schemaVersion": 1,
+    "sourceRevisionId": "msc-world-baseline-04a1.1-c3f2f337",
+    "sourceRelativePath": "normalized/world/milestone-04a1/WorldObjectPlacements.csv",
+    "sourceSha256": "B894B8A6416FC1B74EABB1821B71E407CBEDBD3AC9AFABEEE262C7891004758A",
+    "transferClassification": "ConfigurationTransferred",
+    "destinationCatalog": "Assets/Game/Weather/Production/Content/Zones/WeatherZoneCellCatalog.asset",
+    "derivationPolicy": "exact-donor-NoRain-horizontal-footprints-extruded-only-through-playable-interior-height-v1",
+    "volumes": [
+        {
+            "destinationStableId": "weather.zone.cell_-3_0.teimo.shop.v1",
+            "sourceStableId": "8d2e26bfa117e46edae18e6fd28a1de7",
+            "sourceHierarchyPath": "STORE/LOD/NoRain",
+            "worldCenter": [-1377.4739, 6.45, 142.78076],
+            "worldRotation": [-0.62024206, 0.33955848, 0.33955857, 0.6202417],
+            "localSizeMeters": [6.6733313, 10.67478, 3.6]
+        },
+        {
+            "destinationStableId": "weather.zone.cell_-3_0.teimo.pub.v1",
+            "sourceStableId": "227111e601b389e1e978b10b1166ebd0",
+            "sourceHierarchyPath": "STORE/LOD/NoRain",
+            "worldCenter": [-1380.2303, 6.45, 142.82202],
+            "worldRotation": [-0.19847305, 0.6786816, 0.67868125, 0.19847289],
+            "localSizeMeters": [6.251738, 9.712752, 3.6]
+        },
+        {
+            "destinationStableId": "weather.zone.cell_3_-1.fleetari.workshop.v1",
+            "sourceStableId": "43c2fc63ffce9b649d98c09a2c4278d1",
+            "sourceHierarchyPath": "REPAIRSHOP/LOD/NoRain",
+            "worldCenter": [1732.8201, 8.75, -307.565],
+            "worldRotation": [-0.15141028, 0.6907061, 0.69070613, 0.15141028],
+            "localSizeMeters": [17.05844, 21.653284, 5.4]
+        },
+        {
+            "destinationStableId": "weather.zone.cell_-3_0.inspection.hall.v1",
+            "sourceStableId": "d350f3805575385012d28bf9be38cbe8",
+            "sourceHierarchyPath": "INSPECTION/LOD/NoRain",
+            "worldCenter": [-1351.1182, 6.55, 218.78186],
+            "worldRotation": [0.37548485, 0.5991751, 0.59917533, -0.3754854],
+            "localSizeMeters": [42.57523, 15.707606, 4.0]
+        },
+        {
+            "destinationStableId": "weather.zone.cell_-3_0.inspection.office.v1",
+            "sourceStableId": "20a4ea987de8652a41d9d5911500e726",
+            "sourceHierarchyPath": "INSPECTION/LOD/NoRain",
+            "worldCenter": [-1361.4513, 6.55, 228.3429],
+            "worldRotation": [-0.15817289, 0.68918866, 0.68918926, 0.15817252],
+            "localSizeMeters": [23.046154, 16.99217, 4.0]
+        }
+    ],
+    "notes": "Teimo's two destination IDs preserve compatibility while their identical closed-interior profiles form the union of the two donor NoRain footprints. Inspection hall and office now use the existing closed-interior profile. The common open-shelter profile retains rain cover but has full exterior audio, fog, wind and thunder exposure."
+}

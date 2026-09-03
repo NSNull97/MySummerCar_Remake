@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MSC.Editor.VehicleAssembly;
+using MSC.Interaction;
+using MSC.Interaction.Capabilities;
 using MSC.Vehicle.Assembly;
 using NUnit.Framework;
 using UnityEditor.SceneManagement;
@@ -97,6 +99,99 @@ namespace MSC.Tests.EditMode.VehicleAssembly
         }
 
         [Test]
+        public void PartTitle_IsVisibleOnlyWhilePartIsLoose()
+        {
+            IInteractionDisplayTarget display = drum;
+            IInteractionLocalizationTarget localization = drum;
+            string expectedName = drum.Definition.DisplayName;
+            string expectedKey = drum.Definition.DefinitionId;
+
+            Assert.That(display.InteractionDisplayName, Is.EqualTo(expectedName));
+            Assert.That(
+                localization.InteractionLocalizationKey,
+                Is.EqualTo(expectedKey));
+
+            InstallDrum();
+
+            Assert.That(display.InteractionDisplayName, Is.Empty);
+            Assert.That(localization.InteractionLocalizationKey, Is.Empty);
+
+            Assert.That(controller.TryRemove(drum).Succeeded, Is.True);
+            Assert.That(display.InteractionDisplayName, Is.EqualTo(expectedName));
+            Assert.That(
+                localization.InteractionLocalizationKey,
+                Is.EqualTo(expectedKey));
+        }
+
+        [Test]
+        public void FastenerTarget_ExposesActionsWithoutNameMetadata()
+        {
+            AssemblyFastenerInteractionTarget target = controller
+                .GetComponentsInChildren<AssemblyFastenerInteractionTarget>(
+                    includeInactive: true)
+                .First();
+
+            Assert.That(target, Is.InstanceOf<IToolActivationTarget>());
+            Assert.That(
+                target,
+                Is.InstanceOf<IDirectionalScrollHeldToolActivationTarget>());
+            Assert.That(target, Is.Not.InstanceOf<IInteractionDisplayTarget>());
+            Assert.That(
+                target,
+                Is.Not.InstanceOf<IInteractionLocalizationTarget>());
+        }
+
+        [Test]
+        public void SuccessfulMutations_PublishSemanticActionsAfterGraphChanges()
+        {
+            var observed = new List<AssemblyActionCompleted>();
+            controller.ActionCompleted += observed.Add;
+            try
+            {
+                InstallDrum();
+                Assert.That(observed, Has.Count.EqualTo(1));
+                Assert.That(
+                    observed[0].Action,
+                    Is.EqualTo(AssemblyActionKind.PartInstalled));
+                Assert.That(observed[0].Part, Is.SameAs(drum));
+                Assert.That(observed[0].MountId, Is.EqualTo(drumMount.MountId));
+                Assert.That(drum.IsInstalled, Is.True);
+
+                FastenerInstance fastener = GetDrumFastener();
+                ToolDefinition tool = GetTool(FastenerSize.Millimeter14);
+                Assert.That(controller.TryOperateFastener(
+                    drumMount.MountId,
+                    fastener.Definition.DefinitionId,
+                    tool,
+                    tighten: true).Succeeded, Is.True);
+                Assert.That(
+                    observed[1].Action,
+                    Is.EqualTo(AssemblyActionKind.FastenerTightened));
+                Assert.That(fastener.Stage, Is.EqualTo(1));
+
+                Assert.That(controller.TryOperateFastener(
+                    drumMount.MountId,
+                    fastener.Definition.DefinitionId,
+                    tool,
+                    tighten: false).Succeeded, Is.True);
+                Assert.That(
+                    observed[2].Action,
+                    Is.EqualTo(AssemblyActionKind.FastenerLoosened));
+                Assert.That(fastener.Stage, Is.Zero);
+
+                Assert.That(controller.TryRemove(drum).Succeeded, Is.True);
+                Assert.That(
+                    observed[3].Action,
+                    Is.EqualTo(AssemblyActionKind.PartRemoved));
+                Assert.That(drum.IsInstalled, Is.False);
+            }
+            finally
+            {
+                controller.ActionCompleted -= observed.Add;
+            }
+        }
+
+        [Test]
         public void Install_RejectsWrongMountAndOccupiedMount()
         {
             PartInstance battery = FindPart("vehicle.battery");
@@ -139,6 +234,40 @@ namespace MSC.Tests.EditMode.VehicleAssembly
             {
                 AssemblyOperationResult result = controller.EvaluateInstall(drum, drumMount);
                 Assert.That(result.FailureReason, Is.EqualTo(AssemblyFailureReason.Obstructed));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(blocker);
+            }
+        }
+
+        [Test]
+        public void ObstructionMarker_HidesUnavailableRemovalAction()
+        {
+            InstallDrum();
+            drumMount.Configure(
+                drumMount.Definition,
+                drumMount.MountId,
+                drumMount.Pose,
+                ~0);
+            GameObject blocker = new GameObject("TestRemovalObstruction");
+            blocker.transform.position = drumMount.Pose.position;
+            blocker.AddComponent<SphereCollider>().radius = 0.04f;
+            blocker.AddComponent<AssemblyMountObstruction>();
+            Physics.SyncTransforms();
+            try
+            {
+                AssemblyInstalledPartInteractionTarget removal = drum
+                    .GetComponent<AssemblyInstalledPartInteractionTarget>();
+                var context = new InteractionContext(
+                    controller.gameObject,
+                    drum.transform.position,
+                    drum.transform.forward);
+
+                Assert.That(
+                    controller.EvaluateRemoval(drum).FailureReason,
+                    Is.EqualTo(AssemblyFailureReason.Obstructed));
+                Assert.That(removal.CanInteract(context), Is.False);
             }
             finally
             {
@@ -205,6 +334,78 @@ namespace MSC.Tests.EditMode.VehicleAssembly
                 fastener.Definition.DefinitionId,
                 wrench14,
                 tighten: true).FailureReason, Is.EqualTo(AssemblyFailureReason.FastenerAtLimit));
+        }
+
+        [Test]
+        public void FastenerDirectionalHint_HidesDirectionsAtStageEndpoints()
+        {
+            InstallDrum();
+            FastenerInstance fastener = GetDrumFastener();
+            ToolDefinition wrench14 = GetTool(FastenerSize.Millimeter14);
+            AssemblyFastenerInteractionTarget target = controller
+                .GetComponentsInChildren<AssemblyFastenerInteractionTarget>(
+                    includeInactive: true)
+                .Single(candidate =>
+                    candidate.MountId == drumMount.MountId &&
+                    candidate.FastenerDefinitionId ==
+                    fastener.Definition.DefinitionId);
+            var heldWrench = new ToolIdentity("Wrench", "14");
+            var wrongWrench = new ToolIdentity("Wrench", "13");
+            var context = new InteractionContext(
+                controller.gameObject,
+                target.transform.position,
+                target.transform.forward);
+
+            Assert.That(
+                target.CanActivateHeldTool(
+                    heldWrench,
+                    context,
+                    InteractionScrollDirection.Positive),
+                Is.True);
+            Assert.That(
+                target.CanActivateHeldTool(
+                    heldWrench,
+                    context,
+                    InteractionScrollDirection.Negative),
+                Is.False);
+            Assert.That(
+                target.CanActivateHeldTool(
+                    wrongWrench,
+                    context,
+                    InteractionScrollDirection.Positive),
+                Is.False);
+            Assert.That(
+                target.GetHeldToolScrollPrompt(
+                    InteractionScrollDirection.Positive),
+                Is.EqualTo("ЗАТЯНУТЬ"));
+            Assert.That(
+                target.GetHeldToolScrollPrompt(
+                    InteractionScrollDirection.Negative),
+                Is.EqualTo("ОСЛАБИТЬ"));
+
+            while (fastener.Stage < fastener.Definition.MaximumStage)
+            {
+                Assert.That(
+                    controller.TryOperateFastener(
+                        drumMount.MountId,
+                        fastener.Definition.DefinitionId,
+                        wrench14,
+                        tighten: true).Succeeded,
+                    Is.True);
+            }
+
+            Assert.That(
+                target.CanActivateHeldTool(
+                    heldWrench,
+                    context,
+                    InteractionScrollDirection.Positive),
+                Is.False);
+            Assert.That(
+                target.CanActivateHeldTool(
+                    heldWrench,
+                    context,
+                    InteractionScrollDirection.Negative),
+                Is.True);
         }
 
         [Test]
@@ -408,6 +609,19 @@ namespace MSC.Tests.EditMode.VehicleAssembly
         private ToolDefinition GetTool(FastenerSize size)
         {
             return controller.Tools.Single(tool => tool.Size == size);
+        }
+
+        private sealed class ToolIdentity : IHeldToolIdentity
+        {
+            public ToolIdentity(string toolType, string toolVariant)
+            {
+                ToolType = toolType;
+                ToolVariant = toolVariant;
+            }
+
+            public string ToolType { get; }
+
+            public string ToolVariant { get; }
         }
     }
 }

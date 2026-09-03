@@ -454,6 +454,16 @@ namespace MSC.Tests.PlayMode.WorldBaseline
         {
             Assert.That(installer, Is.Not.Null);
             Assert.That(streaming, Is.Not.Null);
+            if (!installer.IsReady &&
+                !installer.IsGameplayPreparationRunning)
+            {
+                Assert.That(
+                    installer.TryBeginGameplayPreparation(
+                        out string preparationFailure),
+                    Is.True,
+                    preparationFailure);
+            }
+
             double timeout =
                 Time.realtimeSinceStartupAsDouble + timeoutSeconds;
             while ((!installer.IsReady || streaming.IsStreaming) &&

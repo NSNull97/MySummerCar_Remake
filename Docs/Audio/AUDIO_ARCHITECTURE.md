@@ -40,10 +40,10 @@ RTPC writes, registers stable emitters, tracks handles and reports loaded/missin
 banks. Bank load ownership remains with the official integration/composition
 root.
 
-Authoring validation proves 52 events, 32 RTPCs, 4 switch groups, 3 state
+Authoring validation proves 65 events, 32 RTPCs, 4 switch groups, 3 state
 groups, 5 user banks plus `Init`, 6 mixer buses/Volume curves, 7 routed
-Actor-Mixer roots and explicit child routing `52/52`. The Windows banks total
-`26,115,951 B` and remain ignored. The player-footstep Switch Container has
+Actor-Mixer roots and explicit child routing `65/65`. The Windows banks total
+`109,329,342 B` and remain ignored. The player-footstep Switch Container has
 10 sounds, 5 two-variant random families and `9/9` switch assignments.
 
 `UnityAudioBackend` is the operational development fallback. Generic events are
@@ -63,6 +63,13 @@ depend on donor content.
 - `AudioEnvironmentZone` selects the highest-priority active trigger volume.
 - `AudioPortalAuthoring` stores a stable connection and normalized openness;
   door/window gameplay remains authoritative.
+- `WorldAmbientAudioPresenter` recreates the donor `MAP/SoundAmbience` phase
+  schedule at 06:00/12:00/18:00/24:00 with spatial morning, day, evening,
+  night, swamp and meadow layers, an all-day distant dog and three local lake
+  emitters. Each layer uses the frozen M04A1 coordinate translation and is
+  attenuated by project-owned rain, wind and listener distance. The chainsaw is
+  the deliberate user correction: one fair-weather source near the player home,
+  attempted only every 15-35 minutes after an initial 5-15-minute delay.
 - scene unload removes scene-owned emitters and voices; disable/session teardown
   stops handles and unregisters objects.
 
@@ -84,8 +91,15 @@ acoustics implementation.
 - `PlayerFootstepAudioPresenter` derives cadence from grounded planar
   `CharacterController` travel, resets on teleport and selects a switch only
   from `IAudioSurfaceMetadataProvider`; the raycast runs only when a step is due.
-- world ambience IDs and zone/portal authoring exist; production placement and
-  streamed ambience composition are still `DeferredHook`.
+- `PlayerLeanImpactAudioPresenter` listens to the project-owned
+  `PlayerLeanImpact` notification, maps forward speed to the typed interaction
+  impact-intensity parameter and posts `audio.event.interaction.impact` through
+  the same registered player emitter used by interactions and footsteps. It
+  does not reference BetterMSC or own an `AudioSource`.
+- main donor world ambience is runtime-mapped. `wind_chime`, mosquito, two fly
+  variants and wasp are imported and mapped as local gameplay-object hooks, not
+  misclassified as unconditional global ambience. Garage/interior room tones,
+  distant traffic and cell-level bank leasing remain `DeferredHook`.
 
 ## Enviro boundary
 
@@ -126,3 +140,30 @@ failure and one explicitly environment-gated performance skip; the performance
 fixture separately passes **1/1** when enabled, and the exact failed vehicle-
 route case passes **1/1 in 8.696 s** in isolation. Full PlayMode remains not
 claimed as a pass.
+
+## Conditional ambience and dialogue routing correction — 2026-08-02
+
+`WorldAmbientAudioPresenter` consumes project-owned game time and weather
+outputs, not Enviro presentation state. The listener-relative forest bed fades
+in during the morning, fades out at night, is strongly suppressed by rain and is
+partly suppressed by high wind. The chainsaw remains one spatial emitter at a
+fixed reviewed world point near the player home; it is eligible only during
+08:00–18:30 fair-weather windows and uses a deliberately rare 15–35 minute
+successful interval (5–15 minutes for the first opportunity). This is a
+project-authored scheduling approximation pending manual donor timing capture.
+
+Dialogue is intentionally backend-neutral at gameplay call sites. Stable
+`audio.npc.*` event IDs should ultimately resolve to Wwise dialogue events on a
+dedicated Dialogue bus. That move is recommended because Wwise provides one
+place for loudness normalization, voice priority/virtualization, music and
+ambience ducking, speaker processing and future localization. Phase 1 temporary
+donor voice clips remain removable `TemporaryDirectImport` presentation behind
+the existing event IDs; no dialogue state machine or save schema depends on
+Wwise media names.
+
+Until corresponding Wwise events/banks are complete, the Unity fallback applies
+an allocation-free soft gain of approximately +8.5 dB to the explicit Dialogue
+category and to existing `audio.npc.*` IDs. It prevents hard clipping with a
+bounded soft transfer. Dialogue currently follows the Effects user setting; a
+separate dialogue slider is deferred until it can be added without redesigning
+the accepted 08A settings presentation.

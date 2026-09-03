@@ -1,0 +1,259 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89f75d84a48d58d4db244e6ab251afa7, type: 3}
+  m_Name: CharacterDefinitionCatalog
+  m_EditorClassIdentifier: MSC.Characters.Runtime::MSC.Characters.CharacterDefinitionCatalog
+  schemaVersion: 1
+  catalogId: characters.phase1.foundation.v3
+  definitions:
+  - definitionId: character.berryman
+    featureId: P1.NPC.008
+    debugDisplayRole: Strawberry-field job owner
+    stableInstanceId: 10b10000000000000000000000000008
+    presentationBindingId: presentation.character.berryman
+    productionReplacementKey: presentation.character.berryman
+    homeAnchorId: anchor.berryman.strawberry-field
+    workAnchorId: anchor.berryman.strawberry-field
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.farmer
+    featureId: P1.NPC.007
+    debugDisplayRole: Toivo Kesseli, hay/combine job client
+    stableInstanceId: 10b10000000000000000000000000007
+    presentationBindingId: presentation.character.farmer
+    productionReplacementKey: presentation.character.farmer
+    homeAnchorId: anchor.farmer.farm
+    workAnchorId: anchor.farmer.farm
+    fixturePattern: 1
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.firewood-customer
+    featureId: P1.NPC.014
+    debugDisplayRole: Firewood delivery customer
+    stableInstanceId: 10b20000000000000000000000000014
+    presentationBindingId: presentation.character.firewood-customer
+    productionReplacementKey: presentation.character.firewood-customer
+    homeAnchorId: anchor.firewood-customer.home
+    workAnchorId: anchor.firewood-customer.home
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.fixture.scheduled-roaming
+    featureId: P1.NPC.022
+    debugDisplayRole: 10A scheduled roaming fixture (Alpo evidence)
+    stableInstanceId: 10a00000000000000000000000000002
+    presentationBindingId: presentation.character.fixture.scheduled-roaming
+    productionReplacementKey: presentation.character.fixture.scheduled-roaming
+    homeAnchorId: anchor.fixture.roaming-start
+    workAnchorId: anchor.fixture.roaming-end
+    fixturePattern: 1
+    frameworkFixtureOnly: 1
+    stateOnly: 0
+  - definitionId: character.fixture.stationary-service
+    featureId: P1.NPC.001
+    debugDisplayRole: Teimo, shop and pub service owner
+    stableInstanceId: 10a00000000000000000000000000001
+    presentationBindingId: presentation.character.fixture.stationary-service
+    productionReplacementKey: presentation.character.fixture.stationary-service
+    homeAnchorId: anchor.fixture.stationary-service
+    workAnchorId: anchor.fixture.stationary-service
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.fixture.vehicle-linked
+    featureId: P1.NPC.018
+    debugDisplayRole: 10A vehicle-linked fixture (Latanen evidence)
+    stableInstanceId: 10a00000000000000000000000000003
+    presentationBindingId: presentation.character.fixture.vehicle-linked
+    productionReplacementKey: presentation.character.fixture.vehicle-linked
+    homeAnchorId: anchor.fixture.vehicle-linked
+    workAnchorId: anchor.fixture.vehicle-linked
+    fixturePattern: 2
+    frameworkFixtureOnly: 1
+    stateOnly: 1
+  - definitionId: character.fleetari
+    featureId: P1.NPC.002
+    debugDisplayRole: Fleetari, repair-shop owner and service/job contact
+    stableInstanceId: 10b10000000000000000000000000002
+    presentationBindingId: presentation.character.fleetari
+    productionReplacementKey: presentation.character.fleetari
+    homeAnchorId: anchor.fleetari.repair-shop
+    workAnchorId: anchor.fleetari.repair-shop
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.grandmother
+    featureId: P1.NPC.004
+    debugDisplayRole: Grandmother, family visit and delivery contact
+    stableInstanceId: 10b20000000000000000000000000004
+    presentationBindingId: presentation.character.grandmother
+    productionReplacementKey: presentation.character.grandmother
+    homeAnchorId: anchor.grandmother.home
+    workAnchorId: anchor.grandmother.home
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.inspection-officer
+    featureId: P1.NPC.015
+    debugDisplayRole: Vehicle inspection officer
+    stableInstanceId: 10b20000000000000000000000000015
+    presentationBindingId: presentation.character.inspection-officer
+    productionReplacementKey: presentation.character.inspection-officer
+    homeAnchorId: anchor.inspection-officer.station
+    workAnchorId: anchor.inspection-officer.station
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.jani
+    featureId: P1.NPC.049
+    debugDisplayRole: Jani, story traffic driver with Suski passenger
+    stableInstanceId: 10b30000000000000000000000000049
+    presentationBindingId: presentation.character.jani-car
+    productionReplacementKey: presentation.character.jani-car
+    homeAnchorId: anchor.story-traffic.jani.000
+    workAnchorId: anchor.story-traffic.jani.000
+    fixturePattern: 2
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.jokke
+    featureId: P1.NPC.005
+    debugDisplayRole: Jokke, kilju buyer, hiker and story relationship
+    stableInstanceId: 10b20000000000000000000000000005
+    presentationBindingId: presentation.character.jokke
+    productionReplacementKey: presentation.character.jokke
+    homeAnchorId: anchor.jokke.kilju-camp
+    workAnchorId: anchor.jokke.kilju-camp
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.jokke-wife-state
+    featureId: P1.NPC.101
+    debugDisplayRole: Jokke wife relationship state (non-physical donor role)
+    stableInstanceId: 10b20000000000000000000000000101
+    presentationBindingId: presentation.character.jokke-wife-state
+    productionReplacementKey: presentation.character.jokke-wife-state
+    homeAnchorId: anchor.jokke-wife.state
+    workAnchorId: anchor.jokke-wife.state
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 1
+  - definitionId: character.petteri
+    featureId: P1.NPC.050
+    debugDisplayRole: Petteri, story traffic driver
+    stableInstanceId: 10b30000000000000000000000000050
+    presentationBindingId: presentation.character.petteri-car
+    productionReplacementKey: presentation.character.petteri-car
+    homeAnchorId: anchor.story-traffic.petteri.000
+    workAnchorId: anchor.story-traffic.petteri.000
+    fixturePattern: 2
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.sewage-client-1
+    featureId: P1.NPC.009
+    debugDisplayRole: Sewage customer 1
+    stableInstanceId: 10b20000000000000000000000000009
+    presentationBindingId: presentation.character.sewage-client-1
+    productionReplacementKey: presentation.character.sewage-client-1
+    homeAnchorId: anchor.sewage-client-1.home
+    workAnchorId: anchor.sewage-client-1.home
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.sewage-client-2
+    featureId: P1.NPC.010
+    debugDisplayRole: Sewage customer 2
+    stableInstanceId: 10b20000000000000000000000000010
+    presentationBindingId: presentation.character.sewage-client-2
+    productionReplacementKey: presentation.character.sewage-client-2
+    homeAnchorId: anchor.sewage-client-2.home
+    workAnchorId: anchor.sewage-client-2.home
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.sewage-client-3
+    featureId: P1.NPC.011
+    debugDisplayRole: Sewage customer 3
+    stableInstanceId: 10b20000000000000000000000000011
+    presentationBindingId: presentation.character.sewage-client-3
+    productionReplacementKey: presentation.character.sewage-client-3
+    homeAnchorId: anchor.sewage-client-3.home
+    workAnchorId: anchor.sewage-client-3.home
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.sewage-client-4
+    featureId: P1.NPC.012
+    debugDisplayRole: Sewage customer 4
+    stableInstanceId: 10b20000000000000000000000000012
+    presentationBindingId: presentation.character.sewage-client-4
+    productionReplacementKey: presentation.character.sewage-client-4
+    homeAnchorId: anchor.sewage-client-4.home
+    workAnchorId: anchor.sewage-client-4.home
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.sewage-client-5
+    featureId: P1.NPC.013
+    debugDisplayRole: Sewage customer 5
+    stableInstanceId: 10b20000000000000000000000000013
+    presentationBindingId: presentation.character.sewage-client-5
+    productionReplacementKey: presentation.character.sewage-client-5
+    homeAnchorId: anchor.sewage-client-5.home
+    workAnchorId: anchor.sewage-client-5.home
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.suski
+    featureId: P1.NPC.006
+    debugDisplayRole: Suski, relationship and passenger state
+    stableInstanceId: 10b20000000000000000000000000006
+    presentationBindingId: presentation.character.suski
+    productionReplacementKey: presentation.character.suski
+    homeAnchorId: anchor.suski.store-hiker
+    workAnchorId: anchor.suski.store-hiker
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.uncle-kesseli
+    featureId: P1.NPC.003
+    debugDisplayRole: Uncle Kesseli, family relationship and vehicle-key contact
+    stableInstanceId: 10b20000000000000000000000000003
+    presentationBindingId: presentation.character.uncle-kesseli
+    productionReplacementKey: presentation.character.uncle-kesseli
+    homeAnchorId: anchor.uncle-kesseli.home
+    workAnchorId: anchor.uncle-kesseli.home
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.ventti-pigman
+    featureId: P1.NPC.017
+    debugDisplayRole: Ventti dealer and Pigman
+    stableInstanceId: 10b20000000000000000000000000017
+    presentationBindingId: presentation.character.ventti-pigman
+    productionReplacementKey: presentation.character.ventti-pigman
+    homeAnchorId: anchor.ventti-pigman.cabin
+    workAnchorId: anchor.ventti-pigman.cabin
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0
+  - definitionId: character.wastewater-attendant
+    featureId: P1.NPC.016
+    debugDisplayRole: Wastewater facility attendant
+    stableInstanceId: 10b20000000000000000000000000016
+    presentationBindingId: presentation.character.wastewater-attendant
+    productionReplacementKey: presentation.character.wastewater-attendant
+    homeAnchorId: anchor.wastewater-attendant.facility
+    workAnchorId: anchor.wastewater-attendant.facility
+    fixturePattern: 0
+    frameworkFixtureOnly: 0
+    stateOnly: 0

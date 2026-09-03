@@ -476,19 +476,19 @@ $musicBus = (Ensure-WwiseObject -Parent $masterBus -Type 'Bus' -Name 'Music' -No
 $uiBus = (Ensure-WwiseObject -Parent $masterBus -Type 'Bus' -Name 'UI' -Notes 'Project UI category bus; Milestone 08 has no UI media.').path
 
 $mixerBusBindings = @(
-    @{ Bus=$masterBus; Parameter='MSC_Mixer_Master' },
-    @{ Bus=$vehicleBus; Parameter='MSC_Mixer_Vehicle' },
-    @{ Bus=$effectsBus; Parameter='MSC_Mixer_Effects' },
-    @{ Bus=$ambienceBus; Parameter='MSC_Mixer_Ambience' },
-    @{ Bus=$musicBus; Parameter='MSC_Mixer_Music' },
-    @{ Bus=$uiBus; Parameter='MSC_Mixer_UI' }
+    @{ Bus=$masterBus; Parameter='MSC_Mixer_Master'; MaximumDb=4 },
+    @{ Bus=$vehicleBus; Parameter='MSC_Mixer_Vehicle'; MaximumDb=0 },
+    @{ Bus=$effectsBus; Parameter='MSC_Mixer_Effects'; MaximumDb=0 },
+    @{ Bus=$ambienceBus; Parameter='MSC_Mixer_Ambience'; MaximumDb=0 },
+    @{ Bus=$musicBus; Parameter='MSC_Mixer_Music'; MaximumDb=0 },
+    @{ Bus=$uiBus; Parameter='MSC_Mixer_UI'; MaximumDb=0 }
 )
 foreach ($binding in $mixerBusBindings) {
     Set-ObjectRtpcCurves -ObjectPath $binding.Bus -Curves @(
-        (New-Curve -Property 'Volume' -Parameter $binding.Parameter -Points @((New-Point 0 -96), (New-Point 1 0)))
+        (New-Curve -Property 'Volume' -Parameter $binding.Parameter -Points @((New-Point 0 -96), (New-Point 1 $binding.MaximumDb)))
     )
 }
-Write-M08Log 'Configured MSC_Master/{Vehicle,Effects,Ambience,Music,UI} and six mixer RTPC-to-bus Volume curves.'
+Write-M08Log 'Configured MSC_Master/{Vehicle,Effects,Ambience,Music,UI} and six mixer RTPC-to-bus Volume curves (master ceiling +4 dB).'
 
 Ensure-GameSyncGroup -Type SwitchGroup -Name 'MSC_Vehicle_Surface' -Values @('Unknown','Paved','Gravel','Dirt','Grass','MudWet') -StableId 'audio.switch.vehicle.surface'
 Ensure-GameSyncGroup -Type SwitchGroup -Name 'MSC_Weather_PrecipitationType' -Values @('None_01','Drizzle','Rain','Snow') -StableId 'audio.switch.weather.precipitation_type (Wwise reserves None, so stable None maps to authoring value None_01)'
@@ -573,7 +573,20 @@ foreach ($index in 1..4) {
 }
 
 $sounds.Forest = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Forest_Ambience' -SourceFileName 'birds_day.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
+$sounds.BirdsMorning = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Birds_Morning' -SourceFileName 'birds_morning.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
+$sounds.BirdsDay = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Birds_Day' -SourceFileName 'birds_day.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
+$sounds.BirdsEvening = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Birds_Evening' -SourceFileName 'birds_evening.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
+$sounds.BirdsNight = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Birds_Night' -SourceFileName 'birds_night.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
+$sounds.BirdsSwamp = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Birds_Swamp' -SourceFileName 'birds_swamp.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
+$sounds.Meadow = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Meadow' -SourceFileName 'meadow.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
+$sounds.Dog = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Distant_Dog' -SourceFileName 'dog.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
 $sounds.Lake = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Lake_Ambience' -SourceFileName 'lake_water.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
+$sounds.Chainsaw = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Distant_Chainsaw' -SourceFileName 'chainsaw.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $false -Spatialized $true
+$sounds.WindChime = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Wind_Chime' -SourceFileName 'wind_chime.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
+$sounds.Mosquito = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Mosquito' -SourceFileName 'mosquito.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
+$sounds.Fly = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Fly' -SourceFileName 'fly.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
+$sounds.FlyVariant = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Fly_Variant' -SourceFileName 'fly2.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
+$sounds.Wasp = Import-PrototypeSound -ParentPath $worldRoot -SoundName 'Wasp' -SourceFileName 'wasp_fly2.ogg' -Domain 'World' -OutputBusPath $ambienceBus -Loop $true -Spatialized $true
 $sounds.Pickup = Import-PrototypeSound -ParentPath $interactionRoot -SoundName 'Pickup' -SourceFileName 'wood_hit1.ogg' -Domain 'Interaction' -OutputBusPath $effectsBus -Loop $false -Spatialized $true
 $sounds.Drop = Import-PrototypeSound -ParentPath $interactionRoot -SoundName 'Drop' -SourceFileName 'player_impact.ogg' -Domain 'Interaction' -OutputBusPath $effectsBus -Loop $false -Spatialized $true
 $sounds.Throw = Import-PrototypeSound -ParentPath $interactionRoot -SoundName 'Throw' -SourceFileName 'player_impact.ogg' -Domain 'Interaction' -OutputBusPath $effectsBus -Loop $false -Spatialized $true
@@ -609,7 +622,7 @@ $routingExpectations = @(
 foreach ($objectPath in @($engineLayers, $engineStart, $sounds.VehicleStarter, $sounds.VehicleStart1, $sounds.VehicleStart2, $sounds.VehicleStart3, $sounds.VehicleStall, $sounds.VehicleIntake, $sounds.VehicleExhaust, $sounds.VehicleMechanical, $sounds.VehicleTireRoll)) {
     $routingExpectations += @{ Path=$objectPath; Bus=$vehicleBus }
 }
-foreach ($objectPath in @($thunder, $sounds.RainExterior, $sounds.RainSheltered, $sounds.RainInterior, $sounds.Wind, $sounds.Thunder1, $sounds.Thunder2, $sounds.Thunder3, $sounds.Thunder4, $sounds.Forest, $sounds.Lake)) {
+foreach ($objectPath in @($thunder, $sounds.RainExterior, $sounds.RainSheltered, $sounds.RainInterior, $sounds.Wind, $sounds.Thunder1, $sounds.Thunder2, $sounds.Thunder3, $sounds.Thunder4, $sounds.Forest, $sounds.BirdsMorning, $sounds.BirdsDay, $sounds.BirdsEvening, $sounds.BirdsNight, $sounds.BirdsSwamp, $sounds.Meadow, $sounds.Dog, $sounds.Lake, $sounds.Chainsaw, $sounds.WindChime, $sounds.Mosquito, $sounds.Fly, $sounds.FlyVariant, $sounds.Wasp)) {
     $routingExpectations += @{ Path=$objectPath; Bus=$ambienceBus }
 }
 foreach ($objectPath in @($mountHandoff, $footsteps, $sounds.Pickup, $sounds.Drop, $sounds.Throw, $sounds.Place, $sounds.DoorOpen, $sounds.DoorClose) + @($footstepPairs.Values) + @($footstepSounds.Values)) {
@@ -639,6 +652,19 @@ foreach ($rainSound in @($sounds.RainExterior, $sounds.RainSheltered, $sounds.Ra
 }
 Set-WwiseProperty -Object $sounds.RainSheltered -Property 'Volume' -Value -8
 Set-WwiseProperty -Object $sounds.RainInterior -Property 'Volume' -Value -16
+Set-WwiseProperty -Object $sounds.BirdsMorning -Property 'Volume' -Value -3
+Set-WwiseProperty -Object $sounds.BirdsDay -Property 'Volume' -Value -3
+Set-WwiseProperty -Object $sounds.BirdsEvening -Property 'Volume' -Value -3
+Set-WwiseProperty -Object $sounds.BirdsNight -Property 'Volume' -Value -2
+Set-WwiseProperty -Object $sounds.BirdsSwamp -Property 'Volume' -Value -5
+Set-WwiseProperty -Object $sounds.Meadow -Property 'Volume' -Value -2
+Set-WwiseProperty -Object $sounds.Dog -Property 'Volume' -Value -8
+Set-WwiseProperty -Object $sounds.Lake -Property 'Volume' -Value -12
+Set-WwiseProperty -Object $sounds.WindChime -Property 'Volume' -Value -4
+Set-WwiseProperty -Object $sounds.Mosquito -Property 'Volume' -Value -5
+Set-WwiseProperty -Object $sounds.Fly -Property 'Volume' -Value -6
+Set-WwiseProperty -Object $sounds.FlyVariant -Property 'Volume' -Value -6
+Set-WwiseProperty -Object $sounds.Wasp -Property 'Volume' -Value -6
 Set-ObjectRtpcCurves -ObjectPath $sounds.Wind -Curves @(
     (New-Curve -Property 'Volume' -Parameter 'MSC_Weather_Wind' -Points @((New-Point 0 -96), (New-Point 0.1 -20), (New-Point 1 0))),
     (New-Curve -Property 'Volume' -Parameter 'MSC_Environment_Shelter' -Points @((New-Point 0 0), (New-Point 1 -24)))
@@ -681,7 +707,20 @@ $eventDefinitions = @(
     @{ Id='audio.event.world.interior.roomtone'; Domain='MSC_World'; Name='Play_MSC_World_Interior_RoomTone'; Bank='MSC_World'; Action=0; Target='' },
     @{ Id='audio.event.world.distant_traffic'; Domain='MSC_World'; Name='Play_MSC_World_Distant_Traffic'; Bank='MSC_World'; Action=0; Target='' },
     @{ Id='audio.event.world.birds'; Domain='MSC_World'; Name='Play_MSC_World_Birds'; Bank='MSC_World'; Action=1; Target=$sounds.Forest },
-    @{ Id='audio.event.world.insects'; Domain='MSC_World'; Name='Play_MSC_World_Insects'; Bank='MSC_World'; Action=0; Target='' },
+    @{ Id='audio.event.world.birds.morning'; Domain='MSC_World'; Name='Play_MSC_World_Birds_Morning'; Bank='MSC_World'; Action=1; Target=$sounds.BirdsMorning },
+    @{ Id='audio.event.world.birds.day'; Domain='MSC_World'; Name='Play_MSC_World_Birds_Day'; Bank='MSC_World'; Action=1; Target=$sounds.BirdsDay },
+    @{ Id='audio.event.world.birds.evening'; Domain='MSC_World'; Name='Play_MSC_World_Birds_Evening'; Bank='MSC_World'; Action=1; Target=$sounds.BirdsEvening },
+    @{ Id='audio.event.world.birds.night'; Domain='MSC_World'; Name='Play_MSC_World_Birds_Night'; Bank='MSC_World'; Action=1; Target=$sounds.BirdsNight },
+    @{ Id='audio.event.world.birds.swamp'; Domain='MSC_World'; Name='Play_MSC_World_Birds_Swamp'; Bank='MSC_World'; Action=1; Target=$sounds.BirdsSwamp },
+    @{ Id='audio.event.world.meadow'; Domain='MSC_World'; Name='Play_MSC_World_Meadow'; Bank='MSC_World'; Action=1; Target=$sounds.Meadow },
+    @{ Id='audio.event.world.dog'; Domain='MSC_World'; Name='Play_MSC_World_Dog'; Bank='MSC_World'; Action=1; Target=$sounds.Dog },
+    @{ Id='audio.event.world.chainsaw'; Domain='MSC_World'; Name='Play_MSC_World_Chainsaw'; Bank='MSC_World'; Action=1; Target=$sounds.Chainsaw },
+    @{ Id='audio.event.world.insects'; Domain='MSC_World'; Name='Play_MSC_World_Insects'; Bank='MSC_World'; Action=1; Target=$sounds.Mosquito },
+    @{ Id='audio.event.world.wind_chime'; Domain='MSC_World'; Name='Play_MSC_World_Wind_Chime'; Bank='MSC_World'; Action=1; Target=$sounds.WindChime },
+    @{ Id='audio.event.world.mosquito'; Domain='MSC_World'; Name='Play_MSC_World_Mosquito'; Bank='MSC_World'; Action=1; Target=$sounds.Mosquito },
+    @{ Id='audio.event.world.fly'; Domain='MSC_World'; Name='Play_MSC_World_Fly'; Bank='MSC_World'; Action=1; Target=$sounds.Fly },
+    @{ Id='audio.event.world.fly.variant'; Domain='MSC_World'; Name='Play_MSC_World_Fly_Variant'; Bank='MSC_World'; Action=1; Target=$sounds.FlyVariant },
+    @{ Id='audio.event.world.wasp'; Domain='MSC_World'; Name='Play_MSC_World_Wasp'; Bank='MSC_World'; Action=1; Target=$sounds.Wasp },
     @{ Id='audio.event.interaction.pickup'; Domain='MSC_Interaction'; Name='Play_MSC_Interaction_Pickup'; Bank='MSC_Interaction'; Action=1; Target=$sounds.Pickup },
     @{ Id='audio.event.interaction.drop'; Domain='MSC_Interaction'; Name='Play_MSC_Interaction_Drop'; Bank='MSC_Interaction'; Action=1; Target=$sounds.Drop },
     @{ Id='audio.event.interaction.throw'; Domain='MSC_Interaction'; Name='Play_MSC_Interaction_Throw'; Bank='MSC_Interaction'; Action=1; Target=$sounds.Throw },

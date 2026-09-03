@@ -11,14 +11,18 @@ GameObject:
   - component: {fileID: 6648689435124771412}
   - component: {fileID: 308266103335443960}
   - component: {fileID: 4232095539942077169}
+  - component: {fileID: 7459812364890123456}
   - component: {fileID: 3191401342571433840}
   - component: {fileID: 6815543078582569416}
   - component: {fileID: 3128540900010246669}
   - component: {fileID: 99254237992288729}
+  - component: {fileID: 6123487690123456789}
+  - component: {fileID: 6123487690123456790}
+  - component: {fileID: 6123487690123456791}
   - component: {fileID: 6923902959632967467}
   - component: {fileID: 3832096157754649875}
   - component: {fileID: 7349811234567890123}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: M4_FirstPersonPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +42,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4723528873291826988}
+  - {fileID: 7000000000000000002}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &308266103335443960
@@ -59,13 +63,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.8
-  m_Radius: 0.32
-  m_SlopeLimit: 50
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.9, z: 0}
+  m_Height: 0.5
+  m_Radius: 0.12
+  m_SlopeLimit: 90
+  m_StepOffset: 0.4
+  m_SkinWidth: 0.03
+  m_MinMoveDistance: 0
+  m_Center: {x: 0, y: 0.25, z: 0}
 --- !u!114 &4232095539942077169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,18 +83,90 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.FirstPersonMotor
   characterController: {fileID: 308266103335443960}
+  leanPivot: {fileID: 7000000000000000002}
   cameraPivot: {fileID: 4723528873291826988}
-  walkingSpeedMetersPerSecond: 4.2
-  crouchingSpeedMetersPerSecond: 2.1
-  standingHeightMeters: 1.8
-  crouchingHeightMeters: 1.15
-  standingEyeHeightMeters: 1.68
-  crouchingEyeHeightMeters: 1.02
-  crouchTransitionMetersPerSecond: 4.5
-  gravityMetersPerSecondSquared: 22
+  impactPivot: {fileID: 7000000000000000004}
+  walkingSpeedMetersPerSecond: 2.9
+  walkingBackwardSpeedMetersPerSecond: 2.5
+  walkingStrafeSpeedMetersPerSecond: 2.6
+  runningSpeedMetersPerSecond: 6.4
+  runningBackwardSpeedMetersPerSecond: 3.1
+  runningStrafeSpeedMetersPerSecond: 5.1
+  crouchingSpeedMetersPerSecond: 1.85
+  crouchingBackwardSpeedMetersPerSecond: 1.7
+  crouchingStrafeSpeedMetersPerSecond: 1.75
+  deepCrouchingSpeedMetersPerSecond: 0.7
+  groundAccelerationResponsePerSecond: 8
+  groundDecelerationResponsePerSecond: 10
+  airAccelerationMetersPerSecondSquared: 4
+  minimumRunningEntrySpeedMetersPerSecond: 1.7
+  maximumRunningStrafeInput: 0.9
+  controllerRadiusMeters: 0.12
+  standingHeightMeters: 0.5
+  crouchingHeightMeters: 0.5
+  deepCrouchingHeightMeters: 0.5
+  slopeLimitDegrees: 90
+  controllerSkinWidthMeters: 0.03
+  controllerMinimumMoveDistanceMeters: 0
+  standingEyeHeightMeters: 1.48
+  crouchingEyeHeightMeters: 0.93
+  deepCrouchingEyeHeightMeters: 0.38
+  postureTransitionMetersPerSecond: 1.7
+  postureRiseTransitionMetersPerSecond: 6
+  headClearanceRadiusMeters: 0.11
   headroomMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  gravityMetersPerSecondSquared: 21
+  jumpHeightMeters: 1.05
+  jumpForceMetersPerSecond: 6.65
+  jumpPreparationSeconds: 0.085
+  coyoteTimeSeconds: 0.1
+  groundStickSpeedMetersPerSecond: 3
+  stepOffsetMeters: 0.4
+  groundSnapDistanceMeters: 0.4
+  groundProbeLiftMeters: 0.05
+  forwardLeanAngleDegrees: 40
+  forwardLeanAngularSpeedDegreesPerSecond: 150
+  forwardLeanReturnAngularSpeedDegreesPerSecond: 120
+  leanArcRadiusMeters: 1.7
+  leanCollisionRadiusMeters: 0.11
+  leanCollisionClearanceMeters: 0.02
+  leanImpactMinimumForwardSpeedMetersPerSecond: 3
+  leanImpactMaximumWallAngleDegrees: 30
+  leanImpactCooldownSeconds: 0.75
+  leanImpactKickDegrees: 8
+  leanImpactKickReturnDegreesPerSecond: 28
+  leanImpactRetainedSpeed: 0.35
+  bodyMassKilograms: 83
+  supportLoadScale: 1
+  minimumSupportSurfaceNormalY: 0.55
+  supportProbeLiftMeters: 0.08
+  supportProbeDepthMeters: 0.35
+  supportFootprintRadiusScale: 0.8
+  supportConfirmationSeconds: 0.2
+  supportLoadRampSeconds: 0.15
+  rigidbodyPushForceNewtons: 18
+  maximumPushableMassKilograms: 35
+--- !u!114 &7459812364890123456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334472089413303144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a72e8d2f34cc4c39a64e1d89f2b9c714, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.PlayerLeanImpactFeedbackPresenter
+  motor: {fileID: 4232095539942077169}
+  closingSeconds: 0.055
+  closedHoldSeconds: 0.035
+  openingSeconds: 0.32
+  maximumClosure01: 1
+  blackoutAlpha: 0.2
+  softEdgePixels: 12
 --- !u!114 &3191401342571433840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104,10 +180,10 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.FirstPersonLook
   yawRoot: {fileID: 6648689435124771412}
-  pitchPivot: {fileID: 4723528873291826988}
-  mouseSensitivityDegreesPerPixel: 0.08
+  pitchPivot: {fileID: 7000000000000000006}
+  mouseSensitivityDegreesPerPixel: 0.1
   gamepadSpeedDegreesPerSecond: 150
-  pitchLimitDegrees: 85
+  pitchLimitDegrees: 80
   lockCursorOnEnable: 1
 --- !u!114 &6815543078582569416
 MonoBehaviour:
@@ -123,8 +199,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: MSC.Interaction.Runtime::MSC.Interaction.Carrying.PhysicalCarryController
   carryAnchor: {fileID: 8868523566865734410}
   playerCollider: {fileID: 308266103335443960}
-  followAcceleration: 55
-  maximumFollowSpeed: 12
+  followAcceleration: 110
+  followVelocityRetention: 0.82
+  maximumFollowSpeed: 18
+  ownerMotionInheritance: 0.96
+  maximumInheritedOwnerSpeed: 12
+  minimumHoldDistance: 0.32
+  heldLinearDamping: 1
+  heldAngularDamping: 2.5
+  rotationResponsePerSecond: 14
+  maximumAngularSpeed: 24
   maximumCarrySeparation: 3.5
   throwImpulse: 8
   placementClearance: 0.02
@@ -165,6 +249,78 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   interactionEnabled: 1
+--- !u!114 &6123487690123456789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334472089413303144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d119e914dd1c4af5922607f4ef37a91c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.InteractionOutlinePresenter
+  interactionController: {fileID: 99254237992288729}
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidthPixels: 3
+  maximumOutlinedRenderers: 32
+--- !u!114 &6123487690123456790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334472089413303144}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: EPO.Runtime::EPOOutline.Outlinable
+  complexMaskingMode: 0
+  drawingMode: 1
+  outlineLayer: 0
+  outlineTargets: []
+  renderStyle: 1
+  outlineParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
+  backParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
+  frontParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
+--- !u!114 &6123487690123456791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334472089413303144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ee57774cfd046f29a2df868e7a48ca4, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Presentation.InteractionOutline.EPO::MSC.Presentation.InteractionOutline.EPO.EpoInteractionOutlineAdapter
+  presenter: {fileID: 6123487690123456789}
+  outlinable: {fileID: 6123487690123456790}
+  growDurationSeconds: 0.2
 --- !u!114 &6923902959632967467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,8 +336,9 @@ MonoBehaviour:
   inputActions: {fileID: -944628639613478452, guid: f327eb21151ec584f9bcbdb57248ce15, type: 3}
   motor: {fileID: 4232095539942077169}
   firstPersonLook: {fileID: 3191401342571433840}
+  cameraFieldOfView: {fileID: 7000000000000000007}
   interactionController: {fileID: 99254237992288729}
-  heldRotationDegreesPerPixel: 0.2
+  heldRotationDegreesPerNotch: 6
 --- !u!114 &3832096157754649875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,9 +367,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.CrossdotPresenter
   visible: 1
   interactionController: {fileID: 99254237992288729}
-  showOnlyWithCandidate: 1
+  inputRouter: {fileID: 6923902959632967467}
+  pickupIcon: {fileID: 2800000, guid: f627a294dcce4353b85d5269d8d90116, type: 3}
+  installIcon: {fileID: 2800000, guid: 1791f03acd3b4bfe875052b7e676c64a, type: 3}
+  removeIcon: {fileID: 2800000, guid: 79b6e43f66534036a9dc9775c35c0165, type: 3}
+  mouseIcon: {fileID: 2800000, guid: e5f17e441ebb4ac096be4ce26dd71f3e, type: 3}
+  mouseLeftButtonIcon: {fileID: 2800000, guid: e30370b9cae540cf9ebf6bad1a30ecee, type: 3}
+  mouseRightButtonIcon: {fileID: 2800000, guid: 06b355fe5dfe4268ab012363cedf7c3e, type: 3}
+  mouseMiddleButtonIcon: {fileID: 2800000, guid: d00b71d9b2f04c0e9e1d60ee144b04da, type: 3}
+  mouseScrollIcon: {fileID: 2800000, guid: 451261ac3c17427ea7089dc771c10e36, type: 3}
+  mouseScrollUpIcon: {fileID: 2800000, guid: a0e0700f32cd472b9f98acfa5d5d2421, type: 3}
+  mouseScrollDownIcon: {fileID: 2800000, guid: d3cbcd781e3d44fcbc053acb236d7918, type: 3}
   dotDiameterPixels: 4
   outlineWidthPixels: 1
+  actionReticleSizePixels: 42
   dotColor: {r: 1, g: 1, b: 1, a: 1}
   outlineColor: {r: 0, g: 0, b: 0, a: 0.85}
 --- !u!1 &2409733988275828977
@@ -240,13 +408,79 @@ Transform:
   m_GameObject: {fileID: 2409733988275828977}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.68, z: 0}
+  m_LocalPosition: {x: 0, y: 1.78, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 815926928966353497}
-  m_Father: {fileID: 6648689435124771412}
+  - {fileID: 7000000000000000004}
+  m_Father: {fileID: 7000000000000000002}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2414885189018029405
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 546656407574886682}
+  - component: {fileID: 117852258800592909}
+  m_Layer: 0
+  m_Name: Interaction Outline Custom Pass
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &546656407574886682
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2414885189018029405}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 815926928966353497}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &117852258800592909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2414885189018029405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d6499a6bd256e47b859377446493a1, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Runtime::UnityEngine.Rendering.HighDefinition.CustomPassVolume
+  m_IsGlobal: 1
+  fadeRadius: 0
+  priority: 100
+  customPasses:
+  - rid: 4666244067379118080
+  injectionPoint: 2
+  m_TargetCamera: {fileID: 8452216482518895316}
+  useTargetCamera: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 4666244067379118080
+      type: {class: OutlineCustomPass, ns: , asm: EPO.Runtime}
+      data:
+        m_Name: EPO Interaction Outline
+        enabled: 1
+        targetColorBuffer: 0
+        targetDepthBuffer: 0
+        clearFlags: 0
+        passFoldout: 0
+        m_Version: 0
+        lastSelectedCamera: {fileID: 0}
 --- !u!1 &5424208054440106965
 GameObject:
   m_ObjectHideFlags: 0
@@ -258,6 +492,8 @@ GameObject:
   - component: {fileID: 815926928966353497}
   - component: {fileID: 8452216482518895316}
   - component: {fileID: 8141326472400710854}
+  - component: {fileID: 7000000000000000007}
+  - component: {fileID: 6123487690123456792}
   m_Layer: 0
   m_Name: FirstPersonCamera
   m_TagString: MainCamera
@@ -279,7 +515,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8868523566865734410}
-  m_Father: {fileID: 4723528873291826988}
+  - {fileID: 546656407574886682}
+  m_Father: {fileID: 7000000000000000006}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &8452216482518895316
 Camera:
@@ -314,7 +551,7 @@ Camera:
     height: 1
   near clip plane: 0.03
   far clip plane: 500
-  field of view: 72
+  field of view: 104.82182
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -328,7 +565,7 @@ Camera:
   m_HDR: 1
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
+  m_ForceIntoRT: 1
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
@@ -340,6 +577,47 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5424208054440106965}
   m_Enabled: 1
+--- !u!114 &7000000000000000007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5424208054440106965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0566d5cbaa2741f588548de7f19eefaf, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.FirstPersonCameraFieldOfView
+  targetCamera: {fileID: 8452216482518895316}
+  horizontalFieldOfViewDegrees: 120
+  zoomMultiplier: 0.5
+  zoomTransitionSeconds: 0.08
+--- !u!114 &6123487690123456792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5424208054440106965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d9852beb90c4f239b402772475904fd, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Presentation.InteractionOutline.EPO::MSC.Presentation.InteractionOutline.EPO.HdrpOutliner
+  stage: 1
+  renderingStrategy: 0
+  renderingMode: 0
+  outlineLayerMask: -1
+  primaryBufferSizeMode: 3
+  primaryRendererScale: 1
+  primarySizeReference: 800
+  blurShift: 0
+  dilateShift: 0.75
+  dilateIterations: 1
+  dilateQuality: 0
+  blurIterations: 0
+  blurType: 1
 --- !u!1 &6072574366261728576
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,9 +643,176 @@ Transform:
   m_GameObject: {fileID: 6072574366261728576}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.12, z: 1.25}
+  m_LocalPosition: {x: 0, y: -0.1, z: 0.82}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 815926928966353497}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7000000000000000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7000000000000000002}
+  m_Layer: 0
+  m_Name: LeanPivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7000000000000000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7000000000000000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4723528873291826988}
+  m_Father: {fileID: 6648689435124771412}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7000000000000000003
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7000000000000000004}
+  m_Layer: 0
+  m_Name: ImpactPivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7000000000000000004
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7000000000000000003}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7000000000000000009}
+  m_Father: {fileID: 4723528873291826988}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7000000000000000005
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7000000000000000006}
+  m_Layer: 0
+  m_Name: LookPitchPivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7000000000000000006
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7000000000000000005}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 815926928966353497}
+  m_Father: {fileID: 7000000000000000009}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7000000000000000008
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7000000000000000009}
+  - component: {fileID: 7000000000000000010}
+  m_Layer: 0
+  m_Name: MotionPivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7000000000000000009
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7000000000000000008}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7000000000000000006}
+  m_Father: {fileID: 7000000000000000004}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7000000000000000010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7000000000000000008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e109a5e52b024e6db613501f5b442349, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: MSC.Player.Runtime::MSC.Player.FirstPersonCameraMotion
+  motor: {fileID: 4232095539942077169}
+  look: {fileID: 3191401342571433840}
+  motionPivot: {fileID: 7000000000000000009}
+  maximumLookRollDegrees: 0.4
+  fullLookRollInputDegrees: 4
+  lookReturnSeconds: 0.06
+  lookInertiaPerInputDegree: 0.18
+  maximumYawInertiaDegrees: 1.25
+  maximumPitchInertiaDegrees: 0.85
+  lookInertiaReturnSeconds: 0.08
+  turnSwayMetersPerInputDegree: 0.003
+  maximumTurnSwayMeters: 0.018
+  turnSwayReturnSeconds: 0.09
+  jumpDipMeters: 0.055
+  jumpPitchDegrees: 1.15
+  jumpPreparationDipMeters: 0.07
+  jumpPreparationPitchDegrees: 0.35
+  impulseAttackSeconds: 0.04
+  minimumLandingSpeedMetersPerSecond: 4
+  maximumLandingSpeedMetersPerSecond: 11
+  minimumJumpForceMetersPerSecond: 4
+  maximumJumpForceMetersPerSecond: 9
+  jumpForceLandingInfluence: 0.35
+  maximumLandingDipMeters: 0.14
+  maximumLandingPitchDegrees: 3
+  impulseReturnSeconds: 0.15

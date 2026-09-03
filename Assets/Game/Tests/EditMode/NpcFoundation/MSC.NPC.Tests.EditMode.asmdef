@@ -1,0 +1,21 @@
+{
+  "name": "MSC.NPC.Tests.EditMode",
+  "rootNamespace": "MSC.NPC.Tests.EditMode",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Characters.Runtime",
+    "MSC.LegacyImport.Runtime",
+    "MSC.NPC.Runtime",
+    "MSC.World.Runtime"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": ["TestAssemblies"]
+}

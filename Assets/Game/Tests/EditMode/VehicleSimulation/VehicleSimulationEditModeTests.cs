@@ -1,6 +1,7 @@
 using System;
 using MSC.Audio;
 using MSC.Vehicle;
+using MSC.Vehicle.Assembly;
 using MSC.Vehicle.Simulation;
 using NUnit.Framework;
 using UnityEngine;
@@ -554,6 +555,67 @@ namespace MSC.Tests.EditMode.VehicleSimulation
             deserialized.schemaVersion = VehicleSimulationStateDto.CurrentSchemaVersion;
             deserialized.engineRpm = float.NaN;
             Assert.That(restored.TryRestoreDto(deserialized, config), Is.False);
+        }
+
+        [Test]
+        public void VehicleDomainDto_JsonRoundTripPreservesAggregateIdentity()
+        {
+            VehicleSimulationRoot root = CreateRoot(
+                new RecordingWheelBackend(config.WheelCount));
+            var record = new VehicleSaveRecordDto
+            {
+                stableVehicleId = "e95b1da2f3e14c0da42f1597881d9294",
+                configurationId = config.ConfigurationId,
+                tuningSchemaVersion = config.TuningSchemaVersion,
+                assembly = new VehicleAssemblySaveData(),
+                simulation = root.State.CaptureDto(),
+                physics = new VehiclePhysicsSaveDto
+                {
+                    worldPosition = new Vector3(10f, 2f, -5f),
+                    worldRotation = Quaternion.Euler(0f, 30f, 0f),
+                    linearVelocity = new Vector3(1f, 0f, 2f),
+                    angularVelocity = new Vector3(0f, 0.2f, 0f),
+                },
+                ignitionOn = true,
+            };
+            var domain = new VehicleDomainSaveDto
+            {
+                vehicles = new[] { record },
+            };
+
+            string json = JsonUtility.ToJson(domain);
+            VehicleDomainSaveDto restored =
+                JsonUtility.FromJson<VehicleDomainSaveDto>(json);
+
+            Assert.That(restored.TryValidateBasic(out string failure), Is.True, failure);
+            Assert.That(restored.vehicles, Has.Length.EqualTo(1));
+            Assert.That(
+                restored.vehicles[0].stableVehicleId,
+                Is.EqualTo(record.stableVehicleId));
+            Assert.That(restored.vehicles[0].ignitionOn, Is.True);
+        }
+
+        [Test]
+        public void VehicleDomainDto_RejectsDuplicateAggregateIds()
+        {
+            VehicleSimulationRoot root = CreateRoot(
+                new RecordingWheelBackend(config.WheelCount));
+            VehicleSaveRecordDto CreateRecord() => new VehicleSaveRecordDto
+            {
+                stableVehicleId = "e95b1da2f3e14c0da42f1597881d9294",
+                configurationId = config.ConfigurationId,
+                tuningSchemaVersion = config.TuningSchemaVersion,
+                assembly = new VehicleAssemblySaveData(),
+                simulation = root.State.CaptureDto(),
+                physics = new VehiclePhysicsSaveDto(),
+            };
+            var domain = new VehicleDomainSaveDto
+            {
+                vehicles = new[] { CreateRecord(), CreateRecord() },
+            };
+
+            Assert.That(domain.TryValidateBasic(out string failure), Is.False);
+            Assert.That(failure, Does.Contain("Duplicate vehicle ID"));
         }
 
         [Test]

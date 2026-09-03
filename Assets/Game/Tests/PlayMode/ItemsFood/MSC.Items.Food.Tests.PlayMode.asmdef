@@ -1,0 +1,25 @@
+{
+  "name": "MSC.Items.Food.Tests.PlayMode",
+  "rootNamespace": "MSC.Items.Food.Tests.PlayMode",
+  "references": [
+    "MSC.Bootstrap.Runtime",
+    "MSC.Core.Runtime",
+    "MSC.Home.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Items.Runtime",
+    "MSC.LegacyImport.Runtime",
+    "MSC.World.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

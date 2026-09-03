@@ -13,4 +13,18 @@ namespace MSC.Core.Lifecycle
 
         bool TryActivateGameplay(out string failure);
     }
+
+    /// <summary>
+    /// Optional asynchronous preparation boundary used by front ends that must
+    /// remain lightweight until the player explicitly starts a session.
+    /// Implementations keep world-scene loading separate from service/UI boot.
+    /// </summary>
+    public interface IGameplaySessionPreparationGate : IGameplaySessionGate
+    {
+        bool IsGameplayPreparationRunning { get; }
+
+        string LastGameplayPreparationFailure { get; }
+
+        bool TryBeginGameplayPreparation(out string failure);
+    }
 }

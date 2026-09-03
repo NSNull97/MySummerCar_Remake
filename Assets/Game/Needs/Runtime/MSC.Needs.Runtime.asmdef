@@ -1,0 +1,20 @@
+{
+  "name": "MSC.Needs.Runtime",
+  "rootNamespace": "MSC.Needs",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Items.Runtime",
+    "MSC.Player.Runtime",
+    "MSC.Presentation.Fluid.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

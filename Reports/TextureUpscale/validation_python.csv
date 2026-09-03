@@ -1,0 +1,15 @@
+﻿assetPath,category,status,failures,warnings,sourceSize,processedSize,estimatedVramBytesBefore,estimatedVramBytesAfter
+Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_Mask.png,HDRP Mask Map,Pass,,,64x64,256x256,21846,349526
+Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Bark_Mask.png,HDRP Mask Map,Pass,,,128x128,512x512,21846,349526
+Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Concrete_Mask.png,HDRP Mask Map,Pass,,,128x128,512x512,21846,349526
+Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_Normal.png,Normal Map,Pass,,,64x64,256x256,21846,349526
+Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Foliage_BaseColor.png,Base Color / Albedo,Pass,,,128x128,512x512,21846,349526
+Assets/Game/Presentation/Materials/GaragePrototype/Textures/M3_Foliage_Mask.png,HDRP Mask Map,Pass,,,128x128,512x512,21846,349526
+Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_1bb21905ad6633843889f4dc298b2c6c_color.png,Base Color / Albedo,Pass,,,32x32,128x128,1366,21846
+Assets/Game/LegacyImport/RuntimeBaseline/Characters/Source/Texture2D/char_face01.png,Base Color / Albedo,Pass,,,512x256,1024x512,174763,699051
+Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Phase1JobLocations/Textures/3da72f11c3dccaf4094498d3342d2a01.png,Base Color / Albedo,Pass,,,1024x512,2048x1024,699051,2796203
+Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_8dc4a3e69f40c0243ae94a3fa2d85461_color.png,Base Color / Albedo,Pass,,,64x64,256x256,5462,87382
+Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_ac6f5a6ba24f61c4486229c86c2fe0c3_color.png,Base Color / Albedo,Pass,,,64x64,256x256,5462,87382
+Assets/Game/Presentation/Materials/Proof/Textures/ControlledProofPaint_BaseColor.png,Base Color / Albedo,Pass,,,64x64,256x256,21846,349526
+Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_148710e4d9642944fb00fe40cc63df59_color.png,Base Color / Albedo,Pass,,,128x128,512x512,21846,349526
+Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Textures/M06B2_26887fe73cb2f5446a4188d0810021e5_color.png,Base Color / Albedo,Pass,,,128x128,512x512,21846,349526

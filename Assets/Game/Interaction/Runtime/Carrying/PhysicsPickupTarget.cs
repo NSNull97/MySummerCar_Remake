@@ -24,6 +24,12 @@ namespace MSC.Interaction.Carrying
         [SerializeField]
         private bool pickupEnabled = true;
 
+        [SerializeField]
+        private bool restoreGravityWhenReleased;
+
+        [SerializeField]
+        private bool allowKinematicPickup;
+
         private bool isCarried;
 
         public string PickupPrompt => pickupPrompt;
@@ -35,12 +41,19 @@ namespace MSC.Interaction.Carrying
 
         public bool IsCarried => isCarried;
 
+        /// <summary>
+        /// Loose world items use ordinary dynamic Rigidbody physics. This is
+        /// authored explicitly because mounted vehicle parts can share the
+        /// pickup boundary while legitimately remaining kinematic.
+        /// </summary>
+        public bool UsesGravityWhenLoose => restoreGravityWhenReleased;
+
         public bool CanPickup(in InteractionContext context)
         {
             return pickupEnabled &&
                 !isCarried &&
                 targetBody != null &&
-                !targetBody.isKinematic &&
+                (!targetBody.isKinematic || allowKinematicPickup) &&
                 targetBody.mass <= maximumCarryMassKilograms &&
                 StableId.IsValid;
         }
@@ -53,6 +66,15 @@ namespace MSC.Interaction.Carrying
         public void NotifyReleased(PickupReleaseReason reason)
         {
             isCarried = false;
+            if (!restoreGravityWhenReleased || targetBody == null)
+            {
+                return;
+            }
+
+            targetBody.detectCollisions = true;
+            targetBody.isKinematic = false;
+            targetBody.useGravity = true;
+            targetBody.WakeUp();
         }
 
         public void Configure(
@@ -61,10 +83,40 @@ namespace MSC.Interaction.Carrying
             string prompt,
             float maximumMassKilograms)
         {
+            Configure(
+                body,
+                identity,
+                prompt,
+                maximumMassKilograms,
+                useGravityWhenLoose: false);
+        }
+
+        public void Configure(
+            Rigidbody body,
+            StableEntityIdAuthoring identity,
+            string prompt,
+            float maximumMassKilograms,
+            bool useGravityWhenLoose,
+            bool canPickupKinematicBody = false)
+        {
             targetBody = body;
             stableIdAuthoring = identity;
             pickupPrompt = string.IsNullOrWhiteSpace(prompt) ? "Поднять" : prompt;
             maximumCarryMassKilograms = Mathf.Max(0.01f, maximumMassKilograms);
+            restoreGravityWhenReleased = useGravityWhenLoose;
+            allowKinematicPickup = canPickupKinematicBody;
+        }
+
+        public void SetPrompt(string prompt)
+        {
+            pickupPrompt = string.IsNullOrWhiteSpace(prompt)
+                ? "Предмет"
+                : prompt;
+        }
+
+        public void SetPickupEnabled(bool enabled)
+        {
+            pickupEnabled = enabled;
         }
 
         private void Reset()

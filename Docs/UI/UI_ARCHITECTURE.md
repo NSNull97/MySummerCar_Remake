@@ -1,8 +1,11 @@
 # Milestone 08A UI architecture
 
-Status: `BoundedImplementationComplete / VisualReviewPending`  
-Visual status: `VisuallyApproved` (user acceptance recorded 2026-07-20)
-Date: `2026-07-20`
+Status: `BoundedImplementationComplete / ContextActionRevisionImplemented /
+VisualReviewPending`
+Visual status: five locked menu/settings screens remain `VisuallyApproved`;
+the `2026-08-05` HUD and `2026-09-02` context-action revisions are
+`VisualApprovalPending`
+Date: `2026-09-02`
 
 This document describes the project-owned UI implementation used for the
 reference-locked Milestone 08A screens. It records the current code, not a
@@ -54,21 +57,23 @@ readable tint-only fallbacks.
 
 Initialization is ordered as follows:
 
-1. Production world composition creates the player and initializes time/audio,
-   but the main-menu startup policy leaves gameplay camera/environment
-   activation dormant.
+1. Production composition creates the inactive player and initializes the
+   service boundaries needed by the front end. Under the main-menu startup
+   policy it does not bind a streaming focus or load additive gameplay scenes.
 2. `ProductionUiInstaller.Awake` validates explicit references and uniqueness
    and binds the production `IGameplaySessionGate`.
 3. `GameUiRoot.Initialize` loads settings and binding overrides.
 4. The root builds one screen-space uGUI canvas, a full-canvas static backdrop,
    a canonical 1672x941 reference frame, the accessible scale root and the
    route objects. The backdrop is deliberately outside `UiScale`.
-5. The loading route is shown until the world readiness delegate reports that
-   the prepared world is ready.
-6. The configured startup policy opens the main menu with gameplay still
-   dormant, or explicitly activates the session before opening the HUD.
-7. `New Game` calls the idempotent session gate and enters the HUD only after
-   activation succeeds.
+5. The loading route covers front-end initialization. Main-menu startup does
+   not wait for gameplay-world readiness; start-in-game/save restoration still
+   does.
+6. The configured startup policy opens the lightweight main menu with gameplay
+   scenes unloaded, or prepares and activates a session before opening the HUD.
+7. `New Game` requests asynchronous gameplay preparation, which binds the
+   streaming focus and loads the required world scenes exactly once, then calls
+   the idempotent activation gate and enters the HUD.
 
 Failure is explicit: missing input assets, a duplicate UI root, a non-primary
 composition root or incomplete production time/audio wiring throws during
@@ -113,19 +118,20 @@ remains a manual gate.
 
 The UI crosses the gameplay boundary only through project-owned interfaces:
 
+- `IGameplaySessionPreparationGate` separates lightweight front-end boot from
+  asynchronous gameplay-world preparation;
 - `IGameplaySessionGate` separates a prepared world from an active gameplay
-  session and is the sole Main Menu -> New Game activation boundary;
+  session and remains the sole activation boundary;
 - `IGameplayInputGate` disables player and vehicle gameplay input;
 - `IUiVisibilityGate` suppresses contextual/debug overlays while menus are up;
 - `IGameTimeService.SetPaused` pauses the authoritative clock;
 - `Time.timeScale` pauses PhysX/gameplay presentation;
 - cursor visibility and lock mode follow the active UI mode.
 
-The session gate is distinct from pause. Main-menu startup may finish world
-streaming and composition while player camera/environment simulation remain
-dormant; it does not briefly begin and then pause gameplay. The default
-non-menu/headless world startup policy retains automatic activation for
-compatibility.
+The session gates are distinct from pause. Main-menu startup leaves additive
+gameplay scenes unloaded and the streaming focus unbound; it does not briefly
+start, unload and restart gameplay. The default non-menu/headless world startup
+policy retains automatic preparation and activation for compatibility.
 
 The pause scan covers the complete composition root rather than only the Player
 subtree, so sibling vehicle gates are also disabled. The previous state of every
@@ -135,30 +141,41 @@ freezes with simulation. The `System/Pause` Input System action is the route
 entry point for pause/resume. Backend-neutral audio pause/ducking remains a later
 mixing concern; UI sounds themselves are not globally suspended.
 
+For a gate under an inactive hierarchy behind the lightweight main menu,
+`IsGameplayInputEnabled` cannot describe its pending activation state because
+its action map is correctly inactive. Suspension therefore records the authored
+`MonoBehaviour.enabled` value for that inactive gate. After New Game activates
+the player hierarchy, restoration enables a router that was meant to start
+enabled while preserving an intentionally disabled component. Active player and
+vehicle gates continue to use their live `IsGameplayInputEnabled` state.
+
 ## Presentation construction
 
 The bounded 08A screens are generated by project-owned code rather than donor
 or screenshot-derived prefabs:
 
 - `UiThemeTokens` is the styling source;
-- `UiVisualAssets` creates rounded surfaces and simple original icons through
-  4x coverage rasterization/downsampling rather than binary 24-32 px edges;
+- `UiVisualAssets` creates rounded surfaces, loads the licensed Lucide needs
+  icons and retains 4x procedural icon generation as a bounded fallback;
 - `UiFactory` creates panels, text, buttons, sliders, toggles and focusable
   controls;
 - `UiTextCatalog` resolves the current English/Russian presentation strings;
 - `UiLocaleFormatter` owns bounded culture-aware number/date/plural formatting,
-  while `UiFontResolver` accepts a Windows font only after validating the
-  required Latin/Cyrillic glyph set;
+  while `UiFontResolver` prefers the bundled user-supplied Helvetica Neue Roman font and
+  validates required Latin/Cyrillic glyphs before using any Windows fallback;
 - `GameUiRoot` and partial screen builders bind routes and live values.
 
-The canonical UI frame uses `AspectRatioFitter.FitInParent`. The static menu
-plate instead lives in a sibling full-canvas backdrop frame using
+The overlay `CanvasScaler` uses the `1672 x 941` reference resolution with
+`ScreenMatchMode.Expand`. A fixed, centred `1672 x 941` logical safe frame owns
+every menu, settings, pause and HUD route, so narrower viewports add vertical
+space and wider viewports add horizontal space without changing route geometry
+or pushing edge-aligned content off-screen. The static menu plate lives in a
+sibling full-canvas backdrop frame using
 `AspectRatioFitter.EnvelopeParent`: it covers every viewport edge and crops
 without stretching. It is outside the accessible `UiScale` root, so values such
-as 85% cannot expose the dormant gameplay camera around the menu. `CanvasScaler`
-uses 1672x941 with a 0.5 width/height match and the overlay Canvas is
-pixel-perfect. User scale is applied only below the canonical UI frame so the
-locked 100% layout remains measurable.
+as 85% cannot expose the dormant gameplay camera around the menu. The overlay
+Canvas remains pixel-perfect. User scale is applied only below the canonical UI
+frame so the locked 100% layout remains measurable.
 
 Backdrop ownership is explicit and route-aware:
 
@@ -169,9 +186,10 @@ Backdrop ownership is explicit and route-aware:
   frame, so slices stay aligned under aspect fitting while accessible UI scale
   changes.
 - `HudLiveGlass` is retained as the route-mode name for compatibility, but it
-  performs no live camera capture or blur. `ClockMoney` and `Needs` use stable
-  dark translucent surfaces, avoiding the severe look-input stutter observed
-  with recurring capture.
+  performs no live camera capture or blur. The name is now historical:
+  `Clock`, `Money` and the vertical `Needs` root use no glass surface at all.
+  Project-owned shadowed graphics provide contrast without reintroducing the
+  severe look-input stutter observed with recurring capture.
 - `PauseFrozen` requests exactly one project-camera capture at `1024x576`, then
   writes a Gaussian `512x288`, `ARGBHalf` result behind the route and adds a
   0.74-alpha dark dim. It does not reuse or depend on a HUD capture.
@@ -223,11 +241,28 @@ and Back restore Pending from Applied. Control rebinding follows the same
 transaction: accepted bindings remain pending and are not committed by the
 rebind widget itself.
 
+Gameplay-camera settings cross the project-owned
+`IPlayerCameraSettingsSink` boundary. The UI supplies validated horizontal FOV
+and far-clip metres without referencing `MSC.Player`; the first-person camera
+converts horizontal FOV to the current aspect ratio and remains the sole owner
+of zoom transitions. Far clip does not claim ownership of streaming or LOD
+policy.
+
 All settings pages use one equal-size `Apply / Reset / Cancel` action row. The
 direct user correction removes non-essential diagnostic/reference blocks from
 the live settings shell: Graphics performance preview, Audio test, Controls
 input preview and Gameplay profile/immersion/summary. This does not remove the
 underlying settings DTOs, capability truth or main-menu performance card.
+The later user-requested Graphics camera card occupies a small part of the
+vacated right-side area without moving the locked primary Graphics rows.
+
+Anti-aliasing settings cross a similar bounded adapter boundary. The UI runtime
+persists project-owned `UiAntiAliasingMode`/`UiAntiAliasingPreset` values and
+does not reference HDRP or NVIDIA types. `HdrpDlssRuntimeAdapter` maps the
+validated schema-v6 snapshot into the central `AntiAliasingController` with
+controller-side PlayerPrefs persistence disabled. The existing Graphics panel
+hosts the live mode, preset, sharpening and supported-only DLSS-quality rows;
+the shared transaction and action bar are unchanged.
 
 Capability-sensitive rows use `UiCapabilitySet`. A required visual slot may
 remain present while disabled, with a reason such as `Unavailable`,
@@ -247,13 +282,82 @@ type enters the UI assemblies.
 
 ## HUD data boundary
 
-The production HUD currently consumes only `IGameTimeService.Snapshot`.
-No money or player-needs provider exists, so those slots display unavailable
-values rather than fabricated state. Editor/development review mode supplies a
-deterministic fixture solely for comparison captures. It is not a production
-provider and cannot enter a release build flow.
+The production HUD consumes `IGameTimeService.Snapshot` and, when explicitly
+composed, `IPlayerNeedsService.Snapshot`. Money still has no provider and shows
+an unavailable value rather than fabricated state; needs do the same when the
+service is absent. Editor/development review mode supplies a deterministic
+fixture solely for comparison captures. It is not a production provider and
+cannot enter a release build flow.
+
+Context actions remain on the existing `MSC.Player` presentation boundary.
+`InteractionTargetHost` exposes capability interfaces, and
+`PlayerInteractionController` composes a fixed-capacity
+`InteractionActionSnapshot` from the same checks used by input dispatch. The
+snapshot owns only a reticle enum plus up to three binding/action pairs. A
+separate read-only `CurrentDisplayName` and
+`CurrentDisplayLocalizationKey` expose explicit
+`IInteractionDisplayTarget`/`IInteractionLocalizationTarget` metadata;
+hierarchy names and renderer bounds do not cross into presentation. Assembly
+part metadata is state-aware: loose parts expose their localized title, while
+installed parts clear it and leave only capabilities whose live availability
+checks pass. Fastener targets intentionally expose directional tool capability
+without display-name metadata. This makes a fixed installed control silent and
+still lets an installed hinged door advertise open/close.
+
+`CrossdotPresenter` preserves its established player-prefab type and
+`IUiVisibilityGate`, but the old projected target-title blocks are gone. Its
+bounded IMGUI renderer draws a centre dot/open-palm/check/removal-cross, a
+lower-left canonical safe-frame action stack and a dynamic bottom-centre
+target/subtitle stack. Binding keycaps have rounded outlines; semantic mouse
+variants show the effective left/right/middle/scroll control. The renderer
+caches formatted binding text and loads only explicitly serialized icon
+textures. `PlayerInputRouter` caches preferred keyboard/mouse binding labels and
+glyph categories, then increments a revision after binding changes.
+`InteractionUiTextCatalog` is the bounded bilingual presentation adapter for
+target names, action copy, keycaps and common feedback. `GameUiRoot` applies the
+persisted gameplay locale through `IGameplayLocaleSettingsSink`, so interaction
+copy and player-voice subtitles switch with the same settings transaction as the
+rest of the UI. Target and subtitle rows share the loaded font and `18 px` size;
+bold versus regular weight supplies the hierarchy.
+Holding `Player/AlternativeActions` asks the snapshot to replace its ordinary
+rows with H/M/N actions while preserving the reticle; no Alt discoverability
+widget is created and gesture dispatch remains unchanged.
+
+Optional directional capability extensions expose read-only positive/negative
+availability and labels for selected-tool and ordinary incremental targets.
+This keeps wheel hints endpoint-aware without invoking a mutating operation as
+a UI probe. Existing non-directional capabilities retain their compatibility
+fallback.
+
+NPC/traffic fallback subtitles continue through the explicitly composed
+`FirstPersonLifeActionPresenter`. It owns subtitle timing and exposes the active
+copy through `IPlayerSubtitleSource`; `CrossdotPresenter` owns the combined
+target/subtitle layout. The presenter retains its old frame only as a fallback
+when no context HUD claims the source. Both implement `IUiVisibilityGate`, so
+the central UI root can suppress them without referencing NPC or traffic types.
+
+The pickup reticle is the hash-locked donor `gui_uset` texture generated under
+the ignored private runtime baseline by `Phase1InteractionUiImporter`. Its
+tracked manifest, deterministic GUID, source hash and Phase 2 replacement key
+keep the temporary presentation auditable without making donor pixels a Git or
+gameplay dependency.
 
 See `Docs/UI/HUD_SPEC.md` for the complete persistent-category contract.
+
+## Developer-menu boundary
+
+The 2026-08-05 developer menu is an independent Editor/Development Build
+overlay, not an additional `UiRouteId` and not a redesign of any locked 08A
+screen. `ProductionWorldStreamingInstaller` owns and initializes the retained
+`ProductionDeveloperConsole` compatibility type, while `ProductionUiInstaller`
+passes its `Open` action into the optional `GameUiDependencies` callback. The
+main-menu Developer Tools slot invokes that callback without learning about
+needs, weather, time, teleport coordinates, or the concrete overlay.
+
+The overlay borrows centralized 08A colors and spacing but owns its transient
+IMGUI textures and destroys them with the component. Domain mutations remain
+behind explicit project-owned services and development-only APIs. See
+`Docs/UI/DEVELOPER_MENU.md` for behavior and validation.
 
 ## Review tooling boundary
 
@@ -282,7 +386,8 @@ creates reference-only and 50% blended evidence for the locked set.
 - The 2026-07-20 Gaussian correction passes focused authoring, EditMode,
   PlayMode, private build and native capture gates. Manual visual validation of
   pause blur/readability remains pending.
-- Save slots/latest-save metadata, money and needs have no provider.
+- Money has no provider; needs use the explicitly composed
+  `IPlayerNeedsService` and retain a truthful unavailable fallback.
 - High contrast, reduced motion, toggle/hold and most gameplay settings are
   persisted foundations without gameplay/presentation adapters.
 - Mouse/gamepad sensitivity and invert-Y apply through
@@ -302,3 +407,11 @@ creates reference-only and 50% blended evidence for the locked set.
   CPU submission is intentionally paid only when entering pause; the user
   accepted the resulting pause blur/readability on 2026-07-20. HUD owns no
   camera-capture cost.
+- The 2026-09-02 context-action renderer and new icon scale still require a
+  canonical gameplay capture and user visual approval. Related EditMode tests
+  pass `88/88`; isolated Alt input passes `1/1`; the broader player-flow class
+  is `8/9` because of an existing carry-spring tolerance failure outside UI.
+- The installed-part title/action correction passes vehicle assembly `27/27`,
+  player interaction `49/49` and donor BoltCheck parity `5/5`. A manual Game
+  View check of representative fixed and hinged installed parts remains open;
+  the installed Satsuma hinge PlayMode contract passes `1/1`.

@@ -4,7 +4,7 @@ namespace MSC.UI.Runtime.Settings
     {
         public static UiSettingsDocument Create()
         {
-            return new UiSettingsDocument
+            var document = new UiSettingsDocument
             {
                 SchemaVersion = UiSettingsDocument.CurrentSchemaVersion,
                 Graphics = new GraphicsSettingsDto
@@ -18,6 +18,16 @@ namespace MSC.UI.Runtime.Settings
                     QualityLevel = 2,
                     MotionBlur = false,
                     DepthOfField = false,
+                    DlssEnabled = false,
+                    DlssQuality = UiDlssQuality.Balanced,
+                    AntiAliasingMode = UiAntiAliasingMode.Taa,
+                    AntiAliasingPreset = UiAntiAliasingPreset.High,
+                    AntiAliasingSharpening =
+                        GraphicsSettingsDto.DefaultAntiAliasingSharpening,
+                    HorizontalFieldOfViewDegrees =
+                        GraphicsSettingsDto.DefaultHorizontalFieldOfViewDegrees,
+                    CameraFarClipMeters =
+                        GraphicsSettingsDto.DefaultCameraFarClipMeters,
                 },
                 Audio = new AudioSettingsDto
                 {
@@ -56,6 +66,7 @@ namespace MSC.UI.Runtime.Settings
                     InteractionOutlines = true,
                     CameraShakeIntensity01 = 0.75f,
                     DevelopmentUiVisible = false,
+                    ShowFpsCounter = true,
                 },
                 Accessibility = new AccessibilitySettingsDto
                 {
@@ -66,6 +77,53 @@ namespace MSC.UI.Runtime.Settings
                     ColorIndependentCues = true,
                 },
             };
+
+            ApplyAntiAliasingPreset(
+                document.Graphics,
+                UiAntiAliasingPreset.High);
+            return document;
+        }
+
+        public static void ApplyAntiAliasingPreset(
+            GraphicsSettingsDto graphics,
+            UiAntiAliasingPreset preset)
+        {
+            if (graphics == null)
+            {
+                throw new System.ArgumentNullException(nameof(graphics));
+            }
+
+            graphics.AntiAliasingPreset = preset;
+            if (preset == UiAntiAliasingPreset.Custom)
+            {
+                return;
+            }
+
+            graphics.DlssEnabled = false;
+            if (graphics.DlssQuality == UiDlssQuality.Dlaa)
+            {
+                graphics.DlssQuality = UiDlssQuality.Balanced;
+            }
+            switch (preset)
+            {
+                case UiAntiAliasingPreset.Low:
+                    graphics.AntiAliasingMode = UiAntiAliasingMode.Fxaa;
+                    graphics.AntiAliasingSharpening = 0f;
+                    break;
+                case UiAntiAliasingPreset.Medium:
+                    graphics.AntiAliasingMode = UiAntiAliasingMode.Smaa;
+                    graphics.AntiAliasingSharpening = 0f;
+                    break;
+                case UiAntiAliasingPreset.Ultra:
+                    graphics.AntiAliasingMode = UiAntiAliasingMode.Taa;
+                    graphics.AntiAliasingSharpening = 0.34f;
+                    break;
+                default:
+                    graphics.AntiAliasingMode = UiAntiAliasingMode.Taa;
+                    graphics.AntiAliasingSharpening =
+                        GraphicsSettingsDto.DefaultAntiAliasingSharpening;
+                    break;
+            }
         }
     }
 }

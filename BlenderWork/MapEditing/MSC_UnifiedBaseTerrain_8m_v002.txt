@@ -1,0 +1,75 @@
+MSC unified base terrain build
+
+Output: E:\GAYmDev_Studio\MySummerCar_Remake\BlenderWork\MapEditing\MSC_UnifiedBaseTerrain_8m_v002.blend
+Object: MSC_UnifiedBaseTerrain_8m
+Source: E:\GAYmDev_Studio\MySummerCar_Remake\BlenderWork\BaseMap_SourceExport\20260803_162611_222Z\Scene\Ground_All.obj
+Source objects: 6
+Source vertices: 106032
+Source faces: 116983
+Source bounds min XYZ: [-3726.59424, -2908.53174, -24.5804958]
+Source bounds max XYZ: [4278.451, 4199.83447, 80.78482]
+Grid columns x rows: 1002 x 890
+Grid step: 8.0 m
+Output vertices: 897682
+Base heightfield quads: 889889
+Output polygons including integrated roadside: 895671
+Output triangles including integrated roadside: 1785560
+Integrated roadside triangles: 5782
+Directly sampled grid points: 727793
+Filled grid points: 163987
+Smoothing: 3 iterations at 0.26
+Road source objects: 7
+Road source faces: 87589
+Road source triangles: 87589
+Accepted near-ground road triangles: 80666
+Rejected elevated road triangles: 6887
+Rejected near-vertical road triangles: 36
+Road-constrained grid points: 28068
+Pre-clearance maximum terrain protrusion at road centroids: 0.708440 m
+Pre-clearance maximum terrain gap at road centroids: 2.390397 m
+Continuous-clearance cell adjustments: 8482
+Maximum terrain protrusion at accepted road centroids: 0.000000 m
+Maximum protrusion location XYZ: (0.0, 0.0, 0.0)
+Maximum protrusion source object: 
+Maximum terrain gap below accepted road centroids: 5.017418 m
+Maximum gap location XYZ: (-1557.264, 63.93029, 7.91116762)
+Maximum gap source object: RoadDirtOrGravel__StaticProp___Gravel___MAP___TERRAIN_OBJ__24780___43e2e5802b8a201e
+Road clearance: 0.12 m
+Road and shoulder blend: 20.0 m
+Build duration: 42.3 seconds
+Asphalt and dirt road render meshes included in Unity terrain FBX: no
+Original roadside geometry integrated into base-terrain mesh: yes
+Asphalt and dirt road reference meshes included in Blender master: yes
+Asphalt, pavement, gravel, dirt road and roadside used as height constraints: yes
+Buildings included in output: no
+Vegetation objects included in output: no
+StaticProp/4tie used as elevation evidence: no
+Ground-labelled Grass1/Grass2 used only as elevation evidence: yes
+Interior holes: none (regular complete quad grid)
+Outer boundary: open, as expected for a terrain surface
+
+Source ground objects:
+- GroundCandidate__Continuous_Terrain_Void_Fill__2a14b8c07d716505
+- GroundCandidate__Field___Fields___MAP___TERRAIN_OBJ__6732___33abbab40be67c8a
+- GroundCandidate__VegetationGrass___Grass1___MAP___TERRAIN_OBJ__11640___43839e233bd4e0c1
+- GroundCandidate__VegetationGrass___Grass2___MAP___TERRAIN_OBJ__29099___57504a4ac4413e6b
+- GroundCandidate__Terrain___TERRAINOUT___MAP___MESH__16706___5fab2cb4612b5fbf
+- GroundCandidate__Water___LAKEBED___MAP___MESH__18425___fd4537de2169d182
+
+Source road objects:
+- RoadDirtOrGravel__Road___DirtRoad___MAP___TERRAIN_OBJ__1616___2c9fa028d5eb189c
+- RoadAsphalt__StaticProp___Asphalt___MAP___TERRAIN_OBJ__4841___2f6185eb7621519e
+- RoadAsphalt__StaticProp___Pavement___MAP___TERRAIN_OBJ__26463___2f81698f0747bdb3
+- RoadDirtOrGravel__StaticProp___Gravel___MAP___TERRAIN_OBJ__24780___43e2e5802b8a201e
+- RoadAsphalt__Road___Roadside___MAP___TERRAIN_OBJ__26240___6ae3838e9b92ae5c
+- RoadAsphalt__Road___Road___MAP___TERRAIN_OBJ__3017___73b438e204df5b5d
+- RoadAirport__StaticProp___AIRPORT___MAP___MESH
+
+Road clearance by source object:
+- RoadAirport__StaticProp___AIRPORT___MAP___MESH: protrusion 0.000000 m, gap 0.219068 m
+- RoadAsphalt__Road___Road___MAP___TERRAIN_OBJ__3017___73b438e204df5b5d: protrusion 0.000000 m, gap 1.072004 m
+- RoadAsphalt__Road___Roadside___MAP___TERRAIN_OBJ__26240___6ae3838e9b92ae5c: protrusion 0.000000 m, gap 1.889097 m
+- RoadAsphalt__StaticProp___Asphalt___MAP___TERRAIN_OBJ__4841___2f6185eb7621519e: protrusion 0.000000 m, gap 1.039611 m
+- RoadAsphalt__StaticProp___Pavement___MAP___TERRAIN_OBJ__26463___2f81698f0747bdb3: protrusion 0.000000 m, gap 1.929597 m
+- RoadDirtOrGravel__Road___DirtRoad___MAP___TERRAIN_OBJ__1616___2c9fa028d5eb189c: protrusion 0.000000 m, gap 0.898988 m
+- RoadDirtOrGravel__StaticProp___Gravel___MAP___TERRAIN_OBJ__24780___43e2e5802b8a201e: protrusion 0.000000 m, gap 5.017418 m

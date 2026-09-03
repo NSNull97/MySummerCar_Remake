@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52ca584ae8560a44db47a45844fe5062, type: 3}
+  m_Name: cell__1_1_VegetationCell
+  m_EditorClassIdentifier: MSC.World.Runtime::MSC.World.Vegetation.VegetationCellAsset
+  schemaVersion: 1
+  cellId: cell_-1_1
+  cellX: -1
+  cellZ: 1
+  worldBounds:
+    m_Center: {x: -256, y: 0, z: 768}
+    m_Extent: {x: 256, y: 2048, z: 256}
+  maskResolution: 512
+  tileSizeMeters: 32
+  densityMask: {fileID: 2800000, guid: d058eb8b57f859d48bac425bb03cba2f, type: 3}
+  tiles: []

@@ -708,6 +708,62 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1961468167}
     m_Modifications:
+    - target: {fileID: 1802868131304863126, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_ShapeRadius
+      value: 0.025
+      objectReference: {fileID: 0}
+    - target: {fileID: 1802868131304863126, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_VolumetricDimmer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1802868131304863126, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_VolumetricShadowDimmer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6752685129952310377, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6752685129952310377, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_Range
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6752685129952310377, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_Color.b
+      value: 0.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 6752685129952310377, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_Color.g
+      value: 0.78
+      objectReference: {fileID: 0}
+    - target: {fileID: 6752685129952310377, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_Intensity
+      value: 48000
+      objectReference: {fileID: 0}
+    - target: {fileID: 6752685129952310377, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_LightUnit
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6752685129952310377, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_AreaSize.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6752685129952310377, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_AreaSize.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6752685129952310377, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_ColorTemperature
+      value: 6570
+      objectReference: {fileID: 0}
+    - target: {fileID: 6752685129952310377, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_EnableSpotReflector
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6752685129952310377, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
+      propertyPath: m_UseColorTemperature
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8089536010746090993, guid: 0b6569f66af083a4ebdb144bfcec2211, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

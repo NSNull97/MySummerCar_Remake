@@ -18,5 +18,31 @@ namespace MSC.Core.Identity
         {
             return StableEntityId.TryParse(stableId, out entityId);
         }
+
+        /// <summary>
+        /// Assigns an identity supplied by a project-owned runtime factory.
+        /// This method never generates an ID and refuses to replace a different
+        /// authored identity, so save materialization cannot silently mutate
+        /// canonical scene identities.
+        /// </summary>
+        public void InitializeExplicitRuntimeId(StableEntityId entityId)
+        {
+            if (!entityId.IsValid)
+            {
+                throw new System.ArgumentException(
+                    "Runtime stable identity must be valid.",
+                    nameof(entityId));
+            }
+
+            if (TryGetStableId(out StableEntityId existing) &&
+                existing != entityId)
+            {
+                throw new System.InvalidOperationException(
+                    $"Stable identity '{existing}' cannot be replaced by " +
+                    $"'{entityId}'.");
+            }
+
+            stableId = entityId.Value;
+        }
     }
 }

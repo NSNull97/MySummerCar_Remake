@@ -905,6 +905,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: MSC.Vehicle.Runtime::MSC.Vehicle.VehicleAudioPresenter
   simulationHost: {fileID: 644769054}
   backendComponent: {fileID: 1325854052}
+  impactLoadRiseStartNewtons: 1000
+  impactLoadRiseFullNewtons: 6000
+  impactCompressionRiseStart: 0.04
+  impactCompressionRiseFull: 0.3
+  impactReleasePerSecond: 5
 --- !u!114 &644769050
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2336,6 +2341,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba43d2efafde45abac8c7c85fe5f4493, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MSC.Audio.UnityFallback::MSC.Audio.UnityFallback.UnityAudioBackend
+  eventLibrary: {fileID: 0}
+  supplementalEventLibraries: []
+  maximumGenericVoices: 32
   masterVolume: 0.65
   volumeResponsePerSecond: 4
   spatialBlend: 0.9

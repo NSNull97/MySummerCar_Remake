@@ -14,6 +14,26 @@ namespace MSC.Tests.EditMode.UIRuntime
 
             Assert.DoesNotThrow(first.Validate);
             Assert.That(first.SchemaVersion, Is.EqualTo(UiSettingsDocument.CurrentSchemaVersion));
+            Assert.That(first.Gameplay.ShowFpsCounter, Is.True);
+            Assert.That(first.Graphics.DlssEnabled, Is.False);
+            Assert.That(first.Graphics.DlssQuality, Is.EqualTo(UiDlssQuality.Balanced));
+            Assert.That(
+                first.Graphics.AntiAliasingMode,
+                Is.EqualTo(UiAntiAliasingMode.Taa));
+            Assert.That(
+                first.Graphics.AntiAliasingPreset,
+                Is.EqualTo(UiAntiAliasingPreset.High));
+            Assert.That(
+                first.Graphics.AntiAliasingSharpening,
+                Is.EqualTo(
+                    GraphicsSettingsDto.DefaultAntiAliasingSharpening));
+            Assert.That(
+                first.Graphics.HorizontalFieldOfViewDegrees,
+                Is.EqualTo(
+                    GraphicsSettingsDto.DefaultHorizontalFieldOfViewDegrees));
+            Assert.That(
+                first.Graphics.CameraFarClipMeters,
+                Is.EqualTo(GraphicsSettingsDto.DefaultCameraFarClipMeters));
             Assert.That(first.ContentEquals(second), Is.True);
 
             first.Audio.Master01 = 0.25f;
@@ -64,6 +84,40 @@ namespace MSC.Tests.EditMode.UIRuntime
             UiSettingsDocument unsupportedLanguage = UiSettingsDefaults.Create();
             unsupportedLanguage.Gameplay.LanguageId = "not-a-culture";
             Assert.Throws<ArgumentException>(unsupportedLanguage.Validate);
+
+            UiSettingsDocument invalidDlssQuality = UiSettingsDefaults.Create();
+            invalidDlssQuality.Graphics.DlssQuality = (UiDlssQuality)999;
+            Assert.Throws<ArgumentOutOfRangeException>(
+                invalidDlssQuality.Validate);
+
+            UiSettingsDocument invalidAntiAliasingMode =
+                UiSettingsDefaults.Create();
+            invalidAntiAliasingMode.Graphics.AntiAliasingMode =
+                (UiAntiAliasingMode)999;
+            Assert.Throws<ArgumentOutOfRangeException>(
+                invalidAntiAliasingMode.Validate);
+
+            UiSettingsDocument invalidAntiAliasingPreset =
+                UiSettingsDefaults.Create();
+            invalidAntiAliasingPreset.Graphics.AntiAliasingPreset =
+                (UiAntiAliasingPreset)999;
+            Assert.Throws<ArgumentOutOfRangeException>(
+                invalidAntiAliasingPreset.Validate);
+
+            UiSettingsDocument invalidAntiAliasingSharpening =
+                UiSettingsDefaults.Create();
+            invalidAntiAliasingSharpening.Graphics.AntiAliasingSharpening = 1f;
+            Assert.Throws<ArgumentOutOfRangeException>(
+                invalidAntiAliasingSharpening.Validate);
+
+            UiSettingsDocument invalidFieldOfView = UiSettingsDefaults.Create();
+            invalidFieldOfView.Graphics.HorizontalFieldOfViewDegrees = 179f;
+            Assert.Throws<ArgumentOutOfRangeException>(
+                invalidFieldOfView.Validate);
+
+            UiSettingsDocument invalidFarClip = UiSettingsDefaults.Create();
+            invalidFarClip.Graphics.CameraFarClipMeters = float.PositiveInfinity;
+            Assert.Throws<ArgumentOutOfRangeException>(invalidFarClip.Validate);
         }
     }
 }

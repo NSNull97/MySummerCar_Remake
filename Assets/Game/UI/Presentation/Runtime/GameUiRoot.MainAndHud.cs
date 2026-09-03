@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using MSC.Core.Time;
+using MSC.Economy;
+using MSC.Needs;
 using MSC.UI.Runtime.Localization;
 using MSC.UI.Runtime.Routing;
 using UnityEngine;
@@ -13,13 +15,18 @@ namespace MSC.UI.Presentation
     public sealed partial class GameUiRoot
     {
         private readonly List<Outline> carColourOutlines = new List<Outline>();
+        private readonly List<RectTransform> performanceGraphBars =
+            new List<RectTransform>(48);
+        private Text performanceFpsText;
+        private float nextPerformanceGraphRefreshTime;
         private static readonly Color[] CarColours =
         {
-            new Color32(173, 78, 31, 255), new Color32(234, 224, 173, 255),
-            new Color32(237, 237, 235, 255), new Color32(166, 20, 20, 255),
-            new Color32(54, 58, 57, 255), new Color32(127, 137, 139, 255),
-            new Color32(113, 63, 45, 255), new Color32(142, 149, 0, 255),
-            new Color32(230, 191, 0, 255), new Color32(34, 174, 191, 255),
+            new Color32(50, 58, 38, 255), new Color32(234, 217, 134, 255),
+            new Color32(246, 246, 246, 255), new Color32(202, 9, 0, 255),
+            new Color32(202, 201, 195, 255), new Color32(118, 75, 50, 255),
+            new Color32(3, 38, 69, 255), new Color32(206, 196, 61, 255),
+            new Color32(158, 173, 177, 255), new Color32(114, 104, 23, 255),
+            new Color32(195, 132, 35, 255), new Color32(41, 165, 195, 255),
         };
         private int selectedCarColourIndex;
 
@@ -45,7 +52,7 @@ namespace MSC.UI.Presentation
                 greetingWidth,
                 68f);
 
-            factory.Button(
+            mainContinueButton = factory.Button(
                 "Continue",
                 route.transform,
                 textCatalog.Get("ui.main.continue"),
@@ -54,10 +61,10 @@ namespace MSC.UI.Presentation
                 primaryButtonStartY,
                 primaryButtonWidth,
                 primaryButtonHeight,
-                null,
+                BeginContinueLoad,
                 selected: false,
-                interactable: false,
-                helper: textCatalog.Get("ui.main.no_save"),
+                interactable: CanRequestLatestLoad,
+                helper: MainSaveHelperText(),
                 glass: true);
             factory.Button(
                 "NewGame",
@@ -71,7 +78,7 @@ namespace MSC.UI.Presentation
                 BeginBoundedNewGameSession,
                 selected: true,
                 glass: true);
-            factory.Button(
+            mainLoadButton = factory.Button(
                 "LoadGame",
                 route.transform,
                 textCatalog.Get("ui.main.load_game"),
@@ -80,9 +87,9 @@ namespace MSC.UI.Presentation
                 primaryButtonStartY + (primaryButtonHeight + primaryButtonGap) * 2f,
                 primaryButtonWidth,
                 primaryButtonHeight,
-                null,
-                interactable: false,
-                helper: textCatalog.Get("ui.main.no_save"),
+                OpenLoadGame,
+                interactable: CanRequestLatestLoad,
+                helper: MainSaveHelperText(),
                 glass: true);
             factory.Button(
                 "Credits",
@@ -205,91 +212,130 @@ namespace MSC.UI.Presentation
         partial void BuildHudRoute()
         {
             GameObject route = CreateRoute(UiRouteId.InGameHud);
-            GameObject clockPanel = factory.GlassPanel(
-                "ClockMoney",
-                route.transform,
-                30f,
-                37f,
-                196f,
-                165f,
-                UiGlassKind.HudDark,
-                UiThemeTokens.HudGlassTint);
-            factory.Icon("Weather", clockPanel.transform, UiIconKind.Sun, 15f, 18f, 30f, new Color32(252, 187, 0, 255));
+            GameObject clockPanel = factory.CreateObject(
+                "Clock",
+                route.transform);
+            factory.Place(clockPanel, 1450f, 38f, 180f, 62f);
             hudDayText = factory.Text(
                 "Day",
                 clockPanel.transform,
                 string.Empty,
-                67f,
-                9f,
-                118f,
-                22f,
-                11,
+                0f,
+                30f,
+                0f,
+                20f,
+                15,
                 UiThemeTokens.TextPrimary,
-                TextAnchor.MiddleLeft,
-                FontStyle.Bold);
+                TextAnchor.MiddleRight,
+                FontStyle.Normal);
+            hudDayText.gameObject.SetActive(false);
             hudClockText = factory.Text(
                 "Clock",
                 clockPanel.transform,
                 string.Empty,
-                67f,
-                31f,
-                118f,
-                34f,
-                24,
+                0f,
+                0f,
+                180f,
+                30f,
+                25,
                 UiThemeTokens.TextPrimary,
-                TextAnchor.MiddleLeft);
+                TextAnchor.MiddleRight);
             hudDateText = factory.Text(
                 "Date",
                 clockPanel.transform,
                 string.Empty,
-                67f,
-                66f,
-                118f,
-                18f,
-                12,
-                UiThemeTokens.TextMuted,
-                TextAnchor.MiddleLeft);
-            factory.Divider(clockPanel.transform, 0f, 93f, 196f);
-            factory.Icon("MoneyIcon", clockPanel.transform, UiIconKind.Wallet, 15f, 111f, 30f);
-            factory.Text(
-                "MoneyLabel",
+                0f,
+                30f,
+                180f,
+                20f,
+                15,
+                UiThemeTokens.TextPrimary,
+                TextAnchor.MiddleRight);
+            AddHudShadow(hudDayText);
+            AddHudShadow(hudClockText);
+            AddHudShadow(hudDateText);
+            factory.Divider(
                 clockPanel.transform,
-                textCatalog.Get("ui.hud.money"),
-                67f,
-                101f,
-                118f,
-                22f,
-                11,
-                UiThemeTokens.TextMuted,
-                TextAnchor.MiddleLeft);
+                156f,
+                58f,
+                24f,
+                UiThemeTokens.Accent);
+
+            GameObject moneyPanel = factory.CreateObject(
+                "Money",
+                route.transform);
+            factory.Place(moneyPanel, 1450f, 118f, 180f, 34f);
             hudMoneyText = factory.Text(
                 "MoneyValue",
-                clockPanel.transform,
-                "— MK",
-                67f,
-                124f,
-                118f,
-                27f,
-                19,
-                UiThemeTokens.TextPrimary,
-                TextAnchor.MiddleLeft);
-
-            GameObject needsPanel = factory.GlassPanel(
-                "Needs",
-                route.transform,
+                moneyPanel.transform,
+                "—",
+                0f,
+                0f,
+                142f,
                 30f,
-                226f,
-                196f,
-                270f,
-                UiGlassKind.HudDark,
-                UiThemeTokens.HudGlassTint);
+                17,
+                UiThemeTokens.TextPrimary,
+                TextAnchor.MiddleRight);
+            Text moneyCurrency = factory.Text(
+                "MoneyCurrency",
+                moneyPanel.transform,
+                "MK",
+                148f,
+                0f,
+                32f,
+                30f,
+                17,
+                UiThemeTokens.Accent,
+                TextAnchor.MiddleRight,
+                FontStyle.Normal);
+            AddHudShadow(moneyCurrency);
+            AddHudShadow(hudMoneyText);
+
+            GameObject needsPanel = factory.CreateObject(
+                "Needs",
+                route.transform);
+            factory.Place(needsPanel, 42f, 38f, 152f, 310f);
             needHudBindings.Clear();
-            AddNeedRow(needsPanel.transform, 0, "ui.hud.thirst", UiIconKind.Thirst, UiThemeTokens.SurvivalThirst, 0.18f);
-            AddNeedRow(needsPanel.transform, 1, "ui.hud.hunger", UiIconKind.Hunger, UiThemeTokens.SurvivalHunger, 0.36f);
-            AddNeedRow(needsPanel.transform, 2, "ui.hud.stress", UiIconKind.Stress, UiThemeTokens.SurvivalStress, 0.22f);
-            AddNeedRow(needsPanel.transform, 3, "ui.hud.urine", UiIconKind.Urine, UiThemeTokens.SurvivalUrine, 0.28f);
-            AddNeedRow(needsPanel.transform, 4, "ui.hud.fatigue", UiIconKind.Fatigue, UiThemeTokens.SurvivalFatigue, 0.44f);
-            AddNeedRow(needsPanel.transform, 5, "ui.hud.dirtiness", UiIconKind.Dirtiness, UiThemeTokens.SurvivalDirtiness, 0.71f);
+            AddNeedRow(needsPanel.transform, 0, "ui.hud.thirst", UiIconKind.Thirst, 0.18f);
+            AddNeedRow(needsPanel.transform, 1, "ui.hud.hunger", UiIconKind.Hunger, 0.36f);
+            AddNeedRow(needsPanel.transform, 2, "ui.hud.stress", UiIconKind.Stress, 0.22f);
+            AddNeedRow(needsPanel.transform, 3, "ui.hud.urine", UiIconKind.Urine, 0.28f);
+            AddNeedRow(needsPanel.transform, 4, "ui.hud.fatigue", UiIconKind.Fatigue, 0.44f);
+            AddNeedRow(needsPanel.transform, 5, "ui.hud.dirtiness", UiIconKind.Dirtiness, 0.71f);
+            hudFpsPanel = factory.CreateObject(
+                "FpsCounter",
+                route.transform);
+            factory.Place(hudFpsPanel, 1490f, 842f, 140f, 42f);
+            hudFpsText = factory.Text(
+                "FpsValue",
+                hudFpsPanel.transform,
+                "—",
+                0f,
+                0f,
+                96f,
+                30f,
+                17,
+                Color.white,
+                TextAnchor.MiddleRight,
+                FontStyle.Normal);
+            Text fpsLabel = factory.Text(
+                "FpsLabel",
+                hudFpsPanel.transform,
+                "FPS",
+                102f,
+                0f,
+                38f,
+                30f,
+                17,
+                UiThemeTokens.Accent,
+                TextAnchor.MiddleLeft,
+                FontStyle.Normal);
+            AddHudShadow(fpsLabel);
+            AddHudShadow(hudFpsText);
+            hudFpsPanel.SetActive(
+                settings.Applied.Gameplay.ShowFpsCounter);
+            nextHudFpsRefreshTime = 0f;
+            RefreshHudFpsCounter(force: true);
             RefreshHud(force: true);
         }
 
@@ -302,15 +348,14 @@ namespace MSC.UI.Presentation
 
             if (reviewDataEnabled)
             {
-                hudDayText.text = "SATURDAY";
-                hudClockText.text = "14:37";
-                hudDateText.text = "27.06.1992";
-                hudMoneyText.text = "9 137,95 MK";
+                hudDayText.text = string.Empty;
+                hudClockText.text = "19:47";
+                hudDateText.text = "FRI, 27 JUN";
+                hudMoneyText.text = "12,345";
                 for (int index = 0; index < needHudBindings.Count; index++)
                 {
                     NeedHudBinding binding = needHudBindings[index];
-                    binding.ValueText.text = Mathf.RoundToInt(binding.ReviewValue * 100f) + "%";
-                    binding.Fill.fillAmount = binding.ReviewValue;
+                    binding.SetNormalized(binding.ReviewValue);
                 }
 
                 return;
@@ -331,24 +376,58 @@ namespace MSC.UI.Presentation
                         snapshot.Date.Year,
                         snapshot.Date.Month,
                         snapshot.Date.Day);
-                    hudDayText.text = formatter.Culture.TextInfo.ToUpper(
-                        formatter.Format("{0:dddd}", date));
-                    hudDateText.text = formatter.Format("{0:dd.MM.yyyy}", date);
+                    hudDayText.text = string.Empty;
+                    hudDateText.text = formatter.Culture.TextInfo.ToUpper(
+                        formatter.Format("{0:ddd}, {0:dd MMM}", date));
                 }
             }
             else
             {
-                hudDayText.text = "—";
+                hudDayText.text = string.Empty;
                 hudClockText.text = "--:--";
-                hudDateText.text = "--.--.----";
+                hudDateText.text = "---, -- ---";
             }
 
-            hudMoneyText.text = "— MK";
-            for (int index = 0; index < needHudBindings.Count; index++)
+            if (dependencies.PlayerMoney != null)
             {
-                NeedHudBinding binding = needHudBindings[index];
-                binding.ValueText.text = "—";
-                binding.Fill.fillAmount = 0f;
+                EconomySnapshot money = dependencies.PlayerMoney.Snapshot;
+                if (force || money.Revision != lastMoneyRevision)
+                {
+                    lastMoneyRevision = money.Revision;
+                    hudMoneyText.text = money.BalanceMarkka.ToString(
+                        "N0",
+                        CultureInfo.InvariantCulture);
+                }
+            }
+            else
+            {
+                hudMoneyText.text = "—";
+            }
+            if (dependencies.PlayerNeeds != null)
+            {
+                PlayerNeedsSnapshot needs = dependencies.PlayerNeeds.Snapshot;
+                if (force || needs.Revision != lastNeedsRevision)
+                {
+                    lastNeedsRevision = needs.Revision;
+                    for (int index = 0;
+                         index < needHudBindings.Count;
+                         index++)
+                    {
+                        float normalized = needs.GetNormalized(index);
+                        NeedHudBinding binding = needHudBindings[index];
+                        binding.SetNormalized(normalized);
+                    }
+                }
+            }
+            else
+            {
+                for (int index = 0;
+                     index < needHudBindings.Count;
+                     index++)
+                {
+                    NeedHudBinding binding = needHudBindings[index];
+                    binding.SetNormalized(0f);
+                }
             }
         }
 
@@ -558,8 +637,116 @@ namespace MSC.UI.Presentation
             {
                 factory.Divider(graph.transform, 0f, line * 22f, 329f, new Color(1f, 1f, 1f, 0.08f));
             }
-            factory.Text("Fps", graph.transform, AverageFpsText(), 12f, 22f, 305f, 55f, 22, UiThemeTokens.Positive, TextAnchor.MiddleCenter, FontStyle.Bold);
+
+            performanceGraphBars.Clear();
+            const int barCount = 48;
+            const float graphLeft = 11f;
+            const float graphBottom = 91f;
+            const float barStride = 6.4f;
+            for (int index = 0; index < barCount; index++)
+            {
+                GameObject bar = factory.CreateObject(
+                    "FrameHistory" + index,
+                    graph.transform);
+                RectTransform rect = factory.Place(
+                    bar,
+                    graphLeft + index * barStride,
+                    graphBottom - 1f,
+                    4.8f,
+                    1f);
+                factory.AddSurface(
+                    bar,
+                    new Color(
+                        UiThemeTokens.Positive.r,
+                        UiThemeTokens.Positive.g,
+                        UiThemeTokens.Positive.b,
+                        0.58f),
+                    rounded: false);
+                performanceGraphBars.Add(rect);
+            }
+
+            performanceFpsText = factory.Text(
+                "Fps",
+                graph.transform,
+                AverageFpsText(),
+                12f,
+                20f,
+                305f,
+                38f,
+                22,
+                UiThemeTokens.Positive,
+                TextAnchor.MiddleCenter,
+                FontStyle.Bold);
             factory.Text("Measured", graph.transform, textCatalog.Get("ui.main.live_frame_sample"), 12f, 77f, 305f, 22f, 10, UiThemeTokens.TextMuted, TextAnchor.MiddleCenter);
+            nextPerformanceGraphRefreshTime = 0f;
+            RefreshPerformanceGraph(force: true);
+        }
+
+        private void RefreshPerformanceGraph(bool force = false)
+        {
+            if (performanceGraphBars.Count == 0 ||
+                performanceFpsText == null ||
+                !force &&
+                Time.unscaledTime < nextPerformanceGraphRefreshTime)
+            {
+                return;
+            }
+
+            nextPerformanceGraphRefreshTime = Time.unscaledTime + 0.25f;
+            performanceFpsText.text = AverageFpsText();
+            int sampleCount = frameSamples.Count;
+            if (sampleCount == 0)
+            {
+                return;
+            }
+
+            frameSamples.CopyTo(frameSampleBuffer, 0);
+            float maximumFps = 60f;
+            for (int index = 0; index < sampleCount; index++)
+            {
+                maximumFps = Mathf.Max(
+                    maximumFps,
+                    Mathf.Min(
+                        600f,
+                        1f / Mathf.Max(
+                            0.0001f,
+                            frameSampleBuffer[index])));
+            }
+
+            float scaleFps = Mathf.Ceil(maximumFps / 30f) * 30f;
+            const float graphBottom = 91f;
+            const float graphHeight = 63f;
+            int barCount = performanceGraphBars.Count;
+            for (int barIndex = 0; barIndex < barCount; barIndex++)
+            {
+                int start = Mathf.FloorToInt(
+                    barIndex * sampleCount / (float)barCount);
+                int end = Mathf.Max(
+                    start + 1,
+                    Mathf.FloorToInt(
+                        (barIndex + 1) * sampleCount /
+                        (float)barCount));
+                end = Mathf.Min(end, sampleCount);
+                double seconds = 0d;
+                for (int sampleIndex = start;
+                     sampleIndex < end;
+                     sampleIndex++)
+                {
+                    seconds += frameSampleBuffer[sampleIndex];
+                }
+
+                float fps = seconds > 0d
+                    ? (float)((end - start) / seconds)
+                    : 0f;
+                float height = Mathf.Max(
+                    1f,
+                    graphHeight * Mathf.Clamp01(fps / scaleFps));
+                RectTransform bar = performanceGraphBars[barIndex];
+                bar.anchoredPosition = new Vector2(
+                    bar.anchoredPosition.x,
+                    -(graphBottom - height));
+                bar.sizeDelta = new Vector2(bar.sizeDelta.x, height);
+            }
         }
 
         private void BuildMusicCard(Transform parent)
@@ -583,7 +770,27 @@ namespace MSC.UI.Presentation
             bool dev = capabilities.Get(MSC.UI.Runtime.Capabilities.UiCapabilityId.DeveloperTools).IsInteractive;
             if (dev)
             {
-                factory.CompactButton("DevTools", strip.transform, textCatalog.Get("ui.main.dev_tools"), thirdX, 0f, UiThemeTokens.UtilityActionThirdWidth, UiThemeTokens.UtilityActionButtonHeight, () => ShowNotice("ui.common.adapter_pending"), glass: true);
+                Action openDeveloperTools = dependencies.OpenDeveloperTools;
+                factory.CompactButton(
+                    "DevTools",
+                    strip.transform,
+                    textCatalog.Get("ui.main.dev_tools"),
+                    thirdX,
+                    0f,
+                    UiThemeTokens.UtilityActionThirdWidth,
+                    UiThemeTokens.UtilityActionButtonHeight,
+                    () =>
+                    {
+                        if (openDeveloperTools != null)
+                        {
+                            openDeveloperTools();
+                        }
+                        else
+                        {
+                            ShowNotice("ui.common.adapter_pending");
+                        }
+                    },
+                    glass: true);
             }
         }
 
@@ -649,26 +856,106 @@ namespace MSC.UI.Presentation
             int index,
             string labelKey,
             UiIconKind icon,
-            Color colour,
             float reviewValue)
         {
-            float y = 4f + index * 43f;
-            factory.Icon("NeedIcon" + index, parent, icon, 14f, y + 8f, 26f, colour);
-            factory.Text("NeedLabel" + index, parent, textCatalog.Get(labelKey), 51f, y, 92f, 22f, 11, UiThemeTokens.TextPrimary, TextAnchor.MiddleLeft, FontStyle.Bold);
-            Text value = factory.Text("NeedValue" + index, parent, "—", 144f, y, 38f, 22f, 10, UiThemeTokens.TextPrimary, TextAnchor.MiddleRight);
-            GameObject track = factory.CreateObject("NeedTrack" + index, parent);
-            factory.Place(track, 51f, y + 27f, 131f, 6f);
-            factory.AddSurface(track, new Color(0.25f, 0.25f, 0.24f, 0.86f));
+            const float trackX = 40f;
+            const float trackWidth = 112f;
+            const float groupWidth = trackX + trackWidth;
+            const float groupStride = 52f;
+            GameObject group = factory.CreateObject(
+                "Need" + index,
+                parent);
+            factory.Place(
+                group,
+                0f,
+                index * groupStride,
+                groupWidth,
+                44f);
+
+            Image iconImage = factory.Icon(
+                "NeedIcon" + index,
+                group.transform,
+                icon,
+                0f,
+                4f,
+                28f,
+                Color.white);
+            AddHudShadow(iconImage);
+            Text label = factory.Text(
+                "NeedLabel" + index,
+                group.transform,
+                textCatalog.Get(labelKey),
+                trackX,
+                0f,
+                trackWidth,
+                20f,
+                14,
+                UiThemeTokens.TextPrimary,
+                TextAnchor.MiddleLeft,
+                FontStyle.Normal);
+            AddHudShadow(label);
+
+            GameObject track = factory.CreateObject(
+                "NeedTrack" + index,
+                group.transform);
+            factory.Place(track, trackX, 31f, trackWidth, 3f);
+            Image trackImage = factory.AddSurface(
+                track,
+                UiThemeTokens.HudMinimalTrack,
+                rounded: false);
+            AddHudShadow(trackImage);
             GameObject fillObject = factory.CreateObject("NeedFill" + index, track.transform);
-            RectTransform fillRect = factory.Stretch(fillObject);
-            Image fill = factory.AddSurface(fillObject, colour);
-            fill.type = Image.Type.Filled;
-            fill.fillMethod = Image.FillMethod.Horizontal;
-            fill.fillOrigin = 0;
-            fill.fillAmount = 0f;
-            fillRect.offsetMin = Vector2.zero;
-            fillRect.offsetMax = Vector2.zero;
-            needHudBindings.Add(new NeedHudBinding(value, fill, reviewValue));
+            RectTransform fillRect = fillObject.GetComponent<RectTransform>();
+            fillRect.anchorMin = new Vector2(0f, 0f);
+            fillRect.anchorMax = new Vector2(1f, 1f);
+            fillRect.pivot = new Vector2(0f, 0.5f);
+            fillRect.anchoredPosition = Vector2.zero;
+            fillRect.sizeDelta = Vector2.zero;
+            Image fillImage = factory.AddSurface(
+                fillObject,
+                Color.white,
+                rounded: false);
+            fillImage.sprite = visualAssets.NeedGradientSprite;
+            fillImage.type = Image.Type.Filled;
+            fillImage.fillMethod = Image.FillMethod.Horizontal;
+            fillImage.fillOrigin = 0;
+            fillImage.fillAmount = 0f;
+            AddHudShadow(fillImage);
+
+            GameObject indicatorObject = factory.CreateObject(
+                "NeedIndicator" + index,
+                track.transform);
+            RectTransform indicatorRect =
+                indicatorObject.GetComponent<RectTransform>();
+            indicatorRect.anchorMin = new Vector2(0f, 0.5f);
+            indicatorRect.anchorMax = new Vector2(0f, 0.5f);
+            indicatorRect.pivot = new Vector2(0.5f, 0.5f);
+            indicatorRect.anchoredPosition = Vector2.zero;
+            indicatorRect.sizeDelta = new Vector2(7f, 7f);
+            Image indicatorImage = factory.AddSurface(
+                indicatorObject,
+                Color.white);
+            indicatorImage.sprite = visualAssets.CircleSprite;
+            indicatorImage.type = Image.Type.Simple;
+            indicatorImage.preserveAspect = true;
+            AddHudShadow(indicatorImage);
+            fillObject.SetActive(false);
+            indicatorObject.SetActive(false);
+
+            needHudBindings.Add(
+                new NeedHudBinding(
+                    fillImage,
+                    indicatorRect,
+                    trackWidth,
+                    reviewValue: reviewValue));
+        }
+
+        private static void AddHudShadow(Graphic graphic)
+        {
+            var shadow = graphic.gameObject.AddComponent<Shadow>();
+            shadow.effectColor = UiThemeTokens.HudMinimalShadow;
+            shadow.effectDistance = new Vector2(0.65f, -0.65f);
+            shadow.useGraphicAlpha = true;
         }
     }
 }

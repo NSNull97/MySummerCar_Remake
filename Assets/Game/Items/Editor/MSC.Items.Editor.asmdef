@@ -1,0 +1,23 @@
+{
+  "name": "MSC.Items.Editor",
+  "rootNamespace": "MSC.Items.Editor",
+  "references": [
+    "MSC.Items.Runtime",
+    "MSC.Editor",
+    "MSC.Bootstrap.Runtime",
+    "MSC.Core.Runtime",
+    "MSC.LegacyImport.Editor",
+    "MSC.World.Runtime",
+    "MSC.Services.Runtime",
+    "MSC.Vehicle.ItemsIntegration"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -25,6 +25,9 @@ MonoBehaviour:
   - sceneId: global-legacy
     buildIndex: 11
     scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/World_Global_Legacy.unity
+  - sceneId: vegetation-global-presentation
+    buildIndex: 232
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Global/World_Global_VegetationPresentation.unity
   cells:
   - cellId: cell_-4_-3
     x: -4
@@ -271,4 +274,1526 @@ MonoBehaviour:
     z: -2
     buildIndex: 60
     scenePath: Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/Cells/World_Cell_5_-2_Legacy.unity
+  cellLayers:
+  - layerId: vegetation
+    cellId: cell_-5_-6
+    x: -5
+    z: -6
+    buildIndex: 62
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_-6_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-4_-6
+    x: -4
+    z: -6
+    buildIndex: 63
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_-6_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-3_-6
+    x: -3
+    z: -6
+    buildIndex: 64
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_-6_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-2_-6
+    x: -2
+    z: -6
+    buildIndex: 65
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_-6_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-1_-6
+    x: -1
+    z: -6
+    buildIndex: 66
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_-6_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_0_-6
+    x: 0
+    z: -6
+    buildIndex: 67
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_-6_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_1_-6
+    x: 1
+    z: -6
+    buildIndex: 68
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_-6_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_2_-6
+    x: 2
+    z: -6
+    buildIndex: 69
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_-6_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_3_-6
+    x: 3
+    z: -6
+    buildIndex: 70
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_-6_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_4_-6
+    x: 4
+    z: -6
+    buildIndex: 71
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_-6_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_5_-6
+    x: 5
+    z: -6
+    buildIndex: 72
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_-6_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-5_-5
+    x: -5
+    z: -5
+    buildIndex: 73
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_-5_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-4_-5
+    x: -4
+    z: -5
+    buildIndex: 74
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_-5_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-3_-5
+    x: -3
+    z: -5
+    buildIndex: 75
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_-5_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-2_-5
+    x: -2
+    z: -5
+    buildIndex: 76
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_-5_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-1_-5
+    x: -1
+    z: -5
+    buildIndex: 77
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_-5_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_0_-5
+    x: 0
+    z: -5
+    buildIndex: 78
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_-5_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_1_-5
+    x: 1
+    z: -5
+    buildIndex: 79
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_-5_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_2_-5
+    x: 2
+    z: -5
+    buildIndex: 80
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_-5_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_3_-5
+    x: 3
+    z: -5
+    buildIndex: 81
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_-5_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_4_-5
+    x: 4
+    z: -5
+    buildIndex: 82
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_-5_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_5_-5
+    x: 5
+    z: -5
+    buildIndex: 83
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_-5_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-5_-4
+    x: -5
+    z: -4
+    buildIndex: 84
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_-4_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-4_-4
+    x: -4
+    z: -4
+    buildIndex: 85
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_-4_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-3_-4
+    x: -3
+    z: -4
+    buildIndex: 86
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_-4_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-2_-4
+    x: -2
+    z: -4
+    buildIndex: 87
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_-4_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-1_-4
+    x: -1
+    z: -4
+    buildIndex: 88
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_-4_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_0_-4
+    x: 0
+    z: -4
+    buildIndex: 89
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_-4_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_1_-4
+    x: 1
+    z: -4
+    buildIndex: 90
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_-4_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_2_-4
+    x: 2
+    z: -4
+    buildIndex: 91
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_-4_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_3_-4
+    x: 3
+    z: -4
+    buildIndex: 92
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_-4_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_4_-4
+    x: 4
+    z: -4
+    buildIndex: 93
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_-4_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_5_-4
+    x: 5
+    z: -4
+    buildIndex: 94
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_-4_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-5_-3
+    x: -5
+    z: -3
+    buildIndex: 95
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_-3_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-4_-3
+    x: -4
+    z: -3
+    buildIndex: 61
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_-3_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-3_-3
+    x: -3
+    z: -3
+    buildIndex: 96
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_-3_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-2_-3
+    x: -2
+    z: -3
+    buildIndex: 97
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_-3_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-1_-3
+    x: -1
+    z: -3
+    buildIndex: 98
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_-3_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_0_-3
+    x: 0
+    z: -3
+    buildIndex: 99
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_-3_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_1_-3
+    x: 1
+    z: -3
+    buildIndex: 100
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_-3_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_2_-3
+    x: 2
+    z: -3
+    buildIndex: 101
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_-3_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_3_-3
+    x: 3
+    z: -3
+    buildIndex: 102
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_-3_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_4_-3
+    x: 4
+    z: -3
+    buildIndex: 103
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_-3_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_5_-3
+    x: 5
+    z: -3
+    buildIndex: 104
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_-3_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-5_-2
+    x: -5
+    z: -2
+    buildIndex: 105
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_-2_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-4_-2
+    x: -4
+    z: -2
+    buildIndex: 106
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_-2_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-3_-2
+    x: -3
+    z: -2
+    buildIndex: 107
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_-2_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-2_-2
+    x: -2
+    z: -2
+    buildIndex: 108
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_-2_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-1_-2
+    x: -1
+    z: -2
+    buildIndex: 109
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_-2_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_0_-2
+    x: 0
+    z: -2
+    buildIndex: 110
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_-2_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_1_-2
+    x: 1
+    z: -2
+    buildIndex: 111
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_-2_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_2_-2
+    x: 2
+    z: -2
+    buildIndex: 112
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_-2_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_3_-2
+    x: 3
+    z: -2
+    buildIndex: 113
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_-2_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_4_-2
+    x: 4
+    z: -2
+    buildIndex: 114
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_-2_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_5_-2
+    x: 5
+    z: -2
+    buildIndex: 115
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_-2_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-5_-1
+    x: -5
+    z: -1
+    buildIndex: 116
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_-1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-4_-1
+    x: -4
+    z: -1
+    buildIndex: 117
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_-1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-3_-1
+    x: -3
+    z: -1
+    buildIndex: 118
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_-1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-2_-1
+    x: -2
+    z: -1
+    buildIndex: 119
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_-1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-1_-1
+    x: -1
+    z: -1
+    buildIndex: 120
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_-1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_0_-1
+    x: 0
+    z: -1
+    buildIndex: 121
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_-1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_1_-1
+    x: 1
+    z: -1
+    buildIndex: 122
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_-1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_2_-1
+    x: 2
+    z: -1
+    buildIndex: 123
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_-1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_3_-1
+    x: 3
+    z: -1
+    buildIndex: 124
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_-1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_4_-1
+    x: 4
+    z: -1
+    buildIndex: 125
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_-1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_5_-1
+    x: 5
+    z: -1
+    buildIndex: 126
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_-1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-5_0
+    x: -5
+    z: 0
+    buildIndex: 127
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_0_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-4_0
+    x: -4
+    z: 0
+    buildIndex: 128
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_0_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-3_0
+    x: -3
+    z: 0
+    buildIndex: 129
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_0_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-2_0
+    x: -2
+    z: 0
+    buildIndex: 130
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_0_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-1_0
+    x: -1
+    z: 0
+    buildIndex: 131
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_0_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_0_0
+    x: 0
+    z: 0
+    buildIndex: 132
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_0_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_1_0
+    x: 1
+    z: 0
+    buildIndex: 133
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_0_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_2_0
+    x: 2
+    z: 0
+    buildIndex: 134
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_0_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_3_0
+    x: 3
+    z: 0
+    buildIndex: 135
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_0_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_4_0
+    x: 4
+    z: 0
+    buildIndex: 136
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_0_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_5_0
+    x: 5
+    z: 0
+    buildIndex: 137
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_0_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-5_1
+    x: -5
+    z: 1
+    buildIndex: 138
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-5_1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-4_1
+    x: -4
+    z: 1
+    buildIndex: 139
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-4_1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-3_1
+    x: -3
+    z: 1
+    buildIndex: 140
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-3_1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-2_1
+    x: -2
+    z: 1
+    buildIndex: 141
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-2_1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_-1_1
+    x: -1
+    z: 1
+    buildIndex: 142
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_-1_1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_0_1
+    x: 0
+    z: 1
+    buildIndex: 143
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_0_1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_1_1
+    x: 1
+    z: 1
+    buildIndex: 144
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_1_1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_2_1
+    x: 2
+    z: 1
+    buildIndex: 145
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_2_1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_3_1
+    x: 3
+    z: 1
+    buildIndex: 146
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_3_1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_4_1
+    x: 4
+    z: 1
+    buildIndex: 147
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_4_1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation
+    cellId: cell_5_1
+    x: 5
+    z: 1
+    buildIndex: 148
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Scenes/World_Cell_5_1_Vegetation.unity
+    minimumLoadingRadiusCells: 1
+    minimumUnloadingRadiusCells: 2
+    deferInitialLoad: 0
+  - layerId: vegetation-backdrop
+    cellId: cell_-3_-7
+    x: -3
+    z: -7
+    buildIndex: 160
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-3_-7_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-2_-7
+    x: -2
+    z: -7
+    buildIndex: 155
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-2_-7_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-1_-7
+    x: -1
+    z: -7
+    buildIndex: 150
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-1_-7_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_0_-7
+    x: 0
+    z: -7
+    buildIndex: 188
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_0_-7_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_1_-7
+    x: 1
+    z: -7
+    buildIndex: 192
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_1_-7_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_2_-7
+    x: 2
+    z: -7
+    buildIndex: 196
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_2_-7_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_3_-7
+    x: 3
+    z: -7
+    buildIndex: 200
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_3_-7_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_4_-7
+    x: 4
+    z: -7
+    buildIndex: 206
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_4_-7_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-5_-6
+    x: -5
+    z: -6
+    buildIndex: 174
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_-6_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-4_-6
+    x: -4
+    z: -6
+    buildIndex: 165
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-4_-6_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-3_-6
+    x: -3
+    z: -6
+    buildIndex: 159
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-3_-6_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-2_-6
+    x: -2
+    z: -6
+    buildIndex: 154
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-2_-6_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-1_-6
+    x: -1
+    z: -6
+    buildIndex: 149
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-1_-6_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_0_-6
+    x: 0
+    z: -6
+    buildIndex: 187
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_0_-6_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_1_-6
+    x: 1
+    z: -6
+    buildIndex: 191
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_1_-6_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_2_-6
+    x: 2
+    z: -6
+    buildIndex: 195
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_2_-6_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_3_-6
+    x: 3
+    z: -6
+    buildIndex: 199
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_3_-6_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_4_-6
+    x: 4
+    z: -6
+    buildIndex: 205
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_4_-6_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_5_-6
+    x: 5
+    z: -6
+    buildIndex: 214
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_-6_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-6_-5
+    x: -6
+    z: -5
+    buildIndex: 183
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_-5_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-5_-5
+    x: -5
+    z: -5
+    buildIndex: 173
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_-5_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-4_-5
+    x: -4
+    z: -5
+    buildIndex: 164
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-4_-5_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-3_-5
+    x: -3
+    z: -5
+    buildIndex: 158
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-3_-5_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_4_-5
+    x: 4
+    z: -5
+    buildIndex: 204
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_4_-5_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_5_-5
+    x: 5
+    z: -5
+    buildIndex: 213
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_-5_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-6_-4
+    x: -6
+    z: -4
+    buildIndex: 182
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_-4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-5_-4
+    x: -5
+    z: -4
+    buildIndex: 172
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_-4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-4_-4
+    x: -4
+    z: -4
+    buildIndex: 163
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-4_-4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_4_-4
+    x: 4
+    z: -4
+    buildIndex: 203
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_4_-4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_5_-4
+    x: 5
+    z: -4
+    buildIndex: 212
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_-4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_6_-4
+    x: 6
+    z: -4
+    buildIndex: 222
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_-4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-6_-3
+    x: -6
+    z: -3
+    buildIndex: 181
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_-3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-5_-3
+    x: -5
+    z: -3
+    buildIndex: 171
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_-3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_5_-3
+    x: 5
+    z: -3
+    buildIndex: 211
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_-3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_6_-3
+    x: 6
+    z: -3
+    buildIndex: 221
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_-3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-6_-2
+    x: -6
+    z: -2
+    buildIndex: 180
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_-2_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-5_-2
+    x: -5
+    z: -2
+    buildIndex: 170
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_-2_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_5_-2
+    x: 5
+    z: -2
+    buildIndex: 210
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_-2_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_6_-2
+    x: 6
+    z: -2
+    buildIndex: 220
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_-2_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-6_-1
+    x: -6
+    z: -1
+    buildIndex: 179
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_-1_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-5_-1
+    x: -5
+    z: -1
+    buildIndex: 169
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_-1_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_5_-1
+    x: 5
+    z: -1
+    buildIndex: 209
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_-1_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_6_-1
+    x: 6
+    z: -1
+    buildIndex: 219
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_-1_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-6_0
+    x: -6
+    z: 0
+    buildIndex: 184
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_0_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-5_0
+    x: -5
+    z: 0
+    buildIndex: 175
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_0_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_5_0
+    x: 5
+    z: 0
+    buildIndex: 215
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_0_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_6_0
+    x: 6
+    z: 0
+    buildIndex: 223
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_0_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_7_0
+    x: 7
+    z: 0
+    buildIndex: 228
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_7_0_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-6_1
+    x: -6
+    z: 1
+    buildIndex: 185
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_1_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-5_1
+    x: -5
+    z: 1
+    buildIndex: 176
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_1_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_6_1
+    x: 6
+    z: 1
+    buildIndex: 224
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_1_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_7_1
+    x: 7
+    z: 1
+    buildIndex: 229
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_7_1_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-6_2
+    x: -6
+    z: 2
+    buildIndex: 186
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-6_2_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-5_2
+    x: -5
+    z: 2
+    buildIndex: 177
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_2_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-4_2
+    x: -4
+    z: 2
+    buildIndex: 166
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-4_2_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_5_2
+    x: 5
+    z: 2
+    buildIndex: 216
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_2_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_6_2
+    x: 6
+    z: 2
+    buildIndex: 225
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_2_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_7_2
+    x: 7
+    z: 2
+    buildIndex: 230
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_7_2_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-5_3
+    x: -5
+    z: 3
+    buildIndex: 178
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-5_3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-4_3
+    x: -4
+    z: 3
+    buildIndex: 167
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-4_3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-3_3
+    x: -3
+    z: 3
+    buildIndex: 161
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-3_3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-2_3
+    x: -2
+    z: 3
+    buildIndex: 156
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-2_3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-1_3
+    x: -1
+    z: 3
+    buildIndex: 151
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-1_3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_0_3
+    x: 0
+    z: 3
+    buildIndex: 189
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_0_3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_1_3
+    x: 1
+    z: 3
+    buildIndex: 193
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_1_3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_2_3
+    x: 2
+    z: 3
+    buildIndex: 197
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_2_3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_3_3
+    x: 3
+    z: 3
+    buildIndex: 201
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_3_3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_4_3
+    x: 4
+    z: 3
+    buildIndex: 207
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_4_3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_5_3
+    x: 5
+    z: 3
+    buildIndex: 217
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_6_3
+    x: 6
+    z: 3
+    buildIndex: 226
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_3_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-4_4
+    x: -4
+    z: 4
+    buildIndex: 168
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-4_4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-3_4
+    x: -3
+    z: 4
+    buildIndex: 162
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-3_4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-2_4
+    x: -2
+    z: 4
+    buildIndex: 157
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-2_4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_-1_4
+    x: -1
+    z: 4
+    buildIndex: 152
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_-1_4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_0_4
+    x: 0
+    z: 4
+    buildIndex: 190
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_0_4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_1_4
+    x: 1
+    z: 4
+    buildIndex: 194
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_1_4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_2_4
+    x: 2
+    z: 4
+    buildIndex: 198
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_2_4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_3_4
+    x: 3
+    z: 4
+    buildIndex: 202
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_3_4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_4_4
+    x: 4
+    z: 4
+    buildIndex: 208
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_4_4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_5_4
+    x: 5
+    z: 4
+    buildIndex: 218
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_5_4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
+  - layerId: vegetation-backdrop
+    cellId: cell_6_4
+    x: 6
+    z: 4
+    buildIndex: 227
+    scenePath: Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Backdrop/Scenes/World_cell_6_4_VegetationBackdrop.unity
+    minimumLoadingRadiusCells: 2
+    minimumUnloadingRadiusCells: 3
+    deferInitialLoad: 1
   gameplayCatalog: {fileID: 11400000, guid: f66f5e873b5be99499af3231cef886e2, type: 2}

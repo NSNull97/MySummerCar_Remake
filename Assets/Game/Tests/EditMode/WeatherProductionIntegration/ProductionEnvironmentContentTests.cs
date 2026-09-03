@@ -17,6 +17,10 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools.Utils;
+using GameWeatherSystem = MSC.Weather.System.GameWeatherSystem;
+using NativeHDRPWeatherBackend =
+    MSC.Weather.System.NativeHDRP.NativeHDRPWeatherBackend;
+using WeatherBackendType = MSC.Weather.System.WeatherBackendType;
 
 namespace MSC.Tests.EditMode.WeatherProductionIntegration
 {
@@ -47,6 +51,10 @@ namespace MSC.Tests.EditMode.WeatherProductionIntegration
                 FindAll<ProductionEnvironmentBackendMarker>(scene);
             ProductionWorldStreamingInstaller[] installers =
                 FindAll<ProductionWorldStreamingInstaller>(scene);
+            GameWeatherSystem[] weatherSystems =
+                FindAll<GameWeatherSystem>(scene);
+            NativeHDRPWeatherBackend[] nativeBackends =
+                FindAll<NativeHDRPWeatherBackend>(scene);
 
             Assert.That(roots, Has.Length.EqualTo(1));
             Assert.That(controllers, Has.Length.EqualTo(1));
@@ -55,12 +63,21 @@ namespace MSC.Tests.EditMode.WeatherProductionIntegration
             Assert.That(activators, Has.Length.EqualTo(1));
             Assert.That(markers, Has.Length.EqualTo(1));
             Assert.That(installers, Has.Length.EqualTo(1));
+            Assert.That(weatherSystems, Has.Length.EqualTo(1));
+            Assert.That(nativeBackends, Has.Length.EqualTo(1));
             Assert.That(FindAll<WindZone>(scene), Is.Empty);
             Assert.That(IsActive(roots[0]), Is.True);
             Assert.That(IsActive(controllers[0]), Is.True);
             Assert.That(IsActive(activators[0]), Is.True);
             Assert.That(IsActive(managers[0]), Is.False);
             Assert.That(IsActive(adapters[0]), Is.False);
+            Assert.That(IsActive(weatherSystems[0]), Is.True);
+            Assert.That(IsActive(nativeBackends[0]), Is.True);
+            Assert.That(
+                weatherSystems[0].SelectedBackend,
+                Is.EqualTo(WeatherBackendType.EnviroLegacy),
+                "Bootstrap must keep Enviro as the active celestial/sky backend " +
+                "until Native HDRP has feature parity for moon and stars.");
             Assert.That(markers[0].gameObject.activeSelf, Is.False);
             Assert.That(activators[0].BackendMarker, Is.SameAs(markers[0]));
             Assert.That(activators[0].HasValidBinding, Is.True);
@@ -78,6 +95,11 @@ namespace MSC.Tests.EditMode.WeatherProductionIntegration
                 managers[0].transform.IsChildOf(markers[0].transform),
                 Is.True);
             Assert.That(
+                new SerializedObject(controllers[0])
+                    .FindProperty("adapterBehaviour")
+                    .objectReferenceValue,
+                Is.SameAs(weatherSystems[0]));
+            Assert.That(
                 PrefabUtility.IsPartOfPrefabInstance(managers[0].gameObject),
                 Is.True);
             Assert.That(
@@ -88,34 +110,59 @@ namespace MSC.Tests.EditMode.WeatherProductionIntegration
             Assert.That(
                 AssetDatabase.GetAssetPath(
                     managers[0].volumeHDRP.sharedProfile),
-                Is.EqualTo(ProductionEnvironmentBuilder.VolumeProfilePath));
+                Is.EqualTo(
+                    HybridEnvironmentMigrationTool.EnviroSkyProfilePath));
             Assert.That(
                 managers[0].volumeHDRP.sharedProfile.TryGet(
-                    out IndirectLightingController indirectLighting),
+                    out VisualEnvironment visualEnvironment),
                 Is.True);
-            Assert.That(indirectLighting.active, Is.True);
+            Assert.That(visualEnvironment.skyType.value, Is.EqualTo(990));
             Assert.That(
-                indirectLighting.indirectDiffuseLightingMultiplier.overrideState,
+                managers[0].volumeHDRP.sharedProfile.TryGet(
+                    out EnviroHDRPSky _),
                 Is.True);
             Assert.That(
-                indirectLighting.indirectDiffuseLightingMultiplier.value,
+                managers[0].volumeHDRP.sharedProfile.TryGet(out Fog _),
+                Is.False);
+            Assert.That(
+                managers[0].volumeHDRP.sharedProfile.TryGet(out Exposure _),
+                Is.False);
+            Assert.That(
+                managers[0].volumeHDRP.sharedProfile.TryGet(
+                    out IndirectLightingController _),
+                Is.False);
+
+            NativeHDRPWeatherBackend native = nativeBackends[0];
+            Assert.That(native.RuntimeWeatherVolume, Is.Not.Null);
+            Assert.That(
+                native.RuntimeWeatherVolume.isGlobal,
+                Is.True);
+            Assert.That(
+                native.RuntimeWeatherVolume.enabled,
+                Is.False,
+                "The native Volume must activate transactionally at runtime.");
+            Assert.That(native.RuntimeWeatherVolume.weight, Is.Zero);
+            Assert.That(
+                AssetDatabase.GetAssetPath(
+                    native.RuntimeWeatherVolume.sharedProfile),
                 Is.EqualTo(
-                        Enviro3ProductionVisualPolicy
-                            .NeutralIndirectLightingMultiplier)
-                    .Within(0.0001f));
+                    "Assets/Game/Weather/System/Content/FinnishSummer/" +
+                    "NativeHDRPWeatherVolume.asset"));
+            Assert.That(native.DirectionalSun, Is.Not.Null);
+            Assert.That(native.DirectionalSunData, Is.Not.Null);
+            Assert.That(native.Geography, Is.Not.Null);
+            Assert.That(native.RainSystems.Any(value => value != null), Is.True);
             Assert.That(
-                indirectLighting.reflectionLightingMultiplier.overrideState,
+                native.DrizzleSystems.Any(value => value != null),
+                Is.True);
+            Assert.That(native.LightningFlashLight, Is.Not.Null);
+            Assert.That(
+                native.LegacyVolumesToSuspend.Contains(
+                    managers[0].volumeHDRP),
                 Is.True);
             Assert.That(
-                indirectLighting.reflectionLightingMultiplier.value,
-                Is.EqualTo(1f).Within(0.0001f));
-            Assert.That(
-                indirectLighting
-                    .reflectionProbeIntensityMultiplier.overrideState,
+                native.LegacyOwnersToSuspend.Contains(adapters[0]),
                 Is.True);
-            Assert.That(
-                indirectLighting.reflectionProbeIntensityMultiplier.value,
-                Is.EqualTo(1f).Within(0.0001f));
         }
 
         [Test]
@@ -333,6 +380,26 @@ namespace MSC.Tests.EditMode.WeatherProductionIntegration
                 Assert.That(volume.Extents.y, Is.GreaterThan(0.25f));
                 Assert.That(volume.Extents.z, Is.GreaterThan(0.25f));
             }
+
+            WeatherZone houseZone = FindAll<WeatherZone>(scene).Single(
+                value => value.StableId ==
+                    ProductionShelterMeasurementTool.HomeHouseShelterStableId);
+            Assert.That(houseZone.VolumeColliders.Count, Is.EqualTo(3));
+            Assert.That(
+                houseZone.VolumeColliders.All(
+                    value => value is BoxCollider box &&
+                             box.enabled && box.isTrigger),
+                Is.True);
+            Assert.That(
+                houseZone.ContainsAuthoredGeometry(
+                    new Vector3(162.06999f, 3.8f, -1037.315f)),
+                Is.True,
+                "The bedroom/elevated-camera probe must remain indoors.");
+            Assert.That(
+                houseZone.ContainsAuthoredGeometry(
+                    new Vector3(165.29572f, 3.8f, -1035.0538f)),
+                Is.True,
+                "The elevated living-room probe must remain indoors.");
         }
 
         [Test]

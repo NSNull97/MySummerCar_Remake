@@ -8,7 +8,8 @@ namespace MSC.Vehicle.Assembly
         LoosenFastener = 3,
         Remove = 4,
         Restore = 5,
-        RemoveFastener = 6
+        RemoveFastener = 6,
+        BreakRetention = 7
     }
 
     public enum AssemblyFailureReason

@@ -61,6 +61,53 @@ namespace MSC.Tests.EditMode.WorldRemaster
         }
 
         [Test]
+        public void ExplicitCellRetention_IsStableIdBasedAndReleasable()
+        {
+            ProductionWorldStreamingManifest manifest =
+                ScriptableObject.CreateInstance<ProductionWorldStreamingManifest>();
+            var serviceObject = new GameObject("StreamingRetentionFixture");
+            try
+            {
+                manifest.ConfigureForAuthoring(
+                    512f,
+                    0,
+                    1,
+                    new[]
+                    {
+                        new ProductionWorldCellScene(
+                            "cell_1_2",
+                            1,
+                            2,
+                            6,
+                            "Assets/Cell_1_2.unity"),
+                    });
+                ProductionWorldStreamingService service =
+                    serviceObject.AddComponent<ProductionWorldStreamingService>();
+                service.ConfigureForAuthoring(manifest);
+
+                service.RetainCell("world.entities:test-id", "cell_1_2");
+
+                Assert.That(service.IsCellRetained("cell_1_2"), Is.True);
+                Assert.That(
+                    service.TryGetCellIdForPosition(
+                        new Vector3(600f, 0f, 1100f),
+                        out string cellId),
+                    Is.True);
+                Assert.That(cellId, Is.EqualTo("cell_1_2"));
+
+                service.ReleaseCellRetention("world.entities:test-id");
+                Assert.That(service.IsCellRetained("cell_1_2"), Is.False);
+                Assert.Throws<System.ArgumentException>(() =>
+                    service.RetainCell("world.entities:test-id", "missing-cell"));
+            }
+            finally
+            {
+                Object.DestroyImmediate(serviceObject);
+                Object.DestroyImmediate(manifest);
+            }
+        }
+
+        [Test]
         public void CurrentProjectHasExactProductionStreamingBootstrapWiring()
         {
             WorldPilotGateRemediationValidationResult result =

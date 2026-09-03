@@ -97,7 +97,18 @@ namespace MSC.Weather.Domain
         public static readonly WeatherStateId HeavyRain = new WeatherStateId("weather.heavy_rain");
         public static readonly WeatherStateId Thunderstorm = new WeatherStateId("weather.thunderstorm");
         public static readonly WeatherStateId MorningMist = new WeatherStateId("weather.morning_mist");
+        public static readonly WeatherStateId DenseFog = new WeatherStateId("weather.dense_fog");
+        public static readonly WeatherStateId BrightOvercast = new WeatherStateId("weather.bright_overcast");
+        public static readonly WeatherStateId HeavyOvercast = new WeatherStateId("weather.heavy_overcast");
+        public static readonly WeatherStateId LightRain = new WeatherStateId("weather.light_rain");
+        public static readonly WeatherStateId PostRainWet = new WeatherStateId("weather.post_rain_wet");
+        public static readonly WeatherStateId ClearingAfterRain = new WeatherStateId("weather.clearing_after_rain");
+        public static readonly WeatherStateId ColdClearEvening = new WeatherStateId("weather.cold_clear_evening");
+        public static readonly WeatherStateId BlueHour = new WeatherStateId("weather.blue_hour");
 
+        // Keep the original public set stable for milestone 00-08A callers and
+        // tests. The seven Finnish-summer states are additive and available
+        // through AllKnown without changing the meaning of All.
         private static readonly WeatherStateId[] AllValues =
         {
             Clear,
@@ -108,9 +119,32 @@ namespace MSC.Weather.Domain
             HeavyRain,
             Thunderstorm,
             MorningMist,
+            DenseFog,
+        };
+
+        private static readonly WeatherStateId[] AllKnownValues =
+        {
+            Clear,
+            PartlyCloudy,
+            Overcast,
+            Drizzle,
+            SteadyRain,
+            HeavyRain,
+            Thunderstorm,
+            MorningMist,
+            DenseFog,
+            BrightOvercast,
+            HeavyOvercast,
+            LightRain,
+            PostRainWet,
+            ClearingAfterRain,
+            ColdClearEvening,
+            BlueHour,
         };
 
         public static IReadOnlyList<WeatherStateId> All => AllValues;
+
+        public static IReadOnlyList<WeatherStateId> AllKnown => AllKnownValues;
     }
 
     /// <summary>

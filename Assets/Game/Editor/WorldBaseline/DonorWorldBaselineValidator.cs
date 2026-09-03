@@ -38,6 +38,14 @@ namespace MSC.Editor.WorldBaseline
         private const string MetadataRuntimeSource =
             "Assets/Game/LegacyImport/Runtime/" +
             "DonorWorldBaselineEntityMetadata.cs";
+        private const string ItemPresentationRuntimeRoot =
+            "Assets/Game/LegacyImport/RuntimeBaseline/Generated/Items";
+        private const string GameplayPresentationRuntimeRoot =
+            "Assets/Game/LegacyImport/RuntimeBaseline/GameplayPresentation";
+        private const string PlayerViewmodelRuntimeRoot =
+            GameplayPresentationRuntimeRoot + "/PlayerViewmodel";
+        private const string CharacterPresentationRuntimeRoot =
+            "Assets/Game/LegacyImport/RuntimeBaseline/Characters";
 
         private static readonly HashSet<string> AllowedComponentTypes =
             new HashSet<string>(StringComparer.Ordinal)
@@ -617,6 +625,60 @@ namespace MSC.Editor.WorldBaseline
                 string extension = Path.GetExtension(file);
                 string projectRelativePath =
                     ToProjectRelativePath(file);
+                if (IsItemPresentationAsset(projectRelativePath))
+                {
+                    // Phase 1 gameplay presentation is governed by the Items
+                    // manifest/validator and is intentionally outside the
+                    // canonical world-payload fingerprint. The world boundary
+                    // still rejects executable or misplaced payload here.
+                    if (!IsAllowedItemPresentationFile(
+                            projectRelativePath,
+                            extension))
+                    {
+                        result.Errors.Add(
+                            "Forbidden file type inside item RuntimeBaseline: " +
+                            projectRelativePath);
+                    }
+
+                    continue;
+                }
+
+                if (IsGameplayPresentationAsset(projectRelativePath))
+                {
+                    // Section 6.5 explicitly permits a sanitized, private
+                    // gameplay-presentation baseline. Keep this allowlist
+                    // narrower than the general world payload: no scripts,
+                    // controllers, shaders, assemblies or arbitrary assets.
+                    if (!IsAllowedGameplayPresentationFile(
+                            projectRelativePath,
+                            extension))
+                    {
+                        result.Errors.Add(
+                            "Forbidden file type inside gameplay presentation " +
+                            "RuntimeBaseline: " + projectRelativePath);
+                    }
+
+                    continue;
+                }
+
+                if (IsCharacterPresentationAsset(projectRelativePath))
+                {
+                    // Section 6.5 also permits bounded private character
+                    // presentation. Its dedicated manifest/importer owns
+                    // provenance and semantic validation; the world validator
+                    // retains a strict passive-asset allowlist here.
+                    if (!IsAllowedCharacterPresentationFile(
+                            projectRelativePath,
+                            extension))
+                    {
+                        result.Errors.Add(
+                            "Forbidden file type inside character " +
+                            "RuntimeBaseline: " + projectRelativePath);
+                    }
+
+                    continue;
+                }
+
                 bool isPresentationTexture =
                     projectRelativePath.StartsWith(
                         WorldBaselinePaths.TextureRoot + "/",
@@ -666,6 +728,12 @@ namespace MSC.Editor.WorldBaseline
                 .Where(file => !ToProjectRelativePath(file).StartsWith(
                     WorldBaselinePaths.TextureRoot + "/",
                     StringComparison.Ordinal))
+                .Where(file => !IsItemPresentationAsset(
+                    ToProjectRelativePath(file)))
+                .Where(file => !IsGameplayPresentationAsset(
+                    ToProjectRelativePath(file)))
+                .Where(file => !IsCharacterPresentationAsset(
+                    ToProjectRelativePath(file)))
                 .Where(file =>
                 {
                     string extension = Path.GetExtension(file);
@@ -737,6 +805,129 @@ namespace MSC.Editor.WorldBaseline
                     "RuntimeBaseline generated payload is not correctly " +
                     "isolated in .gitignore.");
             }
+        }
+
+        private static bool IsItemPresentationAsset(string projectRelativePath)
+        {
+            return projectRelativePath.StartsWith(
+                ItemPresentationRuntimeRoot + "/",
+                StringComparison.Ordinal);
+        }
+
+        private static bool IsAllowedItemPresentationFile(
+            string projectRelativePath,
+            string extension)
+        {
+            if (extension.Equals(".meta", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return
+                (projectRelativePath.StartsWith(
+                     ItemPresentationRuntimeRoot + "/Meshes/",
+                     StringComparison.Ordinal) &&
+                 extension.Equals(".asset", StringComparison.OrdinalIgnoreCase)) ||
+                (projectRelativePath.StartsWith(
+                     ItemPresentationRuntimeRoot + "/Materials/",
+                     StringComparison.Ordinal) &&
+                 extension.Equals(".mat", StringComparison.OrdinalIgnoreCase)) ||
+                (projectRelativePath.StartsWith(
+                     ItemPresentationRuntimeRoot + "/Prefabs/",
+                     StringComparison.Ordinal) &&
+                 extension.Equals(".prefab", StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static bool IsGameplayPresentationAsset(
+            string projectRelativePath)
+        {
+            return projectRelativePath.StartsWith(
+                GameplayPresentationRuntimeRoot + "/",
+                StringComparison.Ordinal);
+        }
+
+        private static bool IsCharacterPresentationAsset(
+            string projectRelativePath)
+        {
+            return projectRelativePath.StartsWith(
+                CharacterPresentationRuntimeRoot + "/",
+                StringComparison.Ordinal);
+        }
+
+        private static bool IsAllowedCharacterPresentationFile(
+            string projectRelativePath,
+            string extension)
+        {
+            if (extension.Equals(".meta", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return
+                (projectRelativePath.StartsWith(
+                     CharacterPresentationRuntimeRoot + "/Source/Mesh/",
+                     StringComparison.Ordinal) &&
+                 extension.Equals(".asset", StringComparison.OrdinalIgnoreCase)) ||
+                (projectRelativePath.StartsWith(
+                     CharacterPresentationRuntimeRoot +
+                     "/Source/AnimationClip/",
+                     StringComparison.Ordinal) &&
+                 extension.Equals(".anim", StringComparison.OrdinalIgnoreCase)) ||
+                (projectRelativePath.StartsWith(
+                     CharacterPresentationRuntimeRoot + "/Generated/",
+                     StringComparison.Ordinal) &&
+                 extension.Equals(".mat", StringComparison.OrdinalIgnoreCase)) ||
+                (projectRelativePath.StartsWith(
+                     CharacterPresentationRuntimeRoot +
+                     "/Resources/Phase1Characters/",
+                     StringComparison.Ordinal) &&
+                 (extension.Equals(".prefab", StringComparison.OrdinalIgnoreCase) ||
+                  extension.Equals(".asset", StringComparison.OrdinalIgnoreCase))) ||
+                (string.Equals(
+                     projectRelativePath,
+                     CharacterPresentationRuntimeRoot +
+                     "/Phase1CharacterPresentationBuildReport.json",
+                     StringComparison.Ordinal) &&
+                 extension.Equals(".json", StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static bool IsAllowedGameplayPresentationFile(
+            string projectRelativePath,
+            string extension)
+        {
+            if (extension.Equals(".meta", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return
+                (projectRelativePath.StartsWith(
+                     PlayerViewmodelRuntimeRoot + "/Source/Mesh/",
+                     StringComparison.Ordinal) &&
+                 extension.Equals(".asset", StringComparison.OrdinalIgnoreCase)) ||
+                (projectRelativePath.StartsWith(
+                     PlayerViewmodelRuntimeRoot + "/Source/Textures/",
+                     StringComparison.Ordinal) &&
+                 extension.Equals(".png", StringComparison.OrdinalIgnoreCase)) ||
+                (projectRelativePath.StartsWith(
+                     PlayerViewmodelRuntimeRoot + "/Source/AnimationClips/",
+                     StringComparison.Ordinal) &&
+                 extension.Equals(".anim", StringComparison.OrdinalIgnoreCase)) ||
+                (projectRelativePath.StartsWith(
+                     PlayerViewmodelRuntimeRoot + "/Generated/",
+                     StringComparison.Ordinal) &&
+                 extension.Equals(".mat", StringComparison.OrdinalIgnoreCase)) ||
+                (projectRelativePath.StartsWith(
+                     PlayerViewmodelRuntimeRoot +
+                     "/Resources/Phase1PlayerViewmodel/",
+                     StringComparison.Ordinal) &&
+                 extension.Equals(".prefab", StringComparison.OrdinalIgnoreCase)) ||
+                (string.Equals(
+                     projectRelativePath,
+                     PlayerViewmodelRuntimeRoot +
+                     "/Phase1PlayerViewmodelBuildReport.json",
+                     StringComparison.Ordinal) &&
+                 extension.Equals(".json", StringComparison.OrdinalIgnoreCase));
         }
 
         private static void ValidateBuildIsolation(

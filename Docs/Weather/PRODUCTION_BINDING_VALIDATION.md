@@ -35,14 +35,15 @@ authoring profile и vendor assets не мутируются.
 
 | Project state / stable binding | Enviro source | Runtime policy | Automated status | Production visual status |
 |---|---|---|---|---|
-| clear / `weather.clear` | `Clear Sky.asset` | direct typed binding | PASS | PENDING |
-| partly cloudy / `weather.partly_cloudy` | `Cloudy 1.asset` | direct typed binding | PASS | PENDING |
-| overcast / `weather.overcast` | `Cloudy 3.asset` | direct typed binding | PASS | PENDING |
+| clear / `weather.clear` | `Clear Sky.asset` | isolated calibrated runtime clone | PASS | Finnish visual recapture pending |
+| partly cloudy / `weather.partly_cloudy` | `Cloudy 1.asset` | isolated calibrated runtime clone | PASS | PENDING |
+| overcast / `weather.overcast` | `Cloudy 3.asset` | isolated calibrated runtime clone | PASS | dense-cover visual recapture pending |
 | drizzle / `weather.drizzle` | `Rain.asset` | isolated Rain clone, project intensity | PASS | PENDING |
 | steady rain / `weather.rain` | `Rain.asset` | isolated Rain clone, project intensity | PASS | USER PASS on current reported route |
 | heavy rain / `weather.heavy_rain` | `Rain.asset` | separate isolated Rain clone, project intensity | PASS | PENDING |
 | thunderstorm / `weather.storm_visual` | `Storm.asset` | isolated Storm clone; gameplay strike separate | PASS | PENDING |
-| morning mist / `weather.fog` | `Foggy.asset` | direct typed binding | PASS | PENDING |
+| morning mist / `weather.fog` | `Foggy.asset` | isolated calibrated runtime clone | PASS | PENDING |
+| dense fog / `weather.dense_fog` | `Foggy.asset` | isolated calibrated runtime clone; 80 m visibility / ~20.5 m HDRP mean free path | PASS | PENDING |
 | night / `weather.night` | `Clear Sky.asset` | project time state over clear visual preset | PASS | brightness USER PASS 2026-07-18; no capture artifact |
 
 Локальный base pack не предоставляет независимые typed drizzle/heavy profiles
@@ -52,9 +53,12 @@ donor behavior и не final art tuning.
 
 Пре-remediation rain эффект создавал particles, но vendor runtime renderer
 получал `maxParticleSize = 0.001`, и капли были нечитаемы в Game View.
-Адаптер теперь применяет runtime-only floor `0.01` к rain renderers.
-Исходный prefab/material остаётся неизменным; текущая rain presentation
-подтверждена пользователем.
+После двух пользовательских итераций адаптер применяет runtime-only cap
+`0.0035`, шестикратный emission-density multiplier и bounded particle scale
+`0.25–0.48`: капли стали плотнее и меньше. Collision на runtime clone включает
+существующий `Rain_Splash` sub-emitter с surface-impact tuning. Исходный
+prefab/material остаётся неизменным; финальная visual acceptance этой настройки
+остаётся `PENDING`.
 
 ## Time, transition и refresh
 
@@ -65,10 +69,15 @@ donor behavior и не final art tuning.
   Enviro authority над календарём или временем.
 - После установки project date/time adapter обновляет sun/moon position в том
   же presentation pass, поэтому DEV `SetDateTime` не ждёт следующего кадра.
-- Scheduled transition использует оставшееся project-owned время текущего front,
-  переводит game seconds в simulation seconds и применяет duration к cloned
-  module. Initial/new-game/restore sync всегда instant; explicit DEV duration
-  сохраняется.
+- Scheduled transition начинает target Enviro binding при progress `0`, использует
+  оставшееся project-owned время текущего front, переводит game seconds в
+  simulation seconds и применяет duration к cloned module. Он больше не ждёт
+  дискретной смены `WeatherState.Id` при progress `0.5`. Initial/new-game/restore
+  sync всегда instant; explicit DEV duration сохраняется.
+- `ProductionWeatherStateSource` публикует continuous values каждый rendered frame
+  и сохраняет authoritative `Front.From`/`Front.To` IDs на всём переходе.
+  `NativeHdrpWeatherBridge` применяет новое состояние в том же кадре; настроенный
+  interval остаётся только safety reassert, а не частотой fog/cloud updates.
 - Stale revision и invalid frame отклоняются fail-closed.
 - Sky/ambient/reflection requests имеют sequence. Controller запрашивает refresh
   при смене binding, через `600` game seconds или при смещении listener на
@@ -79,19 +88,20 @@ donor behavior и не final art tuning.
 ## Fog, exposure и water
 
 - Active production profile:
-  `Assets/Game/Weather/Production/Content/Profiles/ProductionEnvironmentHDRPVolume.asset`.
+  `Assets/Game/Weather/Production/Content/Profiles/ProductionNativeHDRPVolume.asset`.
 - Ровно один active global Volume и один active directional environment light
   подтверждены validator-ом.
 - Project weather/exposure context — authority; dedicated Enviro adapter владеет
   единственным HDRP Fog/Exposure presentation pass.
-- Прежний constant `EV 10`, а затем неверный знак больших interior offsets дали
-  ручные `FAIL`: пересвеченные день/интерьер и crushed night. Fixed exposure
-  вычисляется по детерминированной time-of-day curve с daylight bias `+0.25 EV`
-  и offsets `Exterior 0 / Sheltered -0.15 / Interior -0.25 EV`. После сообщения,
-  что исправленная ночь стала немного слишком яркой, night branch плавно
-  ограничивается минимумом `7.5 EV` между `solarTime 0.43 -> 0.50`; более
-  высокий HDRP Fixed Exposure EV затемняет изображение, а дневная ветвь curve
-  не меняется.
+- Native bridge принудительно использует camera-independent HDRP `Fixed`
+  exposure вместо `AutomaticHistogram/CenterWeighted`: EV вычисляется из base
+  `10`, weather compensation и continuous ambient darkness, затем ограничивается
+  диапазоном `-1..13`. Поэтому поворот камеры к яркому небу/тёмной стене больше
+  не должен ступенчато менять освещённость.
+- `WeatherExposureResolver.IndoorFactor` дополнительно уменьшает indirect diffuse
+  до `0.18` и reflection contribution до `0.35` в закрытом интерьере. Это
+  адресует оранжевую заливку дома закатным sky lighting при выключенном локальном
+  свете; visual acceptance в Game View остаётся `PENDING`.
 - Прежний double/misbound fog дал opaque/red mist. Теперь project
   physical visibility конвертируется в HDRP mean free path и применяется
   один раз единственным owner-ом.
@@ -163,9 +173,20 @@ persistent root после `DontDestroyOnLoad`.
 большой oval overhang за пределами narrow AABB. Bridge теперь строит
 детерминированный набор вписанных ellipsoids вдоль длинной оси, а vertical
 stretch ограничен снизу значением `1`. Это сохраняет покрытие evidence-derived
-living-room eye/ceiling probes. Пользователь подтвердил, что ранее сообщённая
-rain-проблема теперь устранена; perimeter/fog и Teimo/другие интерьеры остаются
-`PENDING`.
+living-room eye/ceiling probes.
+
+Hybrid migration v7 привязывает resolver к runtime player camera/listener,
+`ProductionAudioComposition` и Enviro rain-removal bridge. Последний масштабирует
+emission exact существующего эффекта `Rain` по continuous precipitation exposure,
+поскольку vendor removal zone сама удаляет fog/cloud output, но не rain
+`ParticleSystem`. Bootstrap содержит home house/garage volumes; streaming catalog
+содержит 20 authored volumes, включая Teimo shop/pub, Fleetari workshop,
+cabins, island cottage, rowhouse, dance pavilion, jail, abandoned houses,
+inspection hall/office, factory/farm/strawberry/home-yard machine halls и два
+bridge shelters. Полный audit классифицирует `24/24` active donor `NoRain`
+records; moving bus cabin остаётся dynamic presenter responsibility. Bootstrap
+ownership и zone validators: `0 errors / 0 warnings`; полный ручной маршрут по
+всем зданиям и door/window portal tuning остаются `PENDING`.
 
 ## Wind binding
 
@@ -198,6 +219,9 @@ duplicate active WindZone. Per-object Update writers не создаются.
 | `Logs/M07C_VisualRemediation2_WeatherPresentation.xml` | 53/53 PASS | vendor-neutral exposure/fog/frame contracts |
 | `Logs/M07C_VisualRemediation3_ProductionPlayMode.xml` | 6/6 PASS | production lifecycle and teardown |
 | `Logs/M07C_VisualRemediation2_WorldOnlyCompatibility.xml` | 1/1 PASS | explicit world-only compatibility |
+| `Logs/HybridEnvironmentV7EditMode.xml` | 28/28 PASS | rain/splash, fixed exposure, complete NoRain audit, zone math and validators |
+| `Logs/HybridEnvironmentV7PlayMode.xml` | 3/3 PASS | ownership, 20-zone streaming lifecycle and runtime splash binding |
+| `Logs/HybridEnvironmentV7Validation.log` | 0 errors / 0 warnings | Bootstrap ownership and weather-zone validation |
 | `Logs/M07C_VisualRemediation3_WorldBaseline.xml` | 8/10 | focused rerun reproduces the same two generated-material contract failures; not order pollution |
 | `Logs/M07C_VisualRemediation3_FullEditMode.xml` | 328/334 | four historical failures plus the same two current WorldBaseline material-contract failures |
 | Prior `Logs/M07C_VisualRemediation2_WorldFreeze.log` | PASS (prior evidence) | previous frozen result hash was unchanged; no fresh frozen PASS is claimed |

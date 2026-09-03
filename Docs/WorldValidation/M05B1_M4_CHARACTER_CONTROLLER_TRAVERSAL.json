@@ -28,16 +28,16 @@
         "garage_return_start"
     ],
     "pilotSceneSha256": "9c9c3ece4b0e6258f9326452c2347bd3e52b589c66034f92c834250cfbddb38d",
-    "playerPrefabSha256": "dccc3473784cfd2bb8be2e97916307677b468e21db4ff22634a3adcdd51c342e",
+    "playerPrefabSha256": "619a875fd111bdd2d1f63e3571f9cbc81e3b9b45206957bbc9717bbc75a8fab3",
     "noTeleportVerified": true,
     "stallGuardVerified": true,
     "crouchPassageVerified": true,
     "returnToStartVerified": true,
     "verticalReachVerified": true,
-    "traversalFrameCount": 35256,
-    "cumulativeHorizontalDistanceMeters": 62.7707633972168,
-    "maximumFrameHorizontalDisplacementMeters": 0.094970703125,
-    "maximumWaypointVerticalDeviationMeters": 0.2599998712539673,
+    "traversalFrameCount": 67460,
+    "cumulativeHorizontalDistanceMeters": 64.76598358154297,
+    "maximumFrameHorizontalDisplacementMeters": 0.035156067460775378,
+    "maximumWaypointVerticalDeviationMeters": 0.2099999189376831,
     "routeExtentXMeters": 17.0,
     "routeExtentZMeters": 10.399999618530274
 }

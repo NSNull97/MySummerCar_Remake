@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using MSC.Audio;
+using MSC.Audio.Composition;
+using MSC.Audio.UnityFallback;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools.Utils;
 
 namespace MSC.Tests.EditMode.AudioRuntime
 {
@@ -22,6 +25,229 @@ namespace MSC.Tests.EditMode.AudioRuntime
             }
 
             cleanup.Clear();
+        }
+
+        [Test]
+        public void WorldAmbientScheduleUsesRareInitialAndPeriodicChainsawWindows()
+        {
+            uint firstState = 0x4D534341u;
+            uint secondState = 0x4D534341u;
+
+            float firstInitial = WorldAmbientAudioPresenter.CalculateNextInterval(
+                ref firstState,
+                initial: true);
+            float secondInitial = WorldAmbientAudioPresenter.CalculateNextInterval(
+                ref secondState,
+                initial: true);
+            float periodic = WorldAmbientAudioPresenter.CalculateNextInterval(
+                ref firstState,
+                initial: false);
+
+            Assert.That(firstInitial, Is.InRange(300f, 900f));
+            Assert.That(secondInitial, Is.EqualTo(firstInitial));
+            Assert.That(periodic, Is.InRange(900f, 2100f));
+        }
+
+        [Test]
+        public void WorldAmbientRespondsToDaylightWeatherAndLocalChainsawPolicy()
+        {
+            float clearDay = WorldAmbientAudioPresenter.CalculateAmbientGain(
+                12d / 24d,
+                precipitation01: 0f,
+                wind01: 0.1f);
+            float rainyDay = WorldAmbientAudioPresenter.CalculateAmbientGain(
+                12d / 24d,
+                precipitation01: 0.8f,
+                wind01: 0.1f);
+            float night = WorldAmbientAudioPresenter.CalculateAmbientGain(
+                2d / 24d,
+                precipitation01: 0f,
+                wind01: 0f);
+
+            Assert.That(clearDay, Is.GreaterThan(0.8f));
+            Assert.That(rainyDay, Is.LessThan(clearDay * 0.35f));
+            Assert.That(night, Is.Zero.Within(0.0001f));
+            Assert.That(
+                WorldAmbientAudioPresenter.IsChainsawEligible(
+                    11d / 24d,
+                    paused: false,
+                    precipitation01: 0f,
+                    wind01: 0.2f,
+                    lightningRisk01: 0f),
+                Is.True);
+            Assert.That(
+                WorldAmbientAudioPresenter.IsChainsawEligible(
+                    11d / 24d,
+                    paused: false,
+                    precipitation01: 0.4f,
+                    wind01: 0.2f,
+                    lightningRisk01: 0f),
+                Is.False);
+
+            Vector3 homeKitchen = new Vector3(
+                161.89757f,
+                2.16918f,
+                -1033.2045f);
+            Assert.That(
+                Vector3.Distance(
+                    WorldAmbientAudioPresenter.ChainsawSourceWorldPosition,
+                    homeKitchen),
+                Is.InRange(50f, 90f));
+        }
+
+        [Test]
+        public void WorldAmbientPausePolicyUsesClockOrUnityTimeScale()
+        {
+            Assert.That(
+                WorldAmbientAudioPresenter.ShouldPausePlayback(
+                    gameTimePaused: false,
+                    unityTimeScale: 1f),
+                Is.False);
+            Assert.That(
+                WorldAmbientAudioPresenter.ShouldPausePlayback(
+                    gameTimePaused: true,
+                    unityTimeScale: 1f),
+                Is.True);
+            Assert.That(
+                WorldAmbientAudioPresenter.ShouldPausePlayback(
+                    gameTimePaused: false,
+                    unityTimeScale: 0f),
+                Is.True);
+            Assert.That(
+                WorldAmbientAudioPresenter.ShouldPausePlayback(
+                    gameTimePaused: false,
+                    unityTimeScale: float.NaN),
+                Is.True);
+        }
+
+        [Test]
+        public void WorldAmbientParityRosterContainsEveryDonorDayPhaseLayer()
+        {
+            IReadOnlyList<WorldAmbientLayerDefinition> layers =
+                WorldAmbientAudioPresenter.LayerDefinitions;
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            var events = new HashSet<string>(StringComparer.Ordinal);
+            for (int index = 0; index < layers.Count; index++)
+            {
+                Assert.That(ids.Add(layers[index].LayerId), Is.True);
+                events.Add(layers[index].EventId.Value);
+            }
+
+            Assert.That(layers.Count, Is.EqualTo(11));
+            Assert.That(events, Does.Contain(
+                AudioProjectIds.Events.WorldBirdsMorning.Value));
+            Assert.That(events, Does.Contain(
+                AudioProjectIds.Events.WorldBirdsDay.Value));
+            Assert.That(events, Does.Contain(
+                AudioProjectIds.Events.WorldBirdsEvening.Value));
+            Assert.That(events, Does.Contain(
+                AudioProjectIds.Events.WorldBirdsNight.Value));
+            Assert.That(events, Does.Contain(
+                AudioProjectIds.Events.WorldBirdsSwamp.Value));
+            Assert.That(events, Does.Contain(
+                AudioProjectIds.Events.WorldMeadow.Value));
+            Assert.That(events, Does.Contain(
+                AudioProjectIds.Events.WorldDog.Value));
+            Assert.That(events, Does.Contain(
+                AudioProjectIds.Events.WorldLakeAmbience.Value));
+        }
+
+        [Test]
+        public void WorldAmbientUsesDonorPhaseBoundariesAndGarageTranslation()
+        {
+            Assert.That(
+                WorldAmbientAudioPresenter.ResolvePhase(2d / 24d),
+                Is.EqualTo(WorldAmbientPhase.Night));
+            Assert.That(
+                WorldAmbientAudioPresenter.ResolvePhase(6d / 24d),
+                Is.EqualTo(WorldAmbientPhase.Morning));
+            Assert.That(
+                WorldAmbientAudioPresenter.ResolvePhase(12d / 24d),
+                Is.EqualTo(WorldAmbientPhase.Day));
+            Assert.That(
+                WorldAmbientAudioPresenter.ResolvePhase(18d / 24d),
+                Is.EqualTo(WorldAmbientPhase.Evening));
+
+            WorldAmbientLayerDefinition morning =
+                FindAmbientLayer("morning.birds");
+            Assert.That(
+                morning.WorldPosition,
+                Is.EqualTo(new Vector3(26.98f, 14.611f, -100.625f))
+                    .Using(Vector3ComparerWithEqualsOperator.Instance));
+        }
+
+        [Test]
+        public void WorldAmbientLayerGainHonorsPhaseWeatherAndDistance()
+        {
+            WorldAmbientLayerDefinition day = FindAmbientLayer("day.meadow");
+            float nearClear = WorldAmbientAudioPresenter.CalculateLayerGain(
+                day,
+                14d / 24d,
+                paused: false,
+                precipitation01: 0f,
+                wind01: 0f,
+                day.WorldPosition);
+            float nearRain = WorldAmbientAudioPresenter.CalculateLayerGain(
+                day,
+                14d / 24d,
+                paused: false,
+                precipitation01: 1f,
+                wind01: 0f,
+                day.WorldPosition);
+            float wrongPhase = WorldAmbientAudioPresenter.CalculateLayerGain(
+                day,
+                2d / 24d,
+                paused: false,
+                precipitation01: 0f,
+                wind01: 0f,
+                day.WorldPosition);
+            float outOfRange = WorldAmbientAudioPresenter.CalculateLayerGain(
+                day,
+                14d / 24d,
+                paused: false,
+                precipitation01: 0f,
+                wind01: 0f,
+                day.WorldPosition + Vector3.right * 2000f);
+
+            Assert.That(nearClear, Is.EqualTo(day.BaseVolume01).Within(0.0001f));
+            Assert.That(nearRain, Is.LessThan(nearClear * 0.2f));
+            Assert.That(wrongPhase, Is.Zero.Within(0.0001f));
+            Assert.That(outOfRange, Is.Zero.Within(0.0001f));
+        }
+
+        [Test]
+        public void DialogueFallbackAppliesAudibleSoftGainWithoutClipping()
+        {
+            float quiet = UnityDialogueGainFilter.ApplySoftGain(
+                0.08f,
+                UnityDialogueGainFilter.DefaultDialogueGain);
+            float loud = UnityDialogueGainFilter.ApplySoftGain(
+                1f,
+                UnityDialogueGainFilter.DefaultDialogueGain);
+
+            Assert.That(quiet, Is.GreaterThan(0.18f));
+            Assert.That(loud, Is.LessThanOrEqualTo(1f));
+            Assert.That(loud, Is.GreaterThan(0.9f));
+        }
+
+        private static WorldAmbientLayerDefinition FindAmbientLayer(
+            string layerId)
+        {
+            IReadOnlyList<WorldAmbientLayerDefinition> layers =
+                WorldAmbientAudioPresenter.LayerDefinitions;
+            for (int index = 0; index < layers.Count; index++)
+            {
+                if (string.Equals(
+                        layers[index].LayerId,
+                        layerId,
+                        StringComparison.Ordinal))
+                {
+                    return layers[index];
+                }
+            }
+
+            Assert.Fail($"Ambient layer was not found: {layerId}");
+            return default;
         }
 
         [Test]

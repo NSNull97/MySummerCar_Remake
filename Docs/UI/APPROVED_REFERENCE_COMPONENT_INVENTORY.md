@@ -1,6 +1,8 @@
 # Milestone 08A — approved component inventory
 
-Status: `ReferenceLocked / ImplementationComplete / VisuallyApproved`
+Status: the unchanged menu/settings screens remain `ImplementationComplete /
+VisuallyApproved`; the `2026-08-05` HUD revision and `2026-08-15` Graphics
+camera card are `TargetedPlayModePassed / VisualApprovalPending`
 
 This inventory maps the locked visual slots to project-owned components and
 their data authority. It is deliberately capability-aware: a visual row may be
@@ -51,9 +53,12 @@ required while its interaction remains disabled.
 
 ## Graphics page
 
-Supported now: display mode, resolution, refresh rate, VSync and the existing
-Unity quality level. Motion blur and depth-of-field persist as user settings
-but are `AdapterPending` until the production Volume owns their application.
+Supported now: display mode, resolution, refresh rate, VSync, the existing
+Unity quality level, horizontal FOV and gameplay-camera far clip. The compact
+Camera card uses the vacated right-side area and keeps the authored `120
+degrees / 500 m` defaults. Far clip does not alter streaming, LOD or vegetation
+policy. Motion blur and depth-of-field persist as user settings but are
+`AdapterPending` until the production Volume owns their application.
 
 Capability-disabled: DLSS/upscaler-specific quality, frame generation, ray
 tracing and discrete texture/shadow/reflection/volumetric/vegetation/post-process
@@ -113,11 +118,18 @@ subtitles/captions and hold/toggle policy. Mods is a truthful
 |---|---|
 | `ClockHudView` | `IGameTimeService.Snapshot` |
 | `MoneyHudView` | future money/save provider; unavailable now |
-| `NeedsHudView` | future `IPlayerStatusViewModel`; unavailable now |
-| `NeedRowView` | icon, label, bar, percentage/unavailable state |
+| `NeedsHudView` | `IPlayerNeedsService.Snapshot` when composed; truthful unavailable state otherwise |
+| `NeedRowView` | icon, label, thin track/fill, amber indicator and percentage/unavailable state |
+| `HudShadowPass` | shared one-pixel dark shadow on text, icons, tracks, fills and indicators |
 
-HUD glass is a stable semi-black translucent treatment. It owns no live camera
-capture, RenderTexture refresh cadence or blur pass.
+The post-08A user correction uses no persistent HUD glass. The upper-left
+vertical six-needs column and the upper-right clock/money stack are
+scene-integrated graphics with a restrained shadow for bright-background
+readability. They own no live camera capture,
+RenderTexture refresh cadence or blur pass. The optional user-enabled FPS
+counter remains separate from the default persistent composition, but uses the
+same minimal shadowed treatment: no panel or line, pure-white numeric value
+followed by an amber `FPS` suffix.
 
 An Editor/development-only `UiReviewDataFixture` provides deterministic values
 for visual comparison captures. It is visibly tagged in diagnostics and never

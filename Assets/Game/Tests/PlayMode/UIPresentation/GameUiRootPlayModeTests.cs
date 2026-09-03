@@ -1,9 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using MSC.Core.Lifecycle;
+using MSC.Economy;
+using MSC.Presentation.AntiAliasing;
+using MSC.Save;
 using MSC.UI.Presentation;
 using MSC.UI.Runtime.Routing;
 using MSC.UI.Runtime.Settings;
@@ -92,6 +96,7 @@ namespace MSC.Tests.PlayMode.UIPresentation
                 fixture.Root.ShowReviewScreen(route);
                 yield return null;
                 Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(route));
+                AssertActiveGraphicsInsideViewport(fixture.Root, route);
             }
 
             UiRouteId[] referencePendingRoutes =
@@ -108,6 +113,7 @@ namespace MSC.Tests.PlayMode.UIPresentation
                 fixture.Root.ShowReferencePendingReviewScreen(route);
                 yield return null;
                 Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(route));
+                AssertActiveGraphicsInsideViewport(fixture.Root, route);
                 if (route != UiRouteId.Loading)
                 {
                     Assert.That(EventSystem.current.currentSelectedGameObject, Is.Not.Null, route.ToString());
@@ -141,6 +147,67 @@ namespace MSC.Tests.PlayMode.UIPresentation
             yield return null;
             Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(UiRouteId.MainMenu));
 
+            yield return DestroyFixture(fixture);
+        }
+
+        [UnityTest]
+        public IEnumerator MainMenuDeveloperTools_InvokesComposedDevelopmentMenu()
+        {
+            bool invoked = false;
+            UiFixture fixture = CreateFixture(
+                startInMainMenu: true,
+                openDeveloperTools: () => invoked = true);
+            yield return null;
+
+            Transform main = FindRequired(
+                fixture.Root.transform,
+                UiRouteId.MainMenu.ToString());
+            Button developerTools = FindRequired(main, "DevTools")
+                .GetComponent<Button>();
+            developerTools.onClick.Invoke();
+
+            Assert.That(invoked, Is.True);
+            yield return DestroyFixture(fixture);
+        }
+
+        [UnityTest]
+        public IEnumerator NewGame_AppliesSelectedSatsumaColourBeforeActivation()
+        {
+            int appliedIndex = -1;
+            Color appliedColor = Color.clear;
+            UiFixture fixture = CreateFixture(
+                startInMainMenu: true,
+                configureNewGameVehiclePaint: (
+                    int paletteIndex,
+                    Color bodyColor,
+                    out string failure) =>
+                {
+                    appliedIndex = paletteIndex;
+                    appliedColor = bodyColor;
+                    failure = string.Empty;
+                    return true;
+                });
+            yield return null;
+
+            Transform main = FindRequired(
+                fixture.Root.transform,
+                UiRouteId.MainMenu.ToString());
+            Transform colourCard = FindRequired(main, "CarColourCard");
+            FindRequired(colourCard, "Colour7")
+                .GetComponent<Button>()
+                .onClick.Invoke();
+            FindRequired(main, "NewGame")
+                .GetComponent<Button>()
+                .onClick.Invoke();
+
+            Assert.That(appliedIndex, Is.EqualTo(7));
+            Color expected = new Color32(206, 196, 61, 255);
+            Assert.That(appliedColor.r, Is.EqualTo(expected.r).Within(0.0001f));
+            Assert.That(appliedColor.g, Is.EqualTo(expected.g).Within(0.0001f));
+            Assert.That(appliedColor.b, Is.EqualTo(expected.b).Within(0.0001f));
+            Assert.That(appliedColor.a, Is.EqualTo(expected.a).Within(0.0001f));
+            yield return null;
+            Assert.That(fixture.SessionGate.IsGameplayActive, Is.True);
             yield return DestroyFixture(fixture);
         }
 
@@ -196,7 +263,7 @@ namespace MSC.Tests.PlayMode.UIPresentation
 
             Transform colourCard = FindRequired(mainRoute, "CarColourCard");
             Button[] colourButtons = colourCard.GetComponentsInChildren<Button>(includeInactive: false);
-            Assert.That(colourButtons, Has.Length.EqualTo(10));
+            Assert.That(colourButtons, Has.Length.EqualTo(12));
             Assert.That(FindRequired(colourCard, "Colour0").GetComponent<Outline>().enabled, Is.True);
             colourButtons[1].onClick.Invoke();
             Assert.That(FindRequired(colourCard, "Colour0").GetComponent<Outline>().enabled, Is.False);
@@ -228,23 +295,153 @@ namespace MSC.Tests.PlayMode.UIPresentation
             yield return null;
             Transform hud = FindRequired(fixture.Root.transform, UiRouteId.InGameHud.ToString());
             Transform needs = FindRequired(hud, "Needs");
+            RectTransform needsRect = (RectTransform)needs;
+            RectTransform clockRect = (RectTransform)FindRequired(hud, "Clock");
+            RectTransform moneyRect = (RectTransform)FindRequired(hud, "Money");
+            RectTransform dayRect = (RectTransform)FindRequired(clockRect, "Day");
+            RectTransform dateRect = (RectTransform)FindRequired(clockRect, "Date");
+            Transform fpsCounter = FindRequired(hud, "FpsCounter");
+            RectTransform fpsRect = (RectTransform)fpsCounter;
+            Assert.That(
+                needsRect.anchoredPosition.x,
+                Is.LessThan(clockRect.anchoredPosition.x));
+            Assert.That(
+                needsRect.anchoredPosition.y,
+                Is.EqualTo(clockRect.anchoredPosition.y).Within(0.01f));
+            Assert.That(
+                moneyRect.anchoredPosition.x,
+                Is.EqualTo(clockRect.anchoredPosition.x).Within(0.01f));
+            Assert.That(
+                moneyRect.anchoredPosition.y,
+                Is.LessThan(clockRect.anchoredPosition.y));
+            Assert.That(dayRect.gameObject.activeSelf, Is.False);
+            Assert.That(dateRect.anchoredPosition.x, Is.EqualTo(0f).Within(0.01f));
+            Assert.That(dateRect.rect.width, Is.EqualTo(180f).Within(0.01f));
+            Assert.That(dateRect.GetComponent<Text>().alignment, Is.EqualTo(TextAnchor.MiddleRight));
+            Assert.That(dateRect.GetComponent<Text>().text, Is.EqualTo("FRI, 27 JUN"));
+            Assert.That(fpsCounter.gameObject.activeSelf, Is.True);
+            Assert.That(
+                fpsRect.anchoredPosition.x,
+                Is.GreaterThan(clockRect.anchoredPosition.x));
+            Assert.That(
+                fpsRect.anchoredPosition.y,
+                Is.LessThan(clockRect.anchoredPosition.y));
+            Text fpsLabel = FindRequired(fpsCounter, "FpsLabel").GetComponent<Text>();
+            Text fpsValue = FindRequired(fpsCounter, "FpsValue").GetComponent<Text>();
+            Assert.That(fpsLabel.text, Is.EqualTo("FPS"));
+            Assert.That(fpsLabel.color, Is.EqualTo(UiThemeTokens.Accent));
+            Assert.That(fpsValue.color, Is.EqualTo(Color.white));
+            Assert.That(fpsLabel.fontSize, Is.EqualTo(17));
+            Assert.That(fpsValue.fontSize, Is.EqualTo(17));
+            Assert.That(fpsLabel.fontSize, Is.EqualTo(fpsValue.fontSize));
+            Assert.That(
+                ((RectTransform)fpsValue.transform).anchoredPosition.x,
+                Is.LessThan(((RectTransform)fpsLabel.transform).anchoredPosition.x));
+            Assert.That(fpsLabel.GetComponent<Shadow>(), Is.Not.Null);
+            Assert.That(fpsValue.GetComponent<Shadow>(), Is.Not.Null);
+            Assert.That(fpsCounter.GetComponent<Mask>(), Is.Null);
+            Assert.That(FindOptional(fpsCounter, "BackdropSlice"), Is.Null);
+            Assert.That(FindOptional(fpsCounter, "Divider"), Is.Null);
+            FieldInfo frameSamplesField = typeof(GameUiRoot).GetField(
+                "frameSamples",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(frameSamplesField, Is.Not.Null);
+            var frameSamples = (Queue<float>)frameSamplesField.GetValue(fixture.Root);
+            frameSamples.Clear();
+            for (int index = 0; index < 30; index++)
+            {
+                frameSamples.Enqueue(0.01f);
+            }
+
+            MethodInfo refreshFps = typeof(GameUiRoot).GetMethod(
+                "RefreshHudFpsCounter",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(refreshFps, Is.Not.Null);
+            refreshFps.Invoke(fixture.Root, new object[] { true });
+            Assert.That(fpsValue.text, Is.EqualTo("100"));
+            Assert.That(fpsValue.text, Does.Not.Contain("FPS"));
             string[] needLabels =
             {
                 "NeedLabel0", "NeedLabel1", "NeedLabel2",
                 "NeedLabel3", "NeedLabel4", "NeedLabel5",
             };
+            float previousNeedY = float.PositiveInfinity;
             foreach (string label in needLabels)
             {
                 Assert.That(FindRequired(needs, label).GetComponent<Text>().text, Is.Not.Empty);
+                RectTransform group = (RectTransform)FindRequired(
+                    needs,
+                    "Need" + Array.IndexOf(needLabels, label));
+                Assert.That(group.anchoredPosition.x, Is.EqualTo(0f).Within(0.01f));
+                Assert.That(group.anchoredPosition.y, Is.LessThan(previousNeedY));
+                previousNeedY = group.anchoredPosition.y;
+            }
+
+            Transform moneyValue = FindRequired(FindRequired(hud, "Money"), "MoneyValue");
+            Transform moneyCurrency = FindRequired(FindRequired(hud, "Money"), "MoneyCurrency");
+            Assert.That(moneyValue.GetComponent<Text>().text, Is.EqualTo("12,345"));
+            Assert.That(moneyCurrency.GetComponent<Text>().text, Is.EqualTo("MK"));
+            Assert.That(moneyValue.GetComponent<Text>().fontSize, Is.EqualTo(17));
+            Assert.That(moneyCurrency.GetComponent<Text>().fontSize, Is.EqualTo(17));
+            Assert.That(
+                moneyValue.GetComponent<Text>().font.name,
+                Does.Contain("HelveticaNeue"));
+            Assert.That(
+                ((RectTransform)moneyValue).anchoredPosition.x,
+                Is.LessThan(((RectTransform)moneyCurrency).anchoredPosition.x));
+
+            Text[] allRouteTexts = fixture.Root.GetComponentsInChildren<Text>(includeInactive: true);
+            Assert.That(allRouteTexts, Is.Not.Empty);
+            foreach (Text routeText in allRouteTexts)
+            {
+                Assert.That(routeText.font, Is.Not.Null, routeText.name);
+                Assert.That(routeText.font.name, Does.Contain("HelveticaNeue"), routeText.name);
             }
 
             Text[] needValues = needs.GetComponentsInChildren<Text>(includeInactive: false)
                 .Where(value => value.name.StartsWith("NeedValue", StringComparison.Ordinal))
                 .ToArray();
-            Assert.That(needValues, Has.Length.EqualTo(6));
-            Assert.That(needValues.All(value => value.text.EndsWith("%", StringComparison.Ordinal)), Is.True);
+            Assert.That(needValues, Is.Empty);
+            Assert.That(
+                needs.GetComponentsInChildren<Text>(includeInactive: false)
+                    .Any(value => value.text.Contains("%", StringComparison.Ordinal)),
+                Is.False);
+            Assert.That(FindRequired(hud, "Clock").GetComponentInChildren<Shadow>(), Is.Not.Null);
+            Assert.That(FindRequired(hud, "Money").GetComponentInChildren<Shadow>(), Is.Not.Null);
+            float[] reviewValues = { 0.18f, 0.36f, 0.22f, 0.28f, 0.44f, 0.71f };
+            for (int index = 0; index < 6; index++)
+            {
+                Transform group = FindRequired(needs, "Need" + index);
+                Assert.That(FindRequired(group, "NeedLabel" + index).GetComponent<Text>().fontSize, Is.EqualTo(14));
+                Assert.That(FindOptional(group, "NeedValue" + index), Is.Null);
+                RectTransform track = (RectTransform)FindRequired(group, "NeedTrack" + index);
+                Assert.That(track.rect.width, Is.EqualTo(112f).Within(0.01f));
+                Assert.That(track.rect.height, Is.EqualTo(3f).Within(0.01f));
+                Image needIcon = FindRequired(group, "NeedIcon" + index).GetComponent<Image>();
+                Assert.That(((RectTransform)needIcon.transform).rect.width, Is.EqualTo(28f).Within(0.01f));
+                Assert.That(needIcon.color, Is.EqualTo(Color.white));
+                Assert.That(needIcon.sprite.name, Does.StartWith("UI08A_Lucide_"));
+                Assert.That(needIcon.sprite.texture.mipmapCount, Is.EqualTo(1));
+                Assert.That(needIcon.sprite.texture.width, Is.EqualTo(64));
+                Assert.That(needIcon.GetComponent<Shadow>(), Is.Not.Null);
+                Assert.That(FindRequired(group, "NeedTrack" + index).GetComponent<Shadow>(), Is.Not.Null);
+                Image fill = FindRequired(group, "NeedFill" + index).GetComponent<Image>();
+                Assert.That(fill.type, Is.EqualTo(Image.Type.Filled));
+                Assert.That(fill.fillMethod, Is.EqualTo(Image.FillMethod.Horizontal));
+                Assert.That(fill.fillAmount, Is.EqualTo(reviewValues[index]).Within(0.001f));
+                Assert.That(fill.sprite, Is.Not.Null);
+                Assert.That(fill.GetComponent<Shadow>(), Is.Not.Null);
+                Image indicator = FindRequired(group, "NeedIndicator" + index).GetComponent<Image>();
+                Assert.That(((RectTransform)indicator.transform).rect.width, Is.EqualTo(7f).Within(0.01f));
+                Assert.That(indicator.color, Is.EqualTo(Color.white));
+                Assert.That(indicator.GetComponent<Shadow>(), Is.Not.Null);
+            }
 
-            string[] forbiddenNames = { "gps", "minimap", "quest", "telemetry", "hotbar" };
+            string[] forbiddenNames =
+            {
+                "gps", "minimap", "quest", "telemetry", "hotbar",
+                "speedometer", "tachometer", "gear", "fuel",
+            };
             string[] hudNames = hud.GetComponentsInChildren<Transform>(includeInactive: true)
                 .Select(value => value.name.ToLowerInvariant())
                 .ToArray();
@@ -252,6 +449,236 @@ namespace MSC.Tests.PlayMode.UIPresentation
             {
                 Assert.That(hudNames.Any(value => value.Contains(forbidden)), Is.False, forbidden);
             }
+
+            yield return DestroyFixture(fixture);
+        }
+
+        [UnityTest]
+        public IEnumerator NewGame_WaitsForGameplayWorldPreparationBeforeActivation()
+        {
+            UiFixture fixture = CreateFixture(
+                startInMainMenu: true,
+                gameplayPrepared: false);
+            yield return null;
+
+            Transform mainRoute = FindRequired(
+                fixture.Root.transform,
+                UiRouteId.MainMenu.ToString());
+            FindRequired(mainRoute, "NewGame").GetComponent<Button>()
+                .onClick.Invoke();
+
+            Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(UiRouteId.Loading));
+            Assert.That(fixture.SessionGate.IsGameplayActive, Is.False);
+            yield return null;
+
+            Assert.That(fixture.SessionGate.PreparationAttemptCount, Is.EqualTo(1));
+            Assert.That(fixture.SessionGate.IsGameplayPreparationRunning, Is.True);
+            Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(UiRouteId.Loading));
+            Assert.That(fixture.SessionGate.ActivationAttemptCount, Is.Zero);
+
+            fixture.SessionGate.CompletePreparation();
+            yield return null;
+
+            Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(UiRouteId.InGameHud));
+            Assert.That(fixture.SessionGate.IsGameplayPrepared, Is.True);
+            Assert.That(fixture.SessionGate.IsGameplayActive, Is.True);
+            Assert.That(fixture.SessionGate.ActivationAttemptCount, Is.EqualTo(1));
+
+            yield return DestroyFixture(fixture);
+        }
+
+        [UnityTest]
+        public IEnumerator NativeSaveSlots_EnableContinueAndRequestCleanSessionLoad()
+        {
+            var service = new SaveServiceProbe(
+                CreateSlot("slot-old", "Old save", "2026-07-20T08:00:00.0000000Z"),
+                CreateSlot("slot-new", "Latest save", "2026-07-21T08:00:00.0000000Z"));
+            string requestedSlot = null;
+            bool RequestLoad(string slotId, out string failure)
+            {
+                requestedSlot = slotId;
+                failure = string.Empty;
+                return true;
+            }
+
+            UiFixture fixture = CreateFixture(
+                startInMainMenu: true,
+                saveService: service,
+                requestLoad: RequestLoad);
+            yield return null;
+
+            Transform main = FindRequired(fixture.Root.transform, UiRouteId.MainMenu.ToString());
+            Button continueButton = FindRequired(main, "Continue").GetComponent<Button>();
+            Button loadButton = FindRequired(main, "LoadGame").GetComponent<Button>();
+            Assert.That(continueButton.interactable, Is.True);
+            Assert.That(loadButton.interactable, Is.True);
+            Assert.That(
+                FindRequired(continueButton.transform, "ContinueHelper").GetComponent<Text>().text,
+                Does.Contain("Latest save"));
+
+            continueButton.onClick.Invoke();
+            Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(UiRouteId.Loading));
+            yield return null;
+
+            Assert.That(requestedSlot, Is.EqualTo("slot-new"));
+            Assert.That(service.LoadCallCount, Is.Zero, "UI must not restore into an already revealed world.");
+            yield return DestroyFixture(fixture);
+        }
+
+        [UnityTest]
+        public IEnumerator CorruptOnlySlot_IsVisibleButCannotBeLoaded()
+        {
+            var service = new SaveServiceProbe(
+                new SaveSlotSummary(
+                    "slot-corrupt",
+                    null,
+                    string.Empty,
+                    isValid: false,
+                    message: "Integrity validation failed."));
+            UiFixture fixture = CreateFixture(
+                startInMainMenu: true,
+                saveService: service,
+                requestLoad: AcceptLoadRequest);
+            yield return null;
+
+            Transform main = FindRequired(
+                fixture.Root.transform,
+                UiRouteId.MainMenu.ToString());
+            Button continueButton =
+                FindRequired(main, "Continue").GetComponent<Button>();
+            Button loadButton =
+                FindRequired(main, "LoadGame").GetComponent<Button>();
+            Assert.That(continueButton.interactable, Is.False);
+            Assert.That(loadButton.interactable, Is.True);
+
+            loadButton.onClick.Invoke();
+            yield return null;
+
+            Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(UiRouteId.SaveStatus));
+            Assert.That(
+                FindRequired(fixture.Root.transform, "SaveStatusState")
+                    .GetComponent<Text>().text,
+                Does.Match("(?i)(invalid|поврежден)"));
+            Assert.That(
+                FindRequired(fixture.Root.transform, "SaveStatusLoad")
+                    .GetComponent<Button>().interactable,
+                Is.False);
+
+            yield return DestroyFixture(fixture);
+        }
+
+        [UnityTest]
+        public IEnumerator StartupRecoveryStatus_IsPresentedAfterUiBinding()
+        {
+            var service = new SaveServiceProbe(
+                CreateSlot(
+                    "slot-recovered",
+                    "Recovered save",
+                    "2026-07-21T08:00:00.0000000Z"));
+            UiFixture fixture = CreateFixture(
+                startInMainMenu: true,
+                saveService: service,
+                requestLoad: AcceptLoadRequest,
+                initialSaveReadStatus:
+                    SaveReadStatus.RecoveredFromInterruptedWrite);
+            yield return null;
+
+            fixture.Root.ShowReferencePendingReviewScreen(UiRouteId.SaveStatus);
+            yield return null;
+
+            Assert.That(
+                FindRequired(fixture.Root.transform, "SaveStatusOperation")
+                    .GetComponent<Text>().text,
+                Does.Match("(?i)(interrupted|прерванн)"));
+            Transform notice = FindRequired(
+                fixture.Root.transform,
+                "SettingsNotice");
+            Assert.That(notice.gameObject.activeSelf, Is.True);
+            Assert.That(
+                FindRequired(notice, "NoticeText").GetComponent<Text>().text,
+                Does.Match("(?i)(recovered|восстанов)"));
+
+            yield return DestroyFixture(fixture);
+        }
+
+        [UnityTest]
+        public IEnumerator StartupLoadFailure_IsPresentedAfterUiBinding()
+        {
+            var service = new SaveServiceProbe(
+                CreateSlot(
+                    "slot-failed",
+                    "Failed save",
+                    "2026-07-21T08:00:00.0000000Z"));
+            UiFixture fixture = CreateFixture(
+                startInMainMenu: true,
+                saveService: service,
+                requestLoad: AcceptLoadRequest,
+                initialSaveStatus: "Integrity validation failed.");
+            yield return null;
+
+            Transform notice = FindRequired(
+                fixture.Root.transform,
+                "SettingsNotice");
+            Assert.That(notice.gameObject.activeSelf, Is.True);
+            Assert.That(
+                FindRequired(notice, "NoticeText").GetComponent<Text>().text,
+                Does.Match("(?i)(load|загруз)"));
+
+            fixture.Root.ShowReferencePendingReviewScreen(UiRouteId.SaveStatus);
+            yield return null;
+            Assert.That(
+                FindRequired(fixture.Root.transform, "SaveStatusOperation")
+                    .GetComponent<Text>().text,
+                Does.Contain("Integrity validation failed."));
+
+            yield return DestroyFixture(fixture);
+        }
+
+        [UnityTest]
+        public IEnumerator PauseSaveStatus_WritesThroughRealServiceAndRefreshesSlotMetadata()
+        {
+            var service = new SaveServiceProbe();
+            UiFixture fixture = CreateFixture(
+                startInMainMenu: false,
+                saveService: service,
+                requestLoad: AcceptLoadRequest,
+                createSaveRequest: slotId => new SaveRequest
+                {
+                    SlotId = slotId,
+                    BuildId = "ui-test",
+                    Metadata = new SaveMetadata
+                    {
+                        DisplayName = "Garage save",
+                        GameTimestamp = "SAT 14:37",
+                        LocationStableId = "home.garage",
+                    },
+                },
+                preferredSaveSlotId: "slot-active");
+            yield return null;
+
+            InvokePrivate(fixture.Root, "EnterPause");
+            FindRequired(fixture.Root.transform, "PauseSaveStatus")
+                .GetComponent<Button>().onClick.Invoke();
+            yield return null;
+
+            Button saveButton = FindRequired(fixture.Root.transform, "SaveStatusSave")
+                .GetComponent<Button>();
+            Assert.That(saveButton.interactable, Is.True);
+            saveButton.onClick.Invoke();
+
+            Assert.That(service.LastSaveRequest, Is.Not.Null);
+            Assert.That(service.LastSaveRequest.SlotId, Is.EqualTo("slot-active"));
+            Assert.That(
+                FindRequired(fixture.Root.transform, "SaveStatusState").GetComponent<Text>().text,
+                Is.EqualTo("Garage save"));
+            Assert.That(
+                FindRequired(fixture.Root.transform, "SaveStatusDetail").GetComponent<Text>().text,
+                Does.Contain("home.garage"));
+            Assert.That(
+                FindRequired(fixture.Root.transform, "SaveStatusLoad").GetComponent<Button>().interactable,
+                Is.True);
+            Transform main = FindRequired(fixture.Root.transform, UiRouteId.MainMenu.ToString());
+            Assert.That(FindRequired(main, "Continue").GetComponent<Button>().interactable, Is.True);
 
             yield return DestroyFixture(fixture);
         }
@@ -414,8 +841,10 @@ namespace MSC.Tests.PlayMode.UIPresentation
             FindRequired(main, "NewGame").GetComponent<Button>().onClick.Invoke();
             yield return null;
             Transform hud = FindRequired(fixture.Root.transform, UiRouteId.InGameHud.ToString());
-            AssertRoundedSurface(FindRequired(hud, "ClockMoney"), 0.33f);
-            AssertRoundedSurface(FindRequired(hud, "Needs"), 0.33f);
+            Assert.That(FindRequired(hud, "Clock").GetComponent<Mask>(), Is.Null);
+            Assert.That(FindRequired(hud, "Money").GetComponent<Mask>(), Is.Null);
+            Assert.That(FindRequired(hud, "Needs").GetComponent<Mask>(), Is.Null);
+            Assert.That(FindRequired(hud, "FpsCounter").GetComponent<Mask>(), Is.Null);
 
             InvokePrivate(fixture.Root, "EnterPause");
             yield return null;
@@ -434,6 +863,32 @@ namespace MSC.Tests.PlayMode.UIPresentation
             Assert.That(fixture.Root.ActiveBackdropModeName, Is.EqualTo("MenuStatic"));
             Assert.That(fixture.Root.UsesPixelPerfectCanvas, Is.True);
             Assert.That(fixture.Root.ProceduralAssetsUseFractionalAlphaCoverage, Is.True);
+            CanvasScaler responsiveScaler = FindRequired(
+                    fixture.Root.transform,
+                    "M08A_GameUI")
+                .GetComponent<CanvasScaler>();
+            Assert.That(responsiveScaler, Is.Not.Null);
+            Assert.That(
+                responsiveScaler.screenMatchMode,
+                Is.EqualTo(CanvasScaler.ScreenMatchMode.Expand));
+            RectTransform responsiveFrame = (RectTransform)FindRequired(
+                fixture.Root.transform,
+                "ReferenceFrame_1672x941");
+            Canvas.ForceUpdateCanvases();
+            Assert.That(
+                responsiveFrame.rect.size,
+                Is.EqualTo(new Vector2(
+                    UiThemeTokens.ReferenceWidth,
+                    UiThemeTokens.ReferenceHeight)));
+            Assert.That(responsiveFrame.anchorMin, Is.EqualTo(new Vector2(0.5f, 0.5f)));
+            Assert.That(responsiveFrame.anchorMax, Is.EqualTo(new Vector2(0.5f, 0.5f)));
+            Assert.That(responsiveFrame.anchoredPosition, Is.EqualTo(Vector2.zero));
+            var frameCorners = new Vector3[4];
+            responsiveFrame.GetWorldCorners(frameCorners);
+            Assert.That(frameCorners[0].x, Is.GreaterThanOrEqualTo(-0.5f));
+            Assert.That(frameCorners[0].y, Is.GreaterThanOrEqualTo(-0.5f));
+            Assert.That(frameCorners[2].x, Is.LessThanOrEqualTo(Screen.width + 0.5f));
+            Assert.That(frameCorners[2].y, Is.LessThanOrEqualTo(Screen.height + 0.5f));
             Assert.That(fixture.Root.RegisteredGlassSurfaceCount, Is.GreaterThan(12));
             Transform backdropLayer = FindRequired(fixture.Root.transform, "BackdropLayer");
             Transform accessibleScaleRoot = FindRequired(
@@ -474,16 +929,15 @@ namespace MSC.Tests.PlayMode.UIPresentation
             Transform hud = FindRequired(
                 fixture.Root.transform,
                 UiRouteId.InGameHud.ToString());
-            Assert.That(FindRequired(hud, "ClockMoney").GetComponent<Mask>(), Is.Not.Null);
-            Assert.That(FindRequired(hud, "Needs").GetComponent<Mask>(), Is.Not.Null);
-            RawImage hudBackdrop = FindRequired(
-                FindRequired(hud, "ClockMoney"),
-                "BackdropSlice").GetComponent<RawImage>();
-            Assert.That(hudBackdrop.texture, Is.Null, "HUD must not live-capture the world camera.");
-            Assert.That(
-                FindRequired(FindRequired(hud, "ClockMoney"), "GlassTint")
-                    .GetComponent<Image>().color,
-                Is.EqualTo(UiThemeTokens.HudGlassTint));
+            Assert.That(FindRequired(hud, "Clock").GetComponent<Mask>(), Is.Null);
+            Assert.That(FindRequired(hud, "Money").GetComponent<Mask>(), Is.Null);
+            Assert.That(FindRequired(hud, "Needs").GetComponent<Mask>(), Is.Null);
+            Assert.That(FindRequired(hud, "FpsCounter").GetComponent<Mask>(), Is.Null);
+            Assert.That(FindOptional(FindRequired(hud, "Clock"), "BackdropSlice"), Is.Null);
+            Assert.That(FindOptional(FindRequired(hud, "Money"), "BackdropSlice"), Is.Null);
+            Assert.That(FindOptional(FindRequired(hud, "Needs"), "BackdropSlice"), Is.Null);
+            Assert.That(FindOptional(FindRequired(hud, "FpsCounter"), "BackdropSlice"), Is.Null);
+            Assert.That(FindOptional(FindRequired(hud, "FpsCounter"), "Divider"), Is.Null);
 
             InvokePrivate(fixture.Root, "EnterPause");
             yield return null;
@@ -571,6 +1025,89 @@ namespace MSC.Tests.PlayMode.UIPresentation
         }
 
         [UnityTest]
+        public IEnumerator NewGame_RestoresInputGateActivatedAfterMainMenuSuspension()
+        {
+            UiFixture fixture = CreateFixture(startInMainMenu: true);
+            var deferredPlayer = new GameObject("DeferredPlayerInput");
+            deferredPlayer.transform.SetParent(
+                fixture.GameplayRoot.transform,
+                worldPositionStays: false);
+            DeferredInputGateProbe deferredGate =
+                deferredPlayer.AddComponent<DeferredInputGateProbe>();
+            deferredPlayer.SetActive(false);
+            var intentionallyDisabledPlayer = new GameObject(
+                "IntentionallyDisabledPlayerInput");
+            intentionallyDisabledPlayer.transform.SetParent(
+                fixture.GameplayRoot.transform,
+                worldPositionStays: false);
+            DeferredInputGateProbe intentionallyDisabledGate =
+                intentionallyDisabledPlayer.AddComponent<DeferredInputGateProbe>();
+            intentionallyDisabledGate.enabled = false;
+            intentionallyDisabledPlayer.SetActive(false);
+
+            yield return null;
+            Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(UiRouteId.MainMenu));
+            Assert.That(deferredGate.enabled, Is.False);
+            Assert.That(deferredGate.IsGameplayInputEnabled, Is.False);
+
+            Transform mainMenu = FindRequired(
+                fixture.Root.transform,
+                UiRouteId.MainMenu.ToString());
+            FindRequired(mainMenu, "NewGame").GetComponent<Button>().onClick.Invoke();
+            Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(UiRouteId.Loading));
+
+            // ProductionWorldStreamingInstaller activates the prepared player
+            // before GameUiRoot restores the state captured behind Main Menu.
+            deferredPlayer.SetActive(true);
+            intentionallyDisabledPlayer.SetActive(true);
+            yield return null;
+
+            Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(UiRouteId.InGameHud));
+            Assert.That(fixture.SessionGate.IsGameplayActive, Is.True);
+            Assert.That(deferredGate.enabled, Is.True);
+            Assert.That(deferredGate.IsGameplayInputEnabled, Is.True);
+            Assert.That(intentionallyDisabledGate.enabled, Is.False);
+            Assert.That(
+                intentionallyDisabledGate.IsGameplayInputEnabled,
+                Is.False);
+
+            InvokePrivate(fixture.Root, "EnterPause");
+            yield return null;
+            Assert.That(deferredGate.IsGameplayInputEnabled, Is.False);
+
+            InvokePrivate(fixture.Root, "EnterGameplay");
+            yield return null;
+            Assert.That(deferredGate.IsGameplayInputEnabled, Is.True);
+
+            yield return DestroyFixture(fixture);
+        }
+
+        [UnityTest]
+        public IEnumerator LiveMoneyProvider_RefreshesAcceptedHudWithoutReviewData()
+        {
+            var money = new PlayerMoneyServiceProbe(300_000);
+            UiFixture fixture = CreateFixture(
+                startInMainMenu: false,
+                playerMoney: money);
+            yield return null;
+
+            Transform hud = FindRequired(
+                fixture.Root.transform,
+                UiRouteId.InGameHud.ToString());
+            Text moneyValue = FindRequired(
+                    FindRequired(hud, "Money"),
+                    "MoneyValue")
+                .GetComponent<Text>();
+            Assert.That(moneyValue.text, Is.EqualTo("3,000"));
+
+            money.SetBalance(123_456);
+            yield return null;
+            Assert.That(moneyValue.text, Is.EqualTo("1,235"));
+
+            yield return DestroyFixture(fixture);
+        }
+
+        [UnityTest]
         public IEnumerator PersistedAccessibilityScaleAndControls_AreAppliedAtBoot()
         {
             string settingsPath = Path.Combine(temporaryDirectory, "ui-settings.json");
@@ -578,6 +1115,9 @@ namespace MSC.Tests.PlayMode.UIPresentation
             document.Accessibility.UiScale = 0.85f;
             document.Controls.MouseSensitivity = 1.75f;
             document.Controls.GamepadDeadzone = 0.2f;
+            document.Graphics.HorizontalFieldOfViewDegrees = 100f;
+            document.Graphics.CameraFarClipMeters = 1800f;
+            document.Gameplay.LanguageId = "ru-RU";
             new UiSettingsJsonStore(settingsPath).Save(document);
 
             UiFixture fixture = CreateFixture(startInMainMenu: true, settingsPath: settingsPath);
@@ -590,7 +1130,144 @@ namespace MSC.Tests.PlayMode.UIPresentation
             Assert.That(backdrop.IsChildOf(scaleRoot), Is.False);
             Assert.That(fixture.LookSink.ApplyCount, Is.EqualTo(1));
             Assert.That(fixture.LookSink.MouseSensitivity, Is.EqualTo(1.75f).Within(0.001f));
+            Assert.That(fixture.LookSink.CameraApplyCount, Is.EqualTo(1));
+            Assert.That(
+                fixture.LookSink.HorizontalFieldOfViewDegrees,
+                Is.EqualTo(100f).Within(0.001f));
+            Assert.That(
+                fixture.LookSink.CameraFarClipMeters,
+                Is.EqualTo(1800f).Within(0.001f));
             Assert.That(InputSystem.settings.defaultDeadzoneMin, Is.EqualTo(0.2f).Within(0.001f));
+            Assert.That(fixture.LookSink.LocaleApplyCount, Is.EqualTo(1));
+            Assert.That(fixture.LookSink.LocaleId, Is.EqualTo("ru-RU"));
+
+            yield return DestroyFixture(fixture);
+        }
+
+        [UnityTest]
+        public IEnumerator CameraGraphicsSliders_ApplyLiveAndPersist()
+        {
+            string settingsPath = Path.Combine(
+                temporaryDirectory,
+                "camera-settings.json");
+            UiFixture fixture = CreateFixture(
+                startInMainMenu: true,
+                settingsPath: settingsPath);
+            yield return null;
+
+            fixture.Root.ShowReviewScreen(UiRouteId.SettingsGraphics);
+            yield return null;
+            Transform graphics = FindRequired(
+                fixture.Root.transform,
+                UiRouteId.SettingsGraphics.ToString());
+            Slider fieldOfView = FindRequired(
+                    graphics,
+                    "HorizontalFovSlider")
+                .GetComponent<Slider>();
+            Slider farClip = FindRequired(
+                    graphics,
+                    "CameraFarClipSlider")
+                .GetComponent<Slider>();
+
+            fieldOfView.value = Mathf.InverseLerp(
+                GraphicsSettingsDto.MinimumHorizontalFieldOfViewDegrees,
+                GraphicsSettingsDto.MaximumHorizontalFieldOfViewDegrees,
+                96f);
+            farClip.value = Mathf.InverseLerp(
+                GraphicsSettingsDto.MinimumCameraFarClipMeters,
+                GraphicsSettingsDto.MaximumCameraFarClipMeters,
+                2400f);
+            FindRequired(graphics, "Apply")
+                .GetComponent<Button>()
+                .onClick.Invoke();
+            yield return null;
+
+            Assert.That(fixture.LookSink.CameraApplyCount, Is.EqualTo(2));
+            Assert.That(
+                fixture.LookSink.HorizontalFieldOfViewDegrees,
+                Is.EqualTo(96f).Within(0.001f));
+            Assert.That(
+                fixture.LookSink.CameraFarClipMeters,
+                Is.EqualTo(2400f).Within(0.001f));
+
+            UiSettingsLoadResult reloaded =
+                new UiSettingsJsonStore(settingsPath).LoadOrCreate();
+            Assert.That(
+                reloaded.Document.Graphics.HorizontalFieldOfViewDegrees,
+                Is.EqualTo(96f).Within(0.001f));
+            Assert.That(
+                reloaded.Document.Graphics.CameraFarClipMeters,
+                Is.EqualTo(2400f).Within(0.001f));
+
+            yield return DestroyFixture(fixture);
+        }
+
+        [UnityTest]
+        public IEnumerator AntiAliasingGraphicsSettings_ApplyRuntimeAndPersist()
+        {
+            string settingsPath = Path.Combine(
+                temporaryDirectory,
+                "anti-aliasing-settings.json");
+            UiFixture fixture = CreateFixture(
+                startInMainMenu: true,
+                settingsPath: settingsPath);
+            yield return null;
+
+            fixture.Root.ShowReviewScreen(UiRouteId.SettingsGraphics);
+            yield return null;
+            Transform graphics = FindRequired(
+                fixture.Root.transform,
+                UiRouteId.SettingsGraphics.ToString());
+
+            Slider sharpening = FindRequired(
+                    graphics,
+                    "SharpeningSlider")
+                .GetComponent<Slider>();
+            FindRequired(graphics, "AntiAliasingPresetNext")
+                .GetComponent<Button>()
+                .onClick.Invoke();
+            Assert.That(
+                sharpening.value,
+                Is.EqualTo(Mathf.InverseLerp(
+                    GraphicsSettingsDto.MinimumAntiAliasingSharpening,
+                    GraphicsSettingsDto.MaximumAntiAliasingSharpening,
+                    0.34f)).Within(0.001f));
+            FindRequired(graphics, "AntiAliasingPrevious")
+                .GetComponent<Button>()
+                .onClick.Invoke();
+            sharpening.value = Mathf.InverseLerp(
+                GraphicsSettingsDto.MinimumAntiAliasingSharpening,
+                GraphicsSettingsDto.MaximumAntiAliasingSharpening,
+                0.19f);
+            FindRequired(graphics, "Apply")
+                .GetComponent<Button>()
+                .onClick.Invoke();
+            yield return null;
+
+            Assert.That(
+                fixture.Root.AppliedSettings.Graphics.AntiAliasingMode,
+                Is.EqualTo(UiAntiAliasingMode.Smaa));
+            Assert.That(
+                fixture.Root.AppliedSettings.Graphics.AntiAliasingPreset,
+                Is.EqualTo(UiAntiAliasingPreset.Custom));
+            Assert.That(
+                fixture.Root.AppliedSettings.Graphics.AntiAliasingSharpening,
+                Is.EqualTo(0.19f).Within(0.001f));
+            Assert.That(
+                AntiAliasingController.Instance.SelectedMode,
+                Is.EqualTo(AntiAliasingMode.Smaa));
+            Assert.That(
+                AntiAliasingController.Instance.SelectedPreset,
+                Is.EqualTo(AntiAliasingPreset.Custom));
+
+            UiSettingsLoadResult reloaded =
+                new UiSettingsJsonStore(settingsPath).LoadOrCreate();
+            Assert.That(
+                reloaded.Document.Graphics.AntiAliasingMode,
+                Is.EqualTo(UiAntiAliasingMode.Smaa));
+            Assert.That(
+                reloaded.Document.Graphics.AntiAliasingSharpening,
+                Is.EqualTo(0.19f).Within(0.001f));
 
             yield return DestroyFixture(fixture);
         }
@@ -623,8 +1300,35 @@ namespace MSC.Tests.PlayMode.UIPresentation
             fixture.Root.ShowReviewScreen(UiRouteId.SettingsGraphics);
             yield return null;
             Transform graphics = FindRequired(fixture.Root.transform, UiRouteId.SettingsGraphics.ToString());
-            Assert.That(FindRequired(graphics, "UpscalerQualityState").GetComponent<Text>().text, Is.Not.Empty);
-            Assert.That(FindRequired(graphics, "SharpeningState").GetComponent<Text>().text, Is.Not.Empty);
+            Transform upscalerQuality =
+                FindOptional(graphics, "UpscalerQualityState") ??
+                FindOptional(graphics, "UpscalerQualityValue");
+            Assert.That(
+                upscalerQuality,
+                Is.Not.Null,
+                "DLSS capability must expose either a truthful unavailable state or the supported quality value.");
+            Assert.That(upscalerQuality.GetComponent<Text>().text, Is.Not.Empty);
+            Assert.That(
+                FindRequired(graphics, "AntiAliasingValue")
+                    .GetComponent<Text>().text,
+                Is.Not.Empty);
+            Assert.That(
+                FindRequired(graphics, "AntiAliasingPresetValue")
+                    .GetComponent<Text>().text,
+                Is.Not.Empty);
+            Assert.That(
+                FindRequired(graphics, "SharpeningSlider")
+                    .GetComponent<Slider>().interactable,
+                Is.True);
+            Assert.That(FindRequired(graphics, "CameraSettingsPanel"), Is.Not.Null);
+            Assert.That(
+                FindRequired(graphics, "HorizontalFovSlider")
+                    .GetComponent<Slider>().interactable,
+                Is.True);
+            Assert.That(
+                FindRequired(graphics, "CameraFarClipSlider")
+                    .GetComponent<Slider>().interactable,
+                Is.True);
             Assert.That(FindOptional(graphics, "GraphicsPreview"), Is.Null);
             AssertStandardSettingsActions(graphics);
             Button graphicsReset = FindRequired(graphics, "Reset").GetComponent<Button>();
@@ -664,6 +1368,11 @@ namespace MSC.Tests.PlayMode.UIPresentation
             Assert.That(FindRequired(gameplay, "HudModeNext").GetComponent<Button>().interactable, Is.False);
             Assert.That(FindRequired(gameplay, "HintsToggle").GetComponent<Toggle>().interactable, Is.False);
             Assert.That(FindRequired(gameplay, "OutlinesToggle").GetComponent<Toggle>().interactable, Is.False);
+            Toggle fpsCounter =
+                FindRequired(gameplay, "ShowFpsCounterToggle")
+                    .GetComponent<Toggle>();
+            Assert.That(fpsCounter.interactable, Is.True);
+            Assert.That(fpsCounter.isOn, Is.True);
             Assert.That(FindRequired(gameplay, "DevelopmentUiToggle").GetComponent<Toggle>().interactable, Is.False);
             Assert.That(FindOptional(gameplay, "ManageProfiles"), Is.Null);
             Assert.That(FindOptional(gameplay, "ProfileCard"), Is.Null);
@@ -686,11 +1395,15 @@ namespace MSC.Tests.PlayMode.UIPresentation
             Assert.That(
                 FindRequired(gameplay, "LanguageValue").GetComponent<Text>().text,
                 Is.EqualTo("RUSSIAN"));
+            fpsCounter.isOn = false;
             FindRequired(gameplay, "Apply").GetComponent<Button>().onClick.Invoke();
             yield return null;
             Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(UiRouteId.SettingsGameplay));
             Assert.That(EventSystem.current.currentSelectedGameObject, Is.Not.Null);
             Assert.That(fixture.Root.AppliedSettings.Gameplay.LanguageId, Is.EqualTo("ru-RU"));
+            Assert.That(
+                fixture.Root.AppliedSettings.Gameplay.ShowFpsCounter,
+                Is.False);
             gameplay = FindRequired(fixture.Root.transform, UiRouteId.SettingsGameplay.ToString());
             Assert.That(
                 FindRequired(gameplay, "LanguageValue").GetComponent<Text>().text,
@@ -744,7 +1457,19 @@ namespace MSC.Tests.PlayMode.UIPresentation
             yield return DestroyFixture(fixture);
         }
 
-        private UiFixture CreateFixture(bool startInMainMenu, string settingsPath = null)
+        private UiFixture CreateFixture(
+            bool startInMainMenu,
+            string settingsPath = null,
+            ISaveService saveService = null,
+            SaveLoadRequestHandler requestLoad = null,
+            Func<string, SaveRequest> createSaveRequest = null,
+            string preferredSaveSlotId = "manual-01",
+            string initialSaveStatus = null,
+            SaveReadStatus? initialSaveReadStatus = null,
+            bool gameplayPrepared = true,
+            IPlayerMoneyService playerMoney = null,
+            Action openDeveloperTools = null,
+            NewGameVehiclePaintHandler configureNewGameVehiclePaint = null)
         {
             var gameplay = new GameObject("GameplayRoot");
             GateProbe gate = gameplay.AddComponent<GateProbe>();
@@ -759,7 +1484,8 @@ namespace MSC.Tests.PlayMode.UIPresentation
             var rootObject = new GameObject("GameUiRootTest");
             GameUiRoot root = rootObject.AddComponent<GameUiRoot>();
             var sessionGate = new GameplaySessionGateProbe(
-                initiallyActive: !startInMainMenu);
+                initiallyActive: !startInMainMenu,
+                initiallyPrepared: gameplayPrepared);
             root.Initialize(new GameUiDependencies(
                 () => true,
                 gameTime: null,
@@ -769,7 +1495,17 @@ namespace MSC.Tests.PlayMode.UIPresentation
                 gameplay,
                 settingsPath ?? Path.Combine(temporaryDirectory, "ui-settings.json"),
                 startInMainMenu,
-                gameplaySessionGate: sessionGate));
+                gameplaySessionGate: sessionGate,
+                saveService: saveService,
+                requestLoad: requestLoad,
+                createSaveRequest: createSaveRequest,
+                preferredSaveSlotId: preferredSaveSlotId,
+                initialSaveStatus: initialSaveStatus,
+                initialSaveReadStatus: initialSaveReadStatus,
+                playerMoney: playerMoney,
+                openDeveloperTools: openDeveloperTools,
+                configureNewGameVehiclePaint:
+                    configureNewGameVehiclePaint));
             return new UiFixture(
                 root,
                 gameplay,
@@ -792,6 +1528,27 @@ namespace MSC.Tests.PlayMode.UIPresentation
             InputActionMap system = asset.AddActionMap("System");
             system.AddAction("Pause", InputActionType.Button).AddBinding("<Keyboard>/escape");
             return asset;
+        }
+
+        private static bool AcceptLoadRequest(string slotId, out string failure)
+        {
+            failure = string.Empty;
+            return true;
+        }
+
+        private static SaveSlotSummary CreateSlot(string slotId, string displayName, string updatedUtc)
+        {
+            return new SaveSlotSummary(
+                slotId,
+                new SaveMetadata
+                {
+                    DisplayName = displayName,
+                    GameTimestamp = "SAT 14:37",
+                    LocationStableId = "home.garage",
+                },
+                updatedUtc,
+                isValid: true,
+                message: string.Empty);
         }
 
         private static IEnumerator DestroyFixture(UiFixture fixture)
@@ -827,6 +1584,38 @@ namespace MSC.Tests.PlayMode.UIPresentation
             Assert.That(actual.anchoredPosition.y, Is.EqualTo(expected.anchoredPosition.y).Within(0.01f), context + " position.y");
             Assert.That(actual.sizeDelta.x, Is.EqualTo(expected.sizeDelta.x).Within(0.01f), context + " size.x");
             Assert.That(actual.sizeDelta.y, Is.EqualTo(expected.sizeDelta.y).Within(0.01f), context + " size.y");
+        }
+
+        private static void AssertActiveGraphicsInsideViewport(
+            GameUiRoot root,
+            UiRouteId route)
+        {
+            Canvas.ForceUpdateCanvases();
+            Transform routeRoot = FindRequired(root.transform, route.ToString());
+            Graphic[] graphics = routeRoot.GetComponentsInChildren<Graphic>(
+                includeInactive: false);
+            var corners = new Vector3[4];
+            foreach (Graphic graphic in graphics)
+            {
+                RectTransform rect = graphic.rectTransform;
+                rect.GetWorldCorners(corners);
+                Assert.That(
+                    corners[0].x,
+                    Is.GreaterThanOrEqualTo(-0.5f),
+                    route + "/" + graphic.name + " left");
+                Assert.That(
+                    corners[0].y,
+                    Is.GreaterThanOrEqualTo(-0.5f),
+                    route + "/" + graphic.name + " bottom");
+                Assert.That(
+                    corners[2].x,
+                    Is.LessThanOrEqualTo(Screen.width + 0.5f),
+                    route + "/" + graphic.name + " right");
+                Assert.That(
+                    corners[2].y,
+                    Is.LessThanOrEqualTo(Screen.height + 0.5f),
+                    route + "/" + graphic.name + " top");
+            }
         }
 
         private static void AssertRoundedSurface(Transform value, float minimumRadiusRatio)
@@ -1003,10 +1792,32 @@ namespace MSC.Tests.PlayMode.UIPresentation
             public void SetUiSuppressed(bool suppressed) => UiSuppressed = suppressed;
         }
 
-        private sealed class LookSettingsProbe : MonoBehaviour, IPlayerLookSettingsSink
+        private sealed class DeferredInputGateProbe :
+            MonoBehaviour,
+            IGameplayInputGate
+        {
+            public bool IsGameplayInputEnabled =>
+                enabled && gameObject.activeInHierarchy;
+
+            public void SetGameplayInputEnabled(bool inputEnabled)
+            {
+                enabled = inputEnabled;
+            }
+        }
+
+        private sealed class LookSettingsProbe :
+            MonoBehaviour,
+            IPlayerLookSettingsSink,
+            IPlayerCameraSettingsSink,
+            IGameplayLocaleSettingsSink
         {
             public int ApplyCount { get; private set; }
             public float MouseSensitivity { get; private set; }
+            public int CameraApplyCount { get; private set; }
+            public float HorizontalFieldOfViewDegrees { get; private set; }
+            public float CameraFarClipMeters { get; private set; }
+            public int LocaleApplyCount { get; private set; }
+            public string LocaleId { get; private set; } = string.Empty;
 
             public void ApplyLookSettings(
                 float mouseSensitivityMultiplier,
@@ -1017,20 +1828,61 @@ namespace MSC.Tests.PlayMode.UIPresentation
                 ApplyCount++;
                 MouseSensitivity = mouseSensitivityMultiplier;
             }
-        }
 
-        private sealed class GameplaySessionGateProbe : IGameplaySessionGate
-        {
-            public GameplaySessionGateProbe(bool initiallyActive)
+            public void ApplyCameraSettings(
+                float horizontalFieldOfViewDegrees,
+                float farClipPlaneMeters)
             {
-                IsGameplayActive = initiallyActive;
+                CameraApplyCount++;
+                HorizontalFieldOfViewDegrees = horizontalFieldOfViewDegrees;
+                CameraFarClipMeters = farClipPlaneMeters;
             }
 
-            public bool IsGameplayPrepared => true;
+            public void ApplyGameplayLocale(string localeId)
+            {
+                LocaleApplyCount++;
+                LocaleId = localeId ?? string.Empty;
+            }
+        }
+
+        private sealed class GameplaySessionGateProbe :
+            IGameplaySessionPreparationGate
+        {
+            public GameplaySessionGateProbe(
+                bool initiallyActive,
+                bool initiallyPrepared)
+            {
+                IsGameplayActive = initiallyActive;
+                IsGameplayPrepared = initiallyPrepared;
+            }
+
+            public bool IsGameplayPrepared { get; private set; }
 
             public bool IsGameplayActive { get; private set; }
 
+            public bool IsGameplayPreparationRunning { get; private set; }
+
+            public string LastGameplayPreparationFailure { get; private set; } =
+                string.Empty;
+
+            public int PreparationAttemptCount { get; private set; }
+
             public int ActivationAttemptCount { get; private set; }
+
+            public bool TryBeginGameplayPreparation(out string failure)
+            {
+                PreparationAttemptCount++;
+                IsGameplayPreparationRunning = !IsGameplayPrepared;
+                LastGameplayPreparationFailure = string.Empty;
+                failure = string.Empty;
+                return true;
+            }
+
+            public void CompletePreparation()
+            {
+                IsGameplayPrepared = true;
+                IsGameplayPreparationRunning = false;
+            }
 
             public bool TryActivateGameplay(out string failure)
             {
@@ -1038,6 +1890,120 @@ namespace MSC.Tests.PlayMode.UIPresentation
                 IsGameplayActive = true;
                 failure = string.Empty;
                 return true;
+            }
+        }
+
+        private sealed class SaveServiceProbe : ISaveService
+        {
+            private readonly List<SaveSlotSummary> slots;
+
+            public SaveServiceProbe(params SaveSlotSummary[] initialSlots)
+            {
+                slots = new List<SaveSlotSummary>(initialSlots ?? Array.Empty<SaveSlotSummary>());
+            }
+
+            public bool IsOperationInProgress { get; private set; }
+
+            public int LoadCallCount { get; private set; }
+
+            public SaveRequest LastSaveRequest { get; private set; }
+
+            public event EventHandler<SaveOperationEventArgs> OperationStarted;
+            public event EventHandler<SaveOperationEventArgs> OperationCompleted;
+            public event EventHandler<SaveOperationEventArgs> OperationFailed;
+
+            public event EventHandler<SaveOperationEventArgs> RecoveryPerformed
+            {
+                add { }
+                remove { }
+            }
+
+            public SaveWriteResult Save(SaveRequest request)
+            {
+                IsOperationInProgress = true;
+                OperationStarted?.Invoke(
+                    this,
+                    new SaveOperationEventArgs(SaveOperationKind.Save, request.SlotId, "Saving."));
+                try
+                {
+                    LastSaveRequest = request;
+                    string updatedUtc = "2026-07-21T09:00:00.0000000Z";
+                    slots.RemoveAll(slot => string.Equals(
+                        slot.SlotId,
+                        request.SlotId,
+                        StringComparison.Ordinal));
+                    slots.Add(new SaveSlotSummary(
+                        request.SlotId,
+                        request.Metadata,
+                        updatedUtc,
+                        isValid: true,
+                        message: string.Empty));
+                    var document = new SaveDocument
+                    {
+                        Header = new SaveHeader
+                        {
+                            SlotId = request.SlotId,
+                            UpdatedUtc = updatedUtc,
+                        },
+                        Metadata = request.Metadata.DeepClone(),
+                    };
+                    SaveWriteResult result = new SaveWriteResult(request.SlotId, "probe", document);
+                    OperationCompleted?.Invoke(
+                        this,
+                        new SaveOperationEventArgs(SaveOperationKind.Save, request.SlotId, "Saved."));
+                    return result;
+                }
+                catch (Exception exception)
+                {
+                    OperationFailed?.Invoke(
+                        this,
+                        new SaveOperationEventArgs(
+                            SaveOperationKind.Save,
+                            request?.SlotId,
+                            exception.Message,
+                            exception));
+                    throw;
+                }
+                finally
+                {
+                    IsOperationInProgress = false;
+                }
+            }
+
+            public SaveLoadResult Load(string slotId)
+            {
+                LoadCallCount++;
+                throw new InvalidOperationException("UI must request a clean-session load instead.");
+            }
+
+            public IReadOnlyList<SaveSlotSummary> EnumerateSlots()
+            {
+                return slots.ToArray();
+            }
+        }
+
+        private sealed class PlayerMoneyServiceProbe : IPlayerMoneyService
+        {
+            private ulong revision;
+            private long balanceMinorUnits;
+
+            public PlayerMoneyServiceProbe(long initialBalanceMinorUnits)
+            {
+                balanceMinorUnits = initialBalanceMinorUnits;
+            }
+
+            public EconomySnapshot Snapshot => new EconomySnapshot(
+                revision,
+                balanceMinorUnits,
+                0);
+
+            public event Action<EconomySnapshot> StateChanged;
+
+            public void SetBalance(long configuredBalanceMinorUnits)
+            {
+                balanceMinorUnits = configuredBalanceMinorUnits;
+                revision++;
+                StateChanged?.Invoke(Snapshot);
             }
         }
     }

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "manifestId": "phase1-world-ambient-parity-v1",
+  "classification": "BehavioralReference;ConfigurationTransferred;TemporaryDirectImport;Reimplemented",
+  "sourceSceneRelativePath": "raw/world/milestone-04a1/assetripper-unity-project/ExportedProject/Assets/_Scenes/GAME.unity",
+  "sourceSceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4",
+  "sourceCoordinateSpace": "donor-world",
+  "projectCoordinateSpace": "m04a1-garage-anchored",
+  "sourceToProjectTranslation": [169.98, 1.611, -1040.625],
+  "timeBoundariesHours": [6.0, 12.0, 18.0, 24.0],
+  "clips": [
+    { "eventId": "audio.event.world.birds.morning", "source": "birds_morning.ogg", "sha256": "00C17DD2C4DCFA544B48B6FF0044CC61DF831B8FAD3406759825FE06F9220283", "phase": "Morning", "loop": true },
+    { "eventId": "audio.event.world.birds.day", "source": "birds_day.ogg", "sha256": "1AFB133150F2784CA947B4A10D347813A2CF6F3C348D219DB84F0B924ABAC1FC", "phase": "Day", "loop": true },
+    { "eventId": "audio.event.world.birds.evening", "source": "birds_evening.ogg", "sha256": "A7C1CEE2C777D7AB4583AA280328B19A69B749649A394626BAC6783B24A6495D", "phase": "Evening", "loop": true },
+    { "eventId": "audio.event.world.birds.night", "source": "birds_night.ogg", "sha256": "DB510A6FBA1F18F610FBED06946DA1ECD6D57E168AFBE8D762C263E1B71A3FAF", "phase": "Night", "loop": true },
+    { "eventId": "audio.event.world.birds.swamp", "source": "birds_swamp.ogg", "sha256": "69A6CFF9EF9996DDF02715C9230C6FCCEBE3B6B940B5602F97CD46E5ACE1D402", "phase": "Morning;Evening", "loop": true },
+    { "eventId": "audio.event.world.meadow", "source": "meadow.ogg", "sha256": "1CAD7831F4EB0869F3298DD2E9D972889CE0D3B2FE168B0BE53A099560B8A003", "phase": "Day", "loop": true },
+    { "eventId": "audio.event.world.chainsaw", "source": "chainsaw.ogg", "sha256": "2828D6977693DF60DA88634C6C6EAD030E2B165CEDDF15F404327B47762398AB", "phase": "DayFairWeatherRare", "loop": false },
+    { "eventId": "audio.event.world.dog", "source": "dog.ogg", "sha256": "D3C82EC2EC984159455672D9228CD11C17B1ADC730412FF9CD80615B6AE03DB6", "phase": "All", "loop": true },
+    { "eventId": "audio.event.world.lake.ambience", "source": "lake_water.ogg", "sha256": "5E3391C19D430E24E17F796F62A92B87E61B85D128AF57C0975A0E7A1039360D", "phase": "All", "loop": true },
+    { "eventId": "audio.event.world.wind_chime", "source": "wind_chime.ogg", "sha256": "C22FE3F864F756D2A370911A9FCBBCCC2938EE21FC2E3FCAF08EC4670CE78B49", "phase": "GameplayHookOnly", "loop": true },
+    { "eventId": "audio.event.world.mosquito", "source": "mosquito.ogg", "sha256": "48B471C8C8D3F94B721ECF0A491806FA9BDC8F4FEC835010F23DBB98C060791D", "phase": "GameplayHookOnly", "loop": true },
+    { "eventId": "audio.event.world.fly", "source": "fly.ogg", "sha256": "305D793C0BC59911BFC43145D6E347463D2DB3F6CE63A4FEC7350252BEEE3EE9", "phase": "GameplayHookOnly", "loop": true },
+    { "eventId": "audio.event.world.fly.variant", "source": "fly2.ogg", "sha256": "47AECC170FF683E48F802BCDD98161CB35149A15FA89A6DBC6FDB90CBBCF30A", "phase": "GameplayHookOnly", "loop": true },
+    { "eventId": "audio.event.world.wasp", "source": "wasp_fly2.ogg", "sha256": "CE11598AA1E77452729376C67CA9C137BF1FCF1F30DA461E9D7A80597961AF41", "phase": "GameplayHookOnly", "loop": true }
+  ],
+  "layers": [
+    { "id": "morning.birds", "eventId": "audio.event.world.birds.morning", "sourcePosition": [-143.0, 13.0, 940.0], "maxDistanceMeters": 1100.0 },
+    { "id": "morning.swamp", "eventId": "audio.event.world.birds.swamp", "sourcePosition": [1037.0, 13.0, 11.0], "maxDistanceMeters": 1200.0 },
+    { "id": "day.birds", "eventId": "audio.event.world.birds.day", "sourcePosition": [-128.0, 13.0, 893.0], "maxDistanceMeters": 1100.0 },
+    { "id": "day.meadow", "eventId": "audio.event.world.meadow", "sourcePosition": [-658.0, 13.0, -620.0], "maxDistanceMeters": 1100.0 },
+    { "id": "evening.birds", "eventId": "audio.event.world.birds.evening", "sourcePosition": [-356.0, 13.0, 908.0], "maxDistanceMeters": 1100.0 },
+    { "id": "evening.swamp", "eventId": "audio.event.world.birds.swamp", "sourcePosition": [978.0, 13.0, 56.0], "maxDistanceMeters": 1200.0 },
+    { "id": "night.birds", "eventId": "audio.event.world.birds.night", "sourcePosition": [-28.0, 13.0, 1015.0], "maxDistanceMeters": 800.0 },
+    { "id": "dog", "eventId": "audio.event.world.dog", "sourcePosition": [-487.0, 0.0, -412.0], "maxDistanceMeters": 900.0 },
+    { "id": "lake.cottage", "eventId": "audio.event.world.lake.ambience", "sourcePosition": [-794.2458, -3.695, 563.254], "maxDistanceMeters": 150.0 },
+    { "id": "lake.east", "eventId": "audio.event.world.lake.ambience", "sourcePosition": [18.0, -4.0, 212.0], "maxDistanceMeters": 150.0 },
+    { "id": "lake.village", "eventId": "audio.event.world.lake.ambience", "sourcePosition": [-1335.7971, -4.01, 979.8961], "maxDistanceMeters": 150.0 }
+  ],
+  "notes": "Donor PlayMaker, mixers and hierarchy are excluded. Runtime time/weather ownership is project-owned. The chainsaw position retains the explicit user-approved near-home correction. DINGONBIISI wind_chime and player/insect sources are imported as hooks but are not misclassified as unconditional global ambience."
+}

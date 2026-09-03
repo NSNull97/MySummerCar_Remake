@@ -72,9 +72,9 @@ namespace MSC.Editor.WorldBaseline
         public const int ExpectedSourceColliderDispositionCount = 1488;
         public const int ExpectedSourceRigidbodyAncestryColliderCount = 415;
         public const int ExpectedSafetyCriticalColliderCount = 32;
-        public const int ExpectedColliderCount = 586;
+        public const int ExpectedColliderCount = 585;
         public const int ExpectedMeshColliderCount = 276;
-        public const int ExpectedBoxColliderCount = 279;
+        public const int ExpectedBoxColliderCount = 278;
         public const int ExpectedCapsuleColliderCount = 31;
         public const int ExpectedSphereColliderCount = 0;
 

@@ -41,11 +41,18 @@ namespace MSC.Tests.PlayMode.WeatherProduction
             yield return SceneManager.LoadSceneAsync(
                 BootstrapScenePath,
                 LoadSceneMode.Single);
-            ProductionWorldStreamingInstaller installer = null;
+            ProductionWorldStreamingInstaller installer =
+                Object.FindFirstObjectByType<
+                    ProductionWorldStreamingInstaller>(
+                    FindObjectsInactive.Include);
+            Assert.That(installer, Is.Not.Null);
+            Assert.That(
+                installer.TryBeginGameplayPreparation(
+                    out string preparationFailure),
+                Is.True,
+                preparationFailure);
             for (int frame = 0; frame < 900; frame++)
             {
-                installer = Object.FindFirstObjectByType<
-                    ProductionWorldStreamingInstaller>(FindObjectsInactive.Include);
                 if (installer != null && installer.IsReady)
                 {
                     break;

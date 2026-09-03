@@ -1,0 +1,1204 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a8c98e65e0c4cc0a74d07db8d3400b1, type: 3}
+  m_Name: Phase1WorldLightingProbeCatalog
+  m_EditorClassIdentifier: MSC.World.Runtime::MSC.World.Lighting.WorldLightingProbeCatalog
+  catalogId: world-lighting.phase1-fixtures.v1
+  lights:
+  - lightId: world.light.0c5d200c7e7bdd606de1b7377d26774f
+    cellId: cell_-3_0
+    donorReferencePath: PERAJARVI/TerraceHouse/Apartments/LOD2/LOD/WC/toiletlamp
+    position: {x: -1120.6353, y: 4.2916627, z: 41.021667}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.9, b: 0.8, a: 1}
+    intensity: 2600
+    range: 12
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.11bdedc2424f0be3b5605604f147f975
+    cellId: cell_-3_-3
+    donorReferencePath: MAP/StreetLights/2/LOD/lightpole
+    position: {x: -1482.8458, y: 10.669872, z: -1479.4147}
+    rotationEulerAngles: {x: 55.992496, y: 88.07111, z: -0.0000030530002}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.141ca6c62d6a240aa5b300f0afab5132
+    cellId: cell_-3_0
+    donorReferencePath: STORE/LOD/GFX_Store/Lamps/office_lamp 10
+    position: {x: -1381.2227, y: 7.663999, z: 142.17213}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 32500
+    range: 9.52
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 6000
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.24717fb58a717fdddb2eb49caa4b9033
+    cellId: cell_-3_-1
+    donorReferencePath: MAP/StreetLights/1/LOD/lightpole
+    position: {x: -1530.9819, y: 15.619873, z: -58.890743}
+    rotationEulerAngles: {x: 55.99251, y: 65.857414, z: 0.0000030530014}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.29a30f4762c2e56b22c91263035533f4
+    cellId: cell_-3_0
+    donorReferencePath: INSPECTION/LOD/office_lamp 10
+    position: {x: -1357.2194, y: 7.308082, z: 222.31503}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.96, b: 0.9, a: 1}
+    intensity: 1200
+    range: 6.5
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0.1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.2ba413fd667b5d7d78eb69c64da0e1a2
+    cellId: cell_-3_0
+    donorReferencePath: STORE/LOD/GFX_Store/Lamps/office_lamp 5
+    position: {x: -1377.6667, y: 7.664001, z: 142.52922}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 32500
+    range: 9.52
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 6000
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.31cdabdbad11b49e170bdfe1603c063e
+    cellId: cell_-2_-4
+    donorReferencePath: LANDFILL/lightpole 1
+    position: {x: -604.29297, y: 23.909094, z: -1686.3771}
+    rotationEulerAngles: {x: 55.99251, y: 62.1863, z: 0.0000030530007}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.44779c4c4e4cb4dabce3dbc5e862e68c
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/LIVINGROOM/LOD_livingroom/lamp_hallway
+    position: {x: 160.02295, y: 3.4368477, z: -1030.6078}
+    rotationEulerAngles: {x: 90, y: 0, z: 0}
+    color: {r: 1, g: 0.9, b: 0.8, a: 1}
+    intensity: 1500
+    range: 5.5
+    spotInnerAngle: 78
+    spotOuterAngle: 118
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0.35
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.450510e720a076d53aeb44a05dd6480d
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/BEDROOM2/toilet_lamp 4
+    position: {x: 166.31563, y: 3.4368472, z: -1027.8579}
+    rotationEulerAngles: {x: 90, y: 0, z: 0}
+    color: {r: 1, g: 0.9, b: 0.8, a: 1}
+    intensity: 900
+    range: 4.2
+    spotInnerAngle: 82
+    spotOuterAngle: 122
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0.2
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.4b838825763b9266233ff52963a2d792
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/LIVINGROOM/LOD_livingroom/toilet_lamp 3
+    position: {x: 162.10258, y: 3.2381797, z: -1028.9606}
+    rotationEulerAngles: {x: 90, y: 0, z: 0}
+    color: {r: 1, g: 0.9, b: 0.8, a: 1}
+    intensity: 700
+    range: 3
+    spotInnerAngle: 75
+    spotOuterAngle: 115
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0.2
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.4f6ac2527ef70e970cb89ef70baaefa9
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/LOD/office_lamp 2
+    position: {x: 153.37553, y: 3.354, z: -1036.3374}
+    rotationEulerAngles: {x: 90, y: 0, z: 0}
+    color: {r: 1, g: 0.96, b: 0.9, a: 1}
+    intensity: 1800
+    range: 4.2
+    spotInnerAngle: 78
+    spotOuterAngle: 112
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.501e356e7b562a6d2e32ab24bfee8504
+    cellId: cell_-3_0
+    donorReferencePath: STORE/LOD/GFX_Store/Lamps/office_lamp 8
+    position: {x: -1376.8083, y: 7.6640015, z: 141.18736}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 32500
+    range: 9.52
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 6000
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.5321706220112780baeed0bbe56912b3
+    cellId: cell_-3_0
+    donorReferencePath: MAP/StreetLights/3/LOD/lightpole
+    position: {x: -1379.331, y: 13.527, z: 119.488}
+    rotationEulerAngles: {x: 75, y: 0, z: 24.229}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.544629484281dd807323b76f7ff61558
+    cellId: cell_-3_0
+    donorReferencePath: WATERFACILITY/LOD/office_lamp 14
+    position: {x: -1349.4529, y: 9.429, z: 303.13608}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.96, b: 0.9, a: 1}
+    intensity: 3200
+    range: 14
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.5ce3d5eaac2ef08c92a2033c7691107c
+    cellId: cell_-3_-4
+    donorReferencePath: MAP/StreetLights/2/LOD/lightpole
+    position: {x: -1490.0173, y: 11.849873, z: -1569.7467}
+    rotationEulerAngles: {x: 55.992504, y: 92.92738, z: -0.000003053001}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.66481b9e0a97c74cd440dc9268ca28fe
+    cellId: cell_-3_0
+    donorReferencePath: INSPECTION/LOD/office_lamp 11
+    position: {x: -1358.9203, y: 7.3080807, z: 221.49075}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.96, b: 0.9, a: 1}
+    intensity: 1200
+    range: 6.5
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0.1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.6a07d52868491a36248ac5e51ecd81d2
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/SAUNA/LOD_sauna/toilet_lamp 1
+    position: {x: 156.92699, y: 1.61, z: -1043.254}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.9, b: 0.8, a: 1}
+    intensity: 650
+    range: 3
+    spotInnerAngle: 72
+    spotOuterAngle: 112
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0.1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.6ec5b3ebe08e5c321e68a7d649fa2d83
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/BEDROOM1/Lamp Paper/lamp_paper
+    position: {x: 159.37042, y: 3.1599321, z: -1027.905}
+    rotationEulerAngles: {x: 90, y: 0, z: 0}
+    color: {r: 1, g: 0.9, b: 0.8, a: 1}
+    intensity: 900
+    range: 4.2
+    spotInnerAngle: 82
+    spotOuterAngle: 122
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.770b22bf8eb3d0bfeacfede083978dca
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/LIVINGROOM/LOD_livingroom/lamp_hallway
+    position: {x: 157.86172, y: 3.574, z: -1030.6177}
+    rotationEulerAngles: {x: 90, y: 0, z: 0}
+    color: {r: 1, g: 0.9, b: 0.8, a: 1}
+    intensity: 1500
+    range: 5.5
+    spotInnerAngle: 78
+    spotOuterAngle: 118
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0.35
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.78aeb3c71258a73257d315d8e8eeb0ed
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/KITCHEN/LOD_kitchen/kitchen_lamp
+    position: {x: 159.94843, y: 2.8189328, z: -1034.593}
+    rotationEulerAngles: {x: 90, y: 0, z: 0}
+    color: {r: 1, g: 0.9, b: 0.8, a: 1}
+    intensity: 1300
+    range: 5
+    spotInnerAngle: 80
+    spotOuterAngle: 120
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.7a9101fe7095437edc6457801233c5ab
+    cellId: cell_-3_-3
+    donorReferencePath: MAP/StreetLights/2/LOD/lightpole
+    position: {x: -1452.232, y: 13.689871, z: -1521.6262}
+    rotationEulerAngles: {x: 55.99252, y: 189.36113, z: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.8946ab55e770546f2c76e72945c54f24
+    cellId: cell_-3_0
+    donorReferencePath: MAP/StreetLights/3/LOD/lightpole 1
+    position: {x: -1355.972, y: 15.098, z: 136.196}
+    rotationEulerAngles: {x: 75, y: 0, z: 37.948}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.8b9d6187517e7976053089bbe5a0a94b
+    cellId: cell_-3_0
+    donorReferencePath: INSPECTION/LOD/office_lamp 12
+    position: {x: -1357.2894, y: 7.3080854, z: 218.1251}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.96, b: 0.9, a: 1}
+    intensity: 1200
+    range: 6.5
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0.1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.ae56ee210c250c8df284e03e0ea23dfa
+    cellId: cell_1_0
+    donorReferencePath: DANCEHALL/Lights/bulbs
+    position: {x: 625.0504, y: 14.338482, z: 277.5377}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.82, b: 0.68, a: 1}
+    intensity: 4000
+    range: 20
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.af84f12a8ef6685a1dc382011c75dc65
+    cellId: cell_3_-1
+    donorReferencePath: REPAIRSHOP/LOD/Office/office_lamp 4
+    position: {x: 1725.7471, y: 9.031998, z: -301.88812}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.96, b: 0.9, a: 1}
+    intensity: 3200
+    range: 14
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.b0651cf48bfe7aab01faf087e8addd58
+    cellId: cell_-3_0
+    donorReferencePath: STORE/LOD/GFX_Store/Lamps/office_lamp 7
+    position: {x: -1379.4941, y: 7.664, z: 139.46948}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 32500
+    range: 9.52
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 6000
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.b1b4fc61eeb2ced6dd35bce14055a082
+    cellId: cell_-3_0
+    donorReferencePath: WATERFACILITY/LOD/office_lamp 15
+    position: {x: -1345.7103, y: 10.786499, z: 305.5208}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.96, b: 0.9, a: 1}
+    intensity: 3200
+    range: 14
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.ba653c2356f3c338bf05d8fe6a63d4e8
+    cellId: cell_-3_0
+    donorReferencePath: STORE/LOD/GFX_Store/Lamps/office_lamp 11
+    position: {x: -1374.758, y: 7.6640015, z: 144.41795}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 32500
+    range: 9.52
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 6000
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.babe31b77f1e3a06de0caa90083cec81
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/MIDDLEROOM/LOD_middleroom/toilet_lamp 2
+    position: {x: 157.35641, y: 3.3429327, z: -1036.827}
+    rotationEulerAngles: {x: 90, y: 0, z: 0}
+    color: {r: 1, g: 0.9, b: 0.8, a: 1}
+    intensity: 900
+    range: 4
+    spotInnerAngle: 80
+    spotOuterAngle: 120
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0.2
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.beac8b7c6343d893e73426ec32171eae
+    cellId: cell_-4_-1
+    donorReferencePath: MAP/StreetLights/1/LOD/lightpole
+    position: {x: -1544.882, y: 15.8898735, z: -12.790895}
+    rotationEulerAngles: {x: 55.99251, y: 65.85954, z: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.c5a83cc2525c48b5e7231ff5f294cfce
+    cellId: cell_-3_-1
+    donorReferencePath: MAP/StreetLights/1/LOD/lightpole
+    position: {x: -1504.5704, y: 15.559872, z: -23.430525}
+    rotationEulerAngles: {x: 55.992527, y: 138.07007, z: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.c72a32fd19487593b4042d11cf7c384b
+    cellId: cell_-3_0
+    donorReferencePath: STORE/LOD/GFX_Store/Lamps/office_lamp 6
+    position: {x: -1380.3524, y: 7.664, z: 140.81148}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 32500
+    range: 9.52
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 6000
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.c9de305e5deaa8ddf5633da63d994c35
+    cellId: cell_-3_0
+    donorReferencePath: WATERFACILITY/LOD/office_lamp 16
+    position: {x: -1342.8357, y: 10.786499, z: 305.55814}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.96, b: 0.9, a: 1}
+    intensity: 3200
+    range: 14
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.c9e1e7aaee49435390a6d89a79970856
+    cellId: cell_-3_-1
+    donorReferencePath: MAP/StreetLights/1/LOD/lightpole
+    position: {x: -1515.682, y: 16.579872, z: -108.19073}
+    rotationEulerAngles: {x: 55.992496, y: 65.8557, z: -0.0000030530002}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.cbf1b6cb6074e84c3c2cc8042b8d3e44
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/LOD/office_lamp
+    position: {x: 153.37552, y: 3.354, z: -1040.9165}
+    rotationEulerAngles: {x: 90, y: 0, z: 0}
+    color: {r: 1, g: 0.96, b: 0.9, a: 1}
+    intensity: 1800
+    range: 4.2
+    spotInnerAngle: 78
+    spotOuterAngle: 112
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.ccde60f217041c95bee78f676be4eaa6
+    cellId: cell_-3_-3
+    donorReferencePath: MAP/StreetLights/2/LOD/lightpole
+    position: {x: -1485.728, y: 11.249873, z: -1527.8182}
+    rotationEulerAngles: {x: 55.992527, y: 86.588936, z: 0.000003053001}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.cda8c8cbd2913a9f16e802515f9b230d
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/LOD/office_lamp 1
+    position: {x: 153.37552, y: 3.354, z: -1038.4955}
+    rotationEulerAngles: {x: 90, y: 0, z: 0}
+    color: {r: 1, g: 0.96, b: 0.9, a: 1}
+    intensity: 1800
+    range: 4.2
+    spotInnerAngle: 78
+    spotOuterAngle: 112
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.d47572b57298d90c2aa5f707fc5519ff
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/BATHROOM/LOD_bathroom/toilet_lamp
+    position: {x: 157.35641, y: 3.2989328, z: -1039.4491}
+    rotationEulerAngles: {x: 90, y: 0, z: 0}
+    color: {r: 1, g: 0.9, b: 0.8, a: 1}
+    intensity: 800
+    range: 3.6
+    spotInnerAngle: 78
+    spotOuterAngle: 118
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0.15
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.d76c0bb63327c058f2b82bc57a699d02
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/LOD/outdoor_lamp
+    position: {x: 153.49457, y: 3.234, z: -1032.9905}
+    rotationEulerAngles: {x: 45, y: 0, z: 0}
+    color: {r: 1, g: 0.88, b: 0.74, a: 1}
+    intensity: 1100
+    range: 8
+    spotInnerAngle: 65
+    spotOuterAngle: 95
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.daa0926d1766b35f989095845c1ccbab
+    cellId: cell_0_-3
+    donorReferencePath: YARD/Building/LIVINGROOM/LOD_livingroom/livingroom_lamp
+    position: {x: 165.40744, y: 2.6349335, z: -1032.9551}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.9, b: 0.8, a: 1}
+    intensity: 1500
+    range: 5.5
+    spotInnerAngle: 78
+    spotOuterAngle: 118
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0.35
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.e4fc3a22439b2788e280404f1d96e3d6
+    cellId: cell_-1_-4
+    donorReferencePath: LANDFILL/lightpole 2
+    position: {x: -497.99265, y: 19.81771, z: -1762.5066}
+    rotationEulerAngles: {x: 55.992527, y: 103.69502, z: 0.000003053001}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.e9781230cb8afb3af379db626ff4bc32
+    cellId: cell_3_-1
+    donorReferencePath: REPAIRSHOP/LOD/Office/office_lamp 3
+    position: {x: 1723.3008, y: 9.031996, z: -303.01154}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.96, b: 0.9, a: 1}
+    intensity: 3200
+    range: 14
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.efb621bf1eae6692037c8d84050aae60
+    cellId: cell_-1_-5
+    donorReferencePath: JAIL/MESh/LIGHT/light_bulb/glass
+    position: {x: -485.53003, y: 8.101012, z: -2194.775}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.9, b: 0.8, a: 1}
+    intensity: 2600
+    range: 12
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.f4fa0862592f9c9059b4e9aa2635ea35
+    cellId: cell_-3_0
+    donorReferencePath: INSPECTION/LOD/office_lamp 9
+    position: {x: -1355.5886, y: 7.308086, z: 218.94936}
+    rotationEulerAngles: {x: 0, y: 0, z: 0}
+    color: {r: 1, g: 0.96, b: 0.9, a: 1}
+    intensity: 1200
+    range: 6.5
+    spotInnerAngle: 72
+    spotOuterAngle: 105
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 0
+    indirectMultiplier: 0.1
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.f60f2a16cce7e3370ec4188973da0f51
+    cellId: cell_3_-1
+    donorReferencePath: MAP/StreetLights/4/LOD/lightpole 1
+    position: {x: 1724.2709, y: 10.797429, z: -317.2977}
+    rotationEulerAngles: {x: 55.992527, y: 240.51279, z: -0.0000030530002}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.f8401d3d3a1a46de1551e653cb7184e5
+    cellId: cell_3_-1
+    donorReferencePath: MAP/StreetLights/4/LOD/lightpole
+    position: {x: 1721.5618, y: 10.64843, z: -311.43375}
+    rotationEulerAngles: {x: 55.99251, y: 240.51268, z: -0.0000030530007}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 400
+    range: 35
+    spotInnerAngle: 107
+    spotOuterAngle: 138
+    intensityIsLux: 1
+    luxAtDistance: 15.6
+    colorTemperatureKelvin: 6570
+    indirectMultiplier: 0
+    shapeRadius: 0.025
+    areaSize: {x: 0, y: 0}
+    suppressGeneratedEmission: 0
+    volumetricEnabled: 1
+    volumetricDimmer: 1
+    sourceKind: 1
+    bakeMode: 0
+    activationPolicy: 1
+    castsShadows: 1
+  - lightId: world.light.teimo.shop.refrigerator.01
+    cellId: cell_-3_0
+    donorReferencePath: STORE/LOD/GFX_Store/StoreShelfs/fridge_door1
+    position: {x: -1374.99, y: 7.073, z: 141.494}
+    rotationEulerAngles: {x: 90, y: 147.397, z: 90.001}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 15000
+    range: 3.5
+    spotInnerAngle: 45
+    spotOuterAngle: 65
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 15000
+    indirectMultiplier: 0.2
+    shapeRadius: 0.01
+    areaSize: {x: 0.54187, y: 0.4683933}
+    suppressGeneratedEmission: 1
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.teimo.shop.refrigerator.02
+    cellId: cell_-3_0
+    donorReferencePath: STORE/LOD/GFX_Store/StoreShelfs/fridge_door2
+    position: {x: -1375.44, y: 7.078, z: 142.2}
+    rotationEulerAngles: {x: -270, y: 0, z: -57.444}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 15000
+    range: 3.5
+    spotInnerAngle: 45
+    spotOuterAngle: 65
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 15000
+    indirectMultiplier: 0.2
+    shapeRadius: 0.01
+    areaSize: {x: 0.8432465, y: 0.5421705}
+    suppressGeneratedEmission: 1
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  - lightId: world.light.teimo.shop.refrigerator.03
+    cellId: cell_-3_0
+    donorReferencePath: STORE/LOD/GFX_Store/StoreShelfs/fridge_small_door1
+    position: {x: -1379.74, y: 6.527, z: 142.99}
+    rotationEulerAngles: {x: -270, y: -122.602, z: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 15000
+    range: 3.5
+    spotInnerAngle: 45
+    spotOuterAngle: 65
+    intensityIsLux: 0
+    luxAtDistance: 1
+    colorTemperatureKelvin: 15000
+    indirectMultiplier: 0.2
+    shapeRadius: 0.01
+    areaSize: {x: 0.1790103, y: 1.450276}
+    suppressGeneratedEmission: 1
+    volumetricEnabled: 0
+    volumetricDimmer: 0
+    sourceKind: 0
+    bakeMode: 0
+    activationPolicy: 0
+    castsShadows: 1
+  probes:
+  - probeId: world.probe.cell--1--5.jail
+    cellId: cell_-1_-5
+    position: {x: -485.53003, y: 6.7510123, z: -2194.775}
+    size: {x: 10, y: 5, z: 10}
+    intensity: 0.18
+    resolution: 128
+  - probeId: world.probe.cell--3-0.inspection
+    cellId: cell_-3_0
+    position: {x: -1357.2544, y: 5.958081, z: 220.22006}
+    size: {x: 13.331665, y: 5.0000052, z: 14.189926}
+    intensity: 0.18
+    resolution: 128
+  - probeId: world.probe.cell--3-0.perajarvi
+    cellId: cell_-3_0
+    position: {x: -1120.6353, y: 2.9416628, z: 41.021667}
+    size: {x: 10, y: 5, z: 10}
+    intensity: 0.18
+    resolution: 128
+  - probeId: world.probe.cell--3-0.store
+    cellId: cell_-3_0
+    position: {x: -1377.9904, y: 6.313999, z: 141.94373}
+    size: {x: 12.842387, y: 4.5, z: 10.463929}
+    intensity: 0.08
+    resolution: 128
+  - probeId: world.probe.cell--3-0.waterfacility
+    cellId: cell_-3_0
+    position: {x: -1346.1443, y: 8.0789995, z: 304.3471}
+    size: {x: 16.617188, y: 6.357499, z: 12.422058}
+    intensity: 0.18
+    resolution: 128
+  - probeId: world.probe.cell-0--3.home.living
+    cellId: cell_0_-3
+    position: {x: 162.8, y: 2.35, z: -1031.4}
+    size: {x: 10.8, y: 3, z: 9}
+    intensity: 0.12
+    resolution: 128
+  - probeId: world.probe.cell-0--3.home.utility
+    cellId: cell_0_-3
+    position: {x: 159.2, y: 2.25, z: -1039.5}
+    size: {x: 6.8, y: 2.9, z: 8}
+    intensity: 0.12
+    resolution: 128
+  - probeId: world.probe.cell-0--3.home.garage
+    cellId: cell_0_-3
+    position: {x: 153.3864, y: 2.25, z: -1038.4102}
+    size: {x: 4.3, y: 2.8, z: 9}
+    intensity: 0.12
+    resolution: 128
+  - probeId: world.probe.cell-1-0.dancehall
+    cellId: cell_1_0
+    position: {x: 625.0504, y: 12.9884815, z: 277.5377}
+    size: {x: 10, y: 5, z: 10}
+    intensity: 0.18
+    resolution: 128
+  - probeId: world.probe.cell-3--1.repairshop
+    cellId: cell_3_-1
+    position: {x: 1724.5239, y: 7.681996, z: -302.44983}
+    size: {x: 12.446289, y: 5.000002, z: 11.123413}
+    intensity: 0.18
+    resolution: 128

@@ -1,0 +1,16 @@
+{
+  "name": "MSC.Save.Editor",
+  "rootNamespace": "MSC.Save.EditorTools",
+  "references": [
+    "MSC.Save.Runtime"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -125,6 +125,35 @@ namespace MSC.Tests.EditMode.UIEditor
         }
 
         [Test]
+        public void CanonicalPlayerInput_ContainsLicensedHandGestures()
+        {
+            InputActionAsset actions =
+                AssetDatabase.LoadAssetAtPath<InputActionAsset>(
+                    "Assets/Game/Player/Content/Input/M4_Player.inputactions");
+            Assert.That(actions, Is.Not.Null);
+
+            AssertGestureBindings(
+                actions,
+                "Player/Wave",
+                "<Keyboard>/h",
+                "<Gamepad>/dpad/up");
+            AssertGestureBindings(
+                actions,
+                "Player/MiddleFinger",
+                "<Keyboard>/m",
+                "<Gamepad>/dpad/right");
+            AssertGestureBindings(
+                actions,
+                "Player/Swear",
+                "<Keyboard>/n");
+            AssertGestureBindings(
+                actions,
+                "Player/AlternativeActions",
+                "<Keyboard>/leftAlt",
+                "<Keyboard>/rightAlt");
+        }
+
+        [Test]
         public void ProjectOwnedMenuBackdrop_IsCanonicalAndNotAReferenceScreenshot()
         {
             const string backdropPath =
@@ -164,6 +193,139 @@ namespace MSC.Tests.EditMode.UIEditor
         }
 
         [Test]
+        public void GameplayUiFont_IsEmbeddedHelveticaNeueWithCyrillicCoverage()
+        {
+            const string fontPath =
+                "Assets/Game/UI/Presentation/Resources/Fonts/HelveticaNeueRoman.otf";
+            Font font = AssetDatabase.LoadAssetAtPath<Font>(fontPath);
+            Assert.That(font, Is.Not.Null);
+            Assert.That(font.name, Does.Contain("HelveticaNeue"));
+            Assert.That(font.HasCharacter('A'), Is.True);
+            Assert.That(font.HasCharacter('Ж'), Is.True);
+            Assert.That(font.HasCharacter('я'), Is.True);
+
+            var importer = AssetImporter.GetAtPath(fontPath) as TrueTypeFontImporter;
+            Assert.That(importer, Is.Not.Null);
+            Assert.That(importer.includeFontData, Is.True);
+        }
+
+        [Test]
+        public void NeedIcons_UseCrispUncompressedNoMipmapImports()
+        {
+            string[] iconNames =
+            {
+                "droplet", "utensils", "brain",
+                "toilet", "bed-double", "sparkles",
+            };
+
+            foreach (string iconName in iconNames)
+            {
+                string iconPath =
+                    "Assets/Game/UI/Presentation/Resources/Icons/Needs/" +
+                    iconName + ".png";
+                Texture2D icon = AssetDatabase.LoadAssetAtPath<Texture2D>(iconPath);
+                Assert.That(icon, Is.Not.Null, iconName);
+                Assert.That(icon.width, Is.EqualTo(64), iconName);
+                Assert.That(icon.height, Is.EqualTo(64), iconName);
+
+                var importer = AssetImporter.GetAtPath(iconPath) as TextureImporter;
+                Assert.That(importer, Is.Not.Null, iconName);
+                Assert.That(importer.mipmapEnabled, Is.False, iconName);
+                Assert.That(importer.alphaIsTransparency, Is.True, iconName);
+                Assert.That(importer.wrapMode, Is.EqualTo(TextureWrapMode.Clamp), iconName);
+                Assert.That(importer.filterMode, Is.EqualTo(FilterMode.Bilinear), iconName);
+                Assert.That(
+                    importer.textureCompression,
+                    Is.EqualTo(TextureImporterCompression.Uncompressed),
+                    iconName);
+            }
+        }
+
+        [Test]
+        public void ContextActionIcons_UseAuditedCrispRuntimeImports()
+        {
+            string[] iconNames =
+            {
+                "check",
+                "remove",
+                "mouse",
+                "mouse-left",
+                "mouse-right",
+                "mouse-middle",
+                "mouse-scroll",
+                "mouse-scroll-up",
+                "mouse-scroll-down",
+            };
+            foreach (string iconName in iconNames)
+            {
+                string iconPath =
+                    "Assets/Game/Player/Content/Icons/Interaction/" +
+                    iconName + ".png";
+                Texture2D icon =
+                    AssetDatabase.LoadAssetAtPath<Texture2D>(iconPath);
+                Assert.That(icon, Is.Not.Null, iconName);
+                Assert.That(icon.width, Is.EqualTo(64), iconName);
+                Assert.That(icon.height, Is.EqualTo(64), iconName);
+
+                var importer =
+                    AssetImporter.GetAtPath(iconPath) as TextureImporter;
+                Assert.That(importer, Is.Not.Null, iconName);
+                Assert.That(importer.mipmapEnabled, Is.False, iconName);
+                Assert.That(importer.alphaIsTransparency, Is.True, iconName);
+                Assert.That(
+                    importer.wrapMode,
+                    Is.EqualTo(TextureWrapMode.Clamp),
+                    iconName);
+                Assert.That(
+                    importer.filterMode,
+                    Is.EqualTo(FilterMode.Bilinear),
+                    iconName);
+                Assert.That(
+                    importer.textureCompression,
+                    Is.EqualTo(TextureImporterCompression.Uncompressed),
+                    iconName);
+            }
+
+            const string donorHandPath =
+                "Assets/Game/LegacyImport/RuntimeBaseline/" +
+                "GameplayPresentation/UI/Interaction/DonorPickupHand.png";
+            Texture2D donorHand =
+                AssetDatabase.LoadAssetAtPath<Texture2D>(donorHandPath);
+            Assert.That(donorHand, Is.Not.Null);
+            Assert.That(donorHand.width, Is.EqualTo(32));
+            Assert.That(donorHand.height, Is.EqualTo(32));
+            var donorImporter =
+                AssetImporter.GetAtPath(donorHandPath) as TextureImporter;
+            Assert.That(donorImporter, Is.Not.Null);
+            Assert.That(donorImporter.mipmapEnabled, Is.False);
+            Assert.That(donorImporter.alphaIsTransparency, Is.True);
+            Assert.That(
+                donorImporter.wrapMode,
+                Is.EqualTo(TextureWrapMode.Clamp));
+            Assert.That(
+                donorImporter.filterMode,
+                Is.EqualTo(FilterMode.Bilinear));
+            Assert.That(
+                donorImporter.textureCompression,
+                Is.EqualTo(TextureImporterCompression.Uncompressed));
+            Assert.That(
+                donorImporter.userData,
+                Does.Contain("replacementKey=ui.interaction.pickup-hand"));
+
+            const string donorGuid = "f627a294dcce4353b85d5269d8d90116";
+            Assert.That(
+                File.Exists(ProjectPath(
+                    "Assets/Game/LegacyImport/Manifests/" +
+                    "Phase1UiInteractionPresentationManifest.json")),
+                Is.True);
+            Assert.That(
+                File.ReadAllText(ProjectPath(
+                    "Assets/Game/Player/Content/Prefabs/" +
+                    "M4_FirstPersonPlayer.prefab")),
+                Does.Contain("guid: " + donorGuid));
+        }
+
+        [Test]
         public void ProjectOwnedGaussianBlurShader_IsImportedAndSupported()
         {
             const string shaderPath =
@@ -173,6 +335,26 @@ namespace MSC.Tests.EditMode.UIEditor
             Assert.That(shader, Is.Not.Null);
             Assert.That(shader.name, Is.EqualTo("Hidden/MSC/UI/SeparableGaussianBlur"));
             Assert.That(shader.isSupported, Is.True);
+        }
+
+        private static void AssertGestureBindings(
+            InputActionAsset actions,
+            string actionPath,
+            string keyboardPath,
+            string gamepadPath = null)
+        {
+            InputAction action = actions.FindAction(
+                actionPath,
+                throwIfNotFound: false);
+            Assert.That(action, Is.Not.Null, actionPath);
+            string[] paths = action.bindings
+                .Select(binding => binding.path)
+                .ToArray();
+            Assert.That(paths, Does.Contain(keyboardPath), actionPath);
+            if (!string.IsNullOrWhiteSpace(gamepadPath))
+            {
+                Assert.That(paths, Does.Contain(gamepadPath), actionPath);
+            }
         }
 
         private static string ProjectPath(string relativePath)

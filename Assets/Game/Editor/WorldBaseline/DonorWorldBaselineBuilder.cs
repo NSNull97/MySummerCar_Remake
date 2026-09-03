@@ -79,7 +79,11 @@ namespace MSC.Editor.WorldBaseline
                 Transform parent = entry.IncludeRenderer
                     ? geometryRoot.transform
                     : metadataOnlyRoot.transform;
-                var entity = new GameObject("LegacyWorld_" + placement.StableId);
+                var entity = new GameObject(
+                    DonorWorldBaselineDisplayName.Create(
+                        placement.HierarchyPath,
+                        placement.SourceObjectId,
+                        placement.Category));
                 entity.transform.SetParent(parent, false);
                 entity.transform.SetPositionAndRotation(
                     placement.Position, placement.Rotation);

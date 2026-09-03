@@ -2,11 +2,25 @@ using System;
 using MSC.Audio;
 using MSC.Core.Lifecycle;
 using MSC.Core.Time;
+using MSC.Economy;
+using MSC.Needs;
+using MSC.Save;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace MSC.UI.Presentation
 {
+    /// <summary>
+    /// Requests a clean-session load. The composition root owns the pending-slot
+    /// handoff and scene reload so UI never restores save participants after the
+    /// world has already been revealed.
+    /// </summary>
+    public delegate bool SaveLoadRequestHandler(string slotId, out string failure);
+    public delegate bool NewGameVehiclePaintHandler(
+        int paletteIndex,
+        Color bodyColor,
+        out string failure);
+
     public sealed class GameUiDependencies
     {
         public GameUiDependencies(
@@ -22,7 +36,17 @@ namespace MSC.UI.Presentation
             Texture2D menuBackdropTexture = null,
             Texture2D menuLogoTexture = null,
             IGameplaySessionGate gameplaySessionGate = null,
-            Shader uiBlurShader = null)
+            Shader uiBlurShader = null,
+            ISaveService saveService = null,
+            SaveLoadRequestHandler requestLoad = null,
+            Func<string, SaveRequest> createSaveRequest = null,
+            string preferredSaveSlotId = "manual-01",
+            string initialSaveStatus = null,
+            SaveReadStatus? initialSaveReadStatus = null,
+            IPlayerNeedsService playerNeeds = null,
+            IPlayerMoneyService playerMoney = null,
+            Action openDeveloperTools = null,
+            NewGameVehiclePaintHandler configureNewGameVehiclePaint = null)
         {
             IsWorldReady = isWorldReady ?? throw new ArgumentNullException(nameof(isWorldReady));
             GameTime = gameTime;
@@ -39,6 +63,18 @@ namespace MSC.UI.Presentation
             MenuLogoTexture = menuLogoTexture;
             UiBlurShader = uiBlurShader;
             GameplaySessionGate = gameplaySessionGate;
+            SaveService = saveService;
+            RequestLoad = requestLoad;
+            CreateSaveRequest = createSaveRequest;
+            PreferredSaveSlotId = string.IsNullOrWhiteSpace(preferredSaveSlotId)
+                ? "manual-01"
+                : preferredSaveSlotId;
+            InitialSaveStatus = initialSaveStatus ?? string.Empty;
+            InitialSaveReadStatus = initialSaveReadStatus;
+            PlayerNeeds = playerNeeds;
+            PlayerMoney = playerMoney;
+            OpenDeveloperTools = openDeveloperTools;
+            ConfigureNewGameVehiclePaint = configureNewGameVehiclePaint;
         }
 
         public Func<bool> IsWorldReady { get; }
@@ -88,5 +124,56 @@ namespace MSC.UI.Presentation
         /// may omit it.
         /// </summary>
         public IGameplaySessionGate GameplaySessionGate { get; }
+
+        /// <summary>
+        /// Optional native-save status and write boundary. Its absence keeps the
+        /// accepted 08A no-storage state intact for isolated UI fixtures.
+        /// </summary>
+        public ISaveService SaveService { get; }
+
+        /// <summary>
+        /// Optional clean-session load request owned by the composition root.
+        /// </summary>
+        public SaveLoadRequestHandler RequestLoad { get; }
+
+        /// <summary>
+        /// Supplies authoritative metadata for a manual save request.
+        /// </summary>
+        public Func<string, SaveRequest> CreateSaveRequest { get; }
+
+        /// <summary>
+        /// Active slot after a load, or the project default manual slot for a
+        /// fresh session. This is an ID, never a filesystem path.
+        /// </summary>
+        public string PreferredSaveSlotId { get; }
+
+        /// <summary>
+        /// A load failure produced by the composition root before UI binding.
+        /// It is presentation-only status and never authoritative save state.
+        /// </summary>
+        public string InitialSaveStatus { get; }
+
+        /// <summary>
+        /// Read result produced by a clean-session startup load before UI
+        /// binding. Recovery statuses are replayed as presentation feedback;
+        /// they do not trigger another storage operation.
+        /// </summary>
+        public SaveReadStatus? InitialSaveReadStatus { get; }
+
+        public IPlayerNeedsService PlayerNeeds { get; }
+
+        public IPlayerMoneyService PlayerMoney { get; }
+
+        /// <summary>
+        /// Optional development-only action supplied by the composition root.
+        /// Release capability filtering keeps its visual entry absent.
+        /// </summary>
+        public Action OpenDeveloperTools { get; }
+
+        /// <summary>
+        /// Optional fresh-session vehicle customization boundary. It is never
+        /// invoked while loading an existing save.
+        /// </summary>
+        public NewGameVehiclePaintHandler ConfigureNewGameVehiclePaint { get; }
     }
 }

@@ -1,12 +1,24 @@
 # Phase 1 Definition of Done — Legacy Feature Complete
 
+Статус: **Authoritative / 08B user-approved**.
+
+Текущий audit result (2026-09-02): **NOT MET**. Из 517 обязательных parity
+rows только 4 имеют `Verified`, одна имеет `KnownDifferenceApproved`, а 512
+остаются `ImplementedUnverified`, `PartiallyImplemented`, `EvidenceCaptured`
+или `Specified`. Актуальный разбор находится в
+`Docs/Reviews/FULL_GAME_PARITY_AUDIT_2026-09-02.md`.
+
+Поле `Critical` не входит в обязательную схему parity matrix и не используется
+как отдельный gate. Критичность выражается `Required=Yes` и зависимостями полного
+gameplay flow.
+
 Переход к Phase 2 запрещён, пока не выполнены все обязательные условия.
 
 ## Scope
 
 - точная donor-версия зафиксирована хешами и evidence;
 - `LEGACY_FEATURE_PARITY_MATRIX.csv` не содержит необработанных `Unknown` rows;
-- все `Critical` и `Required` rows имеют статус `Verified` или
+- все `Required=Yes` rows имеют статус `Verified` или
   `KnownDifferenceApproved`;
 - каждый `Blocked` row имеет доказанный внешний blocker и отдельное решение
   пользователя; critical blocker не допускает Phase 2 gate.
@@ -60,4 +72,20 @@
 - representative complete-game playthrough matrix completed;
 - feature-domain tests and smoke tests passed or documented honestly;
 - performance measured on representative late-game save;
+- no regression in the accepted 00–08A baseline contracts;
+- all roster references resolve to authoritative matrix rows;
+- donor installation, executable and runtime assemblies are absent from the
+  running private build dependency graph;
 - user explicitly approves Phase 1 gate.
+
+## Evidence gate
+
+- every required row names executed acceptance evidence, not only planned tests;
+- persistent rows have fresh, mid-game and late-game save/load round trips or an
+  evidence-backed non-persistent justification;
+- unloaded-cell and presentation-replacement persistence is covered;
+- no unresolved required `Unknown`, `Blocked`, `PartiallyImplemented` or
+  `ImplementedUnverified` remains;
+- every approved difference records the user decision and date;
+- `TemporaryDirectImport` presentation is replaceable without changing stable
+  IDs, gameplay state or requiring a new playthrough.

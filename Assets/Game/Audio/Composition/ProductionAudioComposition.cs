@@ -22,8 +22,13 @@ namespace MSC.Audio.Composition
         [SerializeField] private MonoBehaviour runtimeOwnerComponent;
         [SerializeField] private AudioEmitterAuthoring ambienceEmitter;
         [SerializeField] private WeatherAudioPresenter weatherPresenter;
+        [SerializeField] private WeatherExposureResolver weatherExposureResolver;
 
         public IAudioBackend Backend => router;
+        public IAudioBackend FallbackBackend =>
+            fallbackBackendComponent as IAudioBackend;
+        public WeatherExposureResolver WeatherExposureResolver =>
+            weatherExposureResolver;
         public bool IsInitialized { get; private set; }
         public string LastFailure { get; private set; } = string.Empty;
 
@@ -126,15 +131,55 @@ namespace MSC.Audio.Composition
                 return Fail(footstepPresenter.LastFailure);
             }
 
+            PlayerLeanImpactAudioPresenter leanImpactPresenter =
+                carryController.GetComponent<PlayerLeanImpactAudioPresenter>();
+            if (leanImpactPresenter == null)
+            {
+                leanImpactPresenter =
+                    carryController.gameObject.AddComponent<
+                        PlayerLeanImpactAudioPresenter>();
+            }
+
+            if (!leanImpactPresenter.Configure(
+                    spawnedPlayer,
+                    router,
+                    interactionEmitter))
+            {
+                return Fail(leanImpactPresenter.LastFailure);
+            }
+
             ambienceEmitter.Configure(
                 "audio.emitter.environment.production",
                 router,
-                ambienceEmitter.transform);
+                playerCamera.transform);
+            if (weatherExposureResolver == null)
+            {
+                weatherExposureResolver =
+                    FindFirstObjectByType<WeatherExposureResolver>();
+            }
+
             weatherPresenter.Configure(
                 environmentController,
                 router,
                 ambienceEmitter,
-                listener);
+                listener,
+                weatherExposureResolver);
+
+            WorldAmbientAudioPresenter ambientPresenter =
+                GetComponent<WorldAmbientAudioPresenter>();
+            if (ambientPresenter == null)
+            {
+                ambientPresenter = gameObject.AddComponent<WorldAmbientAudioPresenter>();
+            }
+
+            if (!ambientPresenter.Configure(
+                    router,
+                    ambienceEmitter,
+                    environmentController.GameTime,
+                    environmentController))
+            {
+                return Fail("World ambient audio presenter could not be configured.");
+            }
 
             if (runtimeOwnerComponent is IAudioRuntimeOwner runtimeOwner &&
                 !runtimeOwner.BindListener(playerCamera.transform, out failure))
@@ -145,6 +190,40 @@ namespace MSC.Audio.Composition
             LastFailure = string.Empty;
             IsInitialized = true;
             return true;
+        }
+
+        public bool TryLoadFallbackSupplementalEventLibrary(
+            string resourcesPath,
+            out string failure)
+        {
+            if (!(fallbackBackendComponent is IAudioSupplementalContentBackend
+                    supplementalContent))
+            {
+                failure =
+                    "Configured fallback audio backend cannot load supplemental event libraries.";
+                return false;
+            }
+
+            return supplementalContent.TryLoadSupplementalEventLibrary(
+                resourcesPath,
+                out failure);
+        }
+
+        public bool TryLoadFallbackOverrideEventLibrary(
+            string resourcesPath,
+            out string failure)
+        {
+            if (!(fallbackBackendComponent is IAudioOverrideContentBackend
+                    overrideContent))
+            {
+                failure =
+                    "Configured fallback audio backend cannot load override event libraries.";
+                return false;
+            }
+
+            return overrideContent.TryLoadOverrideEventLibrary(
+                resourcesPath,
+                out failure);
         }
 
         public bool TryValidate(out string failure)
@@ -200,6 +279,12 @@ namespace MSC.Audio.Composition
             runtimeOwnerComponent = configuredRuntimeOwner;
             ambienceEmitter = configuredAmbienceEmitter;
             weatherPresenter = configuredWeatherPresenter;
+        }
+
+        public void ConfigureWeatherExposureForAuthoring(
+            WeatherExposureResolver configuredWeatherExposureResolver)
+        {
+            weatherExposureResolver = configuredWeatherExposureResolver;
         }
 #endif
 

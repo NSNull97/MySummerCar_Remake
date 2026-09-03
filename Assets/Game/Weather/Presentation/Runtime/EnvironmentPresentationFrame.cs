@@ -75,6 +75,10 @@ namespace MSC.Weather.Presentation
 
         public float CloudCoverage01 { get; }
 
+        /// <summary>
+        /// Optical cloud density where zero is transparent/readable sky and one
+        /// is the strongest authored light-blocking cloud state.
+        /// </summary>
         public float CloudIntensity01 { get; }
 
         public EnvironmentPrecipitationType PrecipitationType { get; }

@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6eca8bf2f0acff4ba9cbb695288422c, type: 3}
+  m_Name: FinnishSummerClimateProfile
+  m_EditorClassIdentifier: MSC.Weather.System.Runtime::MSC.Weather.System.FinnishSummerClimateProfile
+  configId: weather.climate.finnish_summer.v1
+  presets:
+  - {fileID: 11400000, guid: 474728a49b10f074d951ce917a517741, type: 2}
+  - {fileID: 11400000, guid: 861289d7c7d07a448a05c310192390c1, type: 2}
+  - {fileID: 11400000, guid: fd55c9324c5d32e4ebbe13fe4b1259e6, type: 2}
+  - {fileID: 11400000, guid: cb2c69b075c823e4f8550e45c1907340, type: 2}
+  - {fileID: 11400000, guid: 7126b06bbc6114d4ba8b65fcdff6d8f8, type: 2}
+  - {fileID: 11400000, guid: d4c94119122af914f8f3d7c1ad91bfdc, type: 2}
+  - {fileID: 11400000, guid: 737444e422d9ee446a22a7090d3c1b80, type: 2}
+  - {fileID: 11400000, guid: 6fd7fa164eecca0439650c4b3508b2cf, type: 2}
+  - {fileID: 11400000, guid: 531d68a8f7bc5614584d91b520b34f29, type: 2}
+  - {fileID: 11400000, guid: ada26db53927ad94d8e7731ad111f00f, type: 2}
+  - {fileID: 11400000, guid: 5a98321fd389914468e7d7b2369a1b89, type: 2}
+  - {fileID: 11400000, guid: 00354f66ee5d6554d819ab9a83706569, type: 2}
+  - {fileID: 11400000, guid: c918275903610e74ebacd959e317fbfd, type: 2}
+  - {fileID: 11400000, guid: e341e0be946c0404ebbabce4a715f5a7, type: 2}
+  - {fileID: 11400000, guid: 9e16dea0fedb26144adf3a45256e47f3, type: 2}
+  - {fileID: 11400000, guid: bbf6756a1e2ea09449f156a6b0a914f6, type: 2}
+  initialPresetId: weather.finnish_summer.partly_cloudy
+  historyLength: 6
+  immediateRepeatMultiplier: 0.12
+  recentRepeatMultiplier: 0.5

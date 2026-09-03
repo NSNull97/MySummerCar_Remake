@@ -1,0 +1,23 @@
+{
+  "name": "MSC.Save.Integration.Tests.PlayMode",
+  "rootNamespace": "MSC.Save.Integration.Tests.PlayMode",
+  "references": [
+    "MSC.Bootstrap.Runtime",
+    "MSC.Core.Runtime",
+    "MSC.Interaction.Runtime",
+    "MSC.Save.Runtime",
+    "MSC.Save.Integration",
+    "MSC.World.Runtime",
+    "MSC.Weather.Production.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": ["TestAssemblies"]
+}

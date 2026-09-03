@@ -9,8 +9,14 @@ using MSC.Weather.Production;
 using MSC.Weather.Wetness;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using GameWeatherSystem = MSC.Weather.System.GameWeatherSystem;
+using NativeHDRPWeatherBackend =
+    MSC.Weather.System.NativeHDRP.NativeHDRPWeatherBackend;
+using WeatherBackendType = MSC.Weather.System.WeatherBackendType;
 using Object = UnityEngine.Object;
 
 namespace MSC.Tests.PlayMode.WeatherProduction
@@ -23,6 +29,7 @@ namespace MSC.Tests.PlayMode.WeatherProduction
             "Assets/Game/Player/Content/Scenes/PlayerInteractionPrototype.unity";
         private const string EnvironmentlessStreamingScenePath =
             "Assets/Game/World/Debug/Streaming/PrototypeWorldStreamingFixture.unity";
+        private const float BootstrapReadyTimeoutSeconds = 120f;
 
         [UnityTest]
         public IEnumerator Bootstrap_RestoresBeforeRevealAndSurvivesAdditiveLifecycle()
@@ -61,12 +68,37 @@ namespace MSC.Tests.PlayMode.WeatherProduction
                 Object.FindFirstObjectByType<ProductionWorldStreamingInstaller>(
                     FindObjectsInactive.Include);
             ProductionEnvironmentController owner = installer.Environment;
-            for (int frame = 0; frame < 900 && !installer.IsReady; frame++)
+            yield return null;
+
+            Assert.That(installer.IsReady, Is.False);
+            Assert.That(installer.IsGameplayPrepared, Is.False);
+            Assert.That(installer.IsGameplayActive, Is.False);
+            Assert.That(installer.WorldStreaming.HasFocus, Is.False);
+            Assert.That(installer.WorldStreaming.OwnedLoadedSceneCount, Is.Zero);
+            Assert.That(installer.SpawnedPlayer.activeSelf, Is.False);
+            Assert.That(owner.IsSimulationActive, Is.False);
+            Assert.That(
+                installer.TryBeginGameplayPreparation(
+                    out string preparationFailure),
+                Is.True,
+                preparationFailure);
+            float startupDeadline =
+                Time.realtimeSinceStartup + BootstrapReadyTimeoutSeconds;
+            while (!installer.IsReady &&
+                   Time.realtimeSinceStartup < startupDeadline)
             {
                 yield return null;
             }
 
-            Assert.That(installer.IsReady, Is.True);
+            Assert.That(
+                installer.IsReady,
+                Is.True,
+                "Bootstrap did not become ready before the real-time " +
+                $"{BootstrapReadyTimeoutSeconds:0}s budget. " +
+                $"preparing={installer.IsGameplayPreparationRunning} " +
+                $"focus={installer.WorldStreaming.HasFocus} " +
+                $"streaming={installer.WorldStreaming.IsStreaming} " +
+                $"loaded={installer.WorldStreaming.OwnedLoadedSceneCount}.");
             Assert.That(owner.IsWorldRevealReady, Is.True);
             Assert.That(owner.WasRestoreAppliedBeforeReveal, Is.True);
             Assert.That(installer.IsGameplayPrepared, Is.True);
@@ -112,6 +144,37 @@ namespace MSC.Tests.PlayMode.WeatherProduction
                 Object.FindFirstObjectByType<Enviro3EnvironmentAdapter>(
                     FindObjectsInactive.Include);
             Assert.That(enviroAdapter, Is.Not.Null);
+            GameWeatherSystem weatherSystem =
+                Object.FindFirstObjectByType<GameWeatherSystem>(
+                    FindObjectsInactive.Include);
+            Assert.That(weatherSystem, Is.Not.Null);
+            if (weatherSystem.SelectedBackend == WeatherBackendType.EnviroLegacy)
+            {
+            Assert.That(weatherSystem.IsAttached, Is.True);
+            Assert.That(
+                weatherSystem.ActiveBackend.BackendType,
+                Is.EqualTo(WeatherBackendType.EnviroLegacy));
+            Assert.That(enviroAdapter.IsAttached, Is.True);
+            Assert.That(enviroAdapter.HybridNativeHdrpOwnership, Is.True);
+            NativeHdrpWeatherBridge hybridBridge =
+                Object.FindFirstObjectByType<NativeHdrpWeatherBridge>(
+                    FindObjectsInactive.Include);
+            Assert.That(hybridBridge, Is.Not.Null);
+            Assert.That(hybridBridge.IsReady, Is.True);
+            NativeHDRPWeatherBackend inactiveNativeFallback =
+                Object.FindFirstObjectByType<NativeHDRPWeatherBackend>(
+                    FindObjectsInactive.Include);
+            Assert.That(inactiveNativeFallback, Is.Not.Null);
+            Assert.That(inactiveNativeFallback.IsAttached, Is.False);
+            Assert.That(
+                inactiveNativeFallback.RuntimeWeatherVolume.enabled,
+                Is.False);
+            Assert.That(enviroAdapter.HasConfiguredCelestialSky, Is.True);
+            Assert.That(enviroAdapter.HasConfiguredMoonLighting, Is.True);
+            Assert.That(
+                enviroAdapter.ActiveMoonScale,
+                Is.GreaterThanOrEqualTo(
+                    Enviro3ProductionVisualPolicy.MinimumVisibleMoonScale));
             Assert.That(
                 enviroAdapter.HasIsolatedRuntimeVolumeTargets,
                 Is.True);
@@ -140,7 +203,34 @@ namespace MSC.Tests.PlayMode.WeatherProduction
                 Is.EqualTo(1f).Within(0.0001f));
             Assert.That(
                 enviroAdapter.ActiveRainParticleMaxScreenSize,
-                Is.GreaterThanOrEqualTo(0.01f));
+                Is.GreaterThanOrEqualTo(
+                    Enviro3ProductionVisualPolicy
+                        .MinimumReadableRainParticleScreenSize));
+            Assert.That(enviroAdapter.IsRainSurfaceSplashConfigured, Is.True);
+            Assert.That(
+                enviroAdapter.ActiveRainParticleBudget,
+                Is.LessThanOrEqualTo(
+                    Enviro3ProductionVisualPolicy
+                        .MaximumRainParticleBudget));
+            Assert.That(
+                enviroAdapter.ActiveRainMaximumEmissionPerSecond,
+                Is.EqualTo(
+                        Enviro3ProductionVisualPolicy
+                            .MaximumRainEmissionPerSecond)
+                    .Within(0.0001f));
+            Assert.That(
+                enviroAdapter.ActiveRainSurfaceSplashParticleBudget,
+                Is.LessThanOrEqualTo(
+                    Enviro3ProductionVisualPolicy
+                        .MaximumRainSplashParticleBudget));
+            Assert.That(
+                enviroAdapter.IsRainCollisionPerformanceBounded,
+                Is.True);
+            Assert.That(
+                enviroAdapter.ActiveRainSurfaceSplashMaxScreenSize,
+                Is.LessThanOrEqualTo(
+                    Enviro3ProductionVisualPolicy
+                        .MaximumRainSplashParticleScreenSize));
             Assert.That(
                 enviroAdapter.IsProductionTimeLocationApplied,
                 Is.True);
@@ -148,9 +238,99 @@ namespace MSC.Tests.PlayMode.WeatherProduction
             Assert.That(
                 enviroAdapter.ActiveGlobalReflectionIntensity,
                 Is.EqualTo(
-                    Enviro3ProductionVisualPolicy
-                        .TemporaryBaselineReflectionIntensity)
+                        Enviro3ProductionVisualPolicy
+                            .TemporaryBaselineReflectionIntensity)
                     .Within(0.0001f));
+
+            Assert.That(
+                owner.DevTryApplyWeatherOverride(
+                    WeatherStateIds.Clear.Value,
+                    0f,
+                    out string weatherFailure),
+                Is.True,
+                weatherFailure);
+            yield return null;
+            float clearSunMultiplier =
+                enviroAdapter.ActiveDirectSunlightMultiplier;
+            float clearShadowStrength =
+                enviroAdapter.ActiveDirectionalLightShadowStrength;
+            Assert.That(
+                owner.DevTryApplyWeatherOverride(
+                    WeatherStateIds.PartlyCloudy.Value,
+                    0f,
+                    out weatherFailure),
+                Is.True,
+                weatherFailure);
+            yield return null;
+            float partlyCoverage = enviroAdapter.ActiveTargetCloudCoverage;
+            float partlyDensity = enviroAdapter.ActiveTargetCloudDensity;
+            float partlyCirrus = enviroAdapter.ActiveTargetCirrusAlpha;
+            uint partlyCloudSeed = enviroAdapter.ActiveCloudFieldSeed;
+            Vector2 partlyCloudOffset = enviroAdapter.ActiveCloudFieldOffset;
+            Assert.That(
+                owner.DevTryApplyWeatherOverride(
+                    WeatherStateIds.BrightOvercast.Value,
+                    0f,
+                    out weatherFailure),
+                Is.True,
+                weatherFailure);
+            yield return null;
+            float brightCoverage = enviroAdapter.ActiveTargetCloudCoverage;
+            float brightDensity = enviroAdapter.ActiveTargetCloudDensity;
+            float brightDetailErosion =
+                enviroAdapter.ActiveTargetCloudDetailErosion;
+            float brightLightAbsorption =
+                enviroAdapter.ActiveTargetCloudLightAbsorption;
+            float brightCirrus = enviroAdapter.ActiveTargetCirrusAlpha;
+            uint brightCloudSeed = enviroAdapter.ActiveCloudFieldSeed;
+            Vector2 brightCloudOffset = enviroAdapter.ActiveCloudFieldOffset;
+            Assert.That(
+                owner.DevTryApplyWeatherOverride(
+                    WeatherStateIds.HeavyOvercast.Value,
+                    0f,
+                    out weatherFailure),
+                Is.True,
+                weatherFailure);
+            yield return null;
+            float heavyCoverage = enviroAdapter.ActiveTargetCloudCoverage;
+            float heavyLightAbsorption =
+                enviroAdapter.ActiveTargetCloudLightAbsorption;
+
+            Assert.That(partlyCoverage, Is.EqualTo(-0.08f).Within(0.001f));
+            Assert.That(partlyDensity, Is.EqualTo(0.95f).Within(0.001f));
+            Assert.That(partlyCirrus, Is.LessThanOrEqualTo(0.05f));
+            Assert.That(brightCoverage, Is.EqualTo(0.34f).Within(0.001f));
+            Assert.That(brightDensity, Is.EqualTo(0.62f).Within(0.001f));
+            Assert.That(brightDetailErosion,
+                Is.EqualTo(0.58f).Within(0.001f));
+            Assert.That(brightCirrus, Is.LessThanOrEqualTo(0.03f));
+            Assert.That(heavyCoverage, Is.GreaterThan(brightCoverage));
+            Assert.That(heavyLightAbsorption,
+                Is.GreaterThan(brightLightAbsorption));
+            Assert.That(partlyCloudSeed, Is.Not.Zero);
+            Assert.That(brightCloudSeed, Is.Not.Zero);
+            Assert.That(brightCloudSeed, Is.Not.EqualTo(partlyCloudSeed));
+            Assert.That(brightCloudOffset, Is.Not.EqualTo(partlyCloudOffset));
+            Assert.That(
+                enviroAdapter.ActiveCloudWindSpeedModifier,
+                Is.EqualTo(
+                        Enviro3ProductionVisualPolicy
+                            .CloudFieldWindSpeedModifier)
+                    .Within(0.0001f));
+            Assert.That(
+                enviroAdapter.ActiveCloudTravelSpeed,
+                Is.EqualTo(
+                        Enviro3ProductionVisualPolicy.CloudFieldTravelSpeed)
+                    .Within(0.0001f));
+            Assert.That(
+                enviroAdapter.ActiveDirectSunlightMultiplier,
+                Is.LessThan(clearSunMultiplier * 0.3f),
+                "Closed cloud cover must attenuate Enviro direct sunlight.");
+            Assert.That(
+                enviroAdapter.ActiveDirectionalLightShadowStrength,
+                Is.LessThan(clearShadowStrength * 0.3f),
+                "Closed cloud cover must suppress hard directional shadows.");
+            Assert.That(owner.DevRemoveWeatherOverride(), Is.True);
 
             Assert.That(
                 owner.DevTrySetDateAndTime(
@@ -196,22 +376,109 @@ namespace MSC.Tests.PlayMode.WeatherProduction
                 enviroAdapter.ActiveSunLocalHeight,
                 Is.GreaterThan(0f),
                 "The production design target must place sunrise near 05:00 on 1995-08-02.");
-            Assert.That(enviroAdapter.IsAuroraSuppressed, Is.True);
+
+            Assert.That(
+                owner.DevTrySetDateAndTime(
+                    new GameDate(1995, 8, 1),
+                    (23d * 60d + 20d) * 60d,
+                    out timeFailure),
+                Is.True,
+                timeFailure);
+            Vector3 sunDirectionAt2320 = enviroAdapter.ActiveSunDirection;
+            float starIntensityAt2320 = enviroAdapter.ActiveStarIntensity;
+            Assert.That(float.IsFinite(starIntensityAt2320), Is.True);
+            Assert.That(
+                starIntensityAt2320,
+                Is.GreaterThanOrEqualTo(2f),
+                "The calibrated clear-night sky must keep stars visibly above " +
+                "the bright Finnish summer horizon.");
+            Assert.That(
+                owner.DevTrySetDateAndTime(
+                    new GameDate(1995, 8, 1),
+                    (23d * 60d + 22d) * 60d,
+                    out timeFailure),
+                Is.True,
+                timeFailure);
+            yield return new WaitForSecondsRealtime(0.4f);
+            Assert.That(
+                Vector3.Angle(
+                    sunDirectionAt2320,
+                    enviroAdapter.ActiveSunDirection),
+                Is.GreaterThan(0.01f),
+                "Enviro celestial transforms must follow every authoritative " +
+                "clock update instead of snapping only at the night threshold.");
+            Assert.That(
+                enviroAdapter.ActiveStarIntensity,
+                Is.GreaterThan(0f));
+            Assert.That(
+                Mathf.Abs(
+                    enviroAdapter.ActiveStarIntensity -
+                    starIntensityAt2320),
+                Is.LessThan(0.25f),
+                "The 23:20 -> 23:22 transition must not replace the sky with " +
+                "a binary black frame.");
+            Assert.That(
+                float.IsFinite(enviroAdapter.ActiveMoonLocalHeight),
+                Is.True);
+            }
+            else
+            {
+                NativeHDRPWeatherBackend native =
+                    Object.FindFirstObjectByType<NativeHDRPWeatherBackend>(
+                        FindObjectsInactive.Include);
+                Assert.That(
+                    weatherSystem.SelectedBackend,
+                    Is.EqualTo(WeatherBackendType.NativeHDRP));
+                Assert.That(native, Is.Not.Null);
+                Assert.That(native.IsAttached, Is.True);
+                Assert.That(weatherSystem.ActiveBackend, Is.SameAs(native));
+                Assert.That(enviroAdapter.IsAttached, Is.False);
+                Assert.That(native.RuntimeWeatherVolume, Is.Not.Null);
+                Assert.That(native.RuntimeWeatherVolume.enabled, Is.True);
+                Assert.That(native.RuntimeWeatherVolume.weight, Is.EqualTo(1f));
+                Assert.That(native.RuntimeProfile, Is.Not.Null);
+                Assert.That(
+                    native.RuntimeProfile.TryGet(out PhysicallyBasedSky _),
+                    Is.True);
+                Assert.That(
+                    native.RuntimeProfile.TryGet(out VolumetricClouds _),
+                    Is.True);
+                Assert.That(
+                    native.RuntimeProfile.TryGet(out Fog nativeFog) &&
+                    nativeFog.enabled.value,
+                    Is.True);
+                Assert.That(
+                    native.RuntimeProfile.TryGet(out Exposure nativeExposure),
+                    Is.True);
+                Assert.That(
+                    nativeExposure.mode.value,
+                    Is.EqualTo(ExposureMode.Automatic));
+                Assert.That(native.DirectionalSun, Is.Not.Null);
+                Assert.That(native.Geography, Is.Not.Null);
+            }
 
             Enviro3ShelterRemovalBridge shelterBridge =
                 Object.FindFirstObjectByType<Enviro3ShelterRemovalBridge>(
                     FindObjectsInactive.Include);
             Assert.That(shelterBridge, Is.Not.Null);
+            Assert.That(shelterBridge.enabled, Is.False);
+            Enviro3WeatherZoneRemovalBridge hybridShelterBridge =
+                Object.FindFirstObjectByType<Enviro3WeatherZoneRemovalBridge>(
+                    FindObjectsInactive.Include);
+            Assert.That(hybridShelterBridge, Is.Not.Null);
             for (int frame = 0;
-                 frame < 60 && shelterBridge.ActiveShelterCount != 2;
+                 frame < 60 && hybridShelterBridge.ActiveRemovalZoneCount != 13;
                  frame++)
             {
                 yield return null;
             }
 
             Assert.That(owner.ActiveShelterVolumeCount, Is.EqualTo(2));
-            Assert.That(shelterBridge.ActiveShelterCount, Is.EqualTo(2));
-            Assert.That(shelterBridge.ActiveZoneCount, Is.EqualTo(5));
+            Assert.That(
+                hybridShelterBridge.ActiveRemovalZoneCount,
+                Is.EqualTo(13),
+                "The ten compound home removal ellipsoids plus the three-tile " +
+                "home-yard machine-hall shelter must be active.");
 
             ProductionShelterVolumeAuthoring[] authoredShelters =
                 Object.FindObjectsByType<ProductionShelterVolumeAuthoring>(
@@ -287,12 +554,28 @@ namespace MSC.Tests.PlayMode.WeatherProduction
                 yield return SceneManager.LoadSceneAsync(
                     BootstrapScenePath,
                     LoadSceneMode.Single);
-                for (int frame = 0; frame < 900; frame++)
+                // Scene activation completes before Start. Let the Bootstrap
+                // installer open its explicit preparation gate first.
+                yield return null;
+                float startupDeadline =
+                    Time.realtimeSinceStartup + BootstrapReadyTimeoutSeconds;
+                while (Time.realtimeSinceStartup < startupDeadline)
                 {
                     ProductionWorldStreamingInstaller installer =
                         Object.FindFirstObjectByType<
                             ProductionWorldStreamingInstaller>(
                             FindObjectsInactive.Include);
+                    if (installer != null &&
+                        !installer.IsReady &&
+                        !installer.IsGameplayPreparationRunning)
+                    {
+                        Assert.That(
+                            installer.TryBeginGameplayPreparation(
+                                out string preparationFailure),
+                            Is.True,
+                            preparationFailure);
+                    }
+
                     if (installer != null && installer.IsReady)
                     {
                         break;
@@ -334,9 +617,17 @@ namespace MSC.Tests.PlayMode.WeatherProduction
             Assert.That(
                 CountActive<ProductionEnvironmentController>(),
                 Is.EqualTo(1));
+            GameWeatherSystem establishedWeatherSystem =
+                Object.FindFirstObjectByType<GameWeatherSystem>(
+                    FindObjectsInactive.Include);
+            Assert.That(establishedWeatherSystem, Is.Not.Null);
             Assert.That(
                 CountActive<Enviro3EnvironmentAdapter>(),
-                Is.EqualTo(1));
+                Is.EqualTo(
+                    establishedWeatherSystem.SelectedBackend ==
+                    WeatherBackendType.NativeHDRP
+                        ? 0
+                        : 1));
             Assert.That(
                 GameCompositionRoot.ActiveRoot,
                 Is.SameAs(establishedRoot));
@@ -574,12 +865,27 @@ namespace MSC.Tests.PlayMode.WeatherProduction
 
         private static IEnumerator WaitForBootstrapReady()
         {
-            for (int frame = 0; frame < 900; frame++)
+            // LoadSceneAsync completes before Start is guaranteed to run.
+            yield return null;
+            float startupDeadline =
+                Time.realtimeSinceStartup + BootstrapReadyTimeoutSeconds;
+            while (Time.realtimeSinceStartup < startupDeadline)
             {
                 ProductionWorldStreamingInstaller installer =
                     Object.FindFirstObjectByType<
                         ProductionWorldStreamingInstaller>(
                         FindObjectsInactive.Include);
+                if (installer != null &&
+                    !installer.IsReady &&
+                    !installer.IsGameplayPreparationRunning)
+                {
+                    Assert.That(
+                        installer.TryBeginGameplayPreparation(
+                            out string preparationFailure),
+                        Is.True,
+                        preparationFailure);
+                }
+
                 if (installer != null && installer.IsReady)
                 {
                     yield break;
@@ -588,7 +894,9 @@ namespace MSC.Tests.PlayMode.WeatherProduction
                 yield return null;
             }
 
-            Assert.Fail("Production Bootstrap did not become ready.");
+            Assert.Fail(
+                "Production Bootstrap did not become ready before the " +
+                $"real-time {BootstrapReadyTimeoutSeconds:0}s budget.");
         }
     }
 }

@@ -1,0 +1,17 @@
+{
+  "name": "MSC.Services.Runtime",
+  "rootNamespace": "MSC.Services",
+  "references": [
+    "MSC.Core.Runtime",
+    "MSC.Economy.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
