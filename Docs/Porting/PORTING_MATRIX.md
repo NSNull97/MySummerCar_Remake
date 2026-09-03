@@ -31,7 +31,7 @@ current 280-fastener migration passes `5/5`, front alignment regression passes
 Bootstrap/Player coverage was not rerun because that ownership is being changed
 in parallel and remains outside this body pass.
 
-Scoped V1d.58 hinged panels: frozen `Use`/Assembly evidence identifies four
+Scoped V1d.60 hinged panels: frozen `Use`/Assembly evidence identifies four
 runtime-created donor hinges—both doors, bootlid and hood—with exact pivots,
 axes, limits, asymmetric held-mouse torque, break values and four fasteners
 each. The remake now uses real dynamic `HingeJoint` physics, retains inertia,
@@ -44,9 +44,9 @@ roughly-ten-degree final snap. Audited old-Unity break values remain authoring
 evidence, while the actual Unity 6 joint is unbreakable so ordinary chassis
 constraint impulses cannot destroy the component and disable interaction.
 Bootlid `Use` component `105480` additionally narrows the open endpoint from
-`-70..0` to `-70..-69` degrees; V1d.58 reproduces that hold and restores full
-travel on close input.
-Manual four-panel acceptance is pending.
+`-70..0` to `-70..-69` degrees; V1d.58 introduced that hold and V1d.60 retains
+it while correcting mirrored close-angle measurement and moving hinge-arm
+presentation. The user accepted the four-panel V60 in-game check on 2026-09-03.
 
 Scoped V1d.58 bootlid presentation: the four donor `BoltPM` parents have local
 Z scale `0.5`, producing `1.25 mm` effective screw travel per stage and `10 mm`
@@ -1395,7 +1395,7 @@ output.
 | Panel hinge behavior | `BehavioralReference;ConfigurationTransferred;Reimplemented` | Both doors, bootlid and hood retain exact pivots, axes, limits, torque direction, audited old-Unity break values and four-fastener ownership; only held LMB/RMB drives the project hinge, release preserves physical inertia, and `F` has no hinge action. Closing uses the Rigidbody's mount-relative signed rotation and requires the one-degree endpoint for two consecutive fixed steps, avoiding both broad-travel snap and mirrored-door refusal. The bootlid additionally uses the donor `-70..-69` full-open hold, restores `-70..0` before closing, and swaps chassis/moving `bootlid_hooks` copies exactly through install/remove state. The actual Unity 6 joint is unbreakable so ordinary chassis constraints cannot destroy it; the graph still detaches a completely unfastened panel at full opening |
 | Connected-body collision | `BehavioralReference;Reimplemented` | Installed door retains world collision but ignores only its connected chassis-body pairs; donor Satsuma value is inferred from all frozen vehicle-door hinge records using `EnableCollision=false`, not claimed as a direct serialized Satsuma capture |
 | Pose synchronization | `Reimplemented` | Generic installed-part sync delegates to the hinge's mount-plus-angle world pose, so late synchronization cannot reset an open panel |
-| Automated evidence | `ImplementedAutomatedValidationPassedManualInGameAcceptancePending` | Builder `11A-V1d.60`, generated content `39/39` and focused physical hinge PlayMode `4/4` passed; full Bootstrap/Player coverage remains owned by the parallel task and was not rerun here |
+| Automated and manual evidence | `ImplementedAutomatedValidationPassedUserAccepted` | Builder `11A-V1d.60`, generated content `39/39` and focused physical hinge PlayMode `4/4` passed; the user accepted both mirrored door latches and corrected bootlid behavior in-game on 2026-09-03. Full Bootstrap/Player coverage remains independently owned and was not rerun here |
 
 ### 2026-09-03 — Player mass, scale and jump/posture correction
 

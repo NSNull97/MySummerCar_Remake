@@ -214,5 +214,8 @@ assembly graph, stable IDs and existing save DTO remain project-owned.
    lever once, open it with held LMB, close it with held RMB, and confirm another
    opening requires another lever pull.
 
-Manual in-game acceptance of all four panels remains required before the issue
-is classified as verified.
+The user completed the V60 in-game check on 2026-09-03 and accepted all four
+panels: both mirrored doors latch at the physical endpoint without the former
+broad-travel snap/refusal, and the bootlid motion, open hold and moving black
+hinge-arm presentation behave correctly. This bounded hinged-panel issue is
+classified as user accepted.

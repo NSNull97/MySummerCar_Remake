@@ -268,6 +268,7 @@ Save restore and New Game startup stability are not part of this acceptance run.
 
 ## Exactly one next milestone
 
-Perform the in-game V57 body/material/rain and hinged-panel acceptance. Only
-after that gate, implement the inspection reward and separate plate-install flow
-as one bounded service/vehicle integration milestone.
+Complete the remaining in-game V60 body/material/rain acceptance; the separate
+hinged-panel portion was user accepted on 2026-09-03. Then implement the donor
+inspection reward and separate plate-install flow as one bounded
+service/vehicle integration milestone.

@@ -48,8 +48,8 @@ Unity 6 joint is unbreakable so an ordinary chassis constraint impulse cannot
 destroy it and deactivate the panel. Closed detection now uses the panel
 Rigidbody's mount-relative rotation for two consecutive physics steps rather
 than mirrored `HingeJoint.angle`. Generated content passes 39/39 and the
-physical door/bootlid/hood PlayMode gate passes 4/4; manual four-panel acceptance is
-pending. See
+physical door/bootlid/hood PlayMode gate passes 4/4. The user accepted the V60
+four-panel in-game check on 2026-09-03. See
 `Docs/Phase1/SATSUMA_HINGED_PANEL_RUNTIME_FIX_2026-09-02.md`.
 
 Registration-plate audit V1d.55: the two physical donor plate clones are
@@ -3681,6 +3681,7 @@ Generated-content EditMode passed `39/39` (SHA-256
 `68D5F3D385CD164F527751EB97F8D4EE845F85D4F1A66EC827E83480F13CA41A`), and
 focused physical hinge PlayMode passed `4/4` (SHA-256
 `5C4D89DCE72C9CA28E276F9CEA5722804740F1EE86D4A8D394910315BC5CD9F9`).
-Manual in-game verification of both mirrored door latches, repeated partial
-motion, open holding, hook swapping, handle visibility and all four bolt
-endpoints remains pending.
+The user accepted the V60 in-game result on 2026-09-03 after checking both
+mirrored door latches and the corrected bootlid behavior. The bounded
+hinged-panel correction is therefore user accepted; this does not promote the
+complete Satsuma feature row to `Verified`.
