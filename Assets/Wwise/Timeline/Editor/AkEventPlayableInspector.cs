@@ -21,6 +21,12 @@ in a written agreement between you and Audiokinetic Inc.
 Copyright (c) 2026 Audiokinetic Inc.
 *******************************************************************************/
 
+#if UNITY_6000_6_OR_NEWER
+using AkUnityObjectId = UnityEngine.EntityId;
+#else
+using AkUnityObjectId = System.Int32;
+#endif
+
 [System.Obsolete(AkUnitySoundEngine.Deprecation_2019_2_0)]
 [UnityEditor.CustomEditor(typeof(AkEventPlayable))]
 public class AkEventPlayableInspector : UnityEditor.Editor
@@ -137,13 +143,17 @@ public class AkEventPlayableInspector : UnityEditor.Editor
 
 			var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
 			var objects = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(path);
-			var instanceIds = new System.Collections.Generic.List<int>();
+			var instanceIds = new System.Collections.Generic.List<AkUnityObjectId>();
 			foreach (var obj in objects)
 			{
 				if (obj == null)
 					continue;
 
+#if UNITY_6000_6_OR_NEWER
+				var id = obj.GetEntityId();
+#else
 				var id = obj.GetInstanceID();
+#endif
 				if (!instanceIds.Contains(id))
 					instanceIds.Add(id);
 			}
@@ -154,7 +164,11 @@ public class AkEventPlayableInspector : UnityEditor.Editor
 				objects = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(path);
 				foreach (var obj in objects)
 				{
+#if UNITY_6000_6_OR_NEWER
+					if (obj && obj.GetEntityId() == id)
+#else
 					if (obj && obj.GetInstanceID() == id)
+#endif
 					{
 						var playable = obj as AkEventPlayable;
 						if (playable)

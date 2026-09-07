@@ -18,6 +18,24 @@ namespace MSC.Vehicle.Assembly
         // so the explicit presence bit, not nullness, owns optionality.
         public bool hasSteeringAlignment;
         public AssemblySteeringAlignmentSaveDto steeringAlignment;
+        // Optional timing setting on the existing camshaft-gear identity.
+        // Pre-timing saves omit it; the installed compatibility pose is zero.
+        public bool hasCamshaftTiming;
+        public AssemblyCamshaftTimingSaveDto camshaftTiming;
+        // Optional stock-engine setting. Presence remains explicit for
+        // JsonUtility and pre-adjustment native saves; graph identity is unchanged.
+        public bool hasEngineAdjustment;
+        public AssemblyEngineAdjustmentSaveDto engineAdjustment;
+        // One staged engine-mount turn may exist while the engine is still a
+        // loose rigidbody. Installed engine bolts remain in the ordinary graph.
+        public bool hasEngineDocking;
+        public AssemblyEngineDockingSaveDto engineDocking;
+        public bool hasMechanicalCondition;
+        public AssemblyMechanicalConditionSaveDto mechanicalCondition;
+        public bool hasValveAdjustment;
+        public AssemblyValveAdjustmentSaveDto valveAdjustment;
+        public bool hasServiceCaps;
+        public AssemblyServiceCapSaveDto serviceCaps;
     }
 
     [Serializable]
@@ -45,13 +63,28 @@ namespace MSC.Vehicle.Assembly
     }
 
     [Serializable]
+    public sealed class DynamicAssemblyPartSaveDto
+    {
+        public string itemDefinitionId = string.Empty;
+        public PartSaveDto part;
+        // Loose purchased parts previously had world-entity physics ownership.
+        // Retain that state when their ownership moves into this aggregate.
+        public Vector3 linearVelocity;
+        public Vector3 angularVelocity;
+        public bool sleeping;
+    }
+
+    [Serializable]
     public sealed class VehicleAssemblySaveData
     {
-        public const int CurrentSchemaVersion = 2;
+        public const int CurrentSchemaVersion = 3;
+        public const int FastenerGroupSchemaVersion = 2;
         public const int LegacySchemaVersion = 1;
 
         public int schemaVersion = CurrentSchemaVersion;
         public PartSaveDto[] parts = Array.Empty<PartSaveDto>();
+        public DynamicAssemblyPartSaveDto[] dynamicParts =
+            Array.Empty<DynamicAssemblyPartSaveDto>();
         public MountSaveDto[] mounts = Array.Empty<MountSaveDto>();
         public FastenerSaveDto[] fasteners = Array.Empty<FastenerSaveDto>();
         public FastenerGroupSaveDto[] fastenerGroups =
@@ -59,6 +92,7 @@ namespace MSC.Vehicle.Assembly
 
         public bool HasSupportedSchema =>
             schemaVersion == CurrentSchemaVersion ||
+            schemaVersion == FastenerGroupSchemaVersion ||
             schemaVersion == LegacySchemaVersion;
     }
 }

@@ -21,8 +21,8 @@ namespace MSC.LegacyImport
             new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<string> activeRendererOverrides =
             new HashSet<string>(StringComparer.Ordinal);
-        private readonly Dictionary<int, HashSet<string>> keysBySceneHandle =
-            new Dictionary<int, HashSet<string>>();
+        private readonly Dictionary<SceneHandle, HashSet<string>> keysBySceneHandle =
+            new Dictionary<SceneHandle, HashSet<string>>();
         private bool legacyVisibleByDefault = true;
 
         public int LoadedReplacementCount => entries.Count;
@@ -180,7 +180,7 @@ namespace MSC.LegacyImport
         }
 
         private void IndexMetadata(
-            int sceneHandle,
+            SceneHandle sceneHandle,
             IReadOnlyList<DonorWorldSupplementalEntityMetadata> metadata)
         {
             for (int index = 0; index < metadata.Count; index++)
@@ -200,7 +200,7 @@ namespace MSC.LegacyImport
         }
 
         private void IndexMetadata(
-            int sceneHandle,
+            SceneHandle sceneHandle,
             IReadOnlyList<DonorWorldBaselineEntityMetadata> metadata)
         {
             for (int index = 0; index < metadata.Count; index++)
@@ -217,7 +217,7 @@ namespace MSC.LegacyImport
         }
 
         private void IndexEntity(
-            int sceneHandle,
+            SceneHandle sceneHandle,
             string replacementKey,
             Component entity)
         {
@@ -262,7 +262,7 @@ namespace MSC.LegacyImport
             entry.ApplyColliders(legacyVisibleByDefault && !fullOverride);
         }
 
-        private void RemoveScene(int sceneHandle)
+        private void RemoveScene(SceneHandle sceneHandle)
         {
             if (!keysBySceneHandle.TryGetValue(
                     sceneHandle,

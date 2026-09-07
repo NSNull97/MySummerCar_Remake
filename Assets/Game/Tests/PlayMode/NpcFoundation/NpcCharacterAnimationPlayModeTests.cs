@@ -27,7 +27,7 @@ namespace MSC.NPC.Tests.PlayMode
         {
             const string bootstrapScenePath =
                 "Assets/Game/Bootstrap/Bootstrap.unity";
-            var initialSceneHandles = new HashSet<int>();
+            var initialSceneHandles = new HashSet<SceneHandle>();
             for (int sceneIndex = 0;
                  sceneIndex < SceneManager.sceneCount;
                  sceneIndex++)

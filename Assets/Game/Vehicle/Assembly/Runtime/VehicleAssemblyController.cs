@@ -3,14 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using MSC.Interaction.Capabilities;
+using Unity.Profiling;
 using UnityEngine;
 
 namespace MSC.Vehicle.Assembly
 {
     [DefaultExecutionOrder(-20)]
     [DisallowMultipleComponent]
-    public sealed class VehicleAssemblyController : MonoBehaviour
+    public sealed partial class VehicleAssemblyController : MonoBehaviour
     {
+        private static readonly ProfilerMarker InstalledPoseSyncMarker = new ProfilerMarker("MSC.Vehicle.InstalledPoseSync");
         [SerializeField]
         private PartInstance[] parts = Array.Empty<PartInstance>();
 
@@ -97,6 +99,8 @@ namespace MSC.Vehicle.Assembly
             bool permitAdditiveSaveMigration = false,
             Rigidbody configuredRetentionSpeedSource = null)
         {
+            if (dynamicRegistrations.Count != 0)
+                throw new InvalidOperationException("An authored graph cannot be reconfigured while dynamic item parts are registered.");
             parts = registeredParts ?? Array.Empty<PartInstance>();
             mountPoints = registeredMounts ?? Array.Empty<MountPointAuthoring>();
             dependencies = registeredDependencies ?? Array.Empty<AssemblyDependency>();
@@ -199,6 +203,12 @@ namespace MSC.Vehicle.Assembly
                 return evaluation;
             }
 
+            if (!TryValidateInstallationSupport(mount, out AssemblyOperationResult supportResult))
+            {
+                LastOperationResult = supportResult;
+                return supportResult;
+            }
+
             if (!mount.TryOccupy(part))
             {
                 LastOperationResult = AssemblyOperationResult.Failure(
@@ -228,6 +238,9 @@ namespace MSC.Vehicle.Assembly
                 }
 
                 part.InstallAt(mount.Authoring, mount.MountId);
+                // Pending engine bolts must become graph-owned before any
+                // completion callback can capture or observe the installation.
+                part.GetComponent<AssemblyEngineDockingState>()?.CommitPendingToInstalled(mount);
                 RefreshOwnedMountAvailability();
                 SynchronizeInstalledParts();
                 graphMutationCount++;
@@ -244,8 +257,11 @@ namespace MSC.Vehicle.Assembly
                             : 0f,
                     sourceLinearVelocity,
                     sourceAngularVelocity);
-                int collapsedPartCount = CollapseIfStructurallyUnsupported(
-                    mount);
+                int collapsedPartCount = CollapseAfterInstallationSupportCheck(mount);
+                if (mount.IsOccupied)
+                {
+                    collapsedPartCount += CollapseIfStructurallyUnsupported(mount);
+                }
                 LastOperationResult = AssemblyOperationResult.Success(
                     AssemblyOperation.Install,
                     collapsedPartCount > 0
@@ -273,7 +289,7 @@ namespace MSC.Vehicle.Assembly
             MountPointAuthoring authoring)
         {
             PartInstance part = ResolvePart(pickupTarget);
-            AssemblyOperationResult evaluation = EvaluateHandoffInstall(
+            AssemblyOperationResult evaluation = TryPrepareHandoffInstall(
                 part,
                 authoring);
             if (!evaluation.Succeeded || part == null || authoring == null)
@@ -321,7 +337,7 @@ namespace MSC.Vehicle.Assembly
             MountPointAuthoring authoring)
         {
             PartInstance part = ResolvePart(pickupTarget);
-            AssemblyOperationResult evaluation = EvaluateHandoffInstall(
+            AssemblyOperationResult evaluation = TryPrepareHandoffInstall(
                 part,
                 authoring);
             if (!evaluation.Succeeded || part == null || authoring == null)
@@ -345,6 +361,70 @@ namespace MSC.Vehicle.Assembly
                 "Деталь перемещается в точную точку установки: " +
                 part.Definition.DisplayName);
             return LastOperationResult;
+        }
+
+        /// <summary>
+        /// Revalidate presence before releasing the held object. A loose support
+        /// accepts the handoff; its failure happens only after the incoming part
+        /// has actually been installed, including its accepted pose animation.
+        /// </summary>
+        public AssemblyOperationResult TryPrepareHandoffInstall(
+            PartInstance part,
+            MountPointAuthoring authoring)
+        {
+            AssemblyOperationResult result = EvaluateHandoffInstall(part, authoring);
+            if (result.Succeeded && !TryValidateInstallationSupport(
+                    ResolveMount(authoring), out AssemblyOperationResult supportResult))
+            {
+                result = supportResult;
+            }
+
+            LastOperationResult = result;
+            return result;
+        }
+
+        private bool TryValidateInstallationSupport(
+            MountPointRuntime target,
+            out AssemblyOperationResult result)
+        {
+            result = default;
+            string supportId = target?.Definition?.InstallAttemptBoltedSupportMountId;
+            if (string.IsNullOrEmpty(supportId))
+            {
+                return true;
+            }
+
+            if (!graph.TryGetMount(supportId, out MountPointRuntime support) ||
+                !support.IsOccupied || support.InstalledPart.IsAssemblyRoot || support == target)
+            {
+                result = AssemblyOperationResult.Failure(AssemblyOperation.Install,
+                    AssemblyFailureReason.MissingPrerequisite,
+                    "Не установлена опора точки: " + supportId);
+                return false;
+            }
+
+            return true;
+        }
+
+        private int CollapseAfterInstallationSupportCheck(MountPointRuntime target)
+        {
+            string supportId = target?.Definition?.InstallAttemptBoltedSupportMountId;
+            if (string.IsNullOrEmpty(supportId) ||
+                !graph.TryGetMount(supportId, out MountPointRuntime support) ||
+                !support.IsOccupied || support.FastenerGroup.IsBolted)
+            {
+                return 0;
+            }
+
+            // Explicit user revision: installation completes, then the loose
+            // support and its dependent assembly fall together. This is an
+            // attempt-time outcome, not a permanent T=0 retention requirement.
+            // Reuse the existing dependency closure; unrelated branches stay put.
+            int count = CollapseMountHierarchy(support,
+                new HashSet<string>(StringComparer.Ordinal));
+            RefreshOwnedMountAvailability();
+            SynchronizeInstalledParts();
+            return count;
         }
 
         private IEnumerator RunInstallTransition(
@@ -453,11 +533,20 @@ namespace MSC.Vehicle.Assembly
 
         private void OnDisable()
         {
-            if (installTransitions.Count == 0)
+            if (graph != null)
             {
-                return;
+                foreach (MountPointRuntime mount in graph.Mounts)
+                {
+                    mount?.FastenerGroup.ResetSpeedRetentionSchedule();
+                }
             }
 
+            CancelPendingInstallTransitionsForRestore();
+        }
+
+        /// <summary>Ends transient mount handoffs before restore checkpoints capture rigidbody state.</summary>
+        public void CancelPendingInstallTransitionsForRestore()
+        {
             foreach (KeyValuePair<PartInstance, InstallTransitionState> pair in
                      installTransitions)
             {
@@ -469,6 +558,10 @@ namespace MSC.Vehicle.Assembly
                 if (pair.Key != null)
                 {
                     pair.Value.Restore(pair.Key);
+                }
+                else
+                {
+                    pair.Value.CompletePresentation(false);
                 }
             }
 
@@ -491,21 +584,31 @@ namespace MSC.Vehicle.Assembly
 
             float speedKph = retentionSpeedSource.linearVelocity.magnitude *
                 3.6f;
-            uint tick = ++retentionPolicyTick;
+            EvaluateFastenerRetentionPoliciesAt(speedKph, Time.realtimeSinceStartupAsDouble);
+        }
+
+        private void EvaluateFastenerRetentionPoliciesAt(float speedKph, double realtimeSeconds)
+        {
+            if (!initialized || graph == null)
+            {
+                return;
+            }
+
             MountPointRuntime[] mounts = graph.Mounts;
             for (int index = 0; index < mounts.Length; index++)
             {
                 MountPointRuntime mount = mounts[index];
                 if (mount == null || !mount.IsOccupied ||
                     mount.FastenerGroup.Definition.SpeedRetentionPolicy ==
-                    FastenerSpeedRetentionPolicy.None)
+                    FastenerSpeedRetentionPolicy.None ||
+                    !mount.FastenerGroup.ShouldEvaluateSpeedRetention(speedKph, realtimeSeconds))
                 {
                     continue;
                 }
 
                 uint seed = CombineRetentionSeed(
                     StableHash32(mount.MountId),
-                    tick);
+                    ++retentionPolicyTick);
                 float sample01 = FastenerGroupDefinition.Sample01(seed);
                 if (mount.FastenerGroup.ShouldBreak(speedKph, sample01))
                 {
@@ -546,6 +649,7 @@ namespace MSC.Vehicle.Assembly
 
         public void SynchronizeInstalledParts()
         {
+            using var profile = InstalledPoseSyncMarker.Auto();
             if (!initialized || parts == null)
             {
                 return;
@@ -553,9 +657,10 @@ namespace MSC.Vehicle.Assembly
 
             synchronizedParts.Clear();
             synchronizingParts.Clear();
-            for (int index = 0; index < parts.Length; index++)
+            PartInstance[] runtimeParts = graph.AllRuntimeParts;
+            for (int index = 0; index < runtimeParts.Length; index++)
             {
-                SynchronizeInstalledPart(parts[index]);
+                SynchronizeInstalledPart(runtimeParts[index]);
             }
         }
 
@@ -913,6 +1018,18 @@ namespace MSC.Vehicle.Assembly
                     "У детали нет занятой точки установки.");
             }
 
+            AssemblyOperationResult consumableRule =
+                SatsumaConsumableAssemblyRules.EvaluateRemoval(part, mount, graph);
+            if (!consumableRule.Succeeded) return consumableRule;
+
+            if (part.GetComponent<AssemblyEngineAdjustmentState>()?.BlocksRemoval == true)
+            {
+                return AssemblyOperationResult.Failure(
+                    AssemblyOperation.Remove,
+                    AssemblyFailureReason.FastenerSecured,
+                    "Сначала полностью открутите масляный фильтр.");
+            }
+
             if (mount.FastenerGroup.IsBolted)
             {
                 return AssemblyOperationResult.Failure(
@@ -943,6 +1060,14 @@ namespace MSC.Vehicle.Assembly
         }
 
         public AssemblyOperationResult TryRemove(PartInstance part)
+            => TryRemove(part, false);
+
+        // Docking releases the engine at its current physical pose instead of
+        // applying the ordinary hand-removal offset into the engine bay.
+        public AssemblyOperationResult TryRemoveAtCurrentPose(PartInstance part)
+            => TryRemove(part, true);
+
+        private AssemblyOperationResult TryRemove(PartInstance part, bool preservePose)
         {
             EnsureInitialized();
             operationCount++;
@@ -954,8 +1079,9 @@ namespace MSC.Vehicle.Assembly
             }
 
             MountPointRuntime mount = graph.FindMountForPart(part);
-            Vector3 detachPosition = mount.Authoring.Pose.position + mount.Authoring.Pose.right * 0.35f;
-            Quaternion detachRotation = mount.Authoring.Pose.rotation;
+            Vector3 detachPosition = preservePose ? part.transform.position :
+                mount.Authoring.Pose.position + mount.Authoring.Pose.right * 0.35f;
+            Quaternion detachRotation = preservePose ? part.transform.rotation : mount.Authoring.Pose.rotation;
             mount.Release();
             part.Detach(loosePartsRoot, detachPosition, detachRotation);
             RefreshOwnedMountAvailability();
@@ -969,6 +1095,39 @@ namespace MSC.Vehicle.Assembly
                 mount,
                 string.Empty,
                 detachPosition);
+            return LastOperationResult;
+        }
+
+        /// <summary>
+        /// Applies a break already decided by an owning mechanical policy (for
+        /// example a loose handbrake pulled under load). Normal removal still
+        /// requires loosened fasteners; this path reuses structural collapse so
+        /// dependent parts, graph notifications and physical ownership stay intact.
+        /// </summary>
+        public AssemblyOperationResult TryBreakInstalledPart(PartInstance part)
+        {
+            EnsureInitialized();
+            operationCount++;
+            if (part == null || part.IsAssemblyRoot || !part.IsInstalled)
+            {
+                return SetFailure(AssemblyOperation.BreakRetention,
+                    AssemblyFailureReason.InvalidPart,
+                    "Break requires an installed non-root part.");
+            }
+
+            MountPointRuntime mount = graph.FindMountForPart(part);
+            if (mount == null || mount.InstalledPart != part)
+            {
+                return SetFailure(AssemblyOperation.BreakRetention,
+                    AssemblyFailureReason.InvalidMount,
+                    "Break target does not belong to this assembly.");
+            }
+
+            CollapseMountHierarchy(mount, new HashSet<string>(StringComparer.Ordinal));
+            RefreshOwnedMountAvailability();
+            SynchronizeInstalledParts();
+            LastOperationResult = AssemblyOperationResult.Success(
+                AssemblyOperation.BreakRetention, "Installed part broke loose.");
             return LastOperationResult;
         }
 
@@ -1133,6 +1292,7 @@ namespace MSC.Vehicle.Assembly
             var data = new VehicleAssemblySaveData
             {
                 parts = new PartSaveDto[parts.Length],
+                dynamicParts = CaptureDynamicParts(),
                 mounts = new MountSaveDto[graph.Mounts.Length],
                 fastenerGroups = new FastenerGroupSaveDto[
                     graph.Mounts.Length],
@@ -1152,6 +1312,18 @@ namespace MSC.Vehicle.Assembly
                 PartRuntimeState state = part.RuntimeState;
                 AssemblySteeringAlignmentState alignment =
                     part.GetComponent<AssemblySteeringAlignmentState>();
+                AssemblyCamshaftTimingState timing =
+                    part.GetComponent<AssemblyCamshaftTimingState>();
+                AssemblyEngineAdjustmentState engineAdjustment =
+                    part.GetComponent<AssemblyEngineAdjustmentState>();
+                AssemblyEngineDockingState engineDocking =
+                    part.GetComponent<AssemblyEngineDockingState>();
+                AssemblyMechanicalConditionState mechanicalCondition =
+                    part.GetComponent<AssemblyMechanicalConditionState>();
+                AssemblyValveAdjustmentState valveAdjustment = part.GetComponent<AssemblyValveAdjustmentState>();
+                AssemblyServiceCapState serviceCaps = part.GetComponent<AssemblyServiceCapState>();
+                // A forced structural detach can be captured before LateUpdate.
+                engineAdjustment?.RefreshPresentation();
                 data.parts[i] = new PartSaveDto
                 {
                     stableEntityId = state.StableEntityId,
@@ -1162,6 +1334,18 @@ namespace MSC.Vehicle.Assembly
                     worldRotation = part.transform.rotation,
                     hasSteeringAlignment = alignment != null,
                     steeringAlignment = alignment?.CaptureSaveData(),
+                    hasCamshaftTiming = timing != null,
+                    camshaftTiming = timing?.CaptureSaveData(),
+                    hasEngineAdjustment = engineAdjustment != null,
+                    engineAdjustment = engineAdjustment?.CaptureSaveData(),
+                    hasEngineDocking = engineDocking != null,
+                    engineDocking = engineDocking?.CaptureSaveData(),
+                    hasMechanicalCondition = mechanicalCondition != null,
+                    mechanicalCondition = mechanicalCondition?.CaptureSaveData(),
+                    hasValveAdjustment = valveAdjustment != null,
+                    valveAdjustment = valveAdjustment?.CaptureSaveData(),
+                    hasServiceCaps = serviceCaps != null,
+                    serviceCaps = serviceCaps?.CaptureSaveData(),
                 };
             }
 
@@ -1212,23 +1396,31 @@ namespace MSC.Vehicle.Assembly
                 return preparationFailure;
             }
 
-            AssemblyOperationResult validation = ValidateSaveData(prepared);
+            AssemblyOperationResult validation = ValidateSaveData(prepared, requireMaterialized: true);
             if (!validation.Succeeded)
             {
                 LastOperationResult = validation;
                 return validation;
             }
 
+            CancelPendingInstallTransitionsForRestore();
             data = prepared;
+            PartSaveDto[] restoredParts = AllSavedParts(data);
+
+            // Restore is a transient-input boundary, even when the same live
+            // carb remains installed. Rejected payloads never cancel a gesture.
+            foreach (AssemblyCarburetorThrottleTarget throttle in
+                     GetComponentsInChildren<AssemblyCarburetorThrottleTarget>(true))
+                throttle.EndContinuousInteraction();
 
             for (int i = 0; i < graph.Mounts.Length; i++)
             {
                 graph.Mounts[i].Reset();
             }
 
-            for (int i = 0; i < data.parts.Length; i++)
+            for (int i = 0; i < restoredParts.Length; i++)
             {
-                PartSaveDto dto = data.parts[i];
+                PartSaveDto dto = restoredParts[i];
                 graph.TryGetPartByStableId(dto.stableEntityId, out PartInstance part);
                 if (dto.lifecycleState == PartLifecycleState.AssemblyRoot)
                 {
@@ -1240,9 +1432,9 @@ namespace MSC.Vehicle.Assembly
                 }
             }
 
-            for (int i = 0; i < data.parts.Length; i++)
+            for (int i = 0; i < restoredParts.Length; i++)
             {
-                PartSaveDto dto = data.parts[i];
+                PartSaveDto dto = restoredParts[i];
                 if (dto.lifecycleState != PartLifecycleState.Installed)
                 {
                     continue;
@@ -1274,14 +1466,38 @@ namespace MSC.Vehicle.Assembly
 
             RefreshOwnedMountAvailability();
             SynchronizeInstalledParts();
-            for (int i = 0; i < data.parts.Length; i++)
+            for (int i = 0; i < restoredParts.Length; i++)
             {
-                PartSaveDto dto = data.parts[i];
+                PartSaveDto dto = restoredParts[i];
                 graph.TryGetPartByStableId(dto.stableEntityId, out PartInstance part);
                 part.GetComponent<AssemblySteeringAlignmentState>()
                     ?.RestoreValidated(dto.hasSteeringAlignment ? dto.steeringAlignment : null);
+                part.GetComponent<AssemblyCamshaftTimingState>()
+                    ?.RestoreValidated(dto.hasCamshaftTiming ? dto.camshaftTiming : null);
+                part.GetComponent<AssemblyEngineAdjustmentState>()
+                    ?.RestoreValidated(dto.hasEngineAdjustment ? dto.engineAdjustment : null);
+                part.GetComponent<AssemblyEngineDockingState>()
+                    ?.RestoreValidated(dto.hasEngineDocking ? dto.engineDocking : null);
+                part.GetComponent<AssemblyMechanicalConditionState>()
+                    ?.RestoreValidated(dto.hasMechanicalCondition ? dto.mechanicalCondition : null);
+                part.GetComponent<AssemblyValveAdjustmentState>()
+                    ?.RestoreValidated(dto.hasValveAdjustment ? dto.valveAdjustment : null);
+                part.GetComponent<AssemblyServiceCapState>()
+                    ?.RestoreValidated(dto.hasServiceCaps ? dto.serviceCaps : null);
+            }
+            foreach (DynamicAssemblyPartSaveDto dynamicPart in data.dynamicParts ?? Array.Empty<DynamicAssemblyPartSaveDto>())
+            {
+                graph.TryGetPartByStableId(dynamicPart.part.stableEntityId, out PartInstance part);
+                if (dynamicPart.part.lifecycleState != PartLifecycleState.Loose || part.Body == null || part.Body.isKinematic)
+                    continue;
+                part.Body.linearVelocity = dynamicPart.linearVelocity;
+                part.Body.angularVelocity = dynamicPart.angularVelocity;
+                if (dynamicPart.sleeping) part.Body.Sleep(); else part.Body.WakeUp();
             }
             graphMutationCount++;
+            // Direct assembly restore must also be contact/mass-complete before
+            // returning; no ordinary assembly action is published during load.
+            GetComponent<AssemblyLooseCompoundPhysics>()?.Refresh(true);
             LastOperationResult = AssemblyOperationResult.Success(
                 AssemblyOperation.Restore,
                 "Состояние сборки восстановлено.");
@@ -1325,6 +1541,25 @@ namespace MSC.Vehicle.Assembly
             }
 
             data = prepared;
+            graph.TryGetMount(SatsumaRockerCoverFastenerMigration.MountId,
+                out MountPointRuntime rockerCoverMount);
+            if (!SatsumaRockerCoverFastenerMigration.TryMigrate(data,
+                    rockerCoverMount?.Definition, out prepared, out failure))
+                return false;
+
+            data = prepared;
+            graph.TryGetMount(SatsumaCarburetorFastenerMigration.MountId,
+                out MountPointRuntime carburetorMount);
+            if (!SatsumaCarburetorFastenerMigration.TryMigrate(data,
+                    carburetorMount?.Definition, out prepared, out failure))
+                return false;
+
+            data = prepared;
+            graph.TryGetMount(SatsumaRockerShaftFastenerMigration.MountId, out MountPointRuntime rockerShaftMount);
+            if (!SatsumaRockerShaftFastenerMigration.TryMigrate(data,
+                    rockerShaftMount?.Definition, out prepared, out failure)) return false;
+
+            data = prepared;
             if (data == null || data.parts == null || data.mounts == null ||
                 data.fasteners == null || !data.HasSupportedSchema)
             {
@@ -1332,16 +1567,26 @@ namespace MSC.Vehicle.Assembly
             }
 
             int registeredFastenerCount = CountRegisteredFasteners();
+            if (!TryIdentifyReviewedSaveAdditions(data, out ReviewedSaveAdditions additions, out failure))
+                return false;
+            int predecessorMountCount = graph.Mounts.Length - additions.MountIds.Count;
+            int predecessorFastenerCount = registeredFastenerCount - additions.FastenerKeys.Count;
+            // Compare historical roster counts only after the exact identity
+            // migrations. Six cover aliases and the mixture pseudo-bolt do not
+            // change which older front/exterior additions are missing.
+            int retiredEngineFastenerCount = CountRetiredEngineFastenerDefinitions();
+            int historicalSavedFastenerCount = data.fasteners.Length + retiredEngineFastenerCount;
+            int historicalRegisteredFastenerCount = predecessorFastenerCount + retiredEngineFastenerCount;
             bool addingFrontStrutLowerFasteners = data.parts.Length == 126 &&
-                data.mounts.Length == 117 && data.fasteners.Length == 252 &&
-                graph.Mounts.Length == 117 &&
-                (registeredFastenerCount == 260 ||
-                 registeredFastenerCount == 280);
+                data.mounts.Length == 117 && historicalSavedFastenerCount == 252 &&
+                predecessorMountCount == 117 &&
+                (historicalRegisteredFastenerCount == 260 ||
+                 historicalRegisteredFastenerCount == 280);
             bool addingExteriorPanelFasteners = data.parts.Length == 126 &&
                 data.mounts.Length == 117 &&
-                (data.fasteners.Length == 252 ||
-                 data.fasteners.Length == 260) &&
-                graph.Mounts.Length == 117 && registeredFastenerCount == 280;
+                (historicalSavedFastenerCount == 252 ||
+                 historicalSavedFastenerCount == 260) &&
+                predecessorMountCount == 117 && historicalRegisteredFastenerCount == 280;
             bool graphShapeMatches =
                 data.parts.Length == parts.Length &&
                 data.mounts.Length == graph.Mounts.Length &&
@@ -1357,14 +1602,17 @@ namespace MSC.Vehicle.Assembly
             }
 
             bool requiresAdditiveGraphMigration = !graphShapeMatches;
+            bool exactReviewedPredecessorShape = additions.HasAny && data.parts.Length == parts.Length &&
+                data.mounts.Length == predecessorMountCount && data.fasteners.Length == predecessorFastenerCount;
             if (data.parts.Length != parts.Length ||
                 data.mounts.Length > graph.Mounts.Length ||
                 data.fasteners.Length > registeredFastenerCount ||
                 requiresAdditiveGraphMigration &&
-                (!allowAdditiveSaveMigration || !IsKnownAdditiveSaveShape(
+                (!allowAdditiveSaveMigration || !exactReviewedPredecessorShape && !IsKnownAdditiveSaveShape(
                     data.parts.Length,
                     data.mounts.Length,
-                    data.fasteners.Length)))
+                    data.fasteners.Length,
+                    retiredEngineFastenerCount)))
             {
                 failure = InvalidSave(
                     "Размер старого графа сборки нельзя безопасно мигрировать.");
@@ -1406,8 +1654,7 @@ namespace MSC.Vehicle.Assembly
                 }
             }
 
-            if (addingFrontStrutLowerFasteners ||
-                addingExteriorPanelFasteners)
+            if (addingFrontStrutLowerFasteners || addingExteriorPanelFasteners || exactReviewedPredecessorShape)
             {
                 // These known graph revisions add only explicit stable-ID
                 // fasteners. A payload with the same aggregate count but a
@@ -1420,6 +1667,7 @@ namespace MSC.Vehicle.Assembly
                         bool present = savedFasteners.ContainsKey(
                             mount.MountId + "/" + id);
                         bool expectedMissing =
+                            additions.IsMissingFastener(mount.MountId, id) ||
                             addingFrontStrutLowerFasteners &&
                             IsFrontStrutLowerFastener(mount.MountId, id) ||
                             addingExteriorPanelFasteners &&
@@ -1430,6 +1678,14 @@ namespace MSC.Vehicle.Assembly
                                 "Старый save потерял крепёж вне известной additive-миграции.");
                             return false;
                         }
+                    }
+                }
+                foreach (MountPointRuntime mount in graph.Mounts)
+                {
+                    if (savedMounts.ContainsKey(mount.MountId) == additions.MountIds.Contains(mount.MountId))
+                    {
+                        failure = InvalidSave("The predecessor mount identity set differs from the reviewed revision.");
+                        return false;
                     }
                 }
             }
@@ -1451,9 +1707,9 @@ namespace MSC.Vehicle.Assembly
                 }
             }
 
-            if (data.schemaVersion ==
-                    VehicleAssemblySaveData.CurrentSchemaVersion &&
-                sourceGroups.Length != graph.Mounts.Length)
+            if (data.schemaVersion >=
+                    VehicleAssemblySaveData.FastenerGroupSchemaVersion &&
+                (sourceGroups.Length != data.mounts.Length || !savedGroups.Keys.ToHashSet(StringComparer.Ordinal).SetEquals(savedMounts.Keys)))
             {
                 failure = InvalidSave(
                     "Текущий save потерял latch-группы крепежа и не может быть восстановлен двусмысленно.");
@@ -1464,6 +1720,7 @@ namespace MSC.Vehicle.Assembly
             {
                 schemaVersion = VehicleAssemblySaveData.CurrentSchemaVersion,
                 parts = data.parts,
+                dynamicParts = data.dynamicParts ?? Array.Empty<DynamicAssemblyPartSaveDto>(),
                 mounts = new MountSaveDto[graph.Mounts.Length],
                 fasteners = new FastenerSaveDto[registeredFastenerCount],
                 fastenerGroups = new FastenerGroupSaveDto[
@@ -1501,6 +1758,7 @@ namespace MSC.Vehicle.Assembly
                                 // fasteners so the graph expansion cannot detach
                                 // or invalidate previously installed parts.
                                 stage = mountOccupied &&
+                                    !additions.IsMissingFastener(mount.MountId, definition.DefinitionId) &&
                                     !(addingFrontStrutLowerFasteners &&
                                       IsFrontStrutLowerFastener(
                                           mount.MountId,
@@ -1527,6 +1785,8 @@ namespace MSC.Vehicle.Assembly
                               mount.FastenerGroup.Definition.HasFasteners &&
                               tightness >= mount.FastenerGroup.Definition
                                   .BoltedOnThreshold;
+                if (additions.BodyMountIds.Contains(mount.MountId) || additions.MountIds.Contains(mount.MountId))
+                    migratedLatch = false;
                 migrated.fastenerGroups[mountIndex] =
                     new FastenerGroupSaveDto
                     {
@@ -1686,6 +1946,7 @@ namespace MSC.Vehicle.Assembly
             {
                 schemaVersion = source.schemaVersion,
                 parts = source.parts,
+                dynamicParts = source.dynamicParts,
                 mounts = source.mounts,
                 fasteners = migratedFasteners,
                 fastenerGroups = migratedGroups,
@@ -1730,7 +1991,14 @@ namespace MSC.Vehicle.Assembly
                         mountId,
                         StringComparison.Ordinal))
                 {
-                    group.isBolted = isBolted;
+                    // Retired steering shapes can remove a fastener. Preserve
+                    // a still-valid hysteretic latch (including old ON=1 saves)
+                    // and rebuild only if the remapped stages invalidate it.
+                    if (!mount.FastenerGroup.Definition.IsLatchConsistent(
+                            tightness, group.isBolted, occupied))
+                    {
+                        group.isBolted = isBolted;
+                    }
                 }
             }
         }
@@ -1832,6 +2100,38 @@ namespace MSC.Vehicle.Assembly
                             schemaVersion = value.steeringAlignment.schemaVersion,
                             alignmentDegrees = value.steeringAlignment.alignmentDegrees,
                         },
+                    hasCamshaftTiming = value.hasCamshaftTiming,
+                    camshaftTiming = value.camshaftTiming == null
+                        ? null
+                        : new AssemblyCamshaftTimingSaveDto
+                        {
+                            schemaVersion = value.camshaftTiming.schemaVersion,
+                            angleDegrees = value.camshaftTiming.angleDegrees,
+                        },
+                    hasEngineAdjustment = value.hasEngineAdjustment,
+                    engineAdjustment = value.engineAdjustment == null
+                        ? null
+                        : new AssemblyEngineAdjustmentSaveDto
+                        {
+                            schemaVersion = value.engineAdjustment.schemaVersion,
+                            kind = value.engineAdjustment.kind,
+                            value = value.engineAdjustment.value,
+                        },
+                    hasEngineDocking = value.hasEngineDocking,
+                    hasMechanicalCondition = value.hasMechanicalCondition,
+                    mechanicalCondition = value.mechanicalCondition?.Clone(),
+                    hasValveAdjustment = value.hasValveAdjustment,
+                    valveAdjustment = value.valveAdjustment?.Clone(),
+                    hasServiceCaps = value.hasServiceCaps,
+                    serviceCaps = value.serviceCaps?.Clone(),
+                    engineDocking = value.engineDocking == null
+                        ? null
+                        : new AssemblyEngineDockingSaveDto
+                        {
+                            schemaVersion = value.engineDocking.schemaVersion,
+                            pendingStages = value.engineDocking.pendingStages == null
+                                ? null : (int[])value.engineDocking.pendingStages.Clone(),
+                        },
                 };
             }).ToArray();
             MountSaveDto[] mounts = source.mounts
@@ -1916,6 +2216,7 @@ namespace MSC.Vehicle.Assembly
             {
                 schemaVersion = source.schemaVersion,
                 parts = parts,
+                dynamicParts = source.dynamicParts,
                 mounts = mounts,
                 fasteners = fasteners,
                 fastenerGroups = fastenerGroups,
@@ -1926,20 +2227,42 @@ namespace MSC.Vehicle.Assembly
         private bool IsKnownAdditiveSaveShape(
             int savedPartCount,
             int savedMountCount,
-            int savedFastenerCount)
+            int savedFastenerCount,
+            int retiredEngineFastenerCount)
         {
             // These are generated Satsuma graph revisions that were locally
             // playable before fastener coverage additions. A truncated payload
             // must still fail closed instead of being mistaken for migration.
             return savedPartCount == 126 && savedMountCount == 117 &&
-                       (savedFastenerCount == 252 ||
-                        savedFastenerCount == 260) ||
+                       (savedFastenerCount + retiredEngineFastenerCount == 252 ||
+                        savedFastenerCount + retiredEngineFastenerCount == 260) ||
                    savedMountCount == 115 &&
                        (savedFastenerCount == 205 ||
-                        savedFastenerCount == 220) ||
+                        savedFastenerCount == 220 ||
+                        savedFastenerCount + retiredEngineFastenerCount == 205 ||
+                        savedFastenerCount + retiredEngineFastenerCount == 220) ||
                    savedMountCount == 46 && savedFastenerCount == 57 ||
                    savedMountCount == 83 && savedFastenerCount == 167 ||
                    savedMountCount == 84 && savedFastenerCount == 170;
+        }
+
+        private int CountRetiredEngineFastenerDefinitions()
+        {
+            int count = 0;
+            if (graph.TryGetMount(SatsumaRockerCoverFastenerMigration.MountId,
+                    out MountPointRuntime cover) &&
+                SatsumaRockerCoverFastenerMigration.IsCanonicalShape(
+                    cover.Definition.Fasteners.Select(value => value.DefinitionId).ToArray()))
+                count += 6;
+            if (graph.TryGetMount(SatsumaCarburetorFastenerMigration.MountId,
+                    out MountPointRuntime carburetor) &&
+                SatsumaCarburetorFastenerMigration.IsCanonicalShape(
+                    carburetor.Definition.Fasteners.Select(value => value.DefinitionId).ToArray()))
+                count++;
+            if (graph.TryGetMount(SatsumaRockerShaftFastenerMigration.MountId, out MountPointRuntime shaft) &&
+                SatsumaRockerShaftFastenerMigration.IsCanonicalShape(
+                    shaft.Definition.Fasteners.Select(value => value.DefinitionId).ToArray())) count += 8;
+            return count;
         }
 
         private static bool IsFrontStrutLowerFastener(string mountId, string id)
@@ -2179,12 +2502,12 @@ namespace MSC.Vehicle.Assembly
             return null;
         }
 
-        private AssemblyOperationResult ValidateSaveData(VehicleAssemblySaveData data)
+        private AssemblyOperationResult ValidateSaveData(VehicleAssemblySaveData data, bool requireMaterialized = false)
         {
             if (data == null || data.schemaVersion !=
                     VehicleAssemblySaveData.CurrentSchemaVersion ||
                 data.parts == null || data.mounts == null ||
-                data.fasteners == null || data.fastenerGroups == null ||
+                data.fasteners == null || data.fastenerGroups == null || data.dynamicParts == null ||
                 data.parts.Length != parts.Length ||
                 data.mounts.Length != graph.Mounts.Length ||
                 data.fasteners.Length != CountRegisteredFasteners() ||
@@ -2196,19 +2519,34 @@ namespace MSC.Vehicle.Assembly
                     "Версия или размер save DTO не соответствует сборке.");
             }
 
+            AssemblyOperationResult dynamicValidation = ValidateDynamicDescriptors(data);
+            if (!dynamicValidation.Succeeded) return dynamicValidation;
+            PartSaveDto[] savedParts = AllSavedParts(data);
+            if (requireMaterialized && (data.dynamicParts ?? Array.Empty<DynamicAssemblyPartSaveDto>()).Length != dynamicRegistrations.Count)
+                return InvalidSave("Dynamic registration roster must be reconciled before assembly apply.");
+
             var seenParts = new HashSet<string>(StringComparer.Ordinal);
             var occupiedMountIds = new HashSet<string>(StringComparer.Ordinal);
             var installedPartDefinitionIds = new HashSet<string>(
                 StringComparer.Ordinal);
-            for (int i = 0; i < data.parts.Length; i++)
+            for (int i = 0; i < savedParts.Length; i++)
             {
-                PartSaveDto dto = data.parts[i];
-                if (dto == null || !seenParts.Add(dto.stableEntityId) ||
-                    !graph.TryGetPartByStableId(dto.stableEntityId, out PartInstance part) ||
-                    part.Definition == null || !string.Equals(
-                        part.Definition.DefinitionId,
-                        dto.partDefinitionId,
-                        StringComparison.Ordinal))
+                PartSaveDto dto = savedParts[i];
+                bool dynamicPart = i >= data.parts.Length;
+                if (dto == null || !seenParts.Add(dto.stableEntityId))
+                    return InvalidSave("Неизвестная, повторная или несовместимая деталь в DTO.");
+                graph.TryGetPartByStableId(dto.stableEntityId, out PartInstance part);
+                PartDefinition definition = part != null ? part.Definition : null;
+                if (dynamicPart)
+                {
+                    TryGetDynamicPartDefinition(dto.partDefinitionId, out definition);
+                    if (requireMaterialized && (part == null || part.Definition != definition ||
+                        !dynamicRegistrations.TryGetValue(dto.stableEntityId, out DynamicPartRegistration registration) ||
+                        registration.Part != part || registration.ItemDefinitionId != data.dynamicParts[i - data.parts.Length].itemDefinitionId))
+                        return InvalidSave("Dynamic item has not been materialized and registered for this aggregate.");
+                }
+                if (definition == null || definition.DefinitionId != dto.partDefinitionId ||
+                    !dynamicPart && (part == null || !parts.Contains(part)))
                 {
                     return InvalidSave("Неизвестная, повторная или несовместимая деталь в DTO.");
                 }
@@ -2227,7 +2565,61 @@ namespace MSC.Vehicle.Assembly
                     return InvalidSave("Некорректное схождение или настройка у неподходящей детали.");
                 }
 
-                if (part.IsAssemblyRoot !=
+                if (dto.hasCamshaftTiming &&
+                    (dto.camshaftTiming == null || !dto.camshaftTiming.IsValid ||
+                     part.GetComponent<AssemblyCamshaftTimingState>() == null))
+                {
+                    return InvalidSave("Некорректная настройка метки распредвала или неподходящая деталь.");
+                }
+
+                if (dto.hasEngineAdjustment && (!dynamicPart || requireMaterialized))
+                {
+                    AssemblyEngineAdjustmentState adjustment =
+                        part.GetComponent<AssemblyEngineAdjustmentState>();
+                    if (dto.engineAdjustment == null || adjustment == null ||
+                        adjustment.Part != part || adjustment.Assembly != this ||
+                        !dto.engineAdjustment.IsValidFor(adjustment.Kind) ||
+                        adjustment.Kind == SatsumaEngineAdjustmentKind.OilFilter &&
+                        dto.lifecycleState != PartLifecycleState.Installed &&
+                        dto.engineAdjustment.value != 0f)
+                        return InvalidSave("Некорректная регулировка двигателя или неподходящая деталь.");
+                }
+
+                if (dto.hasEngineDocking)
+                {
+                    AssemblyEngineDockingState docking = part.GetComponent<AssemblyEngineDockingState>();
+                    if (dto.engineDocking == null || !dto.engineDocking.IsValid || docking == null ||
+                        docking.Block != part || part.Definition.DefinitionId != "vehicle.satsuma.part.engine-block" ||
+                        dto.lifecycleState != PartLifecycleState.Loose && !dto.engineDocking.IsEmpty)
+                        return InvalidSave("Некорректное наживление двигателя или неподходящая деталь.");
+                }
+
+                if (dto.hasMechanicalCondition)
+                {
+                    AssemblyMechanicalConditionState condition = part != null
+                        ? part.GetComponent<AssemblyMechanicalConditionState>() : null;
+                    if (dynamicPart || dto.mechanicalCondition == null || !dto.mechanicalCondition.IsValid ||
+                        condition == null || condition.Part != part)
+                        return InvalidSave("Некорректный износ или второй владелец состояния детали.");
+                }
+
+                if (dto.hasValveAdjustment)
+                {
+                    AssemblyValveAdjustmentState valves = part != null
+                        ? part.GetComponent<AssemblyValveAdjustmentState>() : null;
+                    if (dynamicPart || dto.valveAdjustment == null || !dto.valveAdjustment.IsValid ||
+                        valves == null || valves.Part != part || valves.Assembly != this)
+                        return InvalidSave("Некорректная регулировка клапанов или неподходящая деталь.");
+                }
+
+                if (dto.hasServiceCaps)
+                {
+                    AssemblyServiceCapState caps = part != null ? part.GetComponent<AssemblyServiceCapState>() : null;
+                    if (dynamicPart || caps == null || caps.Part != part || !caps.CanRestore(dto.serviceCaps))
+                        return InvalidSave("Некорректные крышки бачков или неподходящая деталь.");
+                }
+
+                if ((part != null && part.IsAssemblyRoot) !=
                         (dto.lifecycleState == PartLifecycleState.AssemblyRoot) ||
                     (dto.lifecycleState != PartLifecycleState.Installed &&
                      !string.IsNullOrEmpty(dto.installedMountId)))
@@ -2240,16 +2632,16 @@ namespace MSC.Vehicle.Assembly
                     installedPartDefinitionIds.Add(dto.partDefinitionId);
                     if (!occupiedMountIds.Add(dto.installedMountId) ||
                         !graph.TryGetMount(dto.installedMountId, out MountPointRuntime mount) ||
-                        !part.Definition.IsCompatibleWith(mount.Definition))
+                        !definition.IsCompatibleWith(mount.Definition))
                     {
                         return InvalidSave("Некорректная или повторно занятая точка установки в DTO.");
                     }
                 }
             }
 
-            for (int i = 0; i < data.parts.Length; i++)
+            for (int i = 0; i < savedParts.Length; i++)
             {
-                PartSaveDto dto = data.parts[i];
+                PartSaveDto dto = savedParts[i];
                 if (dto.lifecycleState != PartLifecycleState.Installed ||
                     !graph.TryGetMount(
                         dto.installedMountId,
@@ -2281,9 +2673,9 @@ namespace MSC.Vehicle.Assembly
                 }
 
                 string expectedPartId = string.Empty;
-                for (int partIndex = 0; partIndex < data.parts.Length; partIndex++)
+                for (int partIndex = 0; partIndex < savedParts.Length; partIndex++)
                 {
-                    PartSaveDto partDto = data.parts[partIndex];
+                    PartSaveDto partDto = savedParts[partIndex];
                     if (partDto.lifecycleState == PartLifecycleState.Installed && string.Equals(
                             partDto.installedMountId,
                             dto.mountId,

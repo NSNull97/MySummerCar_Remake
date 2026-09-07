@@ -238,7 +238,14 @@ namespace MSC.Player
         /// controller would route somewhere else.
         /// </summary>
         public InteractionActionSnapshot CurrentActionSnapshot =>
-            BuildCurrentActionSnapshot();
+            IsInteractionEnabled && contextualActionSource != null
+                ? BuildCurrentActionSnapshot().Add(contextualActionSource.ContextActionHint)
+                : BuildCurrentActionSnapshot();
+
+        private IPlayerContextActionSource contextualActionSource;
+
+        public void BindContextActionSource(IPlayerContextActionSource source) =>
+            contextualActionSource = source;
 
         public void RefreshCandidate()
         {
@@ -399,6 +406,20 @@ namespace MSC.Player
                 snapshot = snapshot.Add(new InteractionActionHint(
                     InteractionActionBinding.Scroll,
                     "ВРАЩАТЬ"));
+            }
+
+            if (currentCandidate.IsValid &&
+                currentCandidate.TryGetCapability(
+                    out IHeldToolActivationTarget heldToolTarget) &&
+                currentCandidate.TryGetCapability(
+                    out IToolActivationTarget heldToolPrompt) &&
+                carryController.TryGetHeldCapability(
+                    out IHeldToolIdentity heldTool) &&
+                heldToolTarget.CanActivateHeldTool(heldTool, context))
+            {
+                snapshot = snapshot.Add(new InteractionActionHint(
+                    InteractionActionBinding.ToolActivate,
+                    heldToolPrompt.ToolPrompt));
             }
 
             return snapshot;

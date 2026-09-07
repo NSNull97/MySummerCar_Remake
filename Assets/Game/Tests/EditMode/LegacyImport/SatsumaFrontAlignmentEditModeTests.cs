@@ -209,18 +209,22 @@ namespace MSC.Tests.EditMode.LegacyImport
                 Assert.That(fixture.MountRuntime("wishbone-fl").FastenerGroup.IsBolted, Is.True);
                 VehicleAssemblySaveData legacy = fixture.Assembly.CaptureSaveData();
                 legacy.fasteners = BuildLegacy252Shape(legacy);
+                SatsumaCanonicalNightTestShape.StripAddedMountsFromHistoricalInput(legacy);
                 Assert.That(legacy.fasteners, Has.Length.EqualTo(252));
+                Assert.That(legacy.fasteners.Count(IsRetiredEngineShapeFastener), Is.EqualTo(15));
                 string originalJson = JsonUtility.ToJson(legacy);
                 fixture.SetAlignment("fl", -2f);
 
                 AssertSuccess(fixture.Assembly.RestoreSaveData(legacy));
 
                 VehicleAssemblySaveData restored = fixture.Assembly.CaptureSaveData();
-                Assert.That(restored.fasteners, Has.Length.EqualTo(280));
+                SatsumaCanonicalNightTestShape.AssertCanonical(restored);
+                Assert.That(restored.fasteners.Any(IsRetiredEngineShapeFastener), Is.False);
                 Assert.That(fixture.Alignment("fl").AlignmentDegrees, Is.EqualTo(1.9f));
                 Assert.That(UnchangedFasteners(restored),
                     Is.EquivalentTo(UnchangedFasteners(legacy)));
-                Assert.That(Groups(restored), Is.EquivalentTo(Groups(legacy)));
+                Assert.That(restored.fastenerGroups.Where(value => !SatsumaCanonicalNightTestShape.IsAddedMount(value.mountId))
+                    .Select(value => value.mountId + "|" + value.isBolted), Is.EquivalentTo(Groups(legacy)));
                 Assert.That(fixture.MountRuntime("wishbone-fl").FastenerGroup.IsBolted, Is.True);
                 Assert.That(restored.fasteners.Where(IsLower).All(value => value.stage == 0), Is.True);
                 Assert.That(JsonUtility.ToJson(legacy), Is.EqualTo(originalJson));
@@ -278,7 +282,7 @@ namespace MSC.Tests.EditMode.LegacyImport
         [TestCase("wishbone-fr", "spindle-fr")]
         [TestCase("spindle-fl", "strut-fl")]
         [TestCase("spindle-fr", "strut-fr")]
-        public void FrontInstallGateUsesDonorLatchNotFullTightnessOrCurrentStageAlone(
+        public void FrontInstallAttemptUsesDonorLatchWithoutBlockingPreview(
             string support, string dependent)
         {
             using (var fixture = new Fixture())
@@ -290,15 +294,20 @@ namespace MSC.Tests.EditMode.LegacyImport
                 Assert.That(supportMount.FastenerGroup.Definition.AggregateMaximumTightness,
                     Is.EqualTo(support.StartsWith("wishbone-", StringComparison.Ordinal) ? 16 : 8));
 
-                fixture.AssertInstallAllowed(dependent, expected: false);
+                fixture.AssertInstallAllowed(dependent, expected: true);
+                Assert.That(supportMount.FastenerGroup.IsBolted, Is.False);
                 fixture.TurnFirst(support, 1);
-                fixture.AssertInstallAllowed(dependent, expected: false);
+                fixture.AssertInstallAllowed(dependent, expected: true);
+                Assert.That(supportMount.FastenerGroup.IsBolted, Is.False);
                 fixture.TurnFirst(support, 2);
                 fixture.AssertInstallAllowed(dependent, expected: true);
+                Assert.That(supportMount.FastenerGroup.IsBolted, Is.True);
                 fixture.TurnFirst(support, 1);
                 fixture.AssertInstallAllowed(dependent, expected: true);
+                Assert.That(supportMount.FastenerGroup.IsBolted, Is.True);
                 fixture.TurnFirst(support, 0);
-                fixture.AssertInstallAllowed(dependent, expected: false);
+                fixture.AssertInstallAllowed(dependent, expected: true);
+                Assert.That(supportMount.FastenerGroup.IsBolted, Is.False);
                 fixture.TurnFirst(support, 2);
                 fixture.Install(dependent);
                 Assert.That(fixture.Part(dependent).IsInstalled, Is.True);
@@ -377,6 +386,7 @@ namespace MSC.Tests.EditMode.LegacyImport
         {
             var legacy = current.fasteners
                 .Where(value => !IsLower(value) &&
+                    !SatsumaCanonicalNightTestShape.IsAddedFastener(value) &&
                     !IsExteriorPanelFastener(value) &&
                     !IsSteeringWheelNut(value))
                 .Select(CloneFastener)
@@ -394,8 +404,30 @@ namespace MSC.Tests.EditMode.LegacyImport
                 seated = secondPhysicalColumnBolt.seated,
                 stage = secondPhysicalColumnBolt.stage,
             });
-            return legacy.ToArray();
+            // Restore the actual historical engine identities as well as the
+            // steering revision; this remains a real 252-fastener save fixture.
+            string[] stock = SatsumaRockerCoverFastenerMigration.CanonicalIds;
+            string[] aliases = SatsumaRockerCoverFastenerMigration.RetiredIds;
+            for (int index = 0; index < aliases.Length; index++)
+            {
+                FastenerSaveDto copy = CloneFastener(legacy.Single(value =>
+                    value.fastenerDefinitionId == stock[index]));
+                copy.fastenerDefinitionId = aliases[index];
+                legacy.Add(copy);
+            }
+            FastenerSaveDto carb = CloneFastener(legacy.First(value =>
+                value.mountId == SatsumaCarburetorFastenerMigration.MountId));
+            carb.fastenerDefinitionId = SatsumaCarburetorFastenerMigration.RetiredId;
+            carb.stage = 0;
+            legacy.Add(carb);
+            return SatsumaCanonicalNightTestShape.RestoreHistoricalValveFasteners(legacy);
         }
+
+        private static bool IsRetiredEngineShapeFastener(FastenerSaveDto value) =>
+            value != null &&
+            (SatsumaRockerShaftFastenerMigration.RetiredIds.Contains(value.fastenerDefinitionId) ||
+             SatsumaRockerCoverFastenerMigration.RetiredIds.Contains(value.fastenerDefinitionId) ||
+             value.fastenerDefinitionId == SatsumaCarburetorFastenerMigration.RetiredId);
 
         private static bool IsExteriorPanelFastener(FastenerSaveDto value)
         {
@@ -450,8 +482,10 @@ namespace MSC.Tests.EditMode.LegacyImport
         private static string[] UnchangedFasteners(
             VehicleAssemblySaveData data) => data.fasteners.Where(value =>
                 !IsLower(value) &&
+                !SatsumaCanonicalNightTestShape.IsAddedFastener(value) &&
                 !IsExteriorPanelFastener(value) &&
                 !IsSteeringWheelNut(value) &&
+                !IsRetiredEngineShapeFastener(value) &&
                 !IsSteeringColumnRevisionFastener(value)).Select(value =>
                     string.Join("|", value.mountId, value.fastenerDefinitionId,
                         value.inserted, value.seated, value.stage)).ToArray();

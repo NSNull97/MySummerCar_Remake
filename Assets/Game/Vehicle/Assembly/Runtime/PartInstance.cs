@@ -224,11 +224,17 @@ namespace MSC.Vehicle.Assembly
                 return;
             }
 
-            transform.SetPositionAndRotation(position, rotation);
+            // Suspension adapters intentionally repeat the ordered assembly
+            // pass after moving their own mounts. Unchanged parts must not
+            // dirty every PhysX shape again in each pass. Compare actual poses,
+            // not a cached target: parent motion and native restore still apply.
+            // Exact equality preserves even sub-millimetre authored motion.
+            if (!transform.position.Equals(position) || !transform.rotation.Equals(rotation))
+                transform.SetPositionAndRotation(position, rotation);
             if (targetBody != null)
             {
-                targetBody.position = position;
-                targetBody.rotation = rotation;
+                if (!targetBody.position.Equals(position)) targetBody.position = position;
+                if (!targetBody.rotation.Equals(rotation)) targetBody.rotation = rotation;
             }
         }
 
@@ -348,7 +354,14 @@ namespace MSC.Vehicle.Assembly
                 return;
             }
 
-            Collider[] colliders = GetComponentsInChildren<Collider>(true);
+            // Engine subassemblies explicitly opt into own-shape snapshots:
+            // a parent installed after its children must not restore their
+            // disabled source shapes as its own contacts. Other accepted part
+            // families retain their existing collider-snapshot contract.
+            bool ownsSubassemblyShapes = GetComponent<AssemblySubassemblyPickupTarget>() != null;
+            Collider[] colliders = Array.FindAll(GetComponentsInChildren<Collider>(true),
+                value => (!ownsSubassemblyShapes || value.GetComponentInParent<PartInstance>() == this) &&
+                    value.GetComponent<AssemblyCompoundColliderProxy>() == null);
             colliderDefaults = new ColliderDefault[colliders.Length];
             for (int index = 0; index < colliders.Length; index++)
             {

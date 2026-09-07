@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using MSC.UI.EditorTools;
 using MSC.UI.Runtime.Localization;
 using NUnit.Framework;
 using UnityEditor;
@@ -154,21 +155,18 @@ namespace MSC.Tests.EditMode.UIEditor
         }
 
         [Test]
-        public void ProjectOwnedMenuBackdrop_IsCanonicalAndNotAReferenceScreenshot()
+        public void ProductionMenu_UsesCanonicalMeshOnlyEnvironmentAndVehicleWithoutPhotoBackground()
         {
-            const string backdropPath =
-                "Assets/Game/UI/Presentation/Content/MainMenu/M08A_TemporaryGarageBackdrop.png";
-            Texture2D backdrop = AssetDatabase.LoadAssetAtPath<Texture2D>(backdropPath);
-            Assert.That(backdrop, Is.Not.Null);
-            Assert.That(backdrop.width, Is.EqualTo(1672));
-            Assert.That(backdrop.height, Is.EqualTo(941));
-            Assert.That(backdropPath, Does.Not.Contain("References/UI/Approved"));
-
-            var importer = AssetImporter.GetAtPath(backdropPath) as TextureImporter;
-            Assert.That(importer, Is.Not.Null);
-            Assert.That(importer.mipmapEnabled, Is.False);
-            Assert.That(importer.wrapMode, Is.EqualTo(TextureWrapMode.Clamp));
-            Assert.That(importer.filterMode, Is.EqualTo(FilterMode.Bilinear));
+            // The existing Editor boundary inspects a separate Bootstrap preview
+            // scene and checks canonical references plus null legacy photo/shader.
+            // It closes that scene without modifying user scenes or build settings.
+            Assert.DoesNotThrow(ProductionUiAuthoring.ValidateProductionBootstrap);
+            AssertCanonicalMenuMeshPrefab(
+                "Assets/Game/LegacyImport/RuntimeBaseline/Vehicles/Satsuma/MenuPreview/SatsumaMenuPreview.prefab",
+                "MSC.UI.Presentation.MainMenuVehicleModel");
+            AssertCanonicalMenuMeshPrefab(
+                "Assets/Game/LegacyImport/RuntimeBaseline/GameplayPresentation/MainMenu/HomeYardMenuEnvironment.prefab",
+                "MSC.UI.Presentation.MainMenuEnvironmentModel");
         }
 
         [Test]
@@ -178,12 +176,16 @@ namespace MSC.Tests.EditMode.UIEditor
                 "Assets/Game/UI/Presentation/Content/MainMenu/M08A_MenuLogo.png";
             Texture2D logo = AssetDatabase.LoadAssetAtPath<Texture2D>(logoPath);
             Assert.That(logo, Is.Not.Null);
-            Assert.That(logo.width, Is.EqualTo(600));
-            Assert.That(logo.height, Is.EqualTo(337));
             Assert.That(logoPath, Does.Not.Contain("References/UI/Approved"));
 
             var importer = AssetImporter.GetAtPath(logoPath) as TextureImporter;
             Assert.That(importer, Is.Not.Null);
+            importer.GetSourceTextureWidthAndHeight(out int sourceWidth, out int sourceHeight);
+            Assert.That(sourceWidth, Is.EqualTo(1536));
+            Assert.That(sourceHeight, Is.EqualTo(1024));
+            Assert.That((float)logo.width / logo.height,
+                Is.EqualTo((float)sourceWidth / sourceHeight).Within(0.002f),
+                "The current transparent logo must retain its source aspect after import-size limiting.");
             Assert.That(importer.alphaSource, Is.EqualTo(TextureImporterAlphaSource.FromInput));
             Assert.That(importer.alphaIsTransparency, Is.True);
             Assert.That(importer.mipmapEnabled, Is.False);
@@ -335,6 +337,39 @@ namespace MSC.Tests.EditMode.UIEditor
             Assert.That(shader, Is.Not.Null);
             Assert.That(shader.name, Is.EqualTo("Hidden/MSC/UI/SeparableGaussianBlur"));
             Assert.That(shader.isSupported, Is.True);
+        }
+
+        private static void AssertCanonicalMenuMeshPrefab(string path, string expectedRootModelType)
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            Assert.That(prefab, Is.Not.Null, path);
+            MonoBehaviour[] rootModels = prefab.GetComponents<MonoBehaviour>();
+            Assert.That(rootModels, Has.Length.EqualTo(1), path);
+            Assert.That(rootModels[0], Is.Not.Null, path);
+            Assert.That(rootModels[0].GetType().FullName, Is.EqualTo(expectedRootModelType));
+            foreach (Component component in prefab.GetComponentsInChildren<Component>(true))
+                Assert.That(component != null && (component is Transform || component is MeshFilter ||
+                    component is MeshRenderer || component == rootModels[0]), Is.True,
+                    "Canonical menu presentation must not contain gameplay, physics, UI or audio components: " + component);
+            MeshRenderer[] renderers = prefab.GetComponentsInChildren<MeshRenderer>(true);
+            Assert.That(renderers, Is.Not.Empty, path);
+            foreach (MeshRenderer renderer in renderers)
+            {
+                MeshFilter filter = renderer.GetComponent<MeshFilter>();
+                Assert.That(filter, Is.Not.Null, path);
+                Assert.That(filter.sharedMesh, Is.Not.Null, path);
+                Assert.That(AssetDatabase.Contains(filter.sharedMesh), Is.True, path);
+                Assert.That(filter.sharedMesh.vertexCount, Is.GreaterThan(0), path);
+                Assert.That(renderer.sharedMaterials, Is.Not.Empty, path);
+                foreach (Material material in renderer.sharedMaterials)
+                    Assert.That(material != null && AssetDatabase.Contains(material), Is.True,
+                        "Menu meshes must retain explicit canonical material assets: " + path);
+            }
+            string[] dependencies = AssetDatabase.GetDependencies(path, recursive: true);
+            Assert.That(dependencies, Does.Not.Contain(
+                "Assets/Game/UI/Presentation/Content/MainMenu/M08A_TemporaryGarageBackdrop.png"));
+            Assert.That(dependencies, Does.Not.Contain(
+                "Assets/Game/UI/Presentation/Content/Shaders/MainMenuGaragePlate.shader"));
         }
 
         private static void AssertGestureBindings(

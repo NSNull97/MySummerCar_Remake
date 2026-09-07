@@ -20,11 +20,12 @@ using UnityEngine.UI;
 
 namespace MSC.Tests.PlayMode.UIPresentation
 {
-    public sealed class GameUiRootPlayModeTests
+    public sealed partial class GameUiRootPlayModeTests
     {
         private string temporaryDirectory;
         private float originalTimeScale;
         private float originalDeadzone;
+        private readonly List<UnityEngine.Object> ownedFixtureObjects = new List<UnityEngine.Object>();
 
         [SetUp]
         public void SetUp()
@@ -40,6 +41,11 @@ namespace MSC.Tests.PlayMode.UIPresentation
         [TearDown]
         public void TearDown()
         {
+            // Failed assertions must not leave another overlay or EventSystem
+            // covering the next test's native backbuffer capture.
+            foreach (UnityEngine.Object owned in ownedFixtureObjects)
+                if (owned != null) UnityEngine.Object.DestroyImmediate(owned);
+            ownedFixtureObjects.Clear();
             Time.timeScale = originalTimeScale;
             InputSystem.settings.defaultDeadzoneMin = originalDeadzone;
             if (Directory.Exists(temporaryDirectory))
@@ -222,14 +228,15 @@ namespace MSC.Tests.PlayMode.UIPresentation
 
             string[] orderedActions = { "Continue", "NewGame", "LoadGame", "Credits", "Quit" };
             Transform mainRoute = FindRequired(fixture.Root.transform, UiRouteId.MainMenu.ToString());
+            Transform primaryActions = FindRequired(mainRoute, "PrimaryActions");
             int previousSiblingIndex = -1;
             for (int index = 0; index < orderedActions.Length; index++)
             {
                 Transform action = FindRequired(mainRoute, orderedActions[index]);
                 Assert.That(
                     action.parent,
-                    Is.EqualTo(mainRoute),
-                    "Main-menu action left the locked top-level stack: " + orderedActions[index]);
+                    Is.EqualTo(primaryActions),
+                    "Main-menu action left the dedicated primary stack: " + orderedActions[index]);
                 Assert.That(
                     action.GetSiblingIndex(),
                     Is.GreaterThan(previousSiblingIndex),
@@ -264,10 +271,10 @@ namespace MSC.Tests.PlayMode.UIPresentation
             Transform colourCard = FindRequired(mainRoute, "CarColourCard");
             Button[] colourButtons = colourCard.GetComponentsInChildren<Button>(includeInactive: false);
             Assert.That(colourButtons, Has.Length.EqualTo(12));
-            Assert.That(FindRequired(colourCard, "Colour0").GetComponent<Outline>().enabled, Is.True);
-            colourButtons[1].onClick.Invoke();
-            Assert.That(FindRequired(colourCard, "Colour0").GetComponent<Outline>().enabled, Is.False);
-            Assert.That(FindRequired(colourCard, "Colour1").GetComponent<Outline>().enabled, Is.True);
+            Assert.That(FindRequired(colourCard, "Colour0").GetComponent<MainMenuActionButton>().PersistentSelection, Is.True);
+            FindRequired(colourCard, "Colour1").GetComponent<Button>().onClick.Invoke();
+            Assert.That(FindRequired(colourCard, "Colour0").GetComponent<MainMenuActionButton>().PersistentSelection, Is.False);
+            Assert.That(FindRequired(colourCard, "Colour1").GetComponent<MainMenuActionButton>().PersistentSelection, Is.True);
             Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(UiRouteId.MainMenu));
 
             Button newGame = FindRequired(mainRoute, "NewGame").GetComponent<Button>();
@@ -514,7 +521,7 @@ namespace MSC.Tests.PlayMode.UIPresentation
             Assert.That(loadButton.interactable, Is.True);
             Assert.That(
                 FindRequired(continueButton.transform, "ContinueHelper").GetComponent<Text>().text,
-                Does.Contain("Latest save"));
+                Does.Contain("slot-new"));
 
             continueButton.onClick.Invoke();
             Assert.That(fixture.Root.CurrentRoute, Is.EqualTo(UiRouteId.Loading));
@@ -752,22 +759,16 @@ namespace MSC.Tests.PlayMode.UIPresentation
         {
             UiFixture fixture = CreateFixture(startInMainMenu: true);
             yield return null;
+            Canvas.ForceUpdateCanvases();
 
             Transform main = FindRequired(fixture.Root.transform, UiRouteId.MainMenu.ToString());
             Transform colour = FindRequired(main, "CarColourCard");
-            Transform interior = FindRequired(main, "InteriorCard");
-            Transform performance = FindRequired(main, "PerformanceCard");
-            Transform music = FindRequired(main, "MusicCard");
-            AssertRoundedSurface(FindRequired(main, "NewGame"), 0.33f);
+            Assert.That(FindOptional(main, "InteriorCard"), Is.Null);
+            Assert.That(FindOptional(main, "PerformanceCard"), Is.Null);
+            Assert.That(FindOptional(main, "MusicCard"), Is.Null);
+            AssertRoundedSurface(FindRequired(FindRequired(main, "NewGame"), "GlassBody"), 0.20f);
             AssertCrispBorder(FindRequired(main, "NewGame"));
-            Assert.That(
-                FindRequired(FindRequired(main, "NewGame"), "Border")
-                    .GetComponent<Image>().color.a,
-                Is.EqualTo(UiThemeTokens.EmphasizedBorderAlpha).Within(0.001f));
-            AssertRoundedSurface(colour, 0.33f);
-            Assert.That(HorizontalGap(colour, interior), Is.GreaterThanOrEqualTo(UiThemeTokens.SpacingSmall - 0.01f));
-            Assert.That(HorizontalGap(interior, performance), Is.GreaterThanOrEqualTo(UiThemeTokens.SpacingSmall - 0.01f));
-            Assert.That(VerticalGap(colour, music), Is.GreaterThanOrEqualTo(UiThemeTokens.SpacingMedium - 0.01f));
+            AssertRoundedSurface(FindRequired(colour, "GlassBody"), 0.20f);
 
             Transform utility = FindRequired(main, "UtilityStrip");
             Transform utilitySettings = FindRequired(utility, "Settings");
@@ -788,9 +789,13 @@ namespace MSC.Tests.PlayMode.UIPresentation
             }
 
             RectTransform greeting = (RectTransform)FindRequired(main, "Greeting");
+            var greetingCorners = new Vector3[4];
+            var actionCorners = new Vector3[4];
+            greeting.GetWorldCorners(greetingCorners);
+            firstMainAction.GetWorldCorners(actionCorners);
             Assert.That(
-                greeting.anchoredPosition.x + greeting.rect.width,
-                Is.EqualTo(firstMainAction.anchoredPosition.x + firstMainAction.rect.width)
+                greetingCorners[2].x,
+                Is.EqualTo(actionCorners[2].x)
                     .Within(0.01f),
                 "Greeting must share the main-action right edge.");
 
@@ -798,11 +803,11 @@ namespace MSC.Tests.PlayMode.UIPresentation
             yield return null;
             Transform graphics = FindRequired(fixture.Root.transform, UiRouteId.SettingsGraphics.ToString());
             Transform graphicsPanel = FindRequired(graphics, "GraphicsSettingsPanel");
-            AssertRoundedSurface(graphicsPanel, 0.33f);
+            AssertRoundedSurface(FindRequired(graphicsPanel, "GlassBody"), 0.20f);
             AssertCrispBorder(graphicsPanel);
             Assert.That(
                 FindRequired(graphicsPanel, "Border").GetComponent<Image>().color.a,
-                Is.EqualTo(UiThemeTokens.Border.a).Within(0.001f));
+                Is.EqualTo(MainMenuStyle.Border.a).Within(0.001f));
             Assert.That(FindOptional(graphics, "GraphicsPreview"), Is.Null);
             Assert.That(HorizontalGap(FindRequired(graphics, "NavigateSettingsGraphics"), graphicsPanel), Is.GreaterThanOrEqualTo(UiThemeTokens.SpacingSmall - 0.01f));
             AssertStandardSettingsActions(graphics);
@@ -849,7 +854,7 @@ namespace MSC.Tests.PlayMode.UIPresentation
             InvokePrivate(fixture.Root, "EnterPause");
             yield return null;
             Transform pause = FindRequired(fixture.Root.transform, UiRouteId.Pause.ToString());
-            AssertRoundedSurface(FindRequired(pause, "PausePanel"), 0.33f);
+            AssertRoundedSurface(FindRequired(FindRequired(pause, "PausePanel"), "GlassBody"), 0.20f);
 
             yield return DestroyFixture(fixture);
         }
@@ -904,7 +909,7 @@ namespace MSC.Tests.PlayMode.UIPresentation
                 fixture.Root.transform,
                 UiRouteId.MainMenu.ToString());
             Transform newGame = FindRequired(mainMenu, "NewGame");
-            Assert.That(newGame.GetComponent<Mask>(), Is.Not.Null);
+            Assert.That(FindRequired(newGame, "GlassBody").GetComponent<Mask>(), Is.Not.Null);
             RawImage mainButtonSlice = FindRequired(newGame, "BackdropSlice")
                 .GetComponent<RawImage>();
             Assert.That(mainButtonSlice, Is.Not.Null);
@@ -913,15 +918,8 @@ namespace MSC.Tests.PlayMode.UIPresentation
             FindRequired(mainMenu, "Colour1").GetComponent<Button>().onClick.Invoke();
             yield return null;
             Color changedTint = FindRequired(newGame, "GlassTint").GetComponent<Image>().color;
-            Assert.That(changedTint, Is.Not.EqualTo(initialTint));
-            float maximumTintDelta = Mathf.Max(
-                Mathf.Abs(changedTint.r - initialTint.r),
-                Mathf.Abs(changedTint.g - initialTint.g),
-                Mathf.Abs(changedTint.b - initialTint.b));
-            Assert.That(
-                maximumTintDelta,
-                Is.LessThan(0.10f),
-                "Car colour should remain a restrained glass tint, not a saturated fill.");
+            Assert.That(changedTint, Is.EqualTo(initialTint),
+                "The redesigned main menu uses neutral glass regardless of car paint.");
 
             FindRequired(mainMenu, "NewGame").GetComponent<Button>().onClick.Invoke();
             yield return null;
@@ -1469,7 +1467,16 @@ namespace MSC.Tests.PlayMode.UIPresentation
             bool gameplayPrepared = true,
             IPlayerMoneyService playerMoney = null,
             Action openDeveloperTools = null,
-            NewGameVehiclePaintHandler configureNewGameVehiclePaint = null)
+            NewGameVehiclePaintHandler configureNewGameVehiclePaint = null,
+            Texture2D menuBackdropTexture = null,
+            Texture2D menuLogoTexture = null,
+            Shader uiBlurShader = null,
+            MainMenuVehicleModel menuVehiclePrefab = null,
+            Shader menuPreviewBackdropShader = null,
+            MainMenuEnvironmentModel menuEnvironmentPrefab = null,
+            Camera backdropCamera = null,
+            Func<DateTime> menuLocalTimeProvider = null,
+            MSC.Core.Time.IGameTimeService gameTime = null)
         {
             var gameplay = new GameObject("GameplayRoot");
             GateProbe gate = gameplay.AddComponent<GateProbe>();
@@ -1482,19 +1489,31 @@ namespace MSC.Tests.PlayMode.UIPresentation
             vehicleActions.AddActionMap("Vehicle");
 
             var rootObject = new GameObject("GameUiRootTest");
+            ownedFixtureObjects.Add(rootObject);
+            ownedFixtureObjects.Add(gameplay);
+            ownedFixtureObjects.Add(playerActions);
+            ownedFixtureObjects.Add(vehicleActions);
             GameUiRoot root = rootObject.AddComponent<GameUiRoot>();
             var sessionGate = new GameplaySessionGateProbe(
                 initiallyActive: !startInMainMenu,
                 initiallyPrepared: gameplayPrepared);
             root.Initialize(new GameUiDependencies(
                 () => true,
-                gameTime: null,
+                gameTime: gameTime,
                 audio: null,
                 playerActions,
                 vehicleActions,
                 gameplay,
                 settingsPath ?? Path.Combine(temporaryDirectory, "ui-settings.json"),
                 startInMainMenu,
+                menuBackdropTexture: menuBackdropTexture,
+                menuLogoTexture: menuLogoTexture,
+                uiBlurShader: uiBlurShader,
+                menuVehiclePrefab: menuVehiclePrefab,
+                menuPreviewBackdropShader: menuPreviewBackdropShader,
+                menuEnvironmentPrefab: menuEnvironmentPrefab,
+                backdropCamera: backdropCamera,
+                menuLocalTimeProvider: menuLocalTimeProvider ?? FixedMenuFixtureLocalTime,
                 gameplaySessionGate: sessionGate,
                 saveService: saveService,
                 requestLoad: requestLoad,
@@ -1595,24 +1614,45 @@ namespace MSC.Tests.PlayMode.UIPresentation
             Graphic[] graphics = routeRoot.GetComponentsInChildren<Graphic>(
                 includeInactive: false);
             var corners = new Vector3[4];
+            var clipCorners = new Vector3[4];
             foreach (Graphic graphic in graphics)
             {
                 RectTransform rect = graphic.rectTransform;
                 rect.GetWorldCorners(corners);
+                float left = corners[0].x;
+                float bottom = corners[0].y;
+                float right = corners[2].x;
+                float top = corners[2].y;
+                // Scroll contents intentionally extend outside the viewport.
+                // Validate their rendered intersection, while keeping every
+                // unmasked main-menu element subject to the full bounds gate.
+                for (Transform ancestor = graphic.transform.parent;
+                     ancestor != null && ancestor != routeRoot.parent;
+                     ancestor = ancestor.parent)
+                {
+                    RectMask2D clip = ancestor.GetComponent<RectMask2D>();
+                    if (clip == null || !clip.isActiveAndEnabled) continue;
+                    clip.rectTransform.GetWorldCorners(clipCorners);
+                    left = Mathf.Max(left, clipCorners[0].x);
+                    bottom = Mathf.Max(bottom, clipCorners[0].y);
+                    right = Mathf.Min(right, clipCorners[2].x);
+                    top = Mathf.Min(top, clipCorners[2].y);
+                }
+                if (right <= left || top <= bottom) continue;
                 Assert.That(
-                    corners[0].x,
+                    left,
                     Is.GreaterThanOrEqualTo(-0.5f),
                     route + "/" + graphic.name + " left");
                 Assert.That(
-                    corners[0].y,
+                    bottom,
                     Is.GreaterThanOrEqualTo(-0.5f),
                     route + "/" + graphic.name + " bottom");
                 Assert.That(
-                    corners[2].x,
+                    right,
                     Is.LessThanOrEqualTo(Screen.width + 0.5f),
                     route + "/" + graphic.name + " right");
                 Assert.That(
-                    corners[2].y,
+                    top,
                     Is.LessThanOrEqualTo(Screen.height + 0.5f),
                     route + "/" + graphic.name + " top");
             }
@@ -1691,7 +1731,7 @@ namespace MSC.Tests.PlayMode.UIPresentation
                     action.GetComponentInChildren<Text>().text,
                     Is.EqualTo(labels[index]),
                     route.name + "/" + names[index] + " label");
-                AssertRoundedSurface(action, 0.33f);
+                AssertRoundedSurface(FindRequired(action, "GlassBody"), 0.20f);
                 AssertCrispBorder(action);
             }
 

@@ -47,7 +47,9 @@ namespace MSC.Vehicle.Simulation
         OilUnavailable = 1 << 12,
         CoolantUnavailable = 1 << 13,
         NeutralSelected = 1 << 14,
-        ClutchDisengaged = 1 << 15
+        ClutchDisengaged = 1 << 15,
+        CombustionUnavailable = 1 << 16,
+        AlternatorUnavailable = 1 << 17
     }
 
     [Serializable]
@@ -99,6 +101,9 @@ namespace MSC.Vehicle.Simulation
     {
         [SerializeField]
         private VehicleSimulationPrerequisiteFailure failureFlags;
+        private bool independentCrankingRequirements;
+        private bool satsumaOperatingRequirements;
+        private bool satsumaIgnitionPowered;
 
         public VehicleSimulationPrerequisiteFailure FailureFlags => failureFlags;
         public bool IsReady => failureFlags == VehicleSimulationPrerequisiteFailure.None;
@@ -108,20 +113,32 @@ namespace MSC.Vehicle.Simulation
             VehicleSimulationPrerequisiteFailure.EngineAssemblyMissing |
             VehicleSimulationPrerequisiteFailure.StarterMissing |
             VehicleSimulationPrerequisiteFailure.BatteryMissing |
-            VehicleSimulationPrerequisiteFailure.FuelUnavailable |
             VehicleSimulationPrerequisiteFailure.IgnitionOff |
-            VehicleSimulationPrerequisiteFailure.BatteryVoltageLow |
-            VehicleSimulationPrerequisiteFailure.OilUnavailable |
-            VehicleSimulationPrerequisiteFailure.CoolantUnavailable);
+            VehicleSimulationPrerequisiteFailure.BatteryVoltageLow) &&
+            (independentCrankingRequirements || !HasAny(
+                VehicleSimulationPrerequisiteFailure.FuelUnavailable |
+                VehicleSimulationPrerequisiteFailure.OilUnavailable |
+                VehicleSimulationPrerequisiteFailure.CoolantUnavailable));
+
+        // Opt-in for the donor-evidenced Satsuma starter. Existing prototype
+        // sources retain their original contract unless they explicitly opt in.
+        public void UseIndependentCrankingRequirements() => independentCrankingRequirements = true;
 
         public bool CanRun => !HasAny(
             VehicleSimulationPrerequisiteFailure.PrerequisiteSourceUnavailable |
             VehicleSimulationPrerequisiteFailure.EngineAssemblyMissing |
-            VehicleSimulationPrerequisiteFailure.BatteryMissing |
+            VehicleSimulationPrerequisiteFailure.CombustionUnavailable |
             VehicleSimulationPrerequisiteFailure.FuelUnavailable |
-            VehicleSimulationPrerequisiteFailure.IgnitionOff |
-            VehicleSimulationPrerequisiteFailure.OilUnavailable |
-            VehicleSimulationPrerequisiteFailure.CoolantUnavailable);
+            VehicleSimulationPrerequisiteFailure.IgnitionOff) &&
+            (satsumaOperatingRequirements ? satsumaIgnitionPowered : !HasAny(
+                VehicleSimulationPrerequisiteFailure.BatteryMissing |
+                VehicleSimulationPrerequisiteFailure.OilUnavailable |
+                VehicleSimulationPrerequisiteFailure.CoolantUnavailable));
+
+        // Diagnostic missing-fluid flags remain visible. In the opt-in model
+        // lubrication/cooling have physical consequences, not a starter lock.
+        public void UseSatsumaOperatingRequirements(bool ignitionPowered)
+        { satsumaOperatingRequirements = true; satsumaIgnitionPowered = ignitionPowered; }
 
         public bool CanTransmitDrive => CanRun && !HasAny(
             VehicleSimulationPrerequisiteFailure.DrivetrainMissing |
@@ -129,12 +146,15 @@ namespace MSC.Vehicle.Simulation
             VehicleSimulationPrerequisiteFailure.DrivenWheelsUnsecured |
             VehicleSimulationPrerequisiteFailure.InvalidSelectedGear |
             VehicleSimulationPrerequisiteFailure.InvalidClutchState |
-            VehicleSimulationPrerequisiteFailure.NeutralSelected |
-            VehicleSimulationPrerequisiteFailure.ClutchDisengaged);
+            VehicleSimulationPrerequisiteFailure.NeutralSelected) &&
+            (satsumaOperatingRequirements || !HasAny(VehicleSimulationPrerequisiteFailure.ClutchDisengaged));
 
         public void Reset()
         {
             failureFlags = VehicleSimulationPrerequisiteFailure.None;
+            independentCrankingRequirements = false;
+            satsumaOperatingRequirements = false;
+            satsumaIgnitionPowered = false;
         }
 
         public void Add(VehicleSimulationPrerequisiteFailure failures)
@@ -151,6 +171,17 @@ namespace MSC.Vehicle.Simulation
     public interface IVehicleSimulationPrerequisiteSource
     {
         void Evaluate(in VehicleInputState input, ref VehicleSimulationPrerequisites result);
+    }
+
+    /// <summary>Explicit session-only test override, not a saved fluid refill.</summary>
+    public interface IVehicleFluidReadinessTestOverride
+    {
+        bool IgnoreFluidReadinessForTesting { get; }
+    }
+
+    public interface IVehicleFuelReadinessTestOverride
+    {
+        bool IgnoreFuelReadinessForTesting { get; }
     }
 
     public readonly struct WheelPhysicsSample
@@ -272,6 +303,12 @@ namespace MSC.Vehicle.Simulation
 
         public int schemaVersion = CurrentSchemaVersion;
         public VehicleEngineStatus engineStatus;
+        // Optional schema-1 extension distinguishes real combustion rundown
+        // from a failed starter attempt, including unloaded-cell restore.
+        public bool hasCombustionHistory;
+        public bool combustionRundownActive;
+        public bool hasSatsumaOperatingState;
+        public SatsumaOperatingSaveDto satsumaOperatingState;
         public float elapsedSeconds;
         public float engineRpm;
         public float filteredThrottle01;
@@ -306,6 +343,7 @@ namespace MSC.Vehicle.Simulation
     {
         [SerializeField]
         private VehicleEngineStatus engineStatus;
+        [SerializeField] private bool combustionRundownActive;
         [SerializeField]
         private float elapsedSeconds;
         [SerializeField]
@@ -362,6 +400,7 @@ namespace MSC.Vehicle.Simulation
         private VehicleWheelState[] wheels = Array.Empty<VehicleWheelState>();
 
         public VehicleEngineStatus EngineStatus { get => engineStatus; internal set => engineStatus = value; }
+        public bool CombustionRundownActive { get => combustionRundownActive; internal set => combustionRundownActive = value; }
         public float ElapsedSeconds { get => elapsedSeconds; internal set => elapsedSeconds = value; }
         public float EngineRpm { get => engineRpm; internal set => engineRpm = value; }
         public float FilteredThrottle01 { get => filteredThrottle01; internal set => filteredThrottle01 = value; }
@@ -389,6 +428,41 @@ namespace MSC.Vehicle.Simulation
         public float EngineTemperatureCelsius { get => engineTemperatureCelsius; internal set => engineTemperatureCelsius = value; }
         public float CoolantTemperatureCelsius { get => coolantTemperatureCelsius; internal set => coolantTemperatureCelsius = value; }
         public int WheelCount => wheels != null ? wheels.Length : 0;
+        public SatsumaOperatingState SatsumaOperating { get; private set; }
+
+        internal void EnableSatsumaOperatingState() =>
+            SatsumaOperating ??= new SatsumaOperatingState();
+
+        public float GetServiceFluidLiters(SatsumaServiceFluid fluid) => fluid switch
+        {
+            SatsumaServiceFluid.MotorOil => OilLiters,
+            SatsumaServiceFluid.Coolant => CoolantLiters,
+            SatsumaServiceFluid.BrakeFront => SatsumaOperating?.BrakeFrontLiters ?? 0f,
+            SatsumaServiceFluid.BrakeRear => SatsumaOperating?.BrakeRearLiters ?? 0f,
+            SatsumaServiceFluid.Clutch => SatsumaOperating?.ClutchLiters ?? 0f,
+            _ => throw new ArgumentOutOfRangeException(nameof(fluid)),
+        };
+
+        // The receiver checks typed liquid identity, geometry, cap and hardware.
+        // This final authority bounds the accepted amount; it never creates a container's contents.
+        public float AddServiceFluid(SatsumaServiceFluid fluid, float offeredLiters)
+        {
+            if (SatsumaOperating == null || !float.IsFinite(offeredLiters) || offeredLiters <= 0f) return 0f;
+            float before = GetServiceFluidLiters(fluid);
+            float accepted = Mathf.Min(offeredLiters, Mathf.Max(0f, SatsumaServiceFluidRules.Capacity(fluid) - before));
+            float after = before + accepted;
+            switch (fluid)
+            {
+                case SatsumaServiceFluid.MotorOil:
+                    SatsumaOperating.OilContaminationPercent *= after > 0f ? before / after : 0f;
+                    OilLiters = after; break;
+                case SatsumaServiceFluid.Coolant: CoolantLiters = after; break;
+                case SatsumaServiceFluid.BrakeFront: SatsumaOperating.BrakeFrontLiters = after; break;
+                case SatsumaServiceFluid.BrakeRear: SatsumaOperating.BrakeRearLiters = after; break;
+                case SatsumaServiceFluid.Clutch: SatsumaOperating.ClutchLiters = after; break;
+            }
+            return accepted;
+        }
 
         public VehicleWheelState GetWheelState(int index)
         {
@@ -408,6 +482,8 @@ namespace MSC.Vehicle.Simulation
             }
 
             engineStatus = VehicleEngineStatus.Off;
+            combustionRundownActive = false;
+            SatsumaOperating = null;
             elapsedSeconds = 0f;
             engineRpm = 0f;
             filteredThrottle01 = 0f;
@@ -449,6 +525,10 @@ namespace MSC.Vehicle.Simulation
             var dto = new VehicleSimulationStateDto
             {
                 engineStatus = engineStatus,
+                hasCombustionHistory = true,
+                combustionRundownActive = combustionRundownActive,
+                hasSatsumaOperatingState = SatsumaOperating != null,
+                satsumaOperatingState = SatsumaOperating?.Capture(),
                 elapsedSeconds = elapsedSeconds,
                 engineRpm = engineRpm,
                 filteredThrottle01 = filteredThrottle01,
@@ -486,6 +566,7 @@ namespace MSC.Vehicle.Simulation
                 dto.schemaVersion != VehicleSimulationStateDto.CurrentSchemaVersion ||
                 dto.wheels == null || dto.wheels.Length != config.WheelCount ||
                 !IsDtoFinite(dto) ||
+                dto.hasSatsumaOperatingState && (dto.satsumaOperatingState == null || !dto.satsumaOperatingState.IsValid) ||
                 !Enum.IsDefined(typeof(VehicleEngineStatus), dto.engineStatus) ||
                 !Enum.IsDefined(typeof(VehicleShiftStatus), dto.shiftStatus) ||
                 !config.Gearbox.TryGetRatio(dto.selectedGear, out _) ||
@@ -498,6 +579,13 @@ namespace MSC.Vehicle.Simulation
             }
 
             engineStatus = dto.engineStatus;
+            SatsumaOperating = dto.hasSatsumaOperatingState
+                ? SatsumaOperatingState.Restore(dto.satsumaOperatingState) : null;
+            // Old saves cannot disambiguate an Off/Stalled rotating engine.
+            // Preserve their former rundown behavior once; new saves are exact.
+            combustionRundownActive = dto.engineStatus == VehicleEngineStatus.Running ||
+                (dto.hasCombustionHistory ? dto.combustionRundownActive :
+                    dto.engineStatus != VehicleEngineStatus.Cranking && dto.engineRpm > 0f);
             elapsedSeconds = dto.elapsedSeconds;
             engineRpm = dto.engineRpm;
             filteredThrottle01 = dto.filteredThrottle01;
@@ -530,6 +618,7 @@ namespace MSC.Vehicle.Simulation
 
         public bool IsFinite()
         {
+            if (SatsumaOperating != null && !SatsumaOperating.IsFinite) return false;
             if (!VehicleSimulationMath.IsFinite(elapsedSeconds) ||
                 !VehicleSimulationMath.IsFinite(engineRpm) ||
                 !VehicleSimulationMath.IsFinite(filteredThrottle01) ||

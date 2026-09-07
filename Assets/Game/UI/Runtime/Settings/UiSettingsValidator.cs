@@ -21,6 +21,9 @@ namespace MSC.UI.Runtime.Settings
                     "Only the current UI settings schema may enter runtime state.");
             }
 
+            // Palette bounds belong to its presentation owner; non-negative
+            // indices also allow a later palette extension without data loss.
+            RequireRange(document.MainMenuCarColourIndex, 0, 4095, nameof(document.MainMenuCarColourIndex));
             ValidateGraphics(document.Graphics);
             ValidateAudio(document.Audio);
             ValidateControls(document.Controls);

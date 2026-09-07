@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using MSC.Vehicle;
 using MSC.Vehicle.Assembly;
+using MSC.Items;
+using MSC.Vehicle.ItemsIntegration;
 using MSC.World.Streaming;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,12 +20,17 @@ namespace MSC.Save.Integration
         private readonly ProductionWorldStreamingService worldStreaming;
         private readonly ImportantObjectRecoveryFormation recoveryFormation;
         private readonly float recoveryMinimumY;
+        private readonly ISatsumaKeyAccess keyAccess;
+        private readonly ItemWorldRuntime itemRuntime;
+        internal IEnumerable<VehiclePersistenceBinding> LoadedBindings => loadedVehicles.Values.Where(value => value != null);
+        internal event Action<VehiclePersistenceBinding> BindingRegistered;
+        internal Action<VehiclePersistenceBinding, VehicleSaveRecordDto> BeforeBindingRestore;
         private readonly Dictionary<string, VehiclePersistenceBinding> loadedVehicles =
             new Dictionary<string, VehiclePersistenceBinding>(StringComparer.Ordinal);
-        private readonly Dictionary<int, SuspendedVehicleBody>
-            startupGuards = new Dictionary<int, SuspendedVehicleBody>();
-        private readonly Dictionary<int, SuspendedVehicleBody>
-            streamingGuards = new Dictionary<int, SuspendedVehicleBody>();
+        private readonly Dictionary<EntityId, SuspendedVehicleBody>
+            startupGuards = new Dictionary<EntityId, SuspendedVehicleBody>();
+        private readonly Dictionary<EntityId, SuspendedVehicleBody>
+            streamingGuards = new Dictionary<EntityId, SuspendedVehicleBody>();
 
         public VehicleSaveParticipant(
             DeferredStableEntityStore deferredEntities)
@@ -35,19 +42,35 @@ namespace MSC.Save.Integration
             DeferredStableEntityStore deferredEntities,
             ProductionWorldStreamingService worldStreaming,
             ImportantObjectRecoveryFormation recoveryFormation = null,
-            float recoveryMinimumY = -64f)
+            float recoveryMinimumY = -64f,
+            ISatsumaKeyAccess keyAccess = null)
+            : this(deferredEntities, worldStreaming, recoveryFormation, recoveryMinimumY, keyAccess, null)
+        {
+        }
+
+        public VehicleSaveParticipant(
+            DeferredStableEntityStore deferredEntities,
+            ProductionWorldStreamingService worldStreaming,
+            ImportantObjectRecoveryFormation recoveryFormation,
+            float recoveryMinimumY,
+            ISatsumaKeyAccess keyAccess,
+            ItemWorldRuntime itemRuntime)
         {
             this.deferredEntities = deferredEntities ??
                 throw new ArgumentNullException(nameof(deferredEntities));
             this.worldStreaming = worldStreaming;
             this.recoveryFormation = recoveryFormation;
             this.recoveryMinimumY = recoveryMinimumY;
+            this.keyAccess = keyAccess;
+            this.itemRuntime = itemRuntime;
             Descriptor = new SaveParticipantDescriptor(
                 DomainId,
                 VehicleDomainSaveDto.CurrentSchemaVersion,
                 required: true,
                 SaveRestorePhase.VehicleAssembly,
-                WorldEntitySaveParticipant.DomainId);
+                itemRuntime != null
+                    ? new[] { ItemSaveParticipant.DomainId, WorldEntitySaveParticipant.DomainId }
+                    : new[] { WorldEntitySaveParticipant.DomainId });
         }
 
         public SaveParticipantDescriptor Descriptor { get; }
@@ -95,6 +118,7 @@ namespace MSC.Save.Integration
                 VehicleSaveRecordDto record = state.vehicles[index];
                 if (TryResolve(record.stableVehicleId, out VehiclePersistenceBinding binding))
                 {
+                    BeforeBindingRestore?.Invoke(binding, record);
                     RecoverInvalidVehicleBodiesIfNeeded(
                         binding,
                         record,
@@ -136,7 +160,7 @@ namespace MSC.Save.Integration
                 Vector3 previousPosition = record.physics.worldPosition;
                 if (!recoveryFormation.TryReserve(
                         chassis.gameObject,
-                        chassis.rotation,
+                        CaptureBodyPose(chassis).rotation,
                         out Pose recoveredPose,
                         out string failure))
                 {
@@ -173,13 +197,14 @@ namespace MSC.Save.Integration
                 return;
             }
 
-            var runtimeParts = assembly.Parts
+            var runtimeParts = assembly.AllRuntimeParts
                 .Where(part => part != null && part.StableId.IsValid)
                 .ToDictionary(
                     part => part.StableId.Value,
                     part => part,
                     StringComparer.Ordinal);
-            PartSaveDto[] recover = record.assembly.parts
+            PartSaveDto[] recover = record.assembly.parts.Concat(
+                    (record.assembly.dynamicParts ?? Array.Empty<DynamicAssemblyPartSaveDto>()).Select(value => value.part))
                 .Where(part =>
                     part != null &&
                     part.lifecycleState == PartLifecycleState.Loose &&
@@ -214,6 +239,14 @@ namespace MSC.Save.Integration
 
                 partState.worldPosition = recoveredPose.position;
                 partState.worldRotation = recoveredPose.rotation;
+                DynamicAssemblyPartSaveDto recoveredDynamic = (record.assembly.dynamicParts ?? Array.Empty<DynamicAssemblyPartSaveDto>())
+                    .FirstOrDefault(value => value.part.stableEntityId == partState.stableEntityId);
+                if (recoveredDynamic != null)
+                {
+                    recoveredDynamic.linearVelocity = Vector3.zero;
+                    recoveredDynamic.angularVelocity = Vector3.zero;
+                    recoveredDynamic.sleeping = true;
+                }
                 unresolvedContent?.Add(
                     DomainId,
                     partState.stableEntityId,
@@ -374,7 +407,7 @@ namespace MSC.Save.Integration
             Physics.SyncTransforms();
         }
 
-        private bool TryResolve(
+        internal bool TryResolve(
             string stableVehicleId,
             out VehiclePersistenceBinding binding)
         {
@@ -463,7 +496,17 @@ namespace MSC.Save.Integration
                     $"Duplicate loaded vehicle stable ID '{id}'.");
             }
 
+            if (keyAccess != null)
+            {
+                binding.BindKeyAccess(keyAccess);
+            }
+
             loadedVehicles[id] = binding;
+            if (itemRuntime != null)
+            {
+                binding.GetComponent<VehicleItemAssemblyBridge>()?.BindRuntime(itemRuntime);
+                BindingRegistered?.Invoke(binding);
+            }
             if (!deferredEntities.TryPeek(
                     DomainId,
                     id,
@@ -482,6 +525,7 @@ namespace MSC.Save.Integration
                     $"Deferred state for vehicle '{id}' is invalid: {failure}");
             }
 
+            BeforeBindingRestore?.Invoke(binding, record);
             RecoverInvalidVehicleBodiesIfNeeded(
                 binding,
                 record,
@@ -518,6 +562,19 @@ namespace MSC.Save.Integration
                 record.physics.sleeping = chassisGuard.Sleeping;
             }
 
+            foreach (DynamicAssemblyPartSaveDto descriptor in record.assembly.dynamicParts ?? Array.Empty<DynamicAssemblyPartSaveDto>())
+            {
+                if (binding.AssemblyController.Graph.TryGetPartByStableId(descriptor.part.stableEntityId, out PartInstance part) &&
+                    TryGetGuardedBodyState(part.Body, out SuspendedVehicleBody guard))
+                {
+                    descriptor.part.worldPosition = guard.Position;
+                    descriptor.part.worldRotation = guard.Rotation;
+                    descriptor.linearVelocity = guard.LinearVelocity;
+                    descriptor.angularVelocity = guard.AngularVelocity;
+                    descriptor.sleeping = guard.Sleeping;
+                }
+            }
+
             return record;
         }
 
@@ -525,6 +582,7 @@ namespace MSC.Save.Integration
             VehiclePersistenceBinding binding,
             VehicleSaveRecordDto record)
         {
+            BeforeBindingRestore?.Invoke(binding, record);
             if (!binding.TryRestore(record, out string failure))
             {
                 throw new InvalidOperationException(
@@ -557,7 +615,7 @@ namespace MSC.Save.Integration
         private void CaptureBindingBodies(
             VehiclePersistenceBinding binding,
             string cellId,
-            IDictionary<int, SuspendedVehicleBody> destination,
+            IDictionary<EntityId, SuspendedVehicleBody> destination,
             bool includeOnlyUnsupportedCells)
         {
             if (binding == null)
@@ -574,7 +632,7 @@ namespace MSC.Save.Integration
 
             VehicleAssemblyController assembly = binding.AssemblyController;
             PartInstance[] parts = assembly != null
-                ? assembly.Parts
+                ? assembly.AllRuntimeParts
                 : Array.Empty<PartInstance>();
             for (int index = 0; index < parts.Length; index++)
             {
@@ -594,23 +652,33 @@ namespace MSC.Save.Integration
             }
         }
 
+        private static Pose CaptureBodyPose(Rigidbody body)
+        {
+            // Inactive Unity 6000.6 actors expose zero/identity, not their
+            // authored pose. Keep active-body interpolation precision intact.
+            return body.gameObject.activeInHierarchy
+                ? new Pose(body.position, body.rotation)
+                : new Pose(body.transform.position, body.transform.rotation);
+        }
+
         private void TryCaptureBody(
             Rigidbody body,
             string stableBodyId,
             string requestedCellId,
-            IDictionary<int, SuspendedVehicleBody> destination,
+            IDictionary<EntityId, SuspendedVehicleBody> destination,
             bool includeOnlyUnsupportedCells)
         {
-            if (body == null || destination.ContainsKey(body.GetInstanceID()))
+            if (body == null || destination.ContainsKey(body.GetEntityId()))
             {
                 return;
             }
 
+            Pose bodyPose = CaptureBodyPose(body);
             string bodyCellId = requestedCellId ?? string.Empty;
             if (worldStreaming != null &&
                 (!string.IsNullOrEmpty(bodyCellId) ||
                  worldStreaming.TryGetCellIdForPosition(
-                     body.position,
+                     bodyPose.position,
                      out bodyCellId)))
             {
                 if (includeOnlyUnsupportedCells &&
@@ -623,7 +691,7 @@ namespace MSC.Save.Integration
 
                 if (!string.IsNullOrEmpty(requestedCellId) &&
                     (!worldStreaming.TryGetCellIdForPosition(
-                         body.position,
+                         bodyPose.position,
                          out string currentCellId) ||
                      !string.Equals(
                          currentCellId,
@@ -649,7 +717,7 @@ namespace MSC.Save.Integration
             Rigidbody body,
             out SuspendedVehicleBody guarded)
         {
-            int instanceId = body != null ? body.GetInstanceID() : 0;
+            EntityId instanceId = body != null ? body.GetEntityId() : EntityId.None;
             return startupGuards.TryGetValue(instanceId, out guarded) ||
                    streamingGuards.TryGetValue(instanceId, out guarded);
         }
@@ -671,9 +739,10 @@ namespace MSC.Save.Integration
             VehicleAssemblyController assembly = binding.AssemblyController;
             if (assembly != null)
             {
-                for (int index = 0; index < assembly.Parts.Length; index++)
+                PartInstance[] parts = assembly.AllRuntimeParts;
+                for (int index = 0; index < parts.Length; index++)
                 {
-                    PartInstance part = assembly.Parts[index];
+                    PartInstance part = parts[index];
                     if (part != null && !part.IsAssemblyRoot &&
                         part.Body != null &&
                         (!part.IsInstalled || part.UsesDynamicInstalledPhysics))
@@ -755,9 +824,10 @@ namespace MSC.Save.Integration
                 Body = body;
                 StableBodyId = stableBodyId ?? string.Empty;
                 CellId = cellId ?? string.Empty;
-                InstanceId = body.GetInstanceID();
-                Position = body.position;
-                Rotation = body.rotation;
+                InstanceId = body.GetEntityId();
+                Pose pose = CaptureBodyPose(body);
+                Position = pose.position;
+                Rotation = pose.rotation;
                 LinearVelocity = body.isKinematic
                     ? Vector3.zero
                     : body.linearVelocity;
@@ -774,7 +844,7 @@ namespace MSC.Save.Integration
             public Rigidbody Body { get; }
             public string StableBodyId { get; }
             public string CellId { get; }
-            public int InstanceId { get; }
+            public EntityId InstanceId { get; }
             public Vector3 Position { get; }
             public Quaternion Rotation { get; }
             public Vector3 LinearVelocity { get; }

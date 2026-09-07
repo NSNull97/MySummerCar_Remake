@@ -18,6 +18,7 @@ namespace MSC.Vehicle.Assembly
         [SerializeField] private PartInstance dashboardPart;
         [SerializeField] private AssemblyHingedPartInteractionTarget hood;
         [SerializeField] private Transform leverVisual;
+        [SerializeField] private bool useReviewedHandlePull;
         [SerializeField, Min(0.02f)] private float pullDurationSeconds = 0.12f;
         [SerializeField, Min(0.02f)] private float returnDurationSeconds = 0.18f;
         [SerializeField] private Vector3 pulledLocalOffset =
@@ -34,6 +35,15 @@ namespace MSC.Vehicle.Assembly
         public PartInstance DashboardPart => dashboardPart;
 
         public AssemblyHingedPartInteractionTarget Hood => hood;
+        public Transform LeverVisual => leverVisual;
+        public bool UsesReviewedHandlePull => useReviewedHandlePull;
+
+        public void ConfigureReviewedHandlePull(Transform handle)
+        {
+            leverVisual = handle != null ? handle : throw new System.ArgumentNullException(nameof(handle));
+            useReviewedHandlePull = true;
+            CaptureRestPose();
+        }
 
         public void Configure(
             PartInstance authoredDashboardPart,
@@ -50,17 +60,22 @@ namespace MSC.Vehicle.Assembly
 
         public bool CanInteract(in InteractionContext context) =>
             enabled && gameObject.activeInHierarchy &&
-            dashboardPart != null && dashboardPart.IsInstalled &&
-            hood != null && hood.IsAttachedToHinge &&
-            hood.RequiresReleaseBeforeOpening &&
-            hood.IsClosedLatched && animationRoutine == null;
+            dashboardPart != null && animationRoutine == null &&
+            (useReviewedHandlePull || dashboardPart.IsInstalled &&
+             hood != null && hood.IsAttachedToHinge &&
+             hood.RequiresReleaseBeforeOpening && hood.IsClosedLatched);
 
         public void Interact(in InteractionContext context)
         {
-            if (!CanInteract(context) || !hood.ReleaseForOpening())
+            if (!CanInteract(context))
             {
                 return;
             }
+
+            // The original handle animates even without a fitted/latched hood;
+            // only an installed dashboard can send the latch release.
+            if (dashboardPart.IsInstalled && hood != null)
+                hood.ReleaseForOpening();
 
             animationRoutine = StartCoroutine(AnimateLever());
         }
@@ -88,6 +103,20 @@ namespace MSC.Vehicle.Assembly
 
         private IEnumerator AnimateLever()
         {
+            if (useReviewedHandlePull)
+            {
+                float time = 0f;
+                while (time < 0.25f)
+                {
+                    time = Mathf.Min(0.25f, time + Time.deltaTime);
+                    ApplyPose(restLocalPosition + restLocalRotation * Vector3.up *
+                        EvaluateReviewedPullOffset(time), restLocalRotation);
+                    yield return null;
+                }
+                ApplyPose(restLocalPosition, restLocalRotation);
+                animationRoutine = null;
+                yield break;
+            }
             Vector3 pulledPosition = restLocalPosition +
                 restLocalRotation * pulledLocalOffset;
             Quaternion pulledRotation = restLocalRotation *
@@ -151,5 +180,24 @@ namespace MSC.Vehicle.Assembly
 
         private static float SmoothStep(float value) =>
             value * value * (3f - 2f * value);
+
+        // ConfigurationTransferred: hood_lock_handle clip, three position-Y
+        // keys at0,1/6,1/4sec. Relative to its -0.2mm rest; no rotation curve.
+        public static float EvaluateReviewedPullOffset(float time)
+        {
+            if (time <= 0f || time >= 0.25f) return 0f;
+            const float middle = 0.16666667f;
+            float start = time <= middle ? 0f : middle;
+            float duration = time <= middle ? middle : 0.25f - middle;
+            float from = time <= middle ? 0f : -0.0086f;
+            float to = time <= middle ? -0.0086f : 0f;
+            float fromSlope = time <= middle ? -0.0516f : 0.025800005f;
+            float toSlope = time <= middle ? 0.025800005f : 0.10320001f;
+            float t = (time - start) / duration;
+            float t2 = t * t, t3 = t2 * t;
+            return (2f * t3 - 3f * t2 + 1f) * from +
+                (t3 - 2f * t2 + t) * duration * fromSlope +
+                (-2f * t3 + 3f * t2) * to + (t3 - t2) * duration * toSlope;
+        }
     }
 }

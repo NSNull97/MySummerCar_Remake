@@ -108,8 +108,7 @@ namespace MSC.Tests.EditMode.LegacyImport
                 .GetComponentsInChildren<AssemblyFastenerInteractionTarget>(true)
                 .ToDictionary(value => value.FastenerDefinitionId,
                     StringComparer.Ordinal);
-            Assert.That(targets, Has.Count.EqualTo(280),
-                "Changing bolt/nut presentation must not change the graph.");
+            SatsumaCanonicalNightTestShape.AssertCanonical(assembly);
 
             foreach (MeshCase value in Cases)
             {

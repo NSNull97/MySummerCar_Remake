@@ -131,6 +131,27 @@ namespace MSC.Vehicle
                 fastenerDto.stage = occupied ? fastener.Definition.MaximumStage : 0;
             }
 
+            // Schema 2+ captures the sticky latch independently from bolt stages.
+            // This synthetic fixture has just fully tightened occupied mounts;
+            // retaining the captured loose latches would create an invalid DTO.
+            // Never apply this reconstruction to a user's save or live graph.
+            for (int groupIndex = 0; groupIndex < data.fastenerGroups.Length; groupIndex++)
+            {
+                FastenerGroupSaveDto groupDto = data.fastenerGroups[groupIndex];
+                if (groupDto == null ||
+                    !graph.TryGetMount(groupDto.mountId, out MountPointRuntime mount))
+                {
+                    return Fail("Assembly fixture contains an unresolved fastener group DTO.", out failure);
+                }
+
+                int mountDtoIndex = FindMountDto(data.mounts, mount.MountId);
+                bool occupied = mountDtoIndex >= 0 && !string.IsNullOrEmpty(
+                    data.mounts[mountDtoIndex].installedPartStableEntityId);
+                FastenerGroupDefinition definition = mount.FastenerGroup.Definition;
+                groupDto.isBolted = occupied && definition.HasFasteners &&
+                    definition.AggregateMaximumTightness >= definition.BoltedOnThreshold;
+            }
+
             AssemblyOperationResult result = assemblyController.RestoreSaveData(data);
             if (!result.Succeeded)
             {

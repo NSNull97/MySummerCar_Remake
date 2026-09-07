@@ -49,8 +49,8 @@ namespace MSC.World.Lighting
         private const int SpotShadowResolution = 256;
         private const int PointShadowResolution = 128;
 
-        private readonly Dictionary<int, GameObject> sceneRoots =
-            new Dictionary<int, GameObject>();
+        private readonly Dictionary<SceneHandle, GameObject> sceneRoots =
+            new Dictionary<SceneHandle, GameObject>();
         private readonly List<RuntimeLight> runtimeLights =
             new List<RuntimeLight>();
         private readonly RuntimeLight[] dynamicShadowSelection =
@@ -353,7 +353,7 @@ namespace MSC.World.Lighting
         }
 
         private RuntimeLight FindRuntimeLight(
-            int sceneHandle,
+            SceneHandle sceneHandle,
             string lightId)
         {
             for (int index = 0; index < runtimeLights.Count; index++)
@@ -460,7 +460,7 @@ namespace MSC.World.Lighting
         }
 
         private void RemoveSceneRuntime(
-            int sceneHandle,
+            SceneHandle sceneHandle,
             bool destroyRoot)
         {
             sceneRoots.Remove(sceneHandle, out GameObject root);
@@ -543,7 +543,7 @@ namespace MSC.World.Lighting
 
             light.bounceIntensity = definition.IndirectMultiplier;
             light.range = definition.Range;
-            hdLight.shapeRadius = definition.ShapeRadius;
+            light.shapeRadius = definition.ShapeRadius;
             hdLight.affectsVolumetric = definition.VolumetricEnabled;
             hdLight.volumetricDimmer = definition.VolumetricDimmer;
             hdLight.volumetricShadowDimmer = definition.VolumetricDimmer;

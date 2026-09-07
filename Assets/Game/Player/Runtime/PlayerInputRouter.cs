@@ -49,6 +49,8 @@ namespace MSC.Player
         private InputAction middleFingerAction;
         private InputAction swearAction;
         private InputAction alternativeActionsAction;
+        private InputAction drivingModeAction;
+        private bool locomotionInputEnabled = true;
         private BindingDisplay interactBindingDisplay;
         private BindingDisplay throwBindingDisplay;
         private BindingDisplay toolBindingDisplay;
@@ -56,6 +58,7 @@ namespace MSC.Player
         private BindingDisplay waveBindingDisplay;
         private BindingDisplay middleFingerBindingDisplay;
         private BindingDisplay swearBindingDisplay;
+        private BindingDisplay drivingModeBindingDisplay;
         private int bindingDisplayRevision;
 
         public event Action UrinationRequested;
@@ -65,6 +68,17 @@ namespace MSC.Player
         public event Action MiddleFingerRequested;
 
         public event Action SwearRequested;
+        public event Action DrivingModeRequested;
+
+        public bool IsLocomotionInputEnabled => locomotionInputEnabled;
+
+        // Look and physical cockpit interactions remain available while the
+        // driver station, rather than the walking motor, owns the body pose.
+        public void SetLocomotionInputEnabled(bool value)
+        {
+            locomotionInputEnabled = value;
+            if (!value) motor?.ResetInputIntent();
+        }
 
         public InputActionAsset InputActions => inputActions;
 
@@ -142,15 +156,19 @@ namespace MSC.Player
                 return;
             }
 
-            motor?.SetMoveInput(moveAction.ReadValue<Vector2>());
-            motor?.SetRunRequested(runAction.IsPressed());
-            motor?.SetForwardLeanRequested(forwardLeanAction.IsPressed());
-            if (crouchAction.WasPressedThisFrame())
+            if (Time.timeScale > 0f && drivingModeAction != null &&
+                drivingModeAction.WasPressedThisFrame())
+                DrivingModeRequested?.Invoke();
+
+            motor?.SetMoveInput(locomotionInputEnabled ? moveAction.ReadValue<Vector2>() : Vector2.zero);
+            motor?.SetRunRequested(locomotionInputEnabled && runAction.IsPressed());
+            motor?.SetForwardLeanRequested(locomotionInputEnabled && forwardLeanAction.IsPressed());
+            if (locomotionInputEnabled && crouchAction.WasPressedThisFrame())
             {
                 motor?.CyclePosture();
             }
 
-            if (jumpAction.WasPressedThisFrame())
+            if (locomotionInputEnabled && jumpAction.WasPressedThisFrame())
             {
                 motor?.RequestJump();
             }
@@ -318,6 +336,9 @@ namespace MSC.Player
             middleFingerAction = RequireAction("MiddleFinger");
             swearAction = RequireAction("Swear");
             alternativeActionsAction = RequireAction("AlternativeActions");
+            // Optional for older/prototype input assets; the production asset
+            // authors this action without changing any existing action GUID.
+            drivingModeAction = playerMap.FindAction("DrivingMode", false);
         }
 
         public string GetBindingDisplayLabel(string actionName)
@@ -491,6 +512,7 @@ namespace MSC.Player
             middleFingerBindingDisplay =
                 CreateBindingDisplay(middleFingerAction);
             swearBindingDisplay = CreateBindingDisplay(swearAction);
+            drivingModeBindingDisplay = CreateBindingDisplay(drivingModeAction);
             bindingDisplayRevision++;
         }
 
@@ -505,6 +527,7 @@ namespace MSC.Player
                 "Wave" => waveBindingDisplay,
                 "MiddleFinger" => middleFingerBindingDisplay,
                 "Swear" => swearBindingDisplay,
+                "DrivingMode" => drivingModeBindingDisplay,
                 _ => default,
             };
         }

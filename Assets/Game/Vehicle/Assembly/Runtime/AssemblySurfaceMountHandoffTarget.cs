@@ -14,7 +14,8 @@ namespace MSC.Vehicle.Assembly
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class AssemblySurfaceMountHandoffTarget : MonoBehaviour,
-        IMountHandoffTarget
+        IMountHandoffTarget,
+        IMountHandoffPreReleaseTarget
     {
         private const float DefaultMaximumAimRayDistanceMeters = 0.18f;
         private const float DiscBrakeMaximumAimRayDistanceMeters = 0.22f;
@@ -58,6 +59,22 @@ namespace MSC.Vehicle.Assembly
             prompt = result.Message;
         }
 
+        public bool TryPrepareHandoff(
+            IPickupTarget pickupTarget,
+            in InteractionContext context)
+        {
+            if (!TryResolveMount(pickupTarget, context,
+                    out MountPointAuthoring mount, updatePrompt: true))
+            {
+                return false;
+            }
+
+            AssemblyOperationResult result = controller.TryPrepareHandoffInstall(
+                controller.ResolvePart(pickupTarget), mount);
+            prompt = result.Message;
+            return result.Succeeded;
+        }
+
         private bool TryResolveMount(
             IPickupTarget pickupTarget,
             in InteractionContext context,
@@ -98,6 +115,7 @@ namespace MSC.Vehicle.Assembly
             {
                 MountPointAuthoring candidate = candidates[index];
                 if (candidate == null || candidate.Definition == null ||
+                    candidate.GetComponent<AssemblyPhysicalDockingOnly>() != null ||
                     !IsMountRoutedThroughSurface(candidate) ||
                     !part.Definition.IsCompatibleWith(candidate.Definition))
                 {
@@ -105,7 +123,7 @@ namespace MSC.Vehicle.Assembly
                 }
 
                 float aimDistance = DistanceToForwardRay(
-                    candidate.Pose.position,
+                    AssemblyMountInteractionAnchor.ResolveWorldPosition(candidate),
                     context.Origin,
                     context.Direction);
                 if (aimDistance > ResolveMaximumAimRayDistance(candidate))
@@ -189,11 +207,16 @@ namespace MSC.Vehicle.Assembly
             // prerequisite part. Route through that exact occupied mount ID;
             // this keeps the trigger usable through spindle/disc geometry
             // without making the whole body shell one enormous install zone.
+            // An installation-only access prerequisite is also a valid surface,
+            // even though it deliberately creates no removal/collapse edge.
             return ownerPart.IsInstalled &&
                 !string.IsNullOrEmpty(ownerPart.RuntimeState.InstalledMountId) &&
-                candidate.Definition.RequiredOccupiedMountIds.Contains(
+                (candidate.Definition.RequiredOccupiedMountIds.Contains(
                     ownerPart.RuntimeState.InstalledMountId,
-                    StringComparer.Ordinal);
+                    StringComparer.Ordinal) ||
+                 candidate.Definition.InstallationRequiredOccupiedMountIds.Contains(
+                    ownerPart.RuntimeState.InstalledMountId,
+                    StringComparer.Ordinal));
         }
 
         private static float DistanceToForwardRay(

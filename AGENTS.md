@@ -404,6 +404,10 @@ The repository may contain:
 ## 10. Fixed technical direction
 
 - Unity 6 LTS. Pin the exact installed patch in `ProjectSettings/ProjectVersion.txt`.
+- User-approved exception (2026-09-06): this checkout migrates to Unity
+  `6000.6.0f1` with HDRP `17.6.0`. Unity 6.6 is the update stream, not LTS;
+  follow `Docs/Architecture/UNITY_660_MIGRATION_2026-09-06.md` for its validation
+  and recovery record. Do not reopen the migrated checkout with 6000.3.
 - HDRP.
 - Windows x64 first.
 - C#.

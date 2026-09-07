@@ -3,6 +3,7 @@ using MSC.Core.Lifecycle;
 using MSC.Vehicle.Simulation;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 namespace MSC.Vehicle
 {
@@ -40,6 +41,17 @@ namespace MSC.Vehicle
         private int pendingGearDelta;
         private bool resetRequested;
         private bool actionsResolved;
+        private bool driverSessionManaged;
+        private bool driverSessionActive;
+        private bool gameplayInputAllowed = true;
+        private bool waitingForNeutralControls;
+        private bool observedInputUpdateAfterEnable;
+        private bool inputUpdateSubscribed;
+
+        public bool IsDriverSessionManaged => driverSessionManaged;
+        public bool IsDriverSessionActive => driverSessionActive;
+        public bool IsWaitingForNeutralControls => waitingForNeutralControls;
+        public float SteeringInputMinusOneToOne => steering;
 
         public InputActionAsset InputActions => inputActions;
 
@@ -48,11 +60,56 @@ namespace MSC.Vehicle
         public bool IgnitionOn => ignitionOn;
 
         public bool IsGameplayInputEnabled =>
-            enabled && vehicleMap != null && vehicleMap.enabled;
+            enabled && (driverSessionManaged ? gameplayInputAllowed :
+                vehicleMap != null && vehicleMap.enabled);
 
         public void SetGameplayInputEnabled(bool value)
         {
-            enabled = value;
+            if (!driverSessionManaged) { enabled = value; return; }
+            if (value && !gameplayInputAllowed) waitingForNeutralControls = true;
+            gameplayInputAllowed = value;
+            RefreshActionMapPermission();
+        }
+
+        /// <summary>
+        /// Opt-in for an explicitly composed driver station. Pause permission
+        /// survives independently from occupancy, so a load behind the menu
+        /// cannot re-enable pedals or restore an obsolete pre-load occupancy.
+        /// </summary>
+        public void ConfigureDriverSessionManagement()
+        {
+            driverSessionManaged = true;
+            driverSessionActive = false;
+            waitingForNeutralControls = true;
+            enabled = true;
+            SubscribeInputUpdate();
+            RefreshActionMapPermission();
+        }
+
+        public void SetDriverSessionActive(bool active)
+        {
+            if (!driverSessionManaged)
+                throw new InvalidOperationException("Driver session ownership was not configured.");
+            driverSessionActive = active;
+            waitingForNeutralControls = true;
+            ClearTransientState();
+            RefreshActionMapPermission();
+        }
+
+        private void RefreshActionMapPermission()
+        {
+            bool allow = isActiveAndEnabled && (!driverSessionManaged ||
+                driverSessionActive && gameplayInputAllowed);
+            if (allow)
+            {
+                if (vehicleMap == null || vehicleMap.enabled) return;
+                vehicleMap.Enable();
+                // Enabling from the player's Update defers Input System's
+                // initial-state check until the next input update. The zero
+                // values in this frame are not evidence of released pedals.
+                observedInputUpdateAfterEnable = false;
+            }
+            else { vehicleMap?.Disable(); ClearTransientState(); }
         }
 
         public void Configure(
@@ -71,7 +128,7 @@ namespace MSC.Vehicle
             ResolveActions();
             if (isActiveAndEnabled)
             {
-                vehicleMap?.Enable();
+                RefreshActionMapPermission();
             }
         }
 
@@ -84,19 +141,33 @@ namespace MSC.Vehicle
         private void OnEnable()
         {
             ResolveActions();
-            vehicleMap?.Enable();
+            SubscribeInputUpdate();
+            RefreshActionMapPermission();
         }
 
         private void OnDisable()
         {
+            if (inputUpdateSubscribed) InputSystem.onAfterUpdate -= ObserveInputUpdate;
+            inputUpdateSubscribed = false;
             vehicleMap?.Disable();
             ClearTransientState();
         }
 
         private void Update()
         {
-            if (!actionsResolved)
+            if (!actionsResolved || vehicleMap == null || !vehicleMap.enabled)
             {
+                return;
+            }
+            if (driverSessionManaged && Time.timeScale <= 0f)
+            {
+                waitingForNeutralControls = true;
+                ClearTransientState();
+                return;
+            }
+            if (driverSessionManaged && !observedInputUpdateAfterEnable)
+            {
+                ClearTransientState();
                 return;
             }
 
@@ -104,9 +175,19 @@ namespace MSC.Vehicle
             brake01 = Mathf.Clamp01(brakeAction.ReadValue<float>());
             clutchPedal01 = Mathf.Clamp01(clutchAction.ReadValue<float>());
             steering = Mathf.Clamp(steeringAction.ReadValue<float>(), -1f, 1f);
-            starterRequested = starterAction.IsPressed();
+            if (driverSessionManaged && waitingForNeutralControls)
+            {
+                bool neutral = throttle01 <= .001f && brake01 <= .001f &&
+                    clutchPedal01 <= .001f && Mathf.Abs(steering) <= .001f &&
+                    !gearUpAction.IsPressed() && !gearDownAction.IsPressed();
+                ClearTransientState();
+                if (neutral) waitingForNeutralControls = false;
+                return;
+            }
 
-            if (ignitionAction.WasPerformedThisFrame())
+            starterRequested = !driverSessionManaged && starterAction.IsPressed();
+
+            if (!driverSessionManaged && ignitionAction.WasPerformedThisFrame())
             {
                 ignitionOn = !ignitionOn;
             }
@@ -121,7 +202,7 @@ namespace MSC.Vehicle
                 pendingGearDelta--;
             }
 
-            if (resetAction.WasPerformedThisFrame())
+            if (!driverSessionManaged && resetAction.WasPerformedThisFrame())
             {
                 resetRequested = true;
             }
@@ -146,6 +227,23 @@ namespace MSC.Vehicle
                 requestedGear);
         }
 
+        private void SubscribeInputUpdate()
+        {
+            if (!driverSessionManaged || inputUpdateSubscribed || !isActiveAndEnabled) return;
+            InputSystem.onAfterUpdate += ObserveInputUpdate;
+            inputUpdateSubscribed = true;
+        }
+
+        private void ObserveInputUpdate()
+        {
+            // An Editor/BeforeRender callback is not the action update that
+            // performs the newly-enabled pedal map's initial-state check.
+            InputUpdateType type = InputState.currentUpdateType;
+            if (vehicleMap != null && vehicleMap.enabled &&
+                (type == InputUpdateType.Dynamic || type == InputUpdateType.Fixed || type == InputUpdateType.Manual))
+                observedInputUpdateAfterEnable = true;
+        }
+
         public bool ConsumeResetRequest()
         {
             bool result = resetRequested;
@@ -162,6 +260,7 @@ namespace MSC.Vehicle
         {
             ignitionOn = restoredIgnitionOn;
             ClearTransientState();
+            if (driverSessionManaged) waitingForNeutralControls = true;
         }
 
         private void ResolveActions()

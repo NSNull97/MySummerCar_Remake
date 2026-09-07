@@ -1,6 +1,11 @@
 using System;
 using System.Collections.Generic;
 using AK.Wwise.Unity.Logging;
+#if UNITY_6000_6_OR_NEWER
+using AkUnityObjectId = UnityEngine.EntityId;
+#else
+using AkUnityObjectId = System.Int32;
+#endif
 #if !(UNITY_QNX) // Disable under unsupported platforms.
 #if !UNITY_2019_1_OR_NEWER
 #define AK_ENABLE_TIMELINE
@@ -685,7 +690,7 @@ public class AkTimelineEventPlayable : UnityEngine.Playables.PlayableAsset, Unit
 
 				var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
 				var objects = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(path);
-				var instanceIds = new System.Collections.Generic.List<int>();
+				var instanceIds = new System.Collections.Generic.List<AkUnityObjectId>();
 				foreach (var obj in objects)
 				{
 					if (obj == null)
@@ -693,7 +698,11 @@ public class AkTimelineEventPlayable : UnityEngine.Playables.PlayableAsset, Unit
 						continue;
 					}
 
+#if UNITY_6000_6_OR_NEWER
+					var id = obj.GetEntityId();
+#else
 					var id = obj.GetInstanceID();
+#endif
 					if (!instanceIds.Contains(id))
 					{
 						instanceIds.Add(id);
@@ -706,7 +715,11 @@ public class AkTimelineEventPlayable : UnityEngine.Playables.PlayableAsset, Unit
 					objects = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(path);
 					foreach (var obj in objects)
 					{
+#if UNITY_6000_6_OR_NEWER
+						if (obj && obj.GetEntityId() == id)
+#else
 						if (obj && obj.GetInstanceID() == id)
+#endif
 						{
 							var playable = obj as AkTimelineEventPlayable;
 							if (playable)

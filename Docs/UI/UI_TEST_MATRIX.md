@@ -9,6 +9,11 @@ Date: `2026-09-02`
 `PASS` is used only for executed evidence. Code inspection and unexecuted
 manual checks remain explicitly separate.
 
+The 2026-09-04 MainMenu revision reopens MainMenu visual validation. Current
+results, native input/viewport captures and real-vehicle-preview validation
+are recorded in `MAIN_MENU_REDESIGN_2026-09-04.md`. Historical rows below do not
+approve the revised menu.
+
 The final 2026-07-20 Gaussian correction has focused authoring, EditMode,
 PlayMode, private build and native-capture evidence. The user accepted the
 canonical 16:9 presentation and pause readability on 2026-07-20;

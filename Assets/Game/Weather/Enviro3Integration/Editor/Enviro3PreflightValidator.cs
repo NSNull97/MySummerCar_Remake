@@ -19,6 +19,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
 {
     public static class Enviro3PreflightValidator
     {
+        public const string RequiredRenderPipelineVersion = "17.6.0";
         public const int BaselineFileCount = 538;
         public const long BaselineTotalBytes = 305968075L;
         public const string BaselineFingerprint =
@@ -190,10 +191,10 @@ namespace MSC.Weather.Enviro3Integration.Editor
         {
             string manifest = File.ReadAllText(Path.GetFullPath("Packages/manifest.json"));
             if (!manifest.Contains(
-                    "\"com.unity.render-pipelines.universal\": \"17.3.0\"",
+                    $"\"com.unity.render-pipelines.universal\": \"{RequiredRenderPipelineVersion}\"",
                     StringComparison.Ordinal))
             {
-                errors.Add("Official URP 17.3.0 compatibility dependency is not pinned.");
+                errors.Add($"Official URP {RequiredRenderPipelineVersion} compatibility dependency is not pinned.");
             }
 
             string defines = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.Standalone);

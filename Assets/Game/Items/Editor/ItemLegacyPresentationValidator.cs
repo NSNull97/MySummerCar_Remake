@@ -337,6 +337,10 @@ namespace MSC.Items.Editor
                 (spannerSets[0].LidRenderer == null ||
                  spannerSets[0].SpannerRenderers.Count != 11 ||
                  spannerSets[0].SpannerSizes.Count != 11 ||
+                 spannerSets[0].AuxiliaryToolRenderers.Count != 3 ||
+                 spannerSets[0].AuxiliaryToolKinds.Count != 3 ||
+                 spannerSets[0].AuxiliaryToolKinds.Contains(SpannerSetAuxiliaryToolKind.Unbound) ||
+                 spannerSets[0].AuxiliaryToolKinds.Distinct().Count() != 3 ||
                  !spannerSets[0].SpannerSizes.SequenceEqual(
                      Enumerable.Range(5, 11).Select(value =>
                          value.ToString()))))

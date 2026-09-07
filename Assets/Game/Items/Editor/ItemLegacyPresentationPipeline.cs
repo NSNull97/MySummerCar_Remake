@@ -177,6 +177,147 @@ namespace MSC.Items.Editor
                 bindings.Count);
         }
 
+        [MenuItem("MSC/Phase 1/09B/Refresh Purchased Plug And Bulb Presentation Only")]
+        public static void RefreshPurchasedUnitPresentationOnly()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new InvalidOperationException("Stop Play before refreshing purchased units.");
+            EnsureNoDirtyScenes();
+            ItemLegacyPresentationPlan full = ItemLegacyPresentationEvidence.CreatePlan();
+            ItemLegacyPresentationPlanEntry[] entries = full.Entries.Where(entry =>
+                entry.Definition.DefinitionId == "item.spark-plug" ||
+                entry.Definition.DefinitionId == "item.light-bulb").ToArray();
+            if (entries.Length != 2 || entries.Select(e => e.Definition.DefinitionId).Distinct().Count() != 2)
+                throw new InvalidDataException("Expected exactly the reviewed plug and bulb unit sources.");
+            PreflightAndBackupPurchasedUnits(full, entries);
+            // Scene switches may unload unreferenced ScriptableObjects; never
+            // reuse a managed wrapper whose native asset was unloaded.
+            ItemDefinitionCatalog persistedDefinitions = AssetDatabase.LoadAssetAtPath<ItemDefinitionCatalog>(
+                Milestone09BItemCatalogBuilder.DefinitionCatalogPath) ??
+                throw new InvalidDataException("The existing item catalog could not be reloaded after destination preflight.");
+            var plan = new ItemLegacyPresentationPlan(persistedDefinitions, full.EntityTableSha256,
+                full.DonorRevision, entries);
+            EnsureGeneratedFolders();
+            ImportDirectDonorMeshes(plan);
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            Dictionary<string, Mesh> meshes = BuildRuntimeMeshes(plan.MeshGuids);
+            var materials = new Dictionary<string, Material>(StringComparer.Ordinal);
+            var fallbacks = new HashSet<string>(StringComparer.Ordinal);
+            var replacementPaths = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (ItemLegacyPresentationPlanEntry entry in entries)
+            {
+                string path = BuildVisualPrefab(entry, meshes, materials,
+                    GetOrCreateFallbackMaterial(), fallbacks);
+                replacementPaths.Add(entry.Definition.DefinitionId, path);
+            }
+            if (fallbacks.Count != 0)
+                throw new InvalidDataException("Purchased units require their reviewed material: " +
+                    string.Join(", ", fallbacks));
+
+            // Keep every unrelated definition and provider binding. In particular,
+            // this does not regenerate the world, shop, fixed car or dynamic IDs.
+            var catalog = new SerializedObject(persistedDefinitions);
+            SerializedProperty definitions = catalog.FindProperty("definitions");
+            int matched = 0;
+            for (int i = 0; i < definitions.arraySize; i++)
+            {
+                SerializedProperty definition = definitions.GetArrayElementAtIndex(i);
+                string id = definition.FindPropertyRelative("definitionId").stringValue;
+                if (id != "item.spark-plug" && id != "item.light-bulb") continue;
+                definition.FindPropertyRelative("proxySize").vector3Value = id == "item.spark-plug"
+                    ? new Vector3(.025f, .025f, .08639f) : new Vector3(.04f, .08f, .04f);
+                // Reviewed loose donor Rigidbody mass, shared with the dynamic
+                // PartDefinition so pickup and installed mass do not disagree.
+                definition.FindPropertyRelative("massKilograms").floatValue = .2f;
+                matched++;
+            }
+            if (matched != 2) throw new InvalidDataException("Purchased unit definitions are ambiguous.");
+            catalog.ApplyModifiedPropertiesWithoutUndo();
+            AssetDatabase.SaveAssetIfDirty(persistedDefinitions);
+
+            SceneSetup[] setup = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                Scene scene = EditorSceneManager.OpenScene(ItemLegacyPresentationPaths.GlobalLegacyScene,
+                    OpenSceneMode.Single);
+                ItemPresentationProvider[] providers = scene.GetRootGameObjects()
+                    .SelectMany(root => root.GetComponentsInChildren<ItemPresentationProvider>(true)).ToArray();
+                if (providers.Length != 1 || providers[0].DonorRevision != full.DonorRevision)
+                    throw new InvalidDataException("Expected the existing reviewed item presentation provider.");
+                var replacements = new List<ItemPresentationBinding>();
+                foreach (ItemLegacyPresentationPlanEntry entry in entries)
+                {
+                    GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(replacementPaths[entry.Definition.DefinitionId]) ??
+                        throw new InvalidDataException("Purchased-unit prefab could not be reloaded in the provider scene.");
+                    var binding = new ItemPresentationBinding();
+                    binding.Configure(entry.Definition.DefinitionId, entry.Definition.ReplacementKey, prefab, entry.Source.VariantIndex);
+                    replacements.Add(binding);
+                }
+                ItemPresentationBinding[] merged = providers[0].Bindings.Where(binding =>
+                    binding.DefinitionId != "item.spark-plug" && binding.DefinitionId != "item.light-bulb")
+                    .Concat(replacements).ToArray();
+                providers[0].Configure(full.DonorRevision, merged);
+                EditorUtility.SetDirty(providers[0]);
+                EditorSceneManager.MarkSceneDirty(scene);
+                if (!EditorSceneManager.SaveScene(scene))
+                    throw new IOException("Could not save purchased-unit presentation bindings.");
+            }
+            finally
+            {
+                if (setup.Length > 0 && setup.All(entry => !string.IsNullOrEmpty(entry.path)))
+                    EditorSceneManager.RestoreSceneManagerSetup(setup);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+            AssetDatabase.SaveAssets();
+            Debug.Log("PURCHASED_UNIT_PRESENTATION_OK units=2 meshes=3 fullRebuild=false");
+        }
+
+        private static void PreflightAndBackupPurchasedUnits(ItemLegacyPresentationPlan plan,
+            ItemLegacyPresentationPlanEntry[] entries)
+        {
+            string catalogPath = AssetDatabase.GetAssetPath(plan.Definitions);
+            if (catalogPath != Milestone09BItemCatalogBuilder.DefinitionCatalogPath)
+                throw new InvalidDataException("Purchased-unit source must be the existing canonical item catalog: " + catalogPath);
+            // Validate the destination before importing meshes or overwriting
+            // either old cube prefab/catalog. This is not a world rebuild.
+            SceneSetup[] setup = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                Scene scene = EditorSceneManager.OpenScene(ItemLegacyPresentationPaths.GlobalLegacyScene,
+                    OpenSceneMode.Single);
+                ItemPresentationProvider[] providers = scene.GetRootGameObjects()
+                    .SelectMany(root => root.GetComponentsInChildren<ItemPresentationProvider>(true)).ToArray();
+                if (providers.Length != 1 || providers[0].DonorRevision != plan.DonorRevision)
+                    throw new InvalidDataException("Purchased-unit destination provider is missing or belongs to another donor revision.");
+            }
+            finally
+            {
+                if (setup.Length > 0 && setup.All(entry => !string.IsNullOrEmpty(entry.path)))
+                    EditorSceneManager.RestoreSceneManagerSetup(setup);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+            string backup = "Logs/purchased-units-before-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss-fffffff");
+            var paths = new List<string> { catalogPath,
+                ItemLegacyPresentationPaths.GlobalLegacyScene };
+            foreach (ItemLegacyPresentationPlanEntry entry in entries)
+            {
+                string variant = entry.Source.VariantIndex >= 0 ? $"_variant_{entry.Source.VariantIndex:D2}" : string.Empty;
+                paths.Add(ItemLegacyPresentationPaths.GeneratedPrefabRoot + "/LegacyItemVisual_" +
+                    SanitizeAssetName(entry.Definition.DefinitionId) + variant + ".prefab");
+            }
+            foreach (string path in paths)
+            {
+                if (string.IsNullOrEmpty(path) || !path.StartsWith("Assets/Game/", StringComparison.Ordinal))
+                    throw new InvalidDataException("Purchased-unit backup path must remain in the project.");
+                if (!File.Exists(path)) continue;
+                string destination = backup + "/" + path;
+                Directory.CreateDirectory(Path.GetDirectoryName(destination));
+                File.Copy(path, destination, false);
+                if (File.Exists(path + ".meta")) File.Copy(path + ".meta", destination + ".meta", false);
+            }
+            Debug.Log("PURCHASED_UNIT_PRESENTATION_BACKUP " + backup);
+        }
+
         private static Dictionary<string, Mesh> BuildRuntimeMeshes(
             IEnumerable<string> meshGuids)
         {
@@ -954,7 +1095,7 @@ namespace MSC.Items.Editor
                     "Reviewed spanner set must contain donor sizes 5..15.");
             }
 
-            Renderer[] auxiliaryTools = renderersByEvidence
+            var auxiliaryTools = renderersByEvidence
                 .Where(pair => pair.Key.HierarchyPath.StartsWith(
                                    sourceRoot + "/Tools/",
                                    StringComparison.Ordinal) &&
@@ -962,8 +1103,19 @@ namespace MSC.Items.Editor
                                    pair.Key.HierarchyPath,
                                    spannerPattern,
                                    RegexOptions.CultureInvariant))
-                .Select(pair => pair.Value)
+                .Select(pair => new
+                {
+                    Renderer = pair.Value,
+                    Kind = ResolveAuxiliaryToolKind(
+                        sourceRoot, pair.Key.HierarchyPath),
+                })
                 .ToArray();
+            if (auxiliaryTools.Length != 3 ||
+                auxiliaryTools.Select(value => value.Kind).Distinct().Count() != 3)
+            {
+                throw new InvalidDataException(
+                    "Reviewed spanner set must contain one screwdriver, spark-plug wrench and ruler.");
+            }
             SpannerSetPresentationController controller =
                 root.AddComponent<SpannerSetPresentationController>();
             controller.ConfigureForAuthoring(
@@ -971,7 +1123,68 @@ namespace MSC.Items.Editor
                 spanners.Select(value => value.Renderer).ToArray(),
                 spanners.Select(value => value.Size.ToString(
                     CultureInfo.InvariantCulture)).ToArray(),
-                auxiliaryTools);
+                auxiliaryTools.Select(value => value.Renderer).ToArray(),
+                auxiliaryTools.Select(value => value.Kind).ToArray());
+        }
+
+        private static SpannerSetAuxiliaryToolKind ResolveAuxiliaryToolKind(
+            string sourceRoot, string hierarchyPath)
+        {
+            if (hierarchyPath == sourceRoot + "/Tools/screwdriver(Clone)/mesh")
+                return SpannerSetAuxiliaryToolKind.Screwdriver;
+            if (hierarchyPath == sourceRoot + "/Tools/sparkplug wrench(Clone)/mesh")
+                return SpannerSetAuxiliaryToolKind.SparkPlugWrench;
+            if (hierarchyPath == sourceRoot + "/Tools/ruler  (Clone)/mesh")
+                return SpannerSetAuxiliaryToolKind.Ruler;
+            throw new InvalidDataException(
+                "Unreviewed auxiliary toolbox renderer: " + hierarchyPath);
+        }
+
+        [MenuItem("MSC/Phase 1/09B/Refresh Spanner Set Auxiliary Tool Bindings Only")]
+        public static void RefreshSpannerSetAuxiliaryToolBindingsOnly()
+        {
+            ItemLegacyPresentationPlanEntry entry =
+                ItemLegacyPresentationEvidence.CreatePlan().Entries.Single(value =>
+                    value.Definition.DefinitionId == SpannerSetPresentationController.DefinitionId);
+            string prefabPath = ItemLegacyPresentationPaths.GeneratedPrefabRoot +
+                "/LegacyItemVisual_item_spanner-set.prefab";
+            GameObject root = PrefabUtility.LoadPrefabContents(prefabPath);
+            try
+            {
+                SpannerSetPresentationController controller = root
+                    .GetComponentInChildren<SpannerSetPresentationController>(true);
+                if (controller == null || controller.AuxiliaryToolRenderers.Count != 3)
+                    throw new InvalidDataException("Existing toolbox has no reviewed auxiliary renderers.");
+                var kinds = new List<SpannerSetAuxiliaryToolKind>(3);
+                foreach (Renderer renderer in controller.AuxiliaryToolRenderers)
+                {
+                    // Editor-only provenance lookup. The serialized enum is
+                    // authoritative after import; runtime never reads names.
+                    ItemLegacyEvidenceRecord record = entry.Geometry.Single(value =>
+                        renderer != null && renderer.gameObject.name == "mesh_" + ShortStableId(value.StableId));
+                    kinds.Add(ResolveAuxiliaryToolKind(
+                        entry.Source.SourceHierarchyRoot, record.HierarchyPath));
+                }
+                if (kinds.Distinct().Count() != 3)
+                    throw new InvalidDataException("Existing toolbox auxiliary renderer ownership is ambiguous.");
+                if (controller.AuxiliaryToolKinds.SequenceEqual(kinds))
+                {
+                    Debug.Log("SPANNER_AUXILIARY_BINDINGS_OK changed=0");
+                    return;
+                }
+                controller.ConfigureForAuthoring(
+                    controller.LidRenderer,
+                    controller.SpannerRenderers.ToArray(),
+                    controller.SpannerSizes.ToArray(),
+                    controller.AuxiliaryToolRenderers.ToArray(),
+                    kinds.ToArray());
+                PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
+                Debug.Log("SPANNER_AUXILIARY_BINDINGS_OK changed=1 tools=3");
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
         }
 
         private static Material[] ResolveMaterials(

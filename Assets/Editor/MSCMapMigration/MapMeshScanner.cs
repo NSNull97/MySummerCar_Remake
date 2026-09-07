@@ -24,7 +24,7 @@ namespace MSCMapMigration
             var opened = new List<string>(scenes.Count);
             var instances = new List<ScannedMeshInstance>(14000);
             var records = new List<MapMeshRecord>(14000);
-            var meshStats = new Dictionary<int, MeshGeometryStats>();
+            var meshStats = new Dictionary<EntityId, MeshGeometryStats>();
             var sourceHashes = new List<string>(scenes.Count);
 
             for (int sceneIndex = 0; sceneIndex < scenes.Count; sceneIndex++)
@@ -202,7 +202,7 @@ namespace MSCMapMigration
             GameObject root,
             List<ScannedMeshInstance> instances,
             List<MapMeshRecord> records,
-            Dictionary<int, MeshGeometryStats> meshStats)
+            Dictionary<EntityId, MeshGeometryStats> meshStats)
         {
             MeshFilter[] filters = root.GetComponentsInChildren<MeshFilter>(true);
             SkinnedMeshRenderer[] skinned =
@@ -274,11 +274,11 @@ namespace MSCMapMigration
             bool ownsMesh,
             List<ScannedMeshInstance> instances,
             List<MapMeshRecord> records,
-            Dictionary<int, MeshGeometryStats> meshStats,
+            Dictionary<EntityId, MeshGeometryStats> meshStats,
             Mesh identityMesh = null)
         {
             Mesh assetMesh = identityMesh != null ? identityMesh : mesh;
-            int statsKey = assetMesh.GetInstanceID();
+            EntityId statsKey = assetMesh.GetEntityId();
             if (!meshStats.TryGetValue(statsKey, out MeshGeometryStats stats))
             {
                 stats = AnalyzeGeometry(mesh);
@@ -339,7 +339,8 @@ namespace MSCMapMigration
                 meshAssetName = assetMesh.name,
                 assetGuid = guid ?? string.Empty,
                 localFileId = localFileId,
-                instanceId = gameObject.GetInstanceID(),
+                instanceId = 0,
+                entityId = gameObject.GetEntityId().GetRawData(),
                 vertexCount = stats.VertexCount,
                 triangleCount = stats.TriangleCount,
                 subMeshCount = mesh.subMeshCount,

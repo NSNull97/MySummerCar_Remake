@@ -25,7 +25,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
         private static readonly string[] LogicalWeatherIds =
             CreateLogicalWeatherIds();
 
-        private int controllerInstanceId;
+        private EntityId controllerInstanceId;
         private int year = 1995;
         private int month = 8;
         private int day = 1;
@@ -528,7 +528,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
             ProductionEnvironmentController controller,
             bool force)
         {
-            int instanceId = controller.GetInstanceID();
+            EntityId instanceId = controller.GetEntityId();
             if (!force && controllerInstanceId == instanceId)
             {
                 return;
@@ -821,7 +821,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
 
         private void OnPlayModeStateChanged(PlayModeStateChange change)
         {
-            controllerInstanceId = 0;
+            controllerInstanceId = default;
             Repaint();
         }
 

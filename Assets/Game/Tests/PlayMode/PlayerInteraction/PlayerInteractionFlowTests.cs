@@ -44,11 +44,15 @@ namespace MSC.Tests.PlayMode.PlayerInteraction
                     rig.ItemBody.collisionDetectionMode,
                     Is.EqualTo(CollisionDetectionMode.ContinuousDynamic));
 
-                for (int i = 0; i < 20; i++)
+                // The accepted inertial follower is still in its first
+                // overshoot at 20 fixed steps (~0.4s). Allow 50 steps (~1s at
+                // the project's 0.02s timestep) before checking its settled grab point.
+                for (int i = 0; i < 50; i++)
                 {
                     yield return new WaitForFixedUpdate();
                 }
 
+                Assert.That(rig.Carry.HasHeldObject, Is.True);
                 Vector3 currentGrabPoint = rig.ItemBody.position +
                     rig.ItemBody.rotation * localGrabPoint;
                 Assert.That(

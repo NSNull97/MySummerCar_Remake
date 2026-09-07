@@ -5,7 +5,7 @@ namespace MSC.Save
     [Serializable]
     public sealed class SaveDocument
     {
-        public const int CurrentDocumentVersion = 16;
+        public const int CurrentDocumentVersion = 18;
         public SaveHeader Header = new SaveHeader();
         public SaveMetadata Metadata = new SaveMetadata();
         public SaveDomainEnvelope[] Domains = Array.Empty<SaveDomainEnvelope>();

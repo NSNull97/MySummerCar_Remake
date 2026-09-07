@@ -34,6 +34,20 @@ namespace MSC.Save.Integration
                     StringComparer.Ordinal);
         private readonly HashSet<string> retainedEntityIds =
             new HashSet<string>(StringComparer.Ordinal);
+        private Func<string, bool> externallyOwned;
+
+        internal void ConfigureExternalOwnership(Func<string, bool> resolver) => externallyOwned = resolver;
+
+        internal void TransferToExternalOwnership(string stableEntityId, DeferredStableEntityStore stagedStore = null)
+        {
+            loadedTargets.Remove(stableEntityId);
+            sourceCellIds.Remove(stableEntityId);
+            rehomedSourceCellIds.Remove(stableEntityId);
+            suspendedTargets.Remove(stableEntityId);
+            ReleaseSourceCellRetention(stableEntityId);
+            deferredEntities.TryTake(DomainId, stableEntityId, out _);
+            stagedStore?.TryTake(DomainId, stableEntityId, out _);
+        }
 
         public WorldEntitySaveParticipant(
             DeferredStableEntityStore deferredEntities)
@@ -260,6 +274,13 @@ namespace MSC.Save.Integration
                 entry => entry.StableEntityId,
                 entry => entry,
                 StringComparer.Ordinal);
+            loadedTargets.Clear();
+            foreach (RuntimeEntityCheckpoint entity in captured.RuntimeEntities)
+            {
+                if (entity.Target == null)
+                    throw new InvalidOperationException("World rollback lost a retained live pickup wrapper.");
+                loadedTargets.Add(entity.StableEntityId, entity.Target);
+            }
             for (int index = 0;
                  index < captured.RuntimeEntities.Length;
                  index++)
@@ -465,7 +486,7 @@ namespace MSC.Save.Integration
                      !target.IsCarried &&
                      !suspendedTargets.ContainsKey(target.StableId.Value) &&
                      worldStreaming.TryGetCellIdForPosition(
-                         target.Body.position,
+                         CaptureBodyPose(target.Body).position,
                          out string currentCellId) &&
                      string.Equals(
                          currentCellId,
@@ -662,6 +683,11 @@ namespace MSC.Save.Integration
             }
 
             string id = target.StableId.Value;
+            if (target.GetComponentInParent<PartInstance>() != null || externallyOwned?.Invoke(id) == true)
+            {
+                TransferToExternalOwnership(id);
+                return;
+            }
             if (loadedTargets.TryGetValue(id, out PhysicsPickupTarget existing) &&
                 existing != null && existing != target)
             {
@@ -937,11 +963,21 @@ namespace MSC.Save.Integration
             body.isKinematic = true;
         }
 
+        private static Pose CaptureBodyPose(Rigidbody body)
+        {
+            // Unity 6000.6 releases inactive actors: native pose getters then
+            // return zero/identity. Active actors remain the physics authority.
+            return body.gameObject.activeInHierarchy
+                ? new Pose(body.position, body.rotation)
+                : new Pose(body.transform.position, body.transform.rotation);
+        }
+
         private WorldEntityStateDto CaptureTarget(
             PhysicsPickupTarget target)
         {
             Rigidbody body = target?.Body ?? throw new InvalidOperationException(
                 "A registered pickup lost its Rigidbody save boundary.");
+            Pose pose = CaptureBodyPose(body);
             bool isKinematic = body.isKinematic;
             bool useGravity = target.UsesGravityWhenLoose || body.useGravity;
             bool carriedByConfiguredController =
@@ -954,8 +990,8 @@ namespace MSC.Save.Integration
             {
                 stableEntityId = target.StableId.Value,
                 sourceCellId = ResolveSourceCellId(target),
-                worldPosition = body.position,
-                worldRotation = body.rotation,
+                worldPosition = pose.position,
+                worldRotation = pose.rotation,
                 linearVelocity = body.isKinematic || carriedByConfiguredController
                     ? Vector3.zero
                     : body.linearVelocity,
@@ -1177,6 +1213,7 @@ namespace MSC.Save.Integration
             return new RuntimeEntityCheckpoint
             {
                 StableEntityId = target.StableId.Value,
+                Target = target,
                 HasRestorableRoot = hasRestorableRoot,
                 EntityRoot = hasRestorableRoot ? entityRoot : null,
                 OriginalScene = hasRestorableRoot
@@ -1262,6 +1299,7 @@ namespace MSC.Save.Integration
         private sealed class RuntimeEntityCheckpoint
         {
             public string StableEntityId;
+            public PhysicsPickupTarget Target;
             public bool HasRestorableRoot;
             public Transform EntityRoot;
             public Scene OriginalScene;
@@ -1534,10 +1572,11 @@ namespace MSC.Save.Integration
                 PhysicsPickupTarget target)
             {
                 Rigidbody body = target.Body;
+                Pose pose = CaptureBodyPose(body);
                 return new RigidbodyRestorePlan(
                     target,
-                    body.position,
-                    body.rotation,
+                    pose.position,
+                    pose.rotation,
                     body.isKinematic ? Vector3.zero : body.linearVelocity,
                     body.isKinematic ? Vector3.zero : body.angularVelocity,
                     body.isKinematic,

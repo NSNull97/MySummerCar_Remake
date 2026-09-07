@@ -10,6 +10,51 @@ namespace MSCMapMigration.Tests
     public sealed class MapMigrationEditModeTests
     {
         [Test]
+        public void InventoryJson_RoundTripPreservesFullUnsignedEntityId()
+        {
+            // Both the unsigned high bit and bits below double precision must survive.
+            const ulong entityId = (1UL << 63) | (1UL << 53) | 37UL;
+            var inventory = new MapMeshInventory
+            {
+                records = new List<MapMeshRecord>
+                {
+                    new MapMeshRecord
+                    {
+                        recordId = "stable-map-record",
+                        entityId = entityId
+                    }
+                }
+            };
+
+            string json = JsonUtility.ToJson(inventory);
+            MapMeshInventory restored = JsonUtility.FromJson<MapMeshInventory>(json);
+
+            Assert.That(restored, Is.Not.Null);
+            Assert.That(restored.schemaVersion, Is.EqualTo("1.1"));
+            Assert.That(restored.records, Has.Count.EqualTo(1));
+            Assert.That(restored.records[0].recordId, Is.EqualTo("stable-map-record"));
+            Assert.That(restored.records[0].entityId, Is.EqualTo(entityId));
+            Assert.That(restored.records[0].instanceId, Is.Zero);
+        }
+
+        [Test]
+        public void InventoryJson_ReadsLegacyInstanceIdWithoutInventingEntityId()
+        {
+            const string json =
+                "{\"schemaVersion\":\"1.0\",\"records\":[{" +
+                "\"recordId\":\"legacy-map-record\",\"instanceId\":-317}]}";
+
+            MapMeshInventory restored = JsonUtility.FromJson<MapMeshInventory>(json);
+
+            Assert.That(restored, Is.Not.Null);
+            Assert.That(restored.schemaVersion, Is.EqualTo("1.0"));
+            Assert.That(restored.records, Has.Count.EqualTo(1));
+            Assert.That(restored.records[0].recordId, Is.EqualTo("legacy-map-record"));
+            Assert.That(restored.records[0].instanceId, Is.EqualTo(-317));
+            Assert.That(restored.records[0].entityId, Is.Zero);
+        }
+
+        [Test]
         public void Classifier_PrioritizesAuthoritativeRoadHierarchy()
         {
             MapClassificationResult result = MapMeshClassifier.Classify(

@@ -111,8 +111,10 @@ namespace MSC.Tests.EditMode.WorldRemaster
 
             Assert.That(catalog, Is.Not.Null);
             Assert.DoesNotThrow(catalog.Validate);
-            Assert.That(catalog.Lights.Count, Is.EqualTo(45));
-            Assert.That(catalog.Probes.Count, Is.EqualTo(6));
+            // Accepted expanded baseline: 46 donor-evidenced sources plus
+            // three refrigerator fills, with ten bounded reflection probes.
+            Assert.That(catalog.Lights.Count, Is.EqualTo(49));
+            Assert.That(catalog.Probes.Count, Is.EqualTo(10));
             Assert.That(
                 catalog.Lights.Select(light => light.LightId)
                     .Concat(catalog.Probes.Select(probe => probe.ProbeId))
@@ -134,7 +136,7 @@ namespace MSC.Tests.EditMode.WorldRemaster
                     light.IntensityIsLux &&
                     light.ActivationPolicy ==
                         WorldLightActivationPolicy.NightOnly),
-                Is.EqualTo(12));
+                Is.EqualTo(14));
             Assert.That(
                 catalog.Lights
                     .Where(light => light.IntensityIsLux &&
@@ -467,7 +469,7 @@ namespace MSC.Tests.EditMode.WorldRemaster
                 Assert.That(light.shadows, Is.EqualTo(LightShadows.Soft));
                 Assert.That(hdLight, Is.Not.Null);
                 Assert.That(
-                    hdLight.shapeRadius,
+                    light.shapeRadius,
                     Is.EqualTo(0.025f).Within(0.001f));
                 Assert.That(hdLight.affectsVolumetric, Is.True);
                 Assert.That(
@@ -599,10 +601,13 @@ namespace MSC.Tests.EditMode.WorldRemaster
 
                 Light light = parentObject.GetComponentInChildren<Light>();
                 Assert.That(light, Is.Not.Null);
+                // Match the captured rectangle pose locked independently by
+                // TeimoRefrigerators_PreserveCapturedAreaLightOverrides above,
+                // not the superseded point-light yaw (0, -117.5, 0).
                 Assert.That(
                     Quaternion.Angle(
                         light.transform.rotation,
-                        Quaternion.Euler(0f, -117.5f, 0f)),
+                        Quaternion.Euler(90f, 147.397f, 90.001f)),
                     Is.LessThan(0.001f));
             }
             finally

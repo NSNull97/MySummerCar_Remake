@@ -229,7 +229,7 @@ namespace MSC.Lighting
                     hd = light.gameObject.AddComponent<HDAdditionalLightData>();
                 }
 
-                hd.shapeRadius = profile.SourceRadiusMeters;
+                light.shapeRadius = profile.SourceRadiusMeters;
                 light.areaSize = new Vector2(
                     profile.SourceWidthMeters,
                     profile.SourceHeightMeters);

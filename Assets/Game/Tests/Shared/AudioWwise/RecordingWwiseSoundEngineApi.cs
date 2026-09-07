@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MSC.Audio;
 using MSC.Audio.Wwise;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MSC.Tests.AudioWwise
 {
@@ -236,7 +237,7 @@ namespace MSC.Tests.AudioWwise
 
         public string StableId => stableId;
         public Transform AudioTransform => transform;
-        public int OwningSceneHandle => gameObject.scene.handle;
+        public SceneHandle OwningSceneHandle => gameObject.scene.handle;
         public bool IsAudioEmitterActive => isActiveAndEnabled;
         public AudioSurfaceContext SurfaceContext => default;
         public AudioEnvironmentContext EnvironmentContext => default;

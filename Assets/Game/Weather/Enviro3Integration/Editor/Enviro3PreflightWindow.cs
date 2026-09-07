@@ -25,7 +25,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
             Debug.Log(
                 "M07A_ENVIRO_VERSION_EVIDENCE " +
                 "version.txt-first-line='Enviro 3.0.0' changelog-through='v3.0.8' " +
-                "exact-version-confidence=low unity=6000.3.11f1 hdrp=17.3.0");
+                $"exact-version-confidence=low unity={Application.unityVersion} hdrp={Enviro3PreflightValidator.RequiredRenderPipelineVersion}");
         }
 
         [MenuItem(WeatherLabBuilder.MenuRoot + "List Project Assemblies Referencing Enviro")]
@@ -86,7 +86,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
             EditorGUILayout.LabelField("Локальная версия", EditorStyles.boldLabel);
             EditorGUILayout.LabelField("version.txt: первая строка Enviro 3.0.0");
             EditorGUILayout.LabelField("changelog: записи до v3.0.8; точная версия — низкая уверенность");
-            EditorGUILayout.LabelField("Unity 6000.3.11f1 / HDRP 17.3.0 / URP 17.3.0 compatibility-only");
+            EditorGUILayout.LabelField($"Unity {Application.unityVersion} / HDRP {Enviro3PreflightValidator.RequiredRenderPipelineVersion} / URP {Enviro3PreflightValidator.RequiredRenderPipelineVersion} compatibility-only");
 
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();

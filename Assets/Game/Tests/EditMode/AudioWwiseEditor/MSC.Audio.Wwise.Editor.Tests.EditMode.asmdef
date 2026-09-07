@@ -1,0 +1,15 @@
+{
+  "name": "MSC.Audio.Wwise.Editor.Tests.EditMode",
+  "rootNamespace": "MSC.Tests.EditMode.AudioWwiseEditor",
+  "references": ["MSC.Audio.Runtime", "MSC.Audio.Wwise.Editor"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": ["WWISE_2024_OR_LATER"],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": ["TestAssemblies"]
+}

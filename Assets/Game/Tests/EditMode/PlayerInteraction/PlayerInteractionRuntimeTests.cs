@@ -1756,6 +1756,20 @@ namespace MSC.Tests.EditMode.PlayerInteraction
         }
 
         [Test]
+        public void ContextHud_HandbrakeHoldHintsUseEachDirectionInsteadOfPickup()
+        {
+            const string prompt = "Удерживайте ЛКМ — поднять ручник / ПКМ — опустить ручник";
+            Assert.That(InteractionUiTextCatalog.LocalizeActionLabel(prompt,
+                InteractionActionBinding.Interact, "ru-RU"), Is.EqualTo("ПОДНЯТЬ"));
+            Assert.That(InteractionUiTextCatalog.LocalizeActionLabel(prompt,
+                InteractionActionBinding.Throw, "ru-RU"), Is.EqualTo("ОПУСТИТЬ"));
+            Assert.That(InteractionUiTextCatalog.LocalizeActionLabel(prompt,
+                InteractionActionBinding.Interact, "en-US"), Is.EqualTo("RAISE"));
+            Assert.That(InteractionUiTextCatalog.LocalizeActionLabel(prompt,
+                InteractionActionBinding.Throw, "en-US"), Is.EqualTo("LOWER"));
+        }
+
+        [Test]
         public void ContextHud_TargetAndSubtitleShareSizeButUseDifferentWeight()
         {
             Assert.That(CrossdotPresenter.ContextTextFontSizePixels, Is.EqualTo(18));

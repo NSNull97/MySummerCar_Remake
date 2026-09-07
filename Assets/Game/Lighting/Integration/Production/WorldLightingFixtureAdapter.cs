@@ -32,8 +32,8 @@ namespace MSC.Lighting.Production
         [SerializeField] private LightingProfileCatalog profileCatalog;
         [SerializeField] private WorldLightingBindingCatalog bindingCatalog;
 
-        private readonly Dictionary<int, SceneFixtureIndex> fixtureIndexes =
-            new Dictionary<int, SceneFixtureIndex>();
+        private readonly Dictionary<SceneHandle, SceneFixtureIndex> fixtureIndexes =
+            new Dictionary<SceneHandle, SceneFixtureIndex>();
         private bool subscribed;
         private Material runtimeEmissionMaterial;
         private float nextRuntimeLightReconcileTime;

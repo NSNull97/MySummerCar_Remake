@@ -1,0 +1,63 @@
+diff --git "a/Assets/Chernobyl/Other/CR_Leaves.shader" "b/Assets/Chernobyl/Other/CR_Leaves.shader"
+--- "a/Assets/Chernobyl/Other/CR_Leaves.shader"
++++ "b/Assets/Chernobyl/Other/CR_Leaves.shader"
+@@ -4595,7 +4595,9 @@
+ 			#pragma shader_feature_local _BLENDMODE_OFF _BLENDMODE_ALPHA _BLENDMODE_ADD _BLENDMODE_PRE_MULTIPLY
+ 
+             #pragma multi_compile_fragment _ SHADOWS_SHADOWMASK
+-			#pragma multi_compile_fragment SHADOW_LOW SHADOW_MEDIUM SHADOW_HIGH SHADOW_VERY_HIGH
++			#pragma multi_compile_fragment PUNCTUAL_SHADOW_LOW PUNCTUAL_SHADOW_MEDIUM PUNCTUAL_SHADOW_HIGH
++			#pragma multi_compile_fragment DIRECTIONAL_SHADOW_LOW DIRECTIONAL_SHADOW_MEDIUM DIRECTIONAL_SHADOW_HIGH
++			#pragma multi_compile_fragment AREA_SHADOW_MEDIUM AREA_SHADOW_HIGH
+             #pragma multi_compile_fragment PROBE_VOLUMES_OFF PROBE_VOLUMES_L1 PROBE_VOLUMES_L2
+             #pragma multi_compile_fragment SCREEN_SPACE_SHADOWS_OFF SCREEN_SPACE_SHADOWS_ON
+             #pragma multi_compile_fragment USE_FPTL_LIGHTLIST USE_CLUSTERED_LIGHTLIST
+@@ -6496,4 +6498,4 @@
+ WireConnection;170;9;202;4
+ WireConnection;170;11;214;0
+ ASEEND*/
+-//CHKSM=A65BD0A98C710AD95F54EF977FB7F333130DC45B
+\ No newline at end of file
++//CHKSM=A65BD0A98C710AD95F54EF977FB7F333130DC45B
+diff --git "a/Assets/NatureManufacture Assets/Foliage Shaders/NM_Foliage.shader" "b/Assets/NatureManufacture Assets/Foliage Shaders/NM_Foliage.shader"
+--- "a/Assets/NatureManufacture Assets/Foliage Shaders/NM_Foliage.shader"
++++ "b/Assets/NatureManufacture Assets/Foliage Shaders/NM_Foliage.shader"
+@@ -15709,7 +15709,9 @@
+         #pragma multi_compile_raytracing _ SHADOWS_SHADOWMASK
+         #pragma multi_compile_fragment DECALS_OFF DECALS_3RT DECALS_4RT
+         #pragma multi_compile_fragment _ DECAL_SURFACE_GRADIENT
+-        #pragma multi_compile_fragment SHADOW_LOW SHADOW_MEDIUM SHADOW_HIGH SHADOW_VERY_HIGH
++        #pragma multi_compile_fragment PUNCTUAL_SHADOW_LOW PUNCTUAL_SHADOW_MEDIUM PUNCTUAL_SHADOW_HIGH
++        #pragma multi_compile_fragment DIRECTIONAL_SHADOW_LOW DIRECTIONAL_SHADOW_MEDIUM DIRECTIONAL_SHADOW_HIGH
++        #pragma multi_compile_fragment AREA_SHADOW_MEDIUM AREA_SHADOW_HIGH
+         #pragma multi_compile_fragment SCREEN_SPACE_SHADOWS_OFF SCREEN_SPACE_SHADOWS_ON
+         #pragma multi_compile_fragment USE_FPTL_LIGHTLIST USE_CLUSTERED_LIGHTLIST
+         #pragma shader_feature_local _REFRACTION_OFF _REFRACTION_PLANE _REFRACTION_SPHERE _REFRACTION_THIN
+@@ -26685,4 +26687,4 @@
+     CustomEditorForRenderPipeline "Rendering.HighDefinition.LitShaderGraphGUI" "UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset"
+     CustomEditor "UnityEditor.ShaderGraph.GenericShaderGraphMaterialGUI"
+     FallBack "Hidden/Shader Graph/FallbackError"
+-}
+\ No newline at end of file
++}
+diff --git "a/Assets/NatureManufacture Assets/Foliage Shaders/NM_Cross.shader" "b/Assets/NatureManufacture Assets/Foliage Shaders/NM_Cross.shader"
+--- "a/Assets/NatureManufacture Assets/Foliage Shaders/NM_Cross.shader"
++++ "b/Assets/NatureManufacture Assets/Foliage Shaders/NM_Cross.shader"
+@@ -13356,7 +13356,9 @@
+         #pragma multi_compile_raytracing _ SHADOWS_SHADOWMASK
+         #pragma multi_compile_fragment DECALS_OFF DECALS_3RT DECALS_4RT
+         #pragma multi_compile_fragment _ DECAL_SURFACE_GRADIENT
+-        #pragma multi_compile_fragment SHADOW_LOW SHADOW_MEDIUM SHADOW_HIGH SHADOW_VERY_HIGH
++        #pragma multi_compile_fragment PUNCTUAL_SHADOW_LOW PUNCTUAL_SHADOW_MEDIUM PUNCTUAL_SHADOW_HIGH
++        #pragma multi_compile_fragment DIRECTIONAL_SHADOW_LOW DIRECTIONAL_SHADOW_MEDIUM DIRECTIONAL_SHADOW_HIGH
++        #pragma multi_compile_fragment AREA_SHADOW_MEDIUM AREA_SHADOW_HIGH
+         #pragma multi_compile_fragment SCREEN_SPACE_SHADOWS_OFF SCREEN_SPACE_SHADOWS_ON
+         #pragma multi_compile_fragment USE_FPTL_LIGHTLIST USE_CLUSTERED_LIGHTLIST
+         #pragma shader_feature_local _REFRACTION_OFF _REFRACTION_PLANE _REFRACTION_SPHERE _REFRACTION_THIN
+@@ -20112,4 +20114,4 @@
+     CustomEditorForRenderPipeline "Rendering.HighDefinition.LitShaderGraphGUI" "UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset"
+     CustomEditor "UnityEditor.ShaderGraph.GenericShaderGraphMaterialGUI"
+     FallBack "Hidden/Shader Graph/FallbackError"
+-}
+\ No newline at end of file
++}

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MSC.Vehicle;
 using MSC.Weather.Domain;
 using UnityEngine;
 
@@ -64,6 +65,7 @@ namespace MSC.Weather.Production
         [SerializeField] private float[] rainOpacityByRenderer =
             Array.Empty<float>();
         [SerializeField] private Rigidbody vehicleBody;
+        [SerializeField] private SatsumaWiperController wipers;
         [SerializeField] private int textureSize = DonorTextureSize;
         [SerializeField] private float gravityMultiplier =
             DonorGravityMultiplier;
@@ -102,6 +104,8 @@ namespace MSC.Weather.Production
         private float simulationAccumulator;
         private float nextRoofResolveTime;
         private float nextOwnerResolveTime;
+        private float previousWiperSweep01;
+        private bool hasPreviousWiperSweep;
 
         public IReadOnlyList<Renderer> WindowRenderers =>
             windowRenderers ?? Array.Empty<Renderer>();
@@ -110,6 +114,7 @@ namespace MSC.Weather.Production
         public IReadOnlyList<RainType> RainTypes =>
             rainTypes ?? Array.Empty<RainType>();
         public Rigidbody VehicleBody => vehicleBody;
+        public SatsumaWiperController Wipers => wipers;
         public int TextureSize => textureSize;
         public float GravityMultiplier => gravityMultiplier;
         public float CurrentRain01 => currentRain01;
@@ -122,7 +127,8 @@ namespace MSC.Weather.Production
         public void ConfigureForAuthoring(
             Renderer[] authoredWindowRenderers,
             float[] authoredRainOpacityByRenderer,
-            Rigidbody authoredVehicleBody)
+            Rigidbody authoredVehicleBody,
+            SatsumaWiperController authoredWipers = null)
         {
             if (authoredWindowRenderers == null ||
                 authoredRainOpacityByRenderer == null ||
@@ -154,6 +160,7 @@ namespace MSC.Weather.Production
             vehicleBody = authoredVehicleBody != null
                 ? authoredVehicleBody
                 : throw new ArgumentNullException(nameof(authoredVehicleBody));
+            wipers = authoredWipers;
             textureSize = DonorTextureSize;
             gravityMultiplier = DonorGravityMultiplier;
             rainTypes = new[]
@@ -262,6 +269,8 @@ namespace MSC.Weather.Production
             nextOwnerResolveTime = 0f;
             LiveWetPixelCount = 0;
             TextureUpdateCount = 0U;
+            previousWiperSweep01 = 0f;
+            hasPreviousWiperSweep = false;
         }
 
         private void OnDestroy()
@@ -527,6 +536,8 @@ namespace MSC.Weather.Production
                     radius);
             }
 
+            ApplyWiperClearing();
+
             WriteDetailPixels();
             ApplyRendererOverrides();
         }
@@ -662,6 +673,114 @@ namespace MSC.Weather.Production
 
                     int x = PositiveModulo(centerX + offsetX, textureSize);
                     wetness[y * textureSize + x] = 255;
+                }
+            }
+        }
+
+        private void ApplyWiperClearing()
+        {
+            if (wipers == null)
+            {
+                hasPreviousWiperSweep = false;
+                return;
+            }
+
+            float current = Mathf.Clamp01(wipers.Sweep01);
+            if (!hasPreviousWiperSweep)
+            {
+                previousWiperSweep01 = current;
+                hasPreviousWiperSweep = true;
+                return;
+            }
+
+            if (Mathf.Abs(current - previousWiperSweep01) < 0.0001f)
+            {
+                return;
+            }
+
+            int sampleCount = Mathf.Clamp(
+                Mathf.CeilToInt(
+                    Mathf.Abs(current - previousWiperSweep01) * 24f),
+                2,
+                24);
+            for (int sample = 0; sample <= sampleCount; sample++)
+            {
+                float sweep = Mathf.Lerp(
+                    previousWiperSweep01,
+                    current,
+                    sample / (float)sampleCount);
+                ClearBladeAtSweep(
+                    new Vector2(0.31f, 0.018f),
+                    0.31f,
+                    sweep,
+                    mirrored: false);
+                ClearBladeAtSweep(
+                    new Vector2(0.70f, 0.018f),
+                    0.30f,
+                    sweep,
+                    mirrored: true);
+            }
+
+            previousWiperSweep01 = current;
+        }
+
+        private void ClearBladeAtSweep(
+            Vector2 pivot,
+            float bladeLength,
+            float sweep,
+            bool mirrored)
+        {
+            int frontEnd = Mathf.RoundToInt(textureSize * 0.4f);
+            float angleDegrees = Mathf.Lerp(12f, 98f, sweep);
+            if (mirrored)
+            {
+                angleDegrees = 180f - angleDegrees;
+            }
+
+            float radians = angleDegrees * Mathf.Deg2Rad;
+            Vector2 direction = new Vector2(
+                Mathf.Cos(radians),
+                Mathf.Sin(radians));
+            Vector2 start = pivot + direction * 0.035f;
+            Vector2 end = pivot + direction * bladeLength;
+            float thickness = textureSize * 0.018f;
+            float thicknessSquared = thickness * thickness;
+            int minimumX = Mathf.Clamp(
+                Mathf.FloorToInt(Mathf.Min(start.x, end.x) * textureSize - thickness),
+                0,
+                textureSize - 1);
+            int maximumX = Mathf.Clamp(
+                Mathf.CeilToInt(Mathf.Max(start.x, end.x) * textureSize + thickness),
+                0,
+                textureSize - 1);
+            int minimumY = Mathf.Clamp(
+                Mathf.FloorToInt(Mathf.Min(start.y, end.y) * textureSize - thickness),
+                0,
+                frontEnd - 1);
+            int maximumY = Mathf.Clamp(
+                Mathf.CeilToInt(Mathf.Max(start.y, end.y) * textureSize + thickness),
+                0,
+                frontEnd - 1);
+            Vector2 startPixels = start * textureSize;
+            Vector2 endPixels = end * textureSize;
+            Vector2 segment = endPixels - startPixels;
+            float segmentLengthSquared = Mathf.Max(
+                0.0001f,
+                segment.sqrMagnitude);
+
+            for (int y = minimumY; y <= maximumY; y++)
+            {
+                for (int x = minimumX; x <= maximumX; x++)
+                {
+                    Vector2 point = new Vector2(x + 0.5f, y + 0.5f);
+                    float along = Mathf.Clamp01(
+                        Vector2.Dot(point - startPixels, segment) /
+                        segmentLengthSquared);
+                    Vector2 nearest = startPixels + segment * along;
+                    if ((point - nearest).sqrMagnitude <= thicknessSquared)
+                    {
+                        wetness[y * textureSize + x] = 0;
+                    }
                 }
             }
         }

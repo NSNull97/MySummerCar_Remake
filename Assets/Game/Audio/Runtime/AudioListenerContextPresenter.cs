@@ -39,6 +39,7 @@ namespace MSC.Audio
             listenerTransform = authoredListenerTransform;
             stableListenerId = listenerId?.Trim() ?? string.Empty;
             backend = backendComponent as IAudioBackend;
+            enabled = ValidateConfiguration();
         }
 
         public void SetWeatherContext(
@@ -89,20 +90,33 @@ namespace MSC.Audio
         private void Awake()
         {
             backend = backendComponent as IAudioBackend;
+        }
+
+        private void Start()
+        {
+            // AddComponent on an active player invokes Awake before the
+            // composition root can provide its explicit backend. Validate at
+            // Start so same-frame Configure is supported without a false error.
+            enabled = ValidateConfiguration();
+        }
+
+        private bool ValidateConfiguration()
+        {
             if (backend == null)
             {
                 Debug.LogError(
                     "Audio listener requires an explicit component implementing IAudioBackend.",
                     this);
-                enabled = false;
-                return;
+                return false;
             }
 
             if (!AudioStableId.TryValidate(stableListenerId?.Trim(), out string failure))
             {
                 Debug.LogError("Invalid audio listener ID: " + failure, this);
-                enabled = false;
+                return false;
             }
+
+            return true;
         }
 
         private void LateUpdate()

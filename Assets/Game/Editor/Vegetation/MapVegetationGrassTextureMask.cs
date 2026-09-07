@@ -256,7 +256,7 @@ namespace MSC.Editor.Vegetation
             string path = AssetDatabase.GetAssetPath(asset);
             return !string.IsNullOrEmpty(path) && AssetDatabase.TryGetGUIDAndLocalFileIdentifier(asset, out string guid, out long localId)
                 ? guid + ":" + localId + ":" + AssetDatabase.GetAssetDependencyHash(path)
-                : "temporary:" + asset.GetInstanceID();
+                : "temporary:" + EntityId.ToULong(asset.GetEntityId());
         }
 
         private static string StableIdentity(UnityEngine.Object asset)

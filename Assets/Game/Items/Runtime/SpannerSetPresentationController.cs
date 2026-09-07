@@ -34,6 +34,8 @@ namespace MSC.Items.Presentation
             Array.Empty<string>();
         [SerializeField] private Renderer[] auxiliaryToolRenderers =
             Array.Empty<Renderer>();
+        [SerializeField] private SpannerSetAuxiliaryToolKind[] auxiliaryToolKinds =
+            Array.Empty<SpannerSetAuxiliaryToolKind>();
 
         private readonly List<SpannerSetToolPickupTarget> pickupTargets =
             new List<SpannerSetToolPickupTarget>(11);
@@ -50,6 +52,8 @@ namespace MSC.Items.Presentation
             spannerSizes ?? Array.Empty<string>();
         public IReadOnlyList<Renderer> AuxiliaryToolRenderers =>
             auxiliaryToolRenderers ?? Array.Empty<Renderer>();
+        public IReadOnlyList<SpannerSetAuxiliaryToolKind> AuxiliaryToolKinds =>
+            auxiliaryToolKinds ?? Array.Empty<SpannerSetAuxiliaryToolKind>();
 
         public void Bind(WorldItemInstance configuredOwner)
         {
@@ -65,6 +69,7 @@ namespace MSC.Items.Presentation
             owner = configuredOwner;
             BuildLidHinge();
             BuildSpannerTargets();
+            BuildAuxiliaryToolTargets();
             owner.StatusChanged += HandleStatusChanged;
             ApplyStateImmediately(IsOpen());
         }
@@ -99,51 +104,79 @@ namespace MSC.Items.Presentation
                     continue;
                 }
 
-                GameObject targetObject = renderer.gameObject;
-                RemoveLegacyPhysicalToolComponents(targetObject);
-                BoxCollider collider =
-                    targetObject.GetComponent<BoxCollider>();
-                if (collider == null)
-                {
-                    collider = targetObject.AddComponent<BoxCollider>();
-                }
-
-                Bounds bounds = renderer.localBounds;
-                collider.center = bounds.center;
-                collider.size = new Vector3(
-                    Mathf.Max(0.02f, bounds.size.x),
-                    Mathf.Max(0.02f, bounds.size.y),
-                    Mathf.Max(0.02f, bounds.size.z));
-                // Docked tools are queryable triggers. Solid nested colliders
-                // would collide with the moving dynamic case and launch it
-                // while the lid opens.
-                collider.isTrigger = true;
-
-                SpannerSetToolPickupTarget pickup = targetObject
-                    .GetComponent<SpannerSetToolPickupTarget>();
-                if (pickup == null)
-                {
-                    pickup = targetObject
-                        .AddComponent<SpannerSetToolPickupTarget>();
-                }
-
-                pickup.Configure(
-                    this,
-                    renderer,
-                    collider,
-                    size);
-                InteractionTargetHost host = targetObject
-                    .GetComponent<InteractionTargetHost>();
-                if (host == null)
-                {
-                    host = targetObject.AddComponent<InteractionTargetHost>();
-                }
-
-                host.Configure(pickup);
-                host.ConfigureSelectionPriority(30);
-                host.ConfigureOutlineRenderers(renderer);
-                pickupTargets.Add(pickup);
+                BuildToolTarget(renderer, size);
             }
+        }
+
+        private void BuildAuxiliaryToolTargets()
+        {
+            int count = Mathf.Min(
+                auxiliaryToolRenderers?.Length ?? 0,
+                auxiliaryToolKinds?.Length ?? 0);
+            for (int index = 0; index < count; index++)
+            {
+                Renderer renderer = auxiliaryToolRenderers[index];
+                SpannerSetAuxiliaryToolKind kind = auxiliaryToolKinds[index];
+                if (renderer == null || kind == SpannerSetAuxiliaryToolKind.Unbound)
+                {
+                    continue;
+                }
+
+                BuildToolTarget(renderer, SpannerSetAuxiliaryTools.UnsizedVariant, kind);
+            }
+        }
+
+        private void BuildToolTarget(
+            Renderer renderer,
+            string size,
+            SpannerSetAuxiliaryToolKind auxiliaryKind = SpannerSetAuxiliaryToolKind.Unbound)
+        {
+
+            GameObject targetObject = renderer.gameObject;
+            RemoveLegacyPhysicalToolComponents(targetObject);
+            BoxCollider collider =
+                targetObject.GetComponent<BoxCollider>();
+            if (collider == null)
+            {
+                collider = targetObject.AddComponent<BoxCollider>();
+            }
+
+            Bounds bounds = renderer.localBounds;
+            collider.center = bounds.center;
+            collider.size = new Vector3(
+                Mathf.Max(0.02f, bounds.size.x),
+                Mathf.Max(0.02f, bounds.size.y),
+                Mathf.Max(0.02f, bounds.size.z));
+            // Docked tools are queryable triggers. Solid nested colliders
+            // would collide with the moving dynamic case and launch it
+            // while the lid opens.
+            collider.isTrigger = true;
+
+            SpannerSetToolPickupTarget pickup = targetObject
+                .GetComponent<SpannerSetToolPickupTarget>();
+            if (pickup == null)
+            {
+                pickup = targetObject
+                    .AddComponent<SpannerSetToolPickupTarget>();
+            }
+
+            pickup.Configure(
+                this,
+                renderer,
+                collider,
+                size,
+                auxiliaryKind);
+            InteractionTargetHost host = targetObject
+                .GetComponent<InteractionTargetHost>();
+            if (host == null)
+            {
+                host = targetObject.AddComponent<InteractionTargetHost>();
+            }
+
+            host.Configure(pickup);
+            host.ConfigureSelectionPriority(30);
+            host.ConfigureOutlineRenderers(renderer);
+            pickupTargets.Add(pickup);
         }
 
         private static void RemoveLegacyPhysicalToolComponents(
@@ -313,7 +346,10 @@ namespace MSC.Items.Presentation
             for (int index = 0; index < auxiliaryToolRenderers.Length; index++)
             {
                 Renderer renderer = auxiliaryToolRenderers[index];
-                if (renderer != null)
+                // Selected tools are reparented to the viewmodel. Opening or
+                // closing their case must not hide/reactivate a held tool.
+                if (renderer != null &&
+                    renderer.GetComponent<SpannerSetToolPickupTarget>() == null)
                 {
                     renderer.gameObject.SetActive(visible);
                 }
@@ -348,7 +384,8 @@ namespace MSC.Items.Presentation
             Renderer configuredLidRenderer,
             Renderer[] configuredSpannerRenderers,
             string[] configuredSpannerSizes,
-            Renderer[] configuredAuxiliaryToolRenderers)
+            Renderer[] configuredAuxiliaryToolRenderers,
+            SpannerSetAuxiliaryToolKind[] configuredAuxiliaryToolKinds = null)
         {
             lidRenderer = configuredLidRenderer;
             spannerRenderers = configuredSpannerRenderers ??
@@ -356,6 +393,8 @@ namespace MSC.Items.Presentation
             spannerSizes = configuredSpannerSizes ?? Array.Empty<string>();
             auxiliaryToolRenderers = configuredAuxiliaryToolRenderers ??
                 Array.Empty<Renderer>();
+            auxiliaryToolKinds = configuredAuxiliaryToolKinds ??
+                Array.Empty<SpannerSetAuxiliaryToolKind>();
         }
 #endif
     }
@@ -387,12 +426,25 @@ namespace MSC.Items.Presentation
         private Quaternion dockLocalRotation;
         private Vector3 dockLocalScale;
         private string size = string.Empty;
+        private SpannerSetAuxiliaryToolKind auxiliaryKind;
         private bool selected;
 
-        public string SelectionPrompt => $"Выбрать ключ {size} мм";
-        public string InteractionDisplayName => $"Ключ {size} мм";
+        public string SelectionPrompt => auxiliaryKind switch
+        {
+            SpannerSetAuxiliaryToolKind.Unbound => $"Выбрать ключ {size} мм",
+            // Selection/presentation is available; this must not advertise a
+            // measuring capability before its separate mechanic is authored.
+            SpannerSetAuxiliaryToolKind.Ruler => "Линейка — измерение пока недоступно",
+            _ => $"Выбрать: {InteractionDisplayName}",
+        };
+        public string InteractionDisplayName =>
+            auxiliaryKind == SpannerSetAuxiliaryToolKind.Unbound
+                ? $"Ключ {size} мм"
+                : SpannerSetAuxiliaryTools.DisplayName(auxiliaryKind);
         public Transform ToolVisual => transform;
-        public string ToolType => "Wrench";
+        public string ToolType => auxiliaryKind == SpannerSetAuxiliaryToolKind.Unbound
+            ? "Wrench"
+            : SpannerSetAuxiliaryTools.ToolType(auxiliaryKind);
         public string ToolVariant => size;
         public Vector3 IdleLocalPosition =>
             ReferenceIdleViewmodelLocalPosition *
@@ -428,12 +480,14 @@ namespace MSC.Items.Presentation
             SpannerSetPresentationController configuredOwner,
             Renderer configuredRenderer,
             BoxCollider configuredCollider,
-            string configuredSize)
+            string configuredSize,
+            SpannerSetAuxiliaryToolKind configuredAuxiliaryKind = SpannerSetAuxiliaryToolKind.Unbound)
         {
             owner = configuredOwner;
             targetRenderer = configuredRenderer;
             targetCollider = configuredCollider;
             size = configuredSize ?? string.Empty;
+            auxiliaryKind = configuredAuxiliaryKind;
             dockParent = transform.parent;
             dockLocalPosition = transform.localPosition;
             dockLocalRotation = transform.localRotation;
@@ -460,6 +514,11 @@ namespace MSC.Items.Presentation
 
         private float ResolveViewmodelDistanceScale()
         {
+            if (auxiliaryKind != SpannerSetAuxiliaryToolKind.Unbound)
+            {
+                return 1f;
+            }
+
             if (!float.TryParse(
                     size,
                     NumberStyles.Float,

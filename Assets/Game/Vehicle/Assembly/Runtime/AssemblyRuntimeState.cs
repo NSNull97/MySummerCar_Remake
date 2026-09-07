@@ -210,8 +210,10 @@ namespace MSC.Vehicle.Assembly
 
     public sealed class FastenerGroupState
     {
+        private const double WheelRetentionCheckIntervalSeconds = 1.0;
         private readonly FastenerInstance[] fasteners;
         private bool isBolted;
+        private double nextSpeedRetentionCheckRealtime;
 
         public FastenerGroupState(
             FastenerGroupDefinition definition,
@@ -304,6 +306,47 @@ namespace MSC.Vehicle.Assembly
         public void Reset()
         {
             isBolted = false;
+            ResetSpeedRetentionSchedule();
+        }
+
+        /// <summary>
+        /// Runtime-only cadence of the donor wheel Chance -> Wait branch.
+        /// Call once per occupied mount before drawing a sample. Wait uses
+        /// realtime, survives speed/tightness changes, and never catches up.
+        /// </summary>
+        public bool ShouldEvaluateSpeedRetention(float speedKph, double realtimeSeconds)
+        {
+            if (Definition.SpeedRetentionPolicy != FastenerSpeedRetentionPolicy.DonorWheelBoltCheck ||
+                Definition.BreakAction == FastenerBreakAction.None ||
+                !Definition.HasFasteners || Definition.AggregateMaximumTightness <= 0 ||
+                !float.IsFinite(speedKph) || !double.IsFinite(realtimeSeconds) || realtimeSeconds < 0.0 ||
+                realtimeSeconds < nextSpeedRetentionCheckRealtime)
+            {
+                return false;
+            }
+
+            if (Tightness <= Definition.BoltedOffThreshold)
+            {
+                // OFF has its own immediate >5 branch, but cannot interrupt
+                // an already active Chance/Wait above. No new wait starts here.
+                return speedKph > Definition.LooseBreakSpeedKph;
+            }
+
+            if (speedKph <= Definition.PartialCheckSpeedKph)
+            {
+                return false;
+            }
+
+            // At T=Max the donor still visits zero-weight Chance then Wait.
+            // Schedule from now, not the old deadline: no catch-up burst after
+            // a pause. A successful BREAK resets this through mount.Release().
+            nextSpeedRetentionCheckRealtime = realtimeSeconds + WheelRetentionCheckIntervalSeconds;
+            return true;
+        }
+
+        public void ResetSpeedRetentionSchedule()
+        {
+            nextSpeedRetentionCheckRealtime = 0.0;
         }
 
         public bool ShouldBreak(float speedKph, float sample01) =>

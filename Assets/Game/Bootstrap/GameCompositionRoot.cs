@@ -16,7 +16,7 @@ namespace MSC.Bootstrap
 
         private GameServiceBindings serviceBindings;
         private string originScenePath = string.Empty;
-        private int originSceneHandle = -1;
+        private SceneHandle originSceneHandle;
         private bool sessionEnding;
         private bool replacedPreviousSession;
 

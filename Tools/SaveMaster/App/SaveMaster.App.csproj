@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyName>My Summer Remake Save Master</AssemblyName>
+    <RootNamespace>MySummerRemake.SaveMaster</RootNamespace>
+    <Version>1.1.0</Version>
+    <PlatformTarget>x64</PlatformTarget>
+    <Product>My Summer Remake Save Master</Product>
+    <Description>Offline native save editor for My Summer Car Remake</Description>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Core/SaveMaster.Core.csproj" />
+  </ItemGroup>
+</Project>

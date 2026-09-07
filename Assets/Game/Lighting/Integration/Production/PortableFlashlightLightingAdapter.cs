@@ -25,8 +25,8 @@ namespace MSC.Lighting.Production
             public Action<IItemStatusSource> StatusHandler;
         }
 
-        private readonly Dictionary<int, RuntimeBinding> bindings =
-            new Dictionary<int, RuntimeBinding>();
+        private readonly Dictionary<EntityId, RuntimeBinding> bindings =
+            new Dictionary<EntityId, RuntimeBinding>();
 
         private ItemWorldRuntime items;
         private LightingProfileCatalog profiles;
@@ -129,7 +129,7 @@ namespace MSC.Lighting.Production
         private void HandleInstanceRemoved(WorldItemInstance instance)
         {
             if (instance == null ||
-                !bindings.Remove(instance.GetInstanceID(), out RuntimeBinding binding))
+                !bindings.Remove(instance.GetEntityId(), out RuntimeBinding binding))
             {
                 return;
             }
@@ -149,7 +149,7 @@ namespace MSC.Lighting.Production
                 return;
             }
 
-            int instanceId = instance.GetInstanceID();
+            EntityId instanceId = instance.GetEntityId();
             if (!bindings.TryGetValue(instanceId, out RuntimeBinding binding))
             {
                 binding = CreateBinding(instance);

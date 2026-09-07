@@ -440,25 +440,7 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
         public static void EnsureGeneratedForBuild()
         {
             Manifest manifest = LoadManifest();
-            string reportPath = ToFileSystemPath(BuildReportPath);
-            if (!File.Exists(reportPath))
-            {
-                throw new InvalidOperationException(
-                    "Generated story-traffic presentation report is missing.");
-            }
-
-            BuildReportData report = JsonUtility.FromJson<BuildReportData>(
-                File.ReadAllText(reportPath));
-            if (report == null ||
-                report.schemaVersion != manifest.schemaVersion ||
-                !string.Equals(
-                    report.sourceManifestSha256,
-                    ComputeHash(ToFileSystemPath(ManifestPath)),
-                    StringComparison.OrdinalIgnoreCase))
-            {
-                throw new InvalidOperationException(
-                    "Generated story-traffic presentation is stale.");
-            }
+            LoadValidatedBuildReport(manifest);
 
             CharacterPresentationCatalog catalog =
                 AssetDatabase.LoadAssetAtPath<CharacterPresentationCatalog>(
@@ -560,27 +542,177 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                     "missing or invalid: " + suskiFailure);
             }
 
-            string defaultSuskiFailure = string.Empty;
             if (!catalog.TryGet(
                     SuskiDefaultBindingId,
                     out CharacterPresentationCatalogEntry defaultSuskiEntry) ||
-                defaultSuskiEntry.WrapperPrefab == null ||
-                defaultSuskiEntry.WrapperPrefab.GetComponent<
-                    LegacyCharacterPresentationBinding>() is not
-                    LegacyCharacterPresentationBinding defaultSuskiBinding ||
-                !defaultSuskiBinding.TryValidate(out defaultSuskiFailure) ||
-                defaultSuskiEntry.WrapperPrefab.GetComponentsInChildren<
-                    SkinnedMeshRenderer>(true).Length != 1 ||
-                defaultSuskiEntry.WrapperPrefab.GetComponentsInChildren<
-                    MeshRenderer>(true).Length != 0)
+                !TryValidateDefaultSuskiOverrideForBuild(
+                    SuskiDefaultBindingId,
+                    defaultSuskiEntry.WrapperPrefab))
             {
                 throw new InvalidOperationException(
                     "Default BetterMSC Suski presentation is missing or " +
-                    "invalid: " + defaultSuskiFailure);
+                    "does not reference its registered generated wrapper.");
             }
 
             EnsureAmbientGeneratedForBuild(manifest);
         }
+
+        // This read-only admission is deliberately limited to the registered
+        // default Suski override. It never builds content or calls either full
+        // validator, so Character validation and StoryTraffic.Build cannot recurse.
+        internal static bool TryValidateDefaultSuskiOverrideForBuild(
+            string bindingId,
+            GameObject wrapperPrefab)
+        {
+            if (!string.Equals(bindingId, SuskiDefaultBindingId,
+                    StringComparison.Ordinal) ||
+                wrapperPrefab == null ||
+                !string.Equals(AssetDatabase.GetAssetPath(wrapperPrefab),
+                    PrefabRoot + "/suski-better.prefab", StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            CharacterPresentationCatalog catalog =
+                RequireAsset<CharacterPresentationCatalog>(CatalogPath);
+            if (!catalog.TryGet(bindingId, out var entry) ||
+                entry.WrapperPrefab != wrapperPrefab)
+            {
+                return false;
+            }
+
+            EnsureDefaultSuskiGeneratedContent(wrapperPrefab);
+            return true;
+        }
+
+        private static BuildReportData LoadValidatedBuildReport(Manifest manifest)
+        {
+            string reportPath = ToFileSystemPath(BuildReportPath);
+            if (!File.Exists(reportPath))
+            {
+                throw new InvalidOperationException(
+                    "Generated story-traffic presentation report is missing.");
+            }
+
+            BuildReportData report = JsonUtility.FromJson<BuildReportData>(
+                File.ReadAllText(reportPath));
+            if (report == null || report.schemaVersion != manifest.schemaVersion ||
+                !string.Equals(report.sourceManifestSha256,
+                    ComputeHash(ToFileSystemPath(ManifestPath)),
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(
+                    "Generated story-traffic presentation is stale.");
+            }
+
+            return report;
+        }
+
+        private static void EnsureDefaultSuskiGeneratedContent(GameObject wrapper)
+        {
+            Manifest manifest = LoadManifest();
+            BuildReportData report = LoadValidatedBuildReport(manifest);
+            BetterMscSuskiSpec spec = manifest.betterMscSuski;
+            if (!string.Equals(report.betterMscSuskiPrefabSha256,
+                    spec.prefabSha256, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(report.betterMscSuskiAvatarSha256,
+                    spec.avatarSha256, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(report.betterMscSuskiVehicleSitClipSha256,
+                    spec.vehicleSitClipSha256, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(report.betterMscSuskiStandClipSha256,
+                    spec.standClipSha256, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(
+                    "Default BetterMSC Suski provenance differs from the locked manifest.");
+            }
+
+            LegacyCharacterPresentationBinding binding = wrapper != null
+                ? wrapper.GetComponent<LegacyCharacterPresentationBinding>()
+                : null;
+            string failure = string.Empty;
+            SkinnedMeshRenderer[] renderers = wrapper != null
+                ? wrapper.GetComponentsInChildren<SkinnedMeshRenderer>(true)
+                : Array.Empty<SkinnedMeshRenderer>();
+            if (binding == null || !binding.TryValidate(out failure) ||
+                !string.Equals(binding.BindingId, SuskiDefaultBindingId,
+                    StringComparison.Ordinal) || renderers.Length != 1 ||
+                wrapper.GetComponentsInChildren<MeshRenderer>(true).Length != 0 ||
+                renderers[0].sharedMesh == null)
+            {
+                throw new InvalidOperationException(
+                    "Default BetterMSC Suski presentation is invalid: " + failure);
+            }
+
+            // Only this existing override requires its local staging at build
+            // validation. No donor executable is loaded; source files are read
+            // through the same hash lock and parsers as the existing importer.
+            DonorPathConfiguration paths =
+                DonorPathConfiguration.LoadFromFile(ConfigurationPath);
+            string sourceRoot = Path.Combine(paths.DonorStagingDirectory,
+                spec.stagingRootRelativePath.Replace('/', Path.DirectorySeparatorChar));
+            string prefabPath = Path.Combine(sourceRoot,
+                spec.prefabRelativePath.Replace('/', Path.DirectorySeparatorChar));
+            RequireHash(prefabPath, spec.prefabSha256, "BetterMSC Suski prefab");
+            DonorSkinnedRendererRecord donor = DonorUnitySceneModel
+                .Parse(prefabPath).GetSkinnedRenderer(spec.skinnedRendererComponentFileId);
+            Dictionary<string, string> sourceByGuid = BuildGuidIndex(sourceRoot);
+            string meshSource = RequireGuidPath(sourceByGuid, donor.MeshGuid, "mesh");
+            Mesh expectedMesh = RequireAsset<Mesh>(SourceRoot + "/Mesh/" +
+                donor.MeshGuid + Path.GetExtension(meshSource).ToLowerInvariant());
+            Material[] materials = renderers[0].sharedMaterials;
+            if (renderers[0].sharedMesh != expectedMesh ||
+                materials.Length != expectedMesh.subMeshCount ||
+                materials.Length != donor.MaterialGuids.Count)
+            {
+                throw new InvalidOperationException(
+                    "Default BetterMSC Suski mesh or material slot count differs from its locked renderer.");
+            }
+
+            for (int index = 0; index < materials.Length; index++)
+            {
+                string materialGuid = donor.MaterialGuids[index];
+                string expectedPath = MaterialRoot + "/" + materialGuid + ".mat";
+                Material material = materials[index];
+                if (material == null || !string.Equals(
+                        AssetDatabase.GetAssetPath(material), expectedPath,
+                        StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException(
+                        $"Default BetterMSC Suski material slot {index} does not match its locked source order.");
+                }
+
+                SourceMaterialSpec materialSpec = ReadMaterialSpec(
+                    RequireGuidPath(sourceByGuid, materialGuid, "material"));
+                Texture2D expectedTexture = null;
+                if (!string.IsNullOrEmpty(materialSpec.MainTextureGuid))
+                {
+                    string textureSource = RequireGuidPath(sourceByGuid,
+                        materialSpec.MainTextureGuid, "texture");
+                    expectedTexture = RequireAsset<Texture2D>(SourceRoot + "/Texture/" +
+                        materialSpec.MainTextureGuid +
+                        Path.GetExtension(textureSource).ToLowerInvariant());
+                }
+
+                if (!IsDefaultSuskiMaterialSurfaceValid(material,
+                        expectedTexture, materialSpec.Transparent))
+                {
+                    throw new InvalidOperationException(
+                        $"Default BetterMSC Suski material slot {index} has an invalid HDRP shader, base texture or surface type.");
+                }
+            }
+        }
+
+        private static bool IsDefaultSuskiMaterialSurfaceValid(
+            Material material,
+            Texture expectedTexture,
+            bool expectedTransparent) =>
+            material != null && material.shader != null &&
+            string.Equals(material.shader.name, "HDRP/Lit", StringComparison.Ordinal) &&
+            material.HasProperty("_BaseColorMap") &&
+            material.GetTexture("_BaseColorMap") == expectedTexture &&
+            material.HasProperty("_SurfaceType") &&
+            Mathf.Approximately(material.GetFloat("_SurfaceType"),
+                expectedTransparent ? 1f : 0f);
 
         private static GameObject BuildBetterMscSuskiRescueFixture(
             GameObject janiPrefab)

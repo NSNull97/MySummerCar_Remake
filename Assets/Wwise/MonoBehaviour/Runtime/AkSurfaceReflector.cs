@@ -129,7 +129,11 @@ public class AkSurfaceReflector : UnityEngine.MonoBehaviour
 
 	public ulong GetID()
 	{
+#if UNITY_6000_6_OR_NEWER
+		return UnityEngine.EntityId.ToULong(GetEntityId());
+#else
 		return (ulong)GetInstanceID();
+#endif
 	}
 
 	/// <summary>
@@ -580,7 +584,11 @@ public class AkSurfaceReflector : UnityEngine.MonoBehaviour
 	[System.Obsolete(AkUnitySoundEngine.Deprecation_2019_2_0)]
 	public static ulong GetAkGeometrySetID(UnityEngine.MeshFilter meshFilter)
 	{
+#if UNITY_6000_6_OR_NEWER
+		return UnityEngine.EntityId.ToULong(meshFilter.GetEntityId());
+#else
 		return (ulong)meshFilter.GetInstanceID();
+#endif
 	}
 
 	[System.Obsolete(AkUnitySoundEngine.Deprecation_2019_2_0)]

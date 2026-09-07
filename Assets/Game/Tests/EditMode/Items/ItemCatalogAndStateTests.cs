@@ -10,6 +10,15 @@ namespace MSC.Items.Tests.EditMode
 {
     public sealed class ItemCatalogAndStateTests
     {
+        [TestCase("item.spark-plug", .025f, .025f, .08639f)]
+        [TestCase("item.light-bulb", .04f, .08f, .04f)]
+        public void PurchasedSmallUnitsUseReviewedDonorMassAndColliderDimensions(string id, float x, float y, float z)
+        {
+            ItemDefinitionRecord unit = definitions.Definitions.Single(definition => definition.DefinitionId == id);
+            Assert.That(unit.MassKilograms, Is.EqualTo(.2f));
+            Assert.That(unit.ProxySize, Is.EqualTo(new Vector3(x, y, z)));
+        }
+
         [Test]
         public void SpannerSetIsAnOpenableCaseWithExactDonorWrenchSizes()
         {

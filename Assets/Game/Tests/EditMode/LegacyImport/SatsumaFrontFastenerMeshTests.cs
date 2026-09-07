@@ -67,7 +67,7 @@ namespace MSC.Tests.EditMode.LegacyImport
             Dictionary<string, AssemblyFastenerInteractionTarget> targets = prefab
                 .GetComponentsInChildren<AssemblyFastenerInteractionTarget>(true)
                 .ToDictionary(value => value.FastenerDefinitionId, StringComparer.Ordinal);
-            Assert.That(targets.Count, Is.EqualTo(280), "Presentation must not add or remove fasteners.");
+            SatsumaCanonicalNightTestShape.AssertCanonicalTargets(targets.Values);
             foreach (MeshCase value in Cases)
             {
                 Assert.That(targets.ContainsKey(value.FastenerId), Is.True, value.FastenerId);
@@ -110,6 +110,9 @@ namespace MSC.Tests.EditMode.LegacyImport
                 "fastener.satsuma.drum-brake-rr.boltpm",
                 "fastener.satsuma.steering-column.boltpm-1",
                 "fastener.satsuma.steering-column.boltpm-2",
+                "fastener.satsuma.engine-assembly.boltpm-1",
+                "fastener.satsuma.engine-assembly.boltpm-2",
+                "fastener.satsuma.engine-assembly.boltpm-3",
             });
             foreach ((string mountSlug, int count) in new[]
                      {
@@ -122,6 +125,7 @@ namespace MSC.Tests.EditMode.LegacyImport
                          ("bootlid", 4),
                          ("door-left", 4),
                          ("door-right", 4),
+                         ("handbrake", 5),
                      })
             {
                 for (int index = 1; index <= count; index++)
@@ -130,10 +134,49 @@ namespace MSC.Tests.EditMode.LegacyImport
                         ".boltpm-" + index);
                 }
             }
-            AssemblyFastenerInteractionTarget[] unreviewed = prefab
-                .GetComponentsInChildren<AssemblyFastenerInteractionTarget>(true)
-                .Where(value => !reviewedIds.Contains(value.FastenerDefinitionId)).ToArray();
-            Assert.That(unreviewed.Length, Is.EqualTo(204));
+            foreach ((string mountSlug, int count) in new[]
+                     {
+                         ("engine-block-oilpan", 9),
+                         ("engine-block-gearbox", 7),
+                     })
+            {
+                for (int index = 1; index <= count; index++)
+                {
+                    reviewedIds.Add("fastener.satsuma." + mountSlug +
+                        ".boltpm-" + index);
+                }
+            }
+            reviewedIds.UnionWith(Phase1SatsumaEngineAdditionalFastenerPresentation
+                .ReviewedBindings.Select(value => value.FastenerId));
+            string[] reviewedHoseClamps =
+            {
+                "fastener.satsuma.radiator-hose1.boltpm-1", "fastener.satsuma.radiator-hose1.boltpm-2",
+                "fastener.satsuma.radiator-hose3.boltpm-1", "fastener.satsuma.radiator-hose3.boltpm-2",
+            };
+            reviewedIds.UnionWith(reviewedHoseClamps);
+            AssemblyFastenerInteractionTarget[] allTargets = prefab
+                .GetComponentsInChildren<AssemblyFastenerInteractionTarget>(true);
+            SatsumaCanonicalNightTestShape.AssertCanonicalTargets(allTargets);
+            // Stock21, four headlamp bolts and four renderer-free plug threads
+            // have separate reviewed contracts, not the old default nut mesh.
+            AssemblyFastenerInteractionTarget[] unreviewed = allTargets
+                .Where(value => !reviewedIds.Contains(value.FastenerDefinitionId) &&
+                    !SatsumaCanonicalNightTestShape.IsAddedFastener(value)).ToArray();
+            Assert.That(unreviewed.Length, Is.EqualTo(68));
+            Assert.That(allTargets.Any(value => SatsumaRockerShaftFastenerMigration.RetiredIds.Contains(value.FastenerDefinitionId)), Is.False,
+                "The eight separately reviewed valve settings are no longer default-nut fasteners.");
+            Mesh hoseScrew = AssetDatabase.LoadAssetAtPath<Mesh>(GeneratedMeshRoot +
+                Phase1SatsumaHoseClampAuthoring.ScrewMeshGuid + ".asset");
+            Assert.That(hoseScrew, Is.Not.Null);
+            AssemblyFastenerInteractionTarget[] hoses = allTargets
+                .Where(target => reviewedHoseClamps.Contains(target.FastenerDefinitionId)).ToArray();
+            Assert.That(hoses.Select(target => target.FastenerDefinitionId), Is.EquivalentTo(reviewedHoseClamps));
+            foreach (AssemblyFastenerInteractionTarget hose in hoses)
+            {
+                MeshFilter[] visuals = hose.GetComponentsInChildren<MeshFilter>(true);
+                Assert.That(visuals, Has.Length.EqualTo(1), hose.FastenerDefinitionId);
+                Assert.That(visuals[0].sharedMesh, Is.SameAs(hoseScrew), hose.FastenerDefinitionId);
+            }
             Mesh legacyMesh = AssetDatabase.LoadAssetAtPath<Mesh>(
                 GeneratedMeshRoot + NutMeshGuid + ".asset");
             Assert.That(legacyMesh, Is.Not.Null);

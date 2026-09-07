@@ -70,11 +70,25 @@ namespace MSC.Tests.PlayMode.VehicleAssembly
             Physics.SyncTransforms();
             AssemblyMountHandoffTarget target = drumMount.GetComponent<AssemblyMountHandoffTarget>();
 
+            // StartCoroutine advances the accepted transition once before its
+            // first yield; the initial displacement depends on this frame's dt.
+            float firstFrameDeltaTime = Time.unscaledDeltaTime;
+            float firstFrameProgress = Mathf.Clamp01(firstFrameDeltaTime /
+                VehicleAssemblyController.InstallTransitionDurationSeconds);
+            float easedFirstFrameProgress = firstFrameProgress * firstFrameProgress *
+                (3f - 2f * firstFrameProgress);
+            Vector3 expectedFirstPosition = Vector3.LerpUnclamped(
+                drum.transform.position, drumMount.Pose.position, easedFirstFrameProgress);
             Assert.That(carry.TryHandoff(target, context), Is.True, target.HandoffPrompt);
+            TestContext.WriteLine($"Handoff first step: dt={firstFrameDeltaTime:R}, " +
+                $"duration={VehicleAssemblyController.InstallTransitionDurationSeconds:R}, " +
+                $"eased={easedFirstFrameProgress:R}, expected={expectedFirstPosition.ToString("R")}, " +
+                $"actual={drum.transform.position.ToString("R")}, " +
+                $"deviation={Vector3.Distance(drum.transform.position, expectedFirstPosition):R}");
             Assert.That(carry.HasHeldObject, Is.False);
             Assert.That(drum.IsInstalled, Is.False);
             Assert.That(
-                Vector3.Distance(drum.transform.position, releasedPosition),
+                Vector3.Distance(drum.transform.position, expectedFirstPosition),
                 Is.LessThan(0.01f));
 
             yield return new WaitForSeconds(0.4f);
@@ -257,14 +271,8 @@ namespace MSC.Tests.PlayMode.VehicleAssembly
                     trailingArm.transform.position,
                     assemblyRoot.transform.TransformPoint(armLocalPosition)),
                 Is.LessThan(0.002f));
-            Assert.That(
-                Vector3.Distance(drum.Body.position, drum.transform.position),
-                Is.LessThan(0.0001f));
-            Assert.That(
-                Vector3.Distance(
-                    trailingArm.Body.position,
-                    trailingArm.transform.position),
-                Is.LessThan(0.0001f));
+            AssertBodyMatchesTransformWithinRepresentablePrecision(drum);
+            AssertBodyMatchesTransformWithinRepresentablePrecision(trailingArm);
         }
 
         [UnityTest]
@@ -327,6 +335,39 @@ namespace MSC.Tests.PlayMode.VehicleAssembly
         {
             controller.Graph.TryGetMount(drumMount.MountId, out MountPointRuntime mount);
             return mount.Fasteners.Single();
+        }
+
+        private static void AssertBodyMatchesTransformWithinRepresentablePrecision(
+            PartInstance part)
+        {
+            Vector3 bodyPosition = part.Body.position;
+            Vector3 transformPosition = part.transform.position;
+            Assert.That(bodyPosition.x,
+                Is.EqualTo(transformPosition.x).Within(
+                    RepresentablePositionTolerance(bodyPosition.x, transformPosition.x)));
+            Assert.That(bodyPosition.y,
+                Is.EqualTo(transformPosition.y).Within(
+                    RepresentablePositionTolerance(bodyPosition.y, transformPosition.y)));
+            Assert.That(bodyPosition.z,
+                Is.EqualTo(transformPosition.z).Within(
+                    RepresentablePositionTolerance(bodyPosition.z, transformPosition.z)));
+        }
+
+        private static float RepresentablePositionTolerance(float first, float second)
+        {
+            const float IntendedTolerance = 0.0001f;
+            float magnitude = Mathf.Max(Mathf.Abs(first), Mathf.Abs(second));
+            if (magnitude < 1f)
+            {
+                return IntendedTolerance;
+            }
+
+            // The prototype lives roughly one kilometre from world origin. At
+            // that magnitude one float ULP (0.122 mm) exceeds the intended
+            // 0.1 mm check, so never demand precision the representation lacks.
+            int exponent = Mathf.FloorToInt(Mathf.Log(magnitude, 2f));
+            float oneUlp = Mathf.Pow(2f, exponent - 23);
+            return Mathf.Max(IntendedTolerance, oneUlp);
         }
 
         private static InteractionContext CreateContext(GameObject interactor)

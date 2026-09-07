@@ -134,6 +134,10 @@ namespace MSC.Vehicle.Assembly
                     "Сначала соберите связанную точку: " + blockingMountId);
             }
 
+            AssemblyOperationResult consumableRule =
+                SatsumaConsumableAssemblyRules.EvaluateInstall(part, mount, graph);
+            if (!consumableRule.Succeeded) return consumableRule;
+
             float distance = Vector3.Distance(part.transform.position, mount.Authoring.Pose.position);
             float allowedDistance = allowPoseSnap
                 ? mount.Definition.Constraint.PreviewDistanceMeters
@@ -218,10 +222,14 @@ namespace MSC.Vehicle.Assembly
         public IReadOnlyList<PartInstance> GetMissingParts()
         {
             var missing = new List<PartInstance>();
+            // This is the authored checklist, not an inventory of spare purchases.
+            // An installed replacement fulfills its original definition's row.
             PartInstance[] parts = graph.Parts;
             for (int i = 0; i < parts.Length; i++)
             {
-                if (parts[i] != null && !parts[i].IsAssemblyRoot && !parts[i].IsInstalled)
+                if (parts[i] != null && !parts[i].IsAssemblyRoot && !parts[i].IsInstalled &&
+                    (parts[i].Definition == null ||
+                     !graph.IsPartDefinitionInstalled(parts[i].Definition.DefinitionId)))
                 {
                     missing.Add(parts[i]);
                 }

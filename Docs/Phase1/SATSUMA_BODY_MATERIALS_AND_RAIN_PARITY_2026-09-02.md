@@ -60,9 +60,13 @@ path. No special name-driven pickup branch was introduced.
 
 ### 4. Body fasteners are donor short bolts, not generic nuts
 
-The nine stock body mounts now expose exactly 32 short bolt presentations. They
-remain visible on the loose part, move with that part, become wrench targets when
-installed, and do not retain a second inert mount-owned copy.
+The nine stock body mounts expose exactly 32 short bolt presentations. All move
+with their part, become wrench targets when installed, and do not retain a second
+inert mount-owned copy. **Correction, 2026-09-06:** the eight door bolts must be
+hidden while loose; the earlier blanket claim of donor-visible loose hardware
+was wrong for both doors. The other seven mounts retain their existing visibility
+contract and were not re-audited by this correction. See
+`SATSUMA_DOOR_FASTENER_VISIBILITY_AUDIT_2026-09-06.md` for exact source actions.
 
 | Mount | Count | Tool size | Aggregate max | Bolted-on threshold |
 |---|---:|---:|---:|---:|

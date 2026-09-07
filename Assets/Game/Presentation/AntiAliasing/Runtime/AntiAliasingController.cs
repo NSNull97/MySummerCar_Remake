@@ -22,10 +22,10 @@ namespace MSC.Presentation.AntiAliasing
 
         private static AntiAliasingController instance;
 
-        private readonly Dictionary<int, ManagedCameraState> cameras =
-            new Dictionary<int, ManagedCameraState>();
+        private readonly Dictionary<EntityId, ManagedCameraState> cameras =
+            new Dictionary<EntityId, ManagedCameraState>();
         private readonly HashSet<string> emittedWarnings = new HashSet<string>();
-        private readonly List<int> staleCameraIds = new List<int>();
+        private readonly List<EntityId> staleCameraIds = new List<EntityId>();
 
         private AntiAliasingSettings settings;
         private AntiAliasingCapabilities capabilities;
@@ -37,6 +37,9 @@ namespace MSC.Presentation.AntiAliasing
         private bool shuttingDown;
         private int nextDestroyedCameraCleanupFrame;
         private string lastFallbackReason = string.Empty;
+        private int debugOverlaySuppressionCount;
+        private AntiAliasingDebugOverlay debugOverlay;
+        private bool debugOverlayEnabledBeforeSuppression;
 
         public static AntiAliasingController Instance => EnsureInstance();
         public AntiAliasingSettings Settings => settings;
@@ -44,6 +47,40 @@ namespace MSC.Presentation.AntiAliasing
         public AntiAliasingPreset SelectedPreset => selectedPreset;
         public AntiAliasingMode SelectedMode => selectedMode;
         public int ManagedCameraCount => cameras.Count;
+        public bool IsDebugOverlaySuppressed => debugOverlaySuppressionCount > 0;
+
+        /// <summary>
+        /// Temporarily hides only the development overlay. Independent owners
+        /// release their own scopes without changing AA settings or the
+        /// overlay's expanded state. Call on Unity's main thread.
+        /// </summary>
+        public IDisposable SuppressDebugOverlay()
+        {
+            if (debugOverlaySuppressionCount == 0 && debugOverlay != null)
+            {
+                debugOverlayEnabledBeforeSuppression = debugOverlay.enabled;
+                // Hiding inside OnGUI still enters Unity's IMGUI machinery.
+                // Disable its existing component for the lifetime of the scopes.
+                debugOverlay.enabled = false;
+            }
+
+            debugOverlaySuppressionCount++;
+            return new DebugOverlaySuppression(this);
+        }
+
+        private void ReleaseDebugOverlaySuppression()
+        {
+            if (debugOverlaySuppressionCount <= 0)
+            {
+                return;
+            }
+
+            debugOverlaySuppressionCount--;
+            if (debugOverlaySuppressionCount == 0 && debugOverlay != null)
+            {
+                debugOverlay.enabled = debugOverlayEnabledBeforeSuppression;
+            }
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Bootstrap()
@@ -144,7 +181,7 @@ namespace MSC.Presentation.AntiAliasing
             }
 
             RefreshCamera(camera);
-            if (cameras.TryGetValue(camera.GetInstanceID(), out ManagedCameraState state))
+            if (cameras.TryGetValue(camera.GetEntityId(), out ManagedCameraState state))
             {
                 ScheduleHistoryReset(state, reason);
             }
@@ -165,7 +202,7 @@ namespace MSC.Presentation.AntiAliasing
             ManagedCameraState state = null;
             if (camera != null)
             {
-                cameras.TryGetValue(camera.GetInstanceID(), out state);
+                cameras.TryGetValue(camera.GetEntityId(), out state);
             }
 
             ResolvedConfiguration resolved = state != null
@@ -210,6 +247,26 @@ namespace MSC.Presentation.AntiAliasing
                 resolved.Sharpening,
                 cameras.Count,
                 lastFallbackReason);
+        }
+
+        private sealed class DebugOverlaySuppression : IDisposable
+        {
+            private AntiAliasingController owner;
+
+            public DebugOverlaySuppression(AntiAliasingController controller)
+            {
+                owner = controller;
+            }
+
+            public void Dispose()
+            {
+                AntiAliasingController capturedOwner = owner;
+                owner = null;
+                if (capturedOwner != null)
+                {
+                    capturedOwner.ReleaseDebugOverlaySuppression();
+                }
+            }
         }
 
         private static AntiAliasingController EnsureInstance()
@@ -260,9 +317,11 @@ namespace MSC.Presentation.AntiAliasing
             Application.quitting += OnApplicationQuitting;
             RegisterLoadedCameras();
 
-            if (settings.ShowDevelopmentOverlay && (Application.isEditor || Debug.isDebugBuild))
+            debugOverlay = GetComponent<AntiAliasingDebugOverlay>();
+            if (debugOverlay == null && settings.ShowDevelopmentOverlay &&
+                (Application.isEditor || Debug.isDebugBuild))
             {
-                gameObject.AddComponent<AntiAliasingDebugOverlay>();
+                debugOverlay = gameObject.AddComponent<AntiAliasingDebugOverlay>();
             }
 
             if (!capabilities.HdrpActive)
@@ -332,7 +391,7 @@ namespace MSC.Presentation.AntiAliasing
         private void OnEndCameraRendering(ScriptableRenderContext context, Camera camera)
         {
             if (camera == null ||
-                !cameras.TryGetValue(camera.GetInstanceID(), out ManagedCameraState state))
+                !cameras.TryGetValue(camera.GetEntityId(), out ManagedCameraState state))
             {
                 return;
             }
@@ -398,7 +457,7 @@ namespace MSC.Presentation.AntiAliasing
             AntiAliasingCameraRole role,
             AntiAliasingCameraPolicy policy)
         {
-            int id = camera.GetInstanceID();
+            EntityId id = camera.GetEntityId();
             if (cameras.TryGetValue(id, out ManagedCameraState state))
             {
                 state.Role = role;
@@ -798,7 +857,7 @@ namespace MSC.Presentation.AntiAliasing
 
         private void UnmanageCamera(Camera camera)
         {
-            int id = camera.GetInstanceID();
+            EntityId id = camera.GetEntityId();
             if (!cameras.TryGetValue(id, out ManagedCameraState state))
             {
                 return;
@@ -821,7 +880,7 @@ namespace MSC.Presentation.AntiAliasing
         private void RemoveDestroyedCameras()
         {
             staleCameraIds.Clear();
-            foreach (KeyValuePair<int, ManagedCameraState> pair in cameras)
+            foreach (KeyValuePair<EntityId, ManagedCameraState> pair in cameras)
             {
                 if (pair.Value.Camera != null)
                 {

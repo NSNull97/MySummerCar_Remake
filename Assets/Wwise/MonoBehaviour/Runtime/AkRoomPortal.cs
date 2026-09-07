@@ -186,7 +186,14 @@ public class AkRoomPortal : AkTriggerHandler
 	}
 
 	/// Access the portal's ID
-	public ulong GetID() { return (ulong)GetInstanceID(); }
+	public ulong GetID()
+	{
+#if UNITY_6000_6_OR_NEWER
+		return UnityEngine.EntityId.ToULong(GetEntityId());
+#else
+		return (ulong)GetInstanceID();
+#endif
+	}
 
 	protected override void Awake()
 	{

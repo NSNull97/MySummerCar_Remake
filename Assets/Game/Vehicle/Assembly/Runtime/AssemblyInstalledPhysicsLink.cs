@@ -113,7 +113,12 @@ namespace MSC.Vehicle.Assembly
             targetBody.isKinematic = false;
             targetBody.detectCollisions = true;
             targetBody.collisionDetectionMode =
-                CollisionDetectionMode.ContinuousSpeculative;
+                // A sweep-CCD vehicle must not regain speculative road
+                // contacts through a welded subframe or hinged panel. Keep
+                // the existing policy for owners that did not opt into sweep.
+                ownerBody.collisionDetectionMode == CollisionDetectionMode.ContinuousDynamic
+                    ? CollisionDetectionMode.ContinuousDynamic
+                    : CollisionDetectionMode.ContinuousSpeculative;
             targetBody.interpolation = ownerBody.interpolation;
             targetBody.solverIterations = Mathf.Max(
                 targetBody.solverIterations,

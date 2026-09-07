@@ -28,6 +28,7 @@ namespace MSC.UI.Presentation
         private readonly List<UiGlassSurface> glassSurfaces =
             new List<UiGlassSurface>();
 
+        private AspectRatioFitter backdropAspectFitter;
         private Image menuBackdropFallback;
         private RawImage menuBackdropImage;
         private RawImage pauseBackdropImage;
@@ -62,9 +63,9 @@ namespace MSC.UI.Presentation
                 "BackdropAspectFrame_1672x941",
                 layer.transform);
             RectTransform aspectFrameRect = factory.Stretch(aspectFrame);
-            var aspectFitter = aspectFrame.AddComponent<AspectRatioFitter>();
-            aspectFitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
-            aspectFitter.aspectRatio = UiThemeTokens.ReferenceAspect;
+            backdropAspectFitter = aspectFrame.AddComponent<AspectRatioFitter>();
+            backdropAspectFitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
+            backdropAspectFitter.aspectRatio = UiThemeTokens.ReferenceAspect;
 
             GameObject menu = factory.CreateObject("StaticMenuBackdrop", aspectFrame.transform);
             factory.Stretch(menu);
@@ -92,6 +93,7 @@ namespace MSC.UI.Presentation
             pauseBackdropImage.enabled = false;
             pauseBackdropDim.enabled = false;
             PrepareMenuBlurredTexture();
+            InitializeMenuVehiclePreview();
             return aspectFrameRect;
         }
 
@@ -135,7 +137,9 @@ namespace MSC.UI.Presentation
             Texture texture = activeBackdropMode == UiBackdropMode.PauseFrozen
                 ? dynamicBlurredTexture
                 : menuBlurredTexture;
-            Color tint = activeBackdropMode == UiBackdropMode.PauseFrozen
+            Color tint = surface.Kind == UiGlassKind.MainMenuNeutral
+                ? MainMenuStyle.Surface
+                : activeBackdropMode == UiBackdropMode.PauseFrozen
                 ? UiThemeTokens.MenuGlassNeutral
                 : CurrentMenuGlassTint;
             surface.Apply(texture, tint);
@@ -169,6 +173,9 @@ namespace MSC.UI.Presentation
             activeBackdropMode = mode;
             bool showMenu = mode == UiBackdropMode.MenuStatic;
             bool showPause = mode == UiBackdropMode.PauseFrozen;
+            menuVehiclePreview?.SetVisible(showMenu && currentRoute == UiRouteId.MainMenu);
+            RefreshMenuOrbitInteraction();
+            ApplyMenuBackdropAspect();
 
             if (menuBackdropFallback != null)
             {
@@ -177,7 +184,7 @@ namespace MSC.UI.Presentation
 
             if (menuBackdropImage != null)
             {
-                menuBackdropImage.enabled = showMenu && dependencies.MenuBackdropTexture != null;
+                menuBackdropImage.enabled = showMenu && menuBackdropImage.texture != null;
             }
 
             if (pauseBackdropDim != null)
@@ -224,13 +231,28 @@ namespace MSC.UI.Presentation
                 return;
             }
 
-            menuBlurredTexture = CreateBackdropTexture(
-                "M08A_StaticMenuGlass",
-                MenuBlurWidth,
-                MenuBlurHeight,
-                RenderTextureFormat.ARGBHalf,
-                RenderTextureReadWrite.Linear);
+            EnsureMenuBlurredTexture(MenuBlurWidth, MenuBlurHeight);
             ApplyGaussianBlur(source, menuBlurredTexture);
+        }
+
+        private void ApplyMenuBackdropAspect()
+        {
+            if (backdropAspectFitter == null) return;
+            Texture rendered = menuVehiclePreview?.OutputTexture;
+            backdropAspectFitter.aspectRatio =
+                activeBackdropMode == UiBackdropMode.MenuStatic && rendered != null
+                    ? (float)rendered.width / rendered.height
+                    : UiThemeTokens.ReferenceAspect;
+        }
+
+        private void EnsureMenuBlurredTexture(int width, int height)
+        {
+            if (menuBlurredTexture != null && menuBlurredTexture.width == width &&
+                menuBlurredTexture.height == height) return;
+            ReleaseTexture(ref menuBlurredTexture);
+            menuBlurredTexture = CreateBackdropTexture(
+                "Main Menu Glass", width, height,
+                RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear);
         }
 
         private void StartPauseCapture()

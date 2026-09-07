@@ -3,6 +3,7 @@
   "rootNamespace": "MSC.Weather.Production",
   "references": [
     "MSC.Core.Runtime",
+    "MSC.Vehicle.Runtime",
     "MSC.Weather.Runtime",
     "MSC.Weather.Presentation.Runtime",
     "MSC.Weather.System.Runtime",

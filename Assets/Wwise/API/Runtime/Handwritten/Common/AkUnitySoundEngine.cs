@@ -63,7 +63,11 @@ public partial class AkUnitySoundEngine
 
 	private static ulong InternalGameObjectHash(UnityEngine.GameObject gameObject)
 	{
+#if UNITY_6000_6_OR_NEWER
+		return gameObject == null ? AK_INVALID_GAME_OBJECT : UnityEngine.EntityId.ToULong(gameObject.GetEntityId());
+#else
 		return gameObject == null ? AK_INVALID_GAME_OBJECT : (ulong) gameObject.GetInstanceID();
+#endif
 	}
 
 	/// <summary>

@@ -641,6 +641,12 @@ namespace MSC.Items.Editor
                         "12", "13", "14", "15",
                     };
                     break;
+                case "P1.ITEM.139":
+                    // The donor wiring mess is the carried proximity tool used
+                    // to close pre-authored wiring pairs, not a generic hand tool.
+                    plan.ToolType = "Wiring";
+                    plan.ToolVariants = new[] { "mess" };
+                    break;
                 case "P1.ITEM.140":
                     plan.AddFlag("open", false);
                     plan.AddScalar("lift-step", 0f, 1f, 0.04f);
@@ -1265,8 +1271,8 @@ namespace MSC.Items.Editor
         {
             foreach ((string id, string name, string parentFeature, float mass) in new[]
             {
-                ("item.spark-plug", "Spark plug", "P1.ITEM.126", 0.05f),
-                ("item.light-bulb", "Light bulb", "P1.ITEM.127", 0.04f),
+                ("item.spark-plug", "Spark plug", "P1.ITEM.126", 0.2f),
+                ("item.light-bulb", "Light bulb", "P1.ITEM.127", 0.2f),
                 ("item.fuse-unit", "Fuse", "P1.ITEM.128", 0.01f),
                 ("item.r20-battery-unit", "R20 battery unit", "P1.ITEM.129", 0.12f),
             })
@@ -1293,6 +1299,8 @@ namespace MSC.Items.Editor
                     mass,
                     0f,
                     35f,
+                    id == "item.spark-plug" ? new Vector3(.025f, .025f, .08639f) :
+                    id == "item.light-bulb" ? new Vector3(.04f, .08f, .04f) :
                     Vector3.one * 0.08f,
                     false,
                     false,

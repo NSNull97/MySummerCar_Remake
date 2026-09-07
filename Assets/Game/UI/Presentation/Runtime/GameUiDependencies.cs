@@ -46,7 +46,11 @@ namespace MSC.UI.Presentation
             IPlayerNeedsService playerNeeds = null,
             IPlayerMoneyService playerMoney = null,
             Action openDeveloperTools = null,
-            NewGameVehiclePaintHandler configureNewGameVehiclePaint = null)
+            NewGameVehiclePaintHandler configureNewGameVehiclePaint = null,
+            MainMenuVehicleModel menuVehiclePrefab = null,
+            Shader menuPreviewBackdropShader = null,
+            MainMenuEnvironmentModel menuEnvironmentPrefab = null,
+            Func<DateTime> menuLocalTimeProvider = null)
         {
             IsWorldReady = isWorldReady ?? throw new ArgumentNullException(nameof(isWorldReady));
             GameTime = gameTime;
@@ -75,9 +79,16 @@ namespace MSC.UI.Presentation
             PlayerMoney = playerMoney;
             OpenDeveloperTools = openDeveloperTools;
             ConfigureNewGameVehiclePaint = configureNewGameVehiclePaint;
+            MenuVehiclePrefab = menuVehiclePrefab;
+            MenuPreviewBackdropShader = menuPreviewBackdropShader;
+            MenuEnvironmentPrefab = menuEnvironmentPrefab;
+            MenuLocalTimeProvider = menuLocalTimeProvider;
         }
 
         public Func<bool> IsWorldReady { get; }
+
+        /// <summary>Optional deterministic presentation clock. Production uses local DateTime.Now.</summary>
+        public Func<DateTime> MenuLocalTimeProvider { get; }
 
         public IGameTimeService GameTime { get; }
 
@@ -175,5 +186,13 @@ namespace MSC.UI.Presentation
         /// invoked while loading an existing save.
         /// </summary>
         public NewGameVehiclePaintHandler ConfigureNewGameVehiclePaint { get; }
+
+        /// <summary>Presentation-only geometry, supplied explicitly; never the gameplay vehicle prefab.</summary>
+        public MainMenuVehicleModel MenuVehiclePrefab { get; }
+
+        public Shader MenuPreviewBackdropShader { get; }
+
+        /// <summary>Explicit mesh-only home yard for the isolated menu camera.</summary>
+        public MainMenuEnvironmentModel MenuEnvironmentPrefab { get; }
     }
 }

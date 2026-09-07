@@ -369,10 +369,20 @@ namespace MSC.Save.Integration
                 envelope.PayloadJson);
             if (!state.TryValidate(out string failure) ||
                 !motor.CanRestoreSaveState(state.Motor, out failure) ||
-                !look.CanRestoreSaveState(state.Look, out failure))
+                !look.CanRestoreSaveState(state.Look, out failure) ||
+                !PlayerPersistence.CanRestoreDrivingState(state, motor, out failure))
             {
                 throw new InvalidDataException(
                     "Player save preflight failed: " + failure);
+            }
+
+            if (state.HasDrivingState)
+            {
+                IPlayerDrivingPersistence driving = motor.GetComponent<IPlayerDrivingPersistence>();
+                if (!context.TryGetEnvelope(driving.OwnerSaveDomainId, out SaveDomainEnvelope owner))
+                    throw new InvalidDataException("Player driver-station owner domain is missing: " + driving.OwnerSaveDomainId);
+                if (!driving.ValidateOwnerSavePayload(owner.PayloadJson, out failure))
+                    throw new InvalidDataException("Player driver-station owner preflight failed: " + failure);
             }
 
             return state;

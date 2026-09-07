@@ -2,6 +2,7 @@
   "name": "MSC.Vehicle.ItemsIntegration",
   "rootNamespace": "MSC.Vehicle.ItemsIntegration",
   "references": [
+    "MSC.Core.Runtime",
     "MSC.Interaction.Runtime",
     "MSC.Items.Runtime",
     "MSC.Vehicle.Assembly"

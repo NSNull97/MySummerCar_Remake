@@ -1,0 +1,76 @@
+diff --git a/Assets/NWH/Common/Scripts/NUI/NUIDrawer.cs b/Assets/NWH/Common/Scripts/NUI/NUIDrawer.cs
+--- a/Assets/NWH/Common/Scripts/NUI/NUIDrawer.cs
++++ b/Assets/NWH/Common/Scripts/NUI/NUIDrawer.cs
+@@ -62,13 +62,21 @@
+ 
+         public static string GenerateKey(SerializedObject obj)
+         {
++#if UNITY_6000_6_OR_NEWER
++            return obj.targetObject.GetEntityId().ToString();
++#else
+             return obj.targetObject.GetInstanceID().ToString();
++#endif
+         }
+ 
+ 
+         public static string GenerateKey(Object obj)
+         {
++#if UNITY_6000_6_OR_NEWER
++            return obj.GetEntityId().ToString();
++#else
+             return obj.GetInstanceID().ToString();
++#endif
+         }
+ 
+ 
+diff --git a/Assets/NWH/WheelController/Scripts/WheelController.cs b/Assets/NWH/WheelController/Scripts/WheelController.cs
+--- a/Assets/NWH/WheelController/Scripts/WheelController.cs
++++ b/Assets/NWH/WheelController/Scripts/WheelController.cs
+@@ -288,7 +288,11 @@
+         private Vector3 _castOrigin;
+         private Vector3 _castDirection;
+         private Vector3 _hitLocalPoint;
++#if UNITY_6000_6_OR_NEWER
++        private EntityId _targetRigidbodyId;
++#else
+         private int _targetRigidbodyId;
++#endif
+         private bool _wakeOneFrame;
+ 
+ 
+@@ -345,7 +349,11 @@
+             if (useContactModification)
+             {
+                 Physics.ContactModifyEvent += OnContactModifyEvent;
++#if UNITY_6000_6_OR_NEWER
++                _targetRigidbodyId = targetRigidbody.GetEntityId();
++#else
+                 _targetRigidbodyId = targetRigidbody.GetInstanceID();
++#endif
+             }
+         }
+ 
+@@ -1189,13 +1197,20 @@
+             foreach (var pair in pairs)
+             {
+                 // Check if our object and if not skip
+-                if (pair.bodyInstanceID != _targetRigidbodyId
+-                    && pair.otherBodyInstanceID != _targetRigidbodyId)
++#if UNITY_6000_6_OR_NEWER
++                var bodyId = pair.bodyEntityId;
++                var otherBodyId = pair.otherBodyEntityId;
++#else
++                var bodyId = pair.bodyInstanceID;
++                var otherBodyId = pair.otherBodyInstanceID;
++#endif
++                if (bodyId != _targetRigidbodyId
++                    && otherBodyId != _targetRigidbodyId)
+                 {
+                     continue;
+                 }
+ 
+-                bool isThisBody = pair.bodyInstanceID == _targetRigidbodyId;
++                bool isThisBody = bodyId == _targetRigidbodyId;
+ 
+                 for (int contactIdx = 0; contactIdx < pair.contactCount; contactIdx++)
+                 {

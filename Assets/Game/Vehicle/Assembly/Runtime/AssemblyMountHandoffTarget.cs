@@ -8,6 +8,7 @@ namespace MSC.Vehicle.Assembly
     [DisallowMultipleComponent]
     public sealed class AssemblyMountHandoffTarget : MonoBehaviour,
         IMountHandoffTarget,
+        IMountHandoffPreReleaseTarget,
         IRequiresCarriedObjectRaycastTarget,
         ICarriedObjectRaycastFilter,
         IParentColliderOcclusionBypass
@@ -31,7 +32,8 @@ namespace MSC.Vehicle.Assembly
             IPickupTarget pickupTarget,
             in InteractionContext context)
         {
-            if (controller == null || mountPoint == null)
+            if (controller == null || mountPoint == null ||
+                mountPoint.GetComponent<AssemblyPhysicalDockingOnly>() != null)
             {
                 prompt = "Точка установки не настроена";
                 return false;
@@ -51,7 +53,8 @@ namespace MSC.Vehicle.Assembly
             IPickupTarget pickupTarget,
             in InteractionContext context)
         {
-            if (controller == null || mountPoint == null)
+            if (controller == null || mountPoint == null ||
+                mountPoint.GetComponent<AssemblyPhysicalDockingOnly>() != null)
             {
                 return;
             }
@@ -61,11 +64,28 @@ namespace MSC.Vehicle.Assembly
             prompt = result.Message;
         }
 
+        public bool TryPrepareHandoff(
+            IPickupTarget pickupTarget,
+            in InteractionContext context)
+        {
+            if (controller == null || mountPoint == null ||
+                mountPoint.GetComponent<AssemblyPhysicalDockingOnly>() != null)
+            {
+                return false;
+            }
+
+            AssemblyOperationResult result = controller.TryPrepareHandoffInstall(
+                controller.ResolvePart(pickupTarget), mountPoint);
+            prompt = result.Message;
+            return result.Succeeded;
+        }
+
         public bool CanSelectForCarriedObject(
             IPickupTarget pickupTarget,
             in InteractionContext context)
         {
             if (controller == null || mountPoint == null ||
+                mountPoint.GetComponent<AssemblyPhysicalDockingOnly>() != null ||
                 mountPoint.Definition == null)
             {
                 return false;

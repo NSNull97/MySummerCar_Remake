@@ -23,7 +23,8 @@
                 { "name": "Wave", "type": "Button", "id": "0f2edbb8-a029-41b6-8ee3-f469a6803035", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false },
                 { "name": "MiddleFinger", "type": "Button", "id": "72eab109-6248-4fce-9c5a-646c928f271c", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false },
                 { "name": "Swear", "type": "Button", "id": "451a19fd-b5cb-4c1b-b8fd-85e386d73b2c", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false },
-                { "name": "AlternativeActions", "type": "Button", "id": "9b9725e6-7366-4743-acd7-57e9e9fa5701", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false }
+                { "name": "AlternativeActions", "type": "Button", "id": "9b9725e6-7366-4743-acd7-57e9e9fa5701", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false },
+                { "name": "DrivingMode", "type": "Button", "id": "b5369434-a23b-47c9-862b-4f5515ef4fca", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false }
             ],
             "bindings": [
                 { "name": "WASD", "id": "bdd2908b-180f-4ce8-a023-09897b0a798c", "path": "2DVector", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Move", "isComposite": true, "isPartOfComposite": false },
@@ -63,7 +64,8 @@
                 { "name": "", "id": "4c2c8cc7-107d-4ffc-a6ba-f829525918d9", "path": "<Gamepad>/dpad/right", "interactions": "", "processors": "", "groups": "Gamepad", "action": "MiddleFinger", "isComposite": false, "isPartOfComposite": false },
                 { "name": "", "id": "2afb4162-2d2d-4c49-b758-41ee4ef37457", "path": "<Keyboard>/n", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "Swear", "isComposite": false, "isPartOfComposite": false },
                 { "name": "", "id": "41eb0e12-cca4-4567-b421-35ddc5715e4a", "path": "<Keyboard>/leftAlt", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "AlternativeActions", "isComposite": false, "isPartOfComposite": false },
-                { "name": "", "id": "6cf81f92-4728-47ce-a82e-614702fd67cc", "path": "<Keyboard>/rightAlt", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "AlternativeActions", "isComposite": false, "isPartOfComposite": false }
+                { "name": "", "id": "6cf81f92-4728-47ce-a82e-614702fd67cc", "path": "<Keyboard>/rightAlt", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "AlternativeActions", "isComposite": false, "isPartOfComposite": false },
+                { "name": "", "id": "60f9d6c2-46e3-41a6-a0b4-e50c98457436", "path": "<Keyboard>/enter", "interactions": "", "processors": "", "groups": "Keyboard&Mouse", "action": "DrivingMode", "isComposite": false, "isPartOfComposite": false }
             ]
         },
         {

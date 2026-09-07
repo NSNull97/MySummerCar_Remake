@@ -46,6 +46,47 @@ truthful differences before implementation and is updated after captures.
 | `UI08A-DEV-035` | Pickup reticle source | Replace the Material Symbols runtime hand with the original game's hash-locked `gui_uset` open palm as a private Phase 1 `TemporaryDirectImport`, retaining its white mass and black finger separators under the stronger project-owned halo. | Direct user approval on 2026-09-02. The tracked manifest records SHA-256 `7939FE87B8F6F3154595AFF54AE17B0B4A19EA7062DCE3D3281B254266BB62A2`, deterministic GUID and replacement key `ui.interaction.pickup-hand`; donor runtime logic is not imported and Phase 2 still requires a reauthored icon. |
 | `UI08A-DEV-036` | Installed assembly target text | Hide the bottom-centre name row for every installed assembly part and its fasteners. Preserve only actions whose capability reports that they are currently valid; restoring the part to a loose state restores its localized title. | Direct user correction on 2026-09-02. A secured fixed lever now shows neither a title nor a false pickup/removal plaque, while an installed hinged door can still show its valid open/close actions. |
 
+## Main menu revision — 2026-09-04
+
+`UI08A-DEV-037`: the direct user request supersedes MainMenu's historical
+composition, including `UI08A-DEV-005/006`. Remove the entire interior/trunk,
+performance and music blocks; use separated right-side glass actions, a
+two-row paged paint panel and compact lower-right utilities. Reuse the
+current logo, font, save routes and vehicle paint callback.
+The current full logo artwork is displayed without the obsolete 600×337 crop
+on MainMenu only. Other locked screens retain their established treatment.
+The user's follow-up explicitly replaces the static car with the existing
+Satsuma geometry in a presentation-only preview. The subsequent correction
+rejects the photographic garage and requests a complete 3D game location;
+the active home yard supplies the bounded menu environment. Live paint uses the copied model's
+explicit renderer bindings; persisted choice/new-game paint retains the
+existing services. Pointer-origin focus no longer leaves a selected border
+after the cursor exits; persistent paint selection remains visible.
+The user's subsequent play review requests smaller controls with centered
+icon/text groups, brighter cinematic lighting and a limited mouse orbit to
+inspect the vehicle. These changes are restricted to the menu presentation;
+the camera orbit does not change gameplay cameras, world coordinates or saves.
+The user accepted the canonical-spawn/orbit revision, then explicitly requested
+the garage lamp, volumetric haze behind the house and local computer time to
+drive the menu's day/evening/night lighting. The subsequent request makes the
+garage source a much stronger white spotlight aimed at the car; parameters and
+executed checks are recorded in `MAIN_MENU_WHITE_SPOT_2026-09-04.md`.
+The next explicit follow-up adds white front Spot Lights and red rear Point
+Lights at night; `MAIN_MENU_VEHICLE_LIGHTS_2026-09-04.md` records their bounded
+menu-only implementation and validation.
+These latest amendments remain
+isolated from the game clock and world weather. See
+`MAIN_MENU_REDESIGN_2026-09-04.md` for evidence and status; the amendments await
+the user's visual review.
+
+`UI08A-DEV-038`: after accepting the new main menu, the user explicitly requested
+the same dark blurred surfaces, thin borders and button treatment for Pause and
+Settings. This replaces only their visual styling; the established 08A layout,
+routes, controls and settings transactions remain unchanged. Settings notices
+and quit confirmation share the treatment. See
+`MENU_STYLE_UNIFICATION_2026-09-04.md` for files and executed checks. This new
+screen styling awaits its own visual review.
+
 ## AI/semantic artifacts corrected
 
 - Main-menu duplicate `NOT IMPORTED` becomes one status plus one honest helper.

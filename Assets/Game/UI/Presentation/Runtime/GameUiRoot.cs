@@ -131,6 +131,7 @@ namespace MSC.UI.Presentation
             settingsStore = new UiSettingsJsonStore(dependencies.SettingsPath);
             UiSettingsLoadResult loaded = settingsStore.LoadOrCreate();
             settings = new UiSettingsTransactionService(loaded.Document);
+            InitializeMainMenuColour();
             textCatalog.LocaleId = loaded.Document.Gameplay.LanguageId;
             InitializeSaveUi();
             BuildCanvas();
@@ -165,6 +166,8 @@ namespace MSC.UI.Presentation
             }
 
             sessionEnded = true;
+            RefreshMenuOrbitInteraction();
+            menuVehiclePreview?.SetVisible(false);
             if (gameplayActivationCoroutine != null)
             {
                 StopCoroutine(gameplayActivationCoroutine);
@@ -245,9 +248,10 @@ namespace MSC.UI.Presentation
             }
 
             RecordFrameSample();
-            RefreshPerformanceGraph();
             RefreshHudFpsCounter();
             TrackUiSelectionAudio();
+            UpdateMenuNavigation();
+            RefreshSaveUiAfterOperation();
             if (!worldReadyHandled && dependencies.IsWorldReady())
             {
                 worldReadyHandled = true;
@@ -281,6 +285,7 @@ namespace MSC.UI.Presentation
         private void OnDestroy()
         {
             DisposeActiveRebindForShutdown();
+            DisposeMenuVehiclePreview();
             DisposeBlurredBackdropTexture();
             dlssRuntime?.Dispose();
             dlssRuntime = null;
@@ -345,6 +350,8 @@ namespace MSC.UI.Presentation
                 ownedEventSystem = eventObject.GetComponent<EventSystem>();
                 eventObject.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();
             }
+
+            ConfigureMenuInputModule();
         }
 
         private void BuildAllRoutes()
@@ -377,6 +384,7 @@ namespace MSC.UI.Presentation
         private void ShowRoute(UiRouteId route)
         {
             RememberCurrentRouteSelection();
+            EventSystem.current?.SetSelectedGameObject(null);
             foreach (KeyValuePair<UiRouteId, GameObject> item in routes)
             {
                 if (item.Value != null)
@@ -389,7 +397,8 @@ namespace MSC.UI.Presentation
             UpdateBlurredBackdrop(route);
             if (routes.TryGetValue(route, out GameObject root))
             {
-                if (!TryRestoreRouteSelection(route))
+                if (!TryRestoreRouteSelection(route) &&
+                    !(route == UiRouteId.MainMenu && SelectMainMenuDefault()))
                 {
                     UiFactory.SelectFirst(root);
                 }
@@ -408,6 +417,10 @@ namespace MSC.UI.Presentation
             }
 
             routeSelections[currentRoute] = selected;
+            if (currentRoute == UiRouteId.MainMenu)
+            {
+                RememberMainMenuSelection(selected);
+            }
         }
 
         private bool TryRestoreRouteSelection(UiRouteId route)
@@ -595,20 +608,19 @@ namespace MSC.UI.Presentation
 
             if (currentRoute == UiRouteId.InGameHud)
             {
+                lastPauseHandledFrame = Time.frameCount;
                 EnterPause();
             }
             else if (currentRoute == UiRouteId.Pause)
             {
+                lastPauseHandledFrame = Time.frameCount;
                 EnterGameplay();
-            }
-            else if (IsSettingsRoute(currentRoute) && settingsReturnRoute == UiRouteId.Pause)
-            {
-                ShowRoute(UiRouteId.Pause);
             }
         }
 
         private void BindPauseAction()
         {
+            BindMenuCancelAction();
             pauseAction = dependencies.PlayerActions?
                 .FindAction("System/Pause", throwIfNotFound: false);
             if (pauseAction == null)
@@ -623,6 +635,7 @@ namespace MSC.UI.Presentation
 
         private void UnbindPauseAction()
         {
+            UnbindMenuCancelAction();
             if (pauseAction == null)
             {
                 return;
@@ -968,14 +981,13 @@ namespace MSC.UI.Presentation
 
         private void BuildNotice()
         {
-            noticeRoot = factory.Panel(
+            noticeRoot = factory.MainMenuPanel(
                 "SettingsNotice",
                 referenceFrame,
                 626f,
                 26f,
                 420f,
-                48f,
-                UiThemeTokens.Card);
+                48f);
             noticeText = factory.Text(
                 "NoticeText",
                 noticeRoot.transform,
@@ -985,9 +997,9 @@ namespace MSC.UI.Presentation
                 392f,
                 48f,
                 14,
-                UiThemeTokens.TextPrimary,
+                MainMenuStyle.PrimaryText,
                 TextAnchor.MiddleCenter,
-                FontStyle.Bold);
+                FontStyle.Normal);
             noticeRoot.SetActive(false);
         }
 
@@ -1117,6 +1129,7 @@ namespace MSC.UI.Presentation
 
         private void RebuildLocalizedRoutes()
         {
+            InitializeMainMenuColour();
             RebuildSettingsRoutes();
             RebuildRoute(UiRouteId.Loading, BuildLoadingRoute);
             RebuildRoute(UiRouteId.MainMenu, BuildMainMenuRoute);
@@ -1151,8 +1164,13 @@ namespace MSC.UI.Presentation
             bool wasActive = routes.TryGetValue(id, out GameObject existing) && existing.activeSelf;
             if (existing != null)
             {
+                if (id == UiRouteId.MainMenu)
+                {
+                    RememberMainMenuSelection(EventSystem.current?.currentSelectedGameObject);
+                }
                 routes.Remove(id);
                 routeSelections.Remove(id);
+                existing.SetActive(false);
                 Destroy(existing);
             }
 
@@ -1162,7 +1180,11 @@ namespace MSC.UI.Presentation
                 rebuilt.SetActive(wasActive);
                 if (wasActive && id == currentRoute)
                 {
-                    UiFactory.SelectFirst(rebuilt);
+                    EventSystem.current?.SetSelectedGameObject(null);
+                    if (!(id == UiRouteId.MainMenu && SelectMainMenuDefault()))
+                    {
+                        UiFactory.SelectFirst(rebuilt);
+                    }
                 }
             }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -1261,14 +1283,14 @@ namespace MSC.UI.Presentation
         private void BuildConfirmationDialogRoute()
         {
             GameObject route = CreateRoute(UiRouteId.ConfirmationDialog);
-            GameObject panel = factory.Panel(
+            GameObject panel = factory.MainMenuPanel(
                 "ConfirmationCard",
                 route.transform,
                 576f,
                 284f,
                 520f,
                 372f);
-            factory.Heading(
+            factory.MenuScreenHeading(
                 panel.transform,
                 textCatalog.Get("ui.confirmation.title"),
                 34f,
@@ -1284,21 +1306,9 @@ namespace MSC.UI.Presentation
                 452f,
                 74f,
                 17,
-                UiThemeTokens.TextPrimary,
+                MainMenuStyle.PrimaryText,
                 TextAnchor.UpperLeft);
-            factory.Text(
-                "ConfirmationReferenceState",
-                panel.transform,
-                textCatalog.Get("ui.common.reference_pending"),
-                34f,
-                184f,
-                452f,
-                22f,
-                10,
-                UiThemeTokens.Disabled,
-                TextAnchor.MiddleLeft,
-                FontStyle.Bold);
-            factory.CompactButton(
+            MainMenuActionButton cancel = factory.MenuScreenCompactButton(
                 "ConfirmationCancel",
                 panel.transform,
                 textCatalog.Get("ui.confirmation.cancel"),
@@ -1308,7 +1318,7 @@ namespace MSC.UI.Presentation
                 58f,
                 CancelQuitConfirmation,
                 primary: true);
-            factory.CompactButton(
+            MainMenuActionButton accept = factory.MenuScreenCompactButton(
                 "ConfirmationAccept",
                 panel.transform,
                 textCatalog.Get("ui.confirmation.quit"),
@@ -1318,6 +1328,9 @@ namespace MSC.UI.Presentation
                 58f,
                 QuitApplication,
                 destructive: true);
+            bool reducedMotion = settings.Applied.Accessibility.ReducedMotion || reviewDataEnabled;
+            cancel.ReducedMotion = reducedMotion;
+            accept.ReducedMotion = reducedMotion;
         }
 
         private void BuildSaveStatusRoute()

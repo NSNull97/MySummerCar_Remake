@@ -41,6 +41,14 @@ namespace MSC.Vehicle.Assembly
             Quaternion.identity;
         [SerializeField, Min(0f)]
         private float fastenerPresentationStageTravelScale = 1f;
+        [SerializeField] private MonoBehaviour postTighteningAction;
+        [SerializeField] private AssemblyEngineDockingState pendingDocking;
+        // Opt-in for a reviewed bolt whose mesh follows a hinged part rather
+        // than this mount marker. Null preserves all previous presentation owners.
+        [SerializeField] private Renderer installedOnlyExternalPresentationRenderer;
+
+        public AssemblyEngineDockingState PendingDocking => pendingDocking;
+        public void ConfigurePendingDocking(AssemblyEngineDockingState docking) => pendingDocking = docking;
 
         private bool loosening;
         private bool hasFastenerPresentationBasePose;
@@ -59,6 +67,23 @@ namespace MSC.Vehicle.Assembly
         public VehicleAssemblyController Controller => controller;
         public string MountId => mountId;
         public string FastenerDefinitionId => fastenerDefinitionId;
+        public Renderer InstalledOnlyExternalPresentationRenderer =>
+            installedOnlyExternalPresentationRenderer;
+
+        public void ConfigureInstalledOnlyExternalPresentationRenderer(Renderer renderer)
+        {
+            installedOnlyExternalPresentationRenderer = renderer;
+            observedGraphMutationCount = -1;
+        }
+        public IAssemblyFastenerPostTighteningAction PostTighteningAction =>
+            postTighteningAction as IAssemblyFastenerPostTighteningAction;
+
+        public void ConfigurePostTighteningAction(MonoBehaviour action)
+        {
+            if (action != null && action is not IAssemblyFastenerPostTighteningAction)
+                throw new System.ArgumentException("Unsupported post-tightening action.", nameof(action));
+            postTighteningAction = action;
+        }
 
         public float FastenerPresentationStageTravelScale =>
             fastenerPresentationStageTravelScale;
@@ -169,7 +194,14 @@ namespace MSC.Vehicle.Assembly
                     ? FastenerRotationDirection.Clockwise
                     : FastenerRotationDirection.CounterClockwise;
             int previousStage = fastener.Stage;
-            AssemblyOperationResult result = controller.TryTurnFastener(
+            if (tighten && previousStage >= fastener.Definition.MaximumStage &&
+                PostTighteningAction != null)
+            {
+                if (!PostTighteningAction.TryApply(this)) return false;
+                BeginSnappedWrenchTurn(direction, previousStage, previousStage);
+                return true;
+            }
+            AssemblyOperationResult result = TurnFastener(
                 mountId,
                 fastenerDefinitionId,
                 tool,
@@ -182,7 +214,7 @@ namespace MSC.Vehicle.Assembly
             BeginSnappedWrenchTurn(
                 direction,
                 previousStage,
-                fastener.Stage);
+                TryGetFastener(out FastenerInstance currentFastener) ? currentFastener.Stage : fastener.Stage);
             return true;
         }
 
@@ -200,20 +232,24 @@ namespace MSC.Vehicle.Assembly
                     mountId,
                     out MountPointRuntime mount) ||
                 mount.Authoring == null ||
-                mount.Authoring.IsObstructed(mount.InstalledPart))
+                mount.Authoring.IsObstructed(mount.InstalledPart != null
+                    ? mount.InstalledPart : pendingDocking != null ? pendingDocking.Block : null))
             {
                 return false;
             }
 
             return direction == InteractionScrollDirection.Positive
-                ? fastener.Stage < fastener.Definition.MaximumStage
+                ? fastener.Stage < fastener.Definition.MaximumStage ||
+                    PostTighteningAction != null && PostTighteningAction.CanApply(this)
                 : fastener.Stage > 0;
         }
 
         public string GetHeldToolScrollPrompt(
             InteractionScrollDirection direction) =>
             direction == InteractionScrollDirection.Positive
-                ? "ЗАТЯНУТЬ"
+                ? PostTighteningAction != null && PostTighteningAction.CanApply(this)
+                    ? PostTighteningAction.PostTighteningPrompt
+                    : "ЗАТЯНУТЬ"
                 : "ОСЛАБИТЬ";
 
         public bool TryResolveToolSnapAnchor(
@@ -363,7 +399,7 @@ namespace MSC.Vehicle.Assembly
                 tighten == clockwiseTightens
                     ? FastenerRotationDirection.Clockwise
                     : FastenerRotationDirection.CounterClockwise;
-            AssemblyOperationResult result = controller.TryTurnFastener(
+            AssemblyOperationResult result = TurnFastener(
                 mountId,
                 fastenerDefinitionId,
                 tool,
@@ -621,20 +657,14 @@ namespace MSC.Vehicle.Assembly
             }
 
             int mutationCount = controller.GraphMutationCount;
-            if (!force && mutationCount == observedGraphMutationCount)
+            if (!force && pendingDocking == null && mutationCount == observedGraphMutationCount)
             {
                 return;
             }
 
             observedGraphMutationCount = mutationCount;
             FastenerInstance fastener = null;
-            bool available = controller.Graph.TryGetMount(
-                    mountId,
-                    out MountPointRuntime mount) &&
-                mount.IsOccupied &&
-                mount.TryGetFastener(
-                    fastenerDefinitionId,
-                    out fastener) &&
+            bool available = TryGetFastener(out fastener) &&
                 fastener.IsInserted;
             interactionCollider.enabled = available;
             if (available && snappedTurnAnimation == null)
@@ -649,6 +679,8 @@ namespace MSC.Vehicle.Assembly
                     presentationRenderers[index].enabled = available;
                 }
             }
+            if (installedOnlyExternalPresentationRenderer != null)
+                installedOnlyExternalPresentationRenderer.enabled = available;
             if (!available)
             {
                 cachedRendererPart = null;
@@ -716,6 +748,8 @@ namespace MSC.Vehicle.Assembly
         private bool TryGetFastener(out FastenerInstance fastener)
         {
             fastener = null;
+            if (pendingDocking != null && pendingDocking.TryGetPending(fastenerDefinitionId, out fastener))
+                return true;
             if (controller == null ||
                 !controller.Graph.TryGetMount(
                     mountId,
@@ -726,6 +760,14 @@ namespace MSC.Vehicle.Assembly
             }
 
             return mount.TryGetFastener(fastenerDefinitionId, out fastener);
+        }
+
+        private AssemblyOperationResult TurnFastener(string runtimeMountId, string id,
+            ToolDefinition activeTool, FastenerRotationDirection direction)
+        {
+            if (pendingDocking != null && pendingDocking.TryGetPending(id, out _))
+                return pendingDocking.TryTurnPending(id, activeTool, direction);
+            return controller.TryTurnFastener(runtimeMountId, id, activeTool, direction);
         }
 
         private static float EaseOutCubic(float value)

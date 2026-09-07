@@ -13,6 +13,12 @@ Canonical comparison viewport: **1672×941**.
 
 All files are review inputs only and must not become runtime dependencies.
 
+The direct 2026-09-04 main-menu request supersedes the historical MainMenu
+composition only. The original file/hash above remain historical evidence;
+the new review input, implementation and real-vehicle preview revision are
+recorded in `MAIN_MENU_REDESIGN_2026-09-04.md`. Visual approval for that revision
+is pending; other locked-screen references are unaffected.
+
 `06_INGAME_HUD_APPROVED.png` remains the hash-verified historical 08A source
 and functional-content reference. Its live layout was superseded by the direct
 2026-08-05 HUD-only user correction recorded in `Docs/UI/HUD_SPEC.md` and

@@ -64,4 +64,30 @@ namespace MSC.Audio
             string resourcesPath,
             out string failure);
     }
+
+    /// <summary>
+    /// Optional single user-selected presentation layer. Deliberate event-ID
+    /// replacements take precedence without weakening ordinary library checks.
+    /// </summary>
+    public interface IAudioReplacementContentBackend
+    {
+        bool TryLoadReplacementEventLibrary(string resourcesPath, out string failure);
+    }
+
+    /// <summary>Optional presentation timing, never a gameplay transition clock.</summary>
+    public interface IAudioEventTimingSource
+    {
+        bool TryGetEventDurationSeconds(AudioEventId eventId, out float seconds);
+    }
+
+    /// <summary>
+    /// Optional explicit ownership of removable presentation content. This is
+    /// not a fallback-on-error policy: only deliberately registered event IDs
+    /// and their scoped parameter bindings may bypass the preferred backend.
+    /// </summary>
+    public interface IAudioExplicitContentBackend
+    {
+        bool OwnsEvent(AudioEventId eventId);
+        bool OwnsParameter(AudioParameterId parameterId);
+    }
 }

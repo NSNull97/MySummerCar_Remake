@@ -16,6 +16,40 @@ namespace MSC.Tests.EditMode.PlayerInteraction
     public sealed class InteractionOutlinePresenterTests
     {
         [Test]
+        public void ExplicitVisibilityGateUpdatesWithoutChangingCandidateOrItsCapabilities()
+        {
+            GameObject target = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            var owner = new GameObject("Outline visibility fixture");
+            try
+            {
+                var capability = target.AddComponent<ContextToggleTarget>();
+                var gate = target.AddComponent<OutlineVisibilityProbe>();
+                var host = target.AddComponent<InteractionTargetHost>();
+                host.Configure(capability, gate);
+                var presenter = owner.AddComponent<InteractionOutlinePresenter>();
+                presenter.Configure(null, Color.white, 3f);
+                var candidate = new InteractionCandidate(host, Vector3.zero, Vector3.up, 1f,
+                    target.GetComponent<Collider>());
+                presenter.Present(candidate, true);
+                Assert.That(presenter.ActiveOutlineRendererCount, Is.EqualTo(1));
+                gate.ShouldShowOutline = false;
+                presenter.Present(candidate, true);
+                Assert.That(presenter.ActiveOutlineRendererCount, Is.Zero);
+                Assert.That(host.TryGetCapability(out IContextInteractionTarget action), Is.True);
+                Assert.That(action, Is.SameAs(capability));
+                gate.ShouldShowOutline = true;
+                presenter.Present(candidate, true);
+                Assert.That(presenter.ActiveOutlineRendererCount, Is.EqualTo(1));
+                Assert.That(target.GetComponent<Collider>().enabled, Is.True);
+            }
+            finally
+            {
+                Object.DestroyImmediate(owner);
+                Object.DestroyImmediate(target);
+            }
+        }
+
+        [Test]
         public void CandidatePreservesExactSourceCollider()
         {
             GameObject target = GameObject.CreatePrimitive(
@@ -335,6 +369,11 @@ namespace MSC.Tests.EditMode.PlayerInteraction
                 Is.EqualTo(3f).Within(0.001f));
             Assert.That(presenter.OutlineColor, Is.EqualTo(Color.white));
         }
+    }
+
+    public sealed class OutlineVisibilityProbe : MonoBehaviour, IInteractionOutlineVisibility
+    {
+        public bool ShouldShowOutline { get; set; } = true;
     }
 
     public sealed class OutlineFeedbackProbe : MonoBehaviour,

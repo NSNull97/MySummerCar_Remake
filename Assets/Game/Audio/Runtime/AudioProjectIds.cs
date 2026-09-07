@@ -65,6 +65,8 @@ namespace MSC.Audio
             public static readonly AudioEventId InteractionPartRemove = new AudioEventId("audio.event.interaction.part.remove");
             public static readonly AudioEventId InteractionDoorOpen = new AudioEventId("audio.event.interaction.door.open");
             public static readonly AudioEventId InteractionDoorClose = new AudioEventId("audio.event.interaction.door.close");
+            public static readonly AudioEventId VehicleHandbrakeRaise = new AudioEventId("audio.event.vehicle.handbrake.raise");
+            public static readonly AudioEventId VehicleHandbrakeLower = new AudioEventId("audio.event.vehicle.handbrake.lower");
             public static readonly AudioEventId VehicleBodyImpactLow01 = new AudioEventId("audio.event.vehicle.body.impact.low.01");
             public static readonly AudioEventId VehicleBodyImpactLow02 = new AudioEventId("audio.event.vehicle.body.impact.low.02");
             public static readonly AudioEventId VehicleBodyImpactHigh01 = new AudioEventId("audio.event.vehicle.body.impact.high.01");

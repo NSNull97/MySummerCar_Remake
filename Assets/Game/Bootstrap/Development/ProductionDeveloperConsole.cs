@@ -6,6 +6,7 @@ using MSC.Interaction.Carrying;
 using MSC.Needs;
 using MSC.Player;
 using MSC.UI.Presentation;
+using MSC.Vehicle;
 using MSC.Weather.Domain;
 using MSC.Weather.Production;
 using UnityEngine;
@@ -249,6 +250,8 @@ namespace MSC.Bootstrap.Development
         private Transform playerTransform;
         private CharacterController characterController;
         private PhysicalCarryController carryController;
+        private AssemblyCarryDebugOverride assemblyCarryDebug;
+        private AssemblyVehiclePrerequisiteAdapter vehiclePrerequisites;
         private PlayerInputRouter input;
         private PlayerNeedsRuntime needs;
         private ProductionEnvironmentController environment;
@@ -288,6 +291,10 @@ namespace MSC.Bootstrap.Development
         private Texture2D progressFillTexture;
 
         public bool IsOpen => menuOpen;
+
+        private SatsumaEngineOperatingSource engineOperating;
+        public void BindVehicleTesting(AssemblyVehiclePrerequisiteAdapter prerequisites, SatsumaEngineOperatingSource operating = null)
+        { vehiclePrerequisites = prerequisites; engineOperating = operating; }
 
         public void Initialize(
             GameObject configuredPlayer,
@@ -344,6 +351,8 @@ namespace MSC.Bootstrap.Development
                     true);
             carryController = configuredPlayer.GetComponentInChildren<
                 PhysicalCarryController>(true);
+            assemblyCarryDebug = configuredPlayer.GetComponent<AssemblyCarryDebugOverride>() ??
+                configuredPlayer.AddComponent<AssemblyCarryDebugOverride>();
             playerTransform = characterController != null
                 ? characterController.transform
                 : configuredPlayer.transform;
@@ -446,7 +455,7 @@ namespace MSC.Bootstrap.Development
 
                 GUI.depth = -1000;
                 windowRect = GUI.Window(
-                    GetInstanceID(),
+                    GUIUtility.GetControlID(FocusType.Passive),
                     windowRect,
                     DrawMenuWindow,
                     GUIContent.none,
@@ -510,6 +519,7 @@ namespace MSC.Bootstrap.Development
             DrawNavigationButton(DeveloperSection.Needs, "ПОТРЕБНОСТИ");
             DrawNavigationButton(DeveloperSection.Time, "ВРЕМЯ");
             DrawNavigationButton(DeveloperSection.Weather, "ПОГОДА");
+            DrawNavigationButton(DeveloperSection.Assembly, "СБОРКА");
             GUILayout.FlexibleSpace();
             GUILayout.Label(
                 "Меню доступно только в Editor и Development Build.",
@@ -547,8 +557,43 @@ namespace MSC.Bootstrap.Development
                 case DeveloperSection.Weather:
                     DrawWeatherSection();
                     break;
+                case DeveloperSection.Assembly:
+                    DrawAssemblySection();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void DrawAssemblySection()
+        {
+            GUILayout.Label("СБОРКА", sectionTitleStyle);
+            GUILayout.Label("Только для проверки сборки двигателя. Масса и гравитация не меняются.", subtitleStyle);
+            GUILayout.Space(12f);
+            if (assemblyCarryDebug == null) return;
+            bool enabled = GUILayout.Toggle(assemblyCarryDebug.IgnoreAssemblyMassLimit,
+                "Разрешить поднимать тяжёлые агрегаты двигателя");
+            assemblyCarryDebug.SetIgnoreAssemblyMassLimit(enabled);
+            GUILayout.Label("Настройка действует только в этой игровой сессии и не записывается в сохранение.", subtitleStyle);
+            if (vehiclePrerequisites != null)
+            {
+                GUILayout.Space(12f);
+                if (engineOperating != null)
+                {
+                    bool ignoreFuel = GUILayout.Toggle(vehiclePrerequisites.IgnoreFuelReadinessForTesting,
+                        "Тест запуска: игнорировать только отсутствие бензина");
+                    vehiclePrerequisites.SetFuelReadinessTestOverride(ignoreFuel);
+                    engineOperating.SetDebugAutocharge(GUILayout.Toggle(engineOperating.DebugAutocharge,
+                        "DEBUG AUTOCHARGE: поддерживать заряд подключённого аккумулятора"));
+                    GUILayout.Label("Масло, охлаждение и износ действуют. Без аккумулятора стартер не заработает.", subtitleStyle);
+                }
+                else
+                {
+                    bool ignoreFluids = GUILayout.Toggle(vehiclePrerequisites.IgnoreFluidReadinessForTesting,
+                        "Тест запуска: игнорировать отсутствие топлива, масла и антифриза");
+                    vehiclePrerequisites.SetFluidReadinessTestOverride(ignoreFluids);
+                }
+                GUILayout.Label("Не заливает жидкости и не обходит сборку или проводку. После перезапуска выключен.", subtitleStyle);
             }
         }
 
@@ -1519,6 +1564,7 @@ namespace MSC.Bootstrap.Development
             Needs = 1,
             Time = 2,
             Weather = 3,
+            Assembly = 4,
         }
 
         private enum NeedKind

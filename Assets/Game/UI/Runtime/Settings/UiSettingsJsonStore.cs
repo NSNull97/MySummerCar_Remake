@@ -313,6 +313,23 @@ namespace MSC.UI.Runtime.Settings
                 return versionFive;
             }
 
+            if (probe.SchemaVersion == 6)
+            {
+                UiSettingsDocument versionSix =
+                    JsonUtility.FromJson<UiSettingsDocument>(json);
+                if (versionSix == null)
+                {
+                    throw new InvalidDataException(
+                        "UI settings JSON did not produce a version-six document.");
+                }
+
+                versionSix.SchemaVersion = UiSettingsDocument.CurrentSchemaVersion;
+                versionSix.MainMenuCarColourIndex = 0;
+                versionSix.Validate();
+                migrated = true;
+                return versionSix;
+            }
+
             throw new NotSupportedException($"Unsupported UI settings schema {probe.SchemaVersion}.");
         }
 

@@ -1,0 +1,520 @@
+{
+  "schemaVersion": 1,
+  "classification": "TemporaryDirectImport",
+  "productionReplacementKey": "audio.user-selected.zvuki100a.2026-09-06",
+  "sourceLabel": "User-selected zvuki100aformsc pack; rights not independently verified; private local use only",
+  "files": [
+    {
+      "fileName": "idle_sisa5b.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets2/Sounds/res_sharedassets2.resource/idle_sisa5b.snd.wav",
+      "sha256": "dcba7b184ae75f509d642194128e6f2b8de178fc8c3688bb6fe1666555c64951",
+      "bytes": 1984678,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "analog_radio_button.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/analog_radio_button.snd.wav",
+      "sha256": "a6712bb8734abbd2754da7f759ffbe8d6373cb2118be560bd9e82d9901c46568",
+      "bytes": 490374,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "car_dash_button.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/car_dash_button.snd.wav",
+      "sha256": "b40e45bab78b3be999ef91a9059ec36feb6534b728afc8c1bed9761a23770e48",
+      "bytes": 164710,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "car_hood_unlatch.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/car_hood_unlatch.snd.wav",
+      "sha256": "b6691ef078405ddcd519a07705755d20cb9ab6999f64417b421de66d75603b83",
+      "bytes": 6158,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "car_horn.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/car_horn.snd.wav",
+      "sha256": "0070a5b9a68ca86676fc1351946ba86931343b2fc1cb5ef43328e9ea71454224",
+      "bytes": 653198,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "Close Door Exterior 01.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/Close Door Exterior 01.snd.wav",
+      "sha256": "2a67499959d9162bc5b9886fa629a6f5e27c7801fd1428cd65fc03cc70aa2806",
+      "bytes": 164710,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "Close Hood 01.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/Close Hood 01.snd.wav",
+      "sha256": "4c7bbcfbd8114df5d0f9f0b1de80c0856b9451df66f6162acde84041693116ff",
+      "bytes": 60274,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "Close Trunk 01.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/Close Trunk 01.snd.wav",
+      "sha256": "dee0f7ed531e2e1d540ed0d482580d550faaf2a96533e9a64b54fe5faeb644b9",
+      "bytes": 327542,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "crash_hi1.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/crash_hi1.snd.wav",
+      "sha256": "219ebf50513d16894a6b0c702c8d23abe714542fb9d24fd941cedd5fcd8d774e",
+      "bytes": 1385942,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "crash_hi2.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/crash_hi2.snd.wav",
+      "sha256": "a09c7f6a27d700498c139dc22684b326f6140812535b47d94c23a1c5b7864323",
+      "bytes": 1385942,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "crash_low1.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/crash_low1.snd.wav",
+      "sha256": "73e99e84a7ad35f3702ccac160c135215d4b44d76a422f0e07bb359eb1d96eb7",
+      "bytes": 1060278,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "crash_low2.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/crash_low2.snd.wav",
+      "sha256": "405cc7f151c4ac9fb6c902aca1a465839243fb20ef9f8fb1381c7e4863c41c67",
+      "bytes": 408958,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "drinking.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/drinking.snd.wav",
+      "sha256": "cae017c65fce2c40830b3d3210cdf6b607ef5fe287ac75cc794f96a1414a0e83",
+      "bytes": 6927278,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "glovebox_close.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/glovebox_close.snd.wav",
+      "sha256": "35be247bb01577e32afa24bddf99b15fc802683f99a557cef22512a3a15243f9",
+      "bytes": 408958,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "glovebox_open.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/glovebox_open.snd.wav",
+      "sha256": "c12532eeef924b2ea02232388f821aa067a2056c8b96c444a9b1c7720bc68c7f",
+      "bytes": 408958,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "gravel3.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/gravel3.snd.wav",
+      "sha256": "c13ee31946ce472cb8f4567e4318dba431799f618dd74a02089d70a9cefeef03",
+      "bytes": 29647254,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "handbrake_off.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/handbrake_off.snd.wav",
+      "sha256": "16a3613609156e9fa9b3d5342c3d1cffc7c33969e26c920dadf2927628aeed69",
+      "bytes": 249518,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "handbrake_on.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/handbrake_on.snd.wav",
+      "sha256": "00b2c875be7f9bf430bfd06c3ab42368e1420ee01abb615f781471aae5d4e288",
+      "bytes": 249518,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "idle_sisa4.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/idle_sisa4.snd.wav",
+      "sha256": "07f1450fcc892d3c39297eb106d35848f9f4683f5b88af458f32c1377420b70c",
+      "bytes": 10626054,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "idle_sisa4b.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/idle_sisa4b.snd.wav",
+      "sha256": "0ae60cdf740da032fd66ded2e967577d01b8c18636cfd9e59fe00ef8defc43fc",
+      "bytes": 10626054,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "kilju_lets_taste.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/kilju_lets_taste.snd.wav",
+      "sha256": "27316689ab4e280ff1e397c7938195a09e1aa1bab30a06791621049fa280ff69",
+      "bytes": 3750382,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "motor_start_1.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/motor_start_1.snd.wav",
+      "sha256": "eb5fe3b6a762b345e6fc37b66abd0b6e12468400b28c6e4337df0d4bb1424288",
+      "bytes": 188454,
+      "preparedEndFrame": 14377,
+      "preparedLoopCrossfadeFrames": 0,
+      "preparedSha256": "190dcd0120ec5d7b0d759e7c4e9ef0ed3dfeb9a00767163bd6b96c1a9777b3ec",
+      "preparationEvidence": "2026-09-06 user report of start gaps: source quiet tail begins at 0.324467s (-40dB threshold), full length 0.533651s. Explicit private copy ends at frame14377 / 0.326009s; original bytes/hash and stable clip GUID retained. See SATSUMA_RUNNING_MIX_AND_STARTER_CONTINUITY_2026-09-06.md.",
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "motor_start_2.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/motor_start_2.snd.wav",
+      "sha256": "52065b76712f7778823d914f34b9c85419798ff868430cffab1655281c1ef7cd",
+      "bytes": 1199366,
+      "preparedEndFrame": 132300,
+      "preparedLoopCrossfadeFrames": 221,
+      "preparedSha256": "d6e965d5984fd4d3cdd53dfc071fd20c7ae76edb2c23d11f4e7cdb90553c55e7",
+      "preparationEvidence": "2026-09-06: source quiet tail begins at 3.002925s (-40dB threshold) and repeats until 3.399048s. Keep first132300 frames and overlap221 seam frames, yielding132079 frames / 2.994989s. Reviewed deterministic private float-WAV copy; source untouched, stable clip GUID retained.",
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "motor_start_3.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/motor_start_3.snd.wav",
+      "sha256": "04e6594689a51bd364b245d4d6184935e25a70bbaea2d9471e15d6efafc0fdca",
+      "bytes": 1273990,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "mummo_coffee_sip.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/mummo_coffee_sip.snd.wav",
+      "sha256": "716a92bd7c383528581a4707eb434680f923a92870bcc61b23579222f760e5de",
+      "bytes": 2200094,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "mummo_greetings.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/mummo_greetings.snd.wav",
+      "sha256": "ccddee01b42d2e75cd3a75cc572695407a6aa89cb458680c6c3d35accb3370ea",
+      "bytes": 5456710,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "mummo_greetings2.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/mummo_greetings2.snd.wav",
+      "sha256": "bd1d9ef43bd3af96dc0fc1527cd3e25e22e15ff81009db72af0fd8c55869faa1",
+      "bytes": 4561142,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "Open Door Exterior 01.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/Open Door Exterior 01.snd.wav",
+      "sha256": "7a3e6ca19233eae11770072d838de0a8e0b0e263db51a0fe932c9c93c7f69c18",
+      "bytes": 581966,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "suski_injured.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/suski_injured.snd.wav",
+      "sha256": "7becf2c2d8594e25772896da9d8b59bfc6b0868190973d34dfd028931c63beb5",
+      "bytes": 5863782,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "swear06.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/swear06.snd.wav",
+      "sha256": "9b5469255de298d690ba85b2551439282d57d1c9b7cc84801ec75241607933a2",
+      "bytes": 10585878,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "swear07.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/swear07.snd.wav",
+      "sha256": "ba322238d0b8527aa513f93006ead54f67393dbaf519b2751ea809edf5113e1a",
+      "bytes": 14168158,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "swear11.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/swear11.snd.wav",
+      "sha256": "e96bc09d3c5959d1fee183cfe672e97bf80919cffe6d40c5588f359eea765501",
+      "bytes": 14168158,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "transmission.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/transmission.snd.wav",
+      "sha256": "0f0e91004e9e98629bcc91c455c788af651adb03609cb066f6e308eb17241553",
+      "bytes": 12148038,
+      "status": "Mapped",
+      "note": "Explicit stable event mappings below; no new gameplay producer implied."
+    },
+    {
+      "fileName": "Trunk Open 01.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/Trunk Open 01.snd.wav",
+      "sha256": "207965225c2f90a434b12a3661b695a2c31936919447f6bbdb8256b68bfe2dca",
+      "bytes": 327542,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    },
+    {
+      "fileName": "turn_signal_lever_on.snd.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/turn_signal_lever_on.snd.wav",
+      "sha256": "efe5aff0f94115b35e9a28e78c99e4c494ad266e413fd576301c348bbbb44207",
+      "bytes": 246126,
+      "status": "NoCurrentCorrespondingEvent",
+      "note": "Retained in source only. No matching implemented event found in 2026-09-06 audio coverage audit."
+    }
+  ],
+  "derivatives": [
+    {
+      "fileName": "satsuma-steady-coast-20260907.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/idle_sisa4b.snd.wav",
+      "sha256": "0ae60cdf740da032fd66ded2e967577d01b8c18636cfd9e59fe00ef8defc43fc",
+      "preparedStartFrame": 352800,
+      "preparedEndFrame": 1278900,
+      "preparedLoopCrossfadeFrames": 882,
+      "preparedSha256": "5ea7caade3a0c413a13a88c5489818b22b3e3c6131b72816ef85b2be1525e0f2",
+      "note": "Satsuma-only 8..29 s steady recording with a 20 ms loop seam. Excludes the recorded 4..5 s rev. Other vehicle mappings retain the full original clip. TemporaryDirectImport."
+    },
+    {
+      "fileName": "satsuma-steady-exhaust-20260907.wav",
+      "relativePath": "Unity_Assets_Files/sharedassets3/Sounds/res_sharedassets3.resource/idle_sisa4.snd.wav",
+      "sha256": "07f1450fcc892d3c39297eb106d35848f9f4683f5b88af458f32c1377420b70c",
+      "preparedStartFrame": 352800,
+      "preparedEndFrame": 1278900,
+      "preparedLoopCrossfadeFrames": 882,
+      "preparedSha256": "0abb06c9706014a9a0a4799f1d63033a9f816352139ddaf7b102b088045084e0",
+      "note": "Satsuma-only 8..29 s stable exhaust recording, matching the coast derivative, with a 20 ms loop seam. Source bytes remain unchanged. TemporaryDirectImport."
+    }
+  ],
+  "mappings": [
+    {
+      "sourceFileName": "motor_start_1.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/SatsumaEngine/Resources/Phase1SatsumaEngineAudio/Phase1SatsumaEngineAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.satsuma.starter.engaged",
+      "calibrationGainDb": 1.0,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "motor_start_2.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/SatsumaEngine/Resources/Phase1SatsumaEngineAudio/Phase1SatsumaEngineAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.satsuma.starter.loop",
+      "calibrationGainDb": 6.5,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "motor_start_3.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/SatsumaEngine/Resources/Phase1SatsumaEngineAudio/Phase1SatsumaEngineAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.satsuma.engine.caught",
+      "calibrationGainDb": 3.2,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "idle_sisa5b.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/SatsumaEngine/Resources/Phase1SatsumaEngineAudio/Phase1SatsumaEngineAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.satsuma.engine.throttle.loop",
+      "calibrationGainDb": 1.0,
+      "logarithmic": true,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "satsuma-steady-coast-20260907.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/SatsumaEngine/Resources/Phase1SatsumaEngineAudio/Phase1SatsumaEngineAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.satsuma.engine.coast.loop",
+      "calibrationGainDb": 6.3,
+      "outputGainCeiling": 0.75,
+      "logarithmic": true,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "satsuma-steady-exhaust-20260907.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/SatsumaEngine/Resources/Phase1SatsumaEngineAudio/Phase1SatsumaEngineAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.satsuma.exhaust.loop",
+      "calibrationGainDb": 2.9,
+      "logarithmic": true,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "handbrake_on.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/SatsumaAssembly/Resources/Phase1SatsumaAssemblyAudio/Phase1SatsumaAssemblyAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.handbrake.raise",
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "handbrake_off.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/SatsumaAssembly/Resources/Phase1SatsumaAssemblyAudio/Phase1SatsumaAssemblyAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.handbrake.lower",
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "crash_low1.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/SatsumaAssembly/Resources/Phase1SatsumaAssemblyAudio/Phase1SatsumaAssemblyAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.body.impact.low.01",
+      "calibrationGainDb": 6,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "crash_low2.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/SatsumaAssembly/Resources/Phase1SatsumaAssemblyAudio/Phase1SatsumaAssemblyAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.body.impact.low.02",
+      "calibrationGainDb": 6.1,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "crash_hi1.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/SatsumaAssembly/Resources/Phase1SatsumaAssemblyAudio/Phase1SatsumaAssemblyAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.body.impact.high.01",
+      "calibrationGainDb": 8.7,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "crash_hi2.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/SatsumaAssembly/Resources/Phase1SatsumaAssemblyAudio/Phase1SatsumaAssemblyAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.body.impact.high.02",
+      "calibrationGainDb": 2.8,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "swear06.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/PlayerVoice/Resources/Phase1PlayerVoice/Phase1PlayerVoiceAudioEventLibrary.asset",
+      "eventId": "audio.event.player.swear.06",
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "swear07.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/PlayerVoice/Resources/Phase1PlayerVoice/Phase1PlayerVoiceAudioEventLibrary.asset",
+      "eventId": "audio.event.player.swear.07",
+      "calibrationGainDb": 1.5,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "swear11.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/PlayerVoice/Resources/Phase1PlayerVoice/Phase1PlayerVoiceAudioEventLibrary.asset",
+      "eventId": "audio.event.player.swear.11",
+      "calibrationGainDb": 4.5,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "idle_sisa4b.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/StoryTrafficR2B/Resources/Phase1StoryTrafficR2B/Phase1StoryTrafficR2BAudioEventLibrary.asset",
+      "eventId": "audio.event.traffic.jani.engine.loop",
+      "calibrationGainDb": 8.1,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "idle_sisa4b.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/StoryTrafficR2B/Resources/Phase1StoryTrafficR2B/Phase1StoryTrafficR2BAudioEventLibrary.asset",
+      "eventId": "audio.event.traffic.petteri.engine.loop",
+      "calibrationGainDb": 5.3,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "crash_hi1.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/StoryTrafficR2B/Resources/Phase1StoryTrafficR2B/Phase1StoryTrafficR2BAudioEventLibrary.asset",
+      "eventId": "audio.event.traffic.jani.crash",
+      "calibrationGainDb": 8.7,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "crash_hi1.snd.wav",
+      "templateLibrary": "Assets/Game/LegacyImport/RuntimeBaseline/Audio/StoryTrafficR2B/Resources/Phase1StoryTrafficR2B/Phase1StoryTrafficR2BAudioEventLibrary.asset",
+      "eventId": "audio.event.traffic.petteri.crash",
+      "calibrationGainDb": 8.7,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "gravel3.snd.wav",
+      "templateLibrary": "Assets/Game/Audio/Content/UnityAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.tire.roll",
+      "calibrationGainDb": 2.1,
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "transmission.snd.wav",
+      "templateLibrary": "Assets/Game/Audio/Content/UnityAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.transmission.loop",
+      "logarithmic": false,
+      "forceLoop": true
+    },
+    {
+      "sourceFileName": "motor_start_1.snd.wav",
+      "templateLibrary": "Assets/Game/Audio/Content/UnityAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.starter.engaged",
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "motor_start_3.snd.wav",
+      "templateLibrary": "Assets/Game/Audio/Content/UnityAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.engine.started",
+      "logarithmic": false,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "idle_sisa5b.snd.wav",
+      "templateLibrary": "Assets/Game/Audio/Content/UnityAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.engine.intake",
+      "logarithmic": true,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "idle_sisa4b.snd.wav",
+      "templateLibrary": "Assets/Game/Audio/Content/UnityAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.engine.mechanical",
+      "logarithmic": true,
+      "forceLoop": false
+    },
+    {
+      "sourceFileName": "idle_sisa4.snd.wav",
+      "templateLibrary": "Assets/Game/Audio/Content/UnityAudioEventLibrary.asset",
+      "eventId": "audio.event.vehicle.engine.exhaust",
+      "logarithmic": true,
+      "forceLoop": false
+    }
+  ]
+}

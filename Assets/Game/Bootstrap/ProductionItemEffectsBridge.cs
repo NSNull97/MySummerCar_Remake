@@ -58,6 +58,14 @@ namespace MSC.Bootstrap
                 return;
             }
 
+            ServiceFluidPourController pour = instance.GetComponent<ServiceFluidPourController>();
+            if (pour != null)
+            {
+                ServiceFluidPourPresenter presentation = instance.GetComponent<ServiceFluidPourPresenter>() ??
+                    instance.gameObject.AddComponent<ServiceFluidPourPresenter>();
+                if (!presentation.IsConfigured) presentation.Configure(pour, instance.DefinitionId);
+            }
+
             if (LiquidContainerSurfacePresenter.SupportsDefinition(
                     instance.DefinitionId))
             {

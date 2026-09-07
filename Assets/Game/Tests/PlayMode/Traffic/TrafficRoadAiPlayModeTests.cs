@@ -249,7 +249,7 @@ namespace MSC.Tests.PlayMode.Traffic
         {
             const string bootstrapScenePath =
                 "Assets/Game/Bootstrap/Bootstrap.unity";
-            var initialScenes = new HashSet<int>();
+            var initialScenes = new HashSet<SceneHandle>();
             for (int index = 0; index < SceneManager.sceneCount; index++)
             {
                 initialScenes.Add(SceneManager.GetSceneAt(index).handle);

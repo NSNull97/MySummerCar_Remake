@@ -28,8 +28,8 @@ namespace MSC.World.Streaming
         [SerializeField] private ProductionWorldStreamingManifest manifest;
         [SerializeField] private Transform focus;
 
-        private readonly Dictionary<string, int> ownedLoadedSceneHandles =
-            new Dictionary<string, int>(StringComparer.Ordinal);
+        private readonly Dictionary<string, SceneHandle> ownedLoadedSceneHandles =
+            new Dictionary<string, SceneHandle>(StringComparer.Ordinal);
         private readonly Dictionary<string, string> retainedCellByOwner =
             new Dictionary<string, string>(StringComparer.Ordinal);
         private bool isStreaming;
@@ -330,7 +330,7 @@ namespace MSC.World.Streaming
                             continue;
                         }
 
-                        int ownedHandle = loadedScene.handle;
+                        SceneHandle ownedHandle = loadedScene.handle;
                         AsyncOperation unload = SceneManager.UnloadSceneAsync(loadedScene);
                         if (unload == null)
                         {
@@ -392,7 +392,7 @@ namespace MSC.World.Streaming
                     string scenePath = ownedPaths[index];
                     if (!ownedLoadedSceneHandles.TryGetValue(
                             scenePath,
-                            out int ownedHandle))
+                            out SceneHandle ownedHandle))
                     {
                         continue;
                     }
@@ -481,7 +481,7 @@ namespace MSC.World.Streaming
                 string scenePath = ownedPaths[index];
                 if (ownedLoadedSceneHandles.TryGetValue(
                         scenePath,
-                        out int ownedHandle) &&
+                        out SceneHandle ownedHandle) &&
                     TryGetLoadedScene(scenePath, out Scene scene) &&
                     scene.handle == ownedHandle)
                 {
@@ -830,7 +830,7 @@ namespace MSC.World.Streaming
                         continue;
                     }
 
-                    int handle = scene.handle;
+                    SceneHandle handle = scene.handle;
                     AsyncOperation unload = SceneManager.UnloadSceneAsync(scene);
                     if (unload == null)
                     {
@@ -1012,7 +1012,7 @@ namespace MSC.World.Streaming
         {
             if (!ownedLoadedSceneHandles.TryGetValue(
                     scene.path,
-                    out int ownedHandle))
+                    out SceneHandle ownedHandle))
             {
                 return false;
             }
@@ -1033,7 +1033,7 @@ namespace MSC.World.Streaming
             }
 
             var stalePaths = new List<string>();
-            foreach (KeyValuePair<string, int> owned in
+            foreach (KeyValuePair<string, SceneHandle> owned in
                      ownedLoadedSceneHandles)
             {
                 if (!TryGetLoadedScene(
@@ -1055,12 +1055,12 @@ namespace MSC.World.Streaming
 
         private void RemoveOwnershipIfHandleMatches(
             string scenePath,
-            int sceneHandle)
+            SceneHandle sceneHandle)
         {
             if (!string.IsNullOrWhiteSpace(scenePath) &&
                 ownedLoadedSceneHandles.TryGetValue(
                     scenePath,
-                    out int ownedHandle) &&
+                    out SceneHandle ownedHandle) &&
                 ownedHandle == sceneHandle)
             {
                 ownedLoadedSceneHandles.Remove(scenePath);

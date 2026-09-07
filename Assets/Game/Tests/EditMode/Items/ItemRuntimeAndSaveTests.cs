@@ -19,7 +19,7 @@ using UnityEngine.SceneManagement;
 
 namespace MSC.Items.Tests.EditMode
 {
-    public sealed class ItemRuntimeAndSaveTests
+    public sealed partial class ItemRuntimeAndSaveTests
     {
         private const string DefinitionCatalogPath =
             "Assets/Game/Items/Content/Definitions/Phase1ItemDefinitionCatalog.asset";
@@ -219,7 +219,12 @@ namespace MSC.Items.Tests.EditMode
                         SpannerSetPresentationController>(true);
                 Assert.That(controller, Is.Not.Null);
                 Assert.DoesNotThrow(() => controller.Bind(owner));
-                Assert.That(controller.PickupTargets.Count, Is.EqualTo(11));
+                Assert.That(controller.PickupTargets.Count, Is.EqualTo(14));
+                SpannerSetToolPickupTarget[] wrenchTargets = controller.PickupTargets
+                    .Where(target => target.ToolType == "Wrench").ToArray();
+                Assert.That(wrenchTargets.Length, Is.EqualTo(11));
+                Assert.That(controller.PickupTargets.Select(target => target.ToolType),
+                    Does.Contain("Screwdriver").And.Contain("SparkPlugWrench").And.Contain("Ruler"));
                 Assert.That(
                     controller.PickupTargets.All(target =>
                         target != null &&
@@ -252,9 +257,9 @@ namespace MSC.Items.Tests.EditMode
                     Is.True,
                     "Every wrench must become selectable while the case is open.");
                 Vector3 smallestIdle =
-                    controller.PickupTargets[0].IdleLocalPosition;
+                    wrenchTargets[0].IdleLocalPosition;
                 Vector3 largestIdle =
-                    controller.PickupTargets[^1].IdleLocalPosition;
+                    wrenchTargets[^1].IdleLocalPosition;
                 Assert.That(smallestIdle.z, Is.GreaterThan(0.03f));
                 Assert.That(
                     smallestIdle.x / smallestIdle.z,
@@ -265,10 +270,10 @@ namespace MSC.Items.Tests.EditMode
                     Is.EqualTo(largestIdle.y / largestIdle.z)
                         .Within(0.0001f));
                 float smallestApparentScale =
-                    controller.PickupTargets[0].transform.lossyScale.x /
+                    wrenchTargets[0].transform.lossyScale.x /
                     smallestIdle.z;
                 float largestApparentScale =
-                    controller.PickupTargets[^1].transform.lossyScale.x /
+                    wrenchTargets[^1].transform.lossyScale.x /
                     largestIdle.z;
                 Assert.That(
                     smallestApparentScale,
@@ -293,6 +298,57 @@ namespace MSC.Items.Tests.EditMode
                 Assert.That(
                     first.GetComponent<BoxCollider>().enabled,
                     Is.True);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(visual);
+            }
+        }
+
+        [TestCase(SpannerSetAuxiliaryToolKind.Screwdriver, "Screwdriver", "Отвёртка")]
+        [TestCase(SpannerSetAuxiliaryToolKind.SparkPlugWrench, "SparkPlugWrench", "Свечной ключ")]
+        [TestCase(SpannerSetAuxiliaryToolKind.Ruler, "Ruler", "Линейка")]
+        public void AuxiliaryToolSelectionUsesExplicitIdentityAndReturnsToItsDock(
+            SpannerSetAuxiliaryToolKind kind, string type, string displayName)
+        {
+            WorldItemInstance owner = fixture.Spawn(
+                "P1.ITEM.138", "toolbox-auxiliary-" + type, Vector3.zero);
+            var visual = new GameObject("Project-owned synthetic toolbox visual");
+            visual.transform.SetParent(owner.transform, false);
+            GameObject toolObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            toolObject.transform.SetParent(visual.transform, false);
+            toolObject.transform.localPosition = new Vector3(0.07f, 0.01f, -0.02f);
+            toolObject.AddComponent<Rigidbody>();
+            Renderer renderer = toolObject.GetComponent<Renderer>();
+            var controller = visual.AddComponent<SpannerSetPresentationController>();
+            controller.ConfigureForAuthoring(
+                null, Array.Empty<Renderer>(), Array.Empty<string>(),
+                new[] { renderer }, new[] { kind });
+            try
+            {
+                controller.Bind(owner);
+                Assert.That(controller.PickupTargets.Count, Is.EqualTo(1));
+                SpannerSetToolPickupTarget target = controller.PickupTargets[0];
+                Assert.That(target.ToolType, Is.EqualTo(type));
+                Assert.That(target.ToolVariant, Is.EqualTo("0"),
+                    "Unsized special tools must not pretend to be a millimetre wrench.");
+                Assert.That(target.InteractionDisplayName, Is.EqualTo(displayName));
+                Assert.That(target.GetComponent<Rigidbody>(), Is.Null);
+                Assert.That(target.CanSelect(fixture.Context), Is.False);
+                Assert.That(owner.TryPerformPrimaryAction(fixture.Context), Is.True);
+                Assert.That(target.CanSelect(fixture.Context), Is.True);
+                Vector3 dock = target.transform.localPosition;
+                target.NotifySelected(fixture.Context);
+                target.transform.SetParent(owner.transform, true);
+                target.transform.localPosition = Vector3.one;
+                Assert.That(target.IsDocked, Is.False);
+                Assert.That(target.GetComponent<BoxCollider>().enabled, Is.False);
+                target.NotifyDeselected();
+                Assert.That(target.IsDocked, Is.True);
+                Assert.That(target.transform.parent, Is.EqualTo(visual.transform));
+                Assert.That(target.transform.localPosition, Is.EqualTo(dock));
+                Assert.That(target.GetComponent<BoxCollider>().isTrigger, Is.True);
+                Assert.That(target.GetComponent<BoxCollider>().enabled, Is.True);
             }
             finally
             {

@@ -2,6 +2,29 @@
 
 Captured: 2026-09-02
 
+Current editor migration addendum: 2026-09-06. This checkout is now pinned to
+Unity **6000.6.0f1** (user-approved update-stream exception) and HDRP **17.6.0**.
+Final isolated gates: **1,382 EditMode passed / 0 failed / 1 opt-in skipped**;
+**168 gameplay PlayMode passed / 0 failed / 2 opt-in skipped**; **3 graphics UI
+PlayMode passed / 0 failed / 0 skipped**. Real Wwise-preferred plus explicit Unity
+playback, native Bootstrap reload, active purchased consumables, streaming,
+weather, vehicle physics and menu render pixels were exercised. This is not a
+standalone build, full-game playthrough, performance result or Phase 1 approval.
+The historical 6000.3 editor statements below describe earlier snapshots.
+
+The previous editor was uninstalled after those gates; the external pre-upgrade
+project snapshot and user slot remain intact. See
+`Docs/Architecture/UNITY_660_MIGRATION_2026-09-06.md` for the precise compatibility
+boundary, failed diagnostic history, optional old-snapshot test limitations,
+unchanged Enviro provenance drift and manual visual-review step. No native save
+schema/stable ID migration or accepted 00–08A redesign was introduced.
+
+Current bounded save addendum: 2026-09-05 (Cockpit C2; EditMode `518/518 PASS`,
+related fixture PlayMode `63/63 PASS`, production native save `1/1 PASS` in
+`27.5199175 s`; manual acceptance pending). For the tested tree this addendum
+supersedes the 2026-09-02 missing-helper compile note retained below as
+historical snapshot evidence.
+
 Open workspace: `E:\GAYmDev_Studio\MySummerCar_Remake`
 
 ## Current status
@@ -18,8 +41,11 @@ Open workspace: `E:\GAYmDev_Studio\MySummerCar_Remake`
   Later current-tree edits now fail compilation on missing
   `BuildRustHdrpTextures` and `CreatePaintSurfaceBinding` helpers, so this is
   not a current-tree green build.
-- Native save: document v16, atomic storage/recovery/migrations, 14 registered
-  current-domain participants. Full-game persistence remains incomplete.
+- Native save: document v17, atomic storage/recovery/migrations, 15 registered
+  production participants. The new required
+  `vehicle.satsuma.key-access` schema-1 GlobalState domain persists logical
+  `vehicle.satsuma.key` access, including `false`; full-game persistence
+  remains incomplete.
 - Jobs, Authority, Rally, Media, Progression and Communications have no
   dedicated runtime module root and are not implemented as complete gameplay
   domains.
@@ -48,6 +74,19 @@ Later save, item, needs, home, NPC, traffic, economy, service, Satsuma and
 vegetation work extends those foundations; it does not make the corresponding
 full donor domain `Verified`. Public APIs, stable IDs, scenes, prefabs and save
 DTOs must not be replaced without the compatibility process in `AGENTS.md`.
+
+Cockpit C2 keeps key ownership outside the streamed vehicle hierarchy. One
+fresh session state is shared with the required save participant and injected
+into a valid Satsuma binding after duplicate-ID rejection but before deferred
+vehicle restore. Migration `16 -> 17` grants legacy saves fresh access `true`
+from an immutable source; normal v17 restore preserves `false`, applies before
+vehicle phase 300 and participates in transactional rollback. The delivered
+v16 player build `024640` cannot read v17 and must not write a slot after that
+slot has been upgraded. No live user save was opened or modified during this
+work. The production native-save regression used two clean-session
+`RequestLoad` cycles and confirmed v17 `false` plus migrated v16 fresh `true`
+before reveal; its isolated GUID test slot was removed. Manual cockpit
+acceptance remains pending.
 
 The next active closure boundary is **11A-V1 — full Satsuma state**. It still
 requires wiring, fluids, thermal behavior, wear/damage, tuning/electrical,

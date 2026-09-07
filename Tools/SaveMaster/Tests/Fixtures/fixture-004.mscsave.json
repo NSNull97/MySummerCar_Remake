@@ -1,0 +1,38 @@
+{
+    "Header": {
+        "FormatId": "msc.native-save",
+        "DocumentVersion": 17,
+        "SaveId": "save-master-synthetic-001",
+        "SlotId": "slot-probe",
+        "BuildId": "save-master-codec-probe",
+        "CreatedUtc": "2026-09-05T00:00:00.0000000+00:00",
+        "UpdatedUtc": "2026-09-05T00:00:00.0000000+00:00",
+        "IntegritySha256": "01915926a6679899f63f27dc25415d351025c6343f379c6b497d9a24db734c69"
+    },
+    "Metadata": {
+        "DisplayName": "Катя / Łódź \"quotes\" \\ slash\n\r\t\b\f \u0001 \u001F <>& 😀    ",
+        "PlayTimeSeconds": 100000000000000000000.0,
+        "GameTimestamp": "Monday 12:00",
+        "LocationStableId": "location.home"
+    },
+    "Domains": [
+        {
+            "DomainId": "player.needs",
+            "SchemaVersion": 3,
+            "Required": true,
+            "PayloadJson": "{\"schemaVersion\":3,\"thirst\":10,\"hunger\":20,\"stress\":0,\"urine\":0,\"fatigue\":0,\"dirtiness\":0,\"weightKilograms\":83,\"intoxication\":0,\"hangover\":0,\"pendingHungerEffect\":0,\"pendingThirstEffect\":0,\"pendingWeightEffect\":0,\"pendingIntoxicationEffect\":0,\"pendingUrineEffect\":0,\"pendingFatigueEffect\":0,\"pendingDirtinessEffect\":0}"
+        },
+        {
+            "DomainId": "player.state",
+            "SchemaVersion": 1,
+            "Required": true,
+            "PayloadJson": "{\"schemaVersion\":1,\"configurationId\":\"player.first-person.v1\",\"worldPosition\":{\"x\":1.25,\"y\":2.5,\"z\":-3.75},\"worldRotation\":{\"x\":0,\"y\":0,\"z\":0,\"w\":1},\"motor\":{\"schemaVersion\":1,\"crouching\":false,\"posture\":0,\"verticalSpeedMetersPerSecond\":0},\"look\":{\"schemaVersion\":1,\"pitchDegrees\":0}}"
+        },
+        {
+            "DomainId": "probe.unknown",
+            "SchemaVersion": 1,
+            "Required": false,
+            "PayloadJson": "{\"description\":\"Катя / Łódź <>& 😀 \\u2028 \\u2029\",\"escaped\":\"\\\\ \\\" \\n \\r \\t \\b \\f \\u0001\",\"value\":12,\"extra\":{\"untouched\":[1,true,null]}}"
+        }
+    ]
+}

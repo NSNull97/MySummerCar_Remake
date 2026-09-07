@@ -422,7 +422,7 @@ namespace MSC.Lighting.Editor
                 light.GetComponent<HDAdditionalLightData>();
             if (hd != null)
             {
-                hd.shapeRadius = 0.025f;
+                light.shapeRadius = 0.025f;
                 hd.affectsVolumetric = true;
                 hd.volumetricDimmer = 1f;
                 hd.volumetricShadowDimmer = 1f;
@@ -468,7 +468,7 @@ namespace MSC.Lighting.Editor
             HDAdditionalLightData source,
             HDAdditionalLightData target)
         {
-            target.shapeRadius = source.shapeRadius;
+            target.GetComponent<Light>().shapeRadius = source.GetComponent<Light>().shapeRadius;
             target.affectsVolumetric = source.affectsVolumetric;
             target.volumetricDimmer = source.volumetricDimmer;
             target.volumetricShadowDimmer = source.volumetricShadowDimmer;

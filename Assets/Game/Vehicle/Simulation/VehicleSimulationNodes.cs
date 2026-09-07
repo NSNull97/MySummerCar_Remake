@@ -76,7 +76,8 @@ namespace MSC.Vehicle.Simulation
             in VehicleSimulationPrerequisites prerequisites,
             float clutchLoadTorque,
             float deltaSeconds,
-            StarterSimulation starter)
+            StarterSimulation starter,
+            SatsumaEngineOperatingPoint? operatingPoint = null)
         {
             EngineSimulationConfig engine = config.Engine;
             float throttle = Mathf.MoveTowards(
@@ -87,43 +88,50 @@ namespace MSC.Vehicle.Simulation
                 engine,
                 state.EngineRpm,
                 input.StarterRequested && state.EngineStatus != VehicleEngineStatus.Running,
-                prerequisites.CanCrank);
+                prerequisites.CanCrank) * (operatingPoint?.StarterScale ?? 1f);
+            // The RPM limiter temporarily removes torque, not key intent.
+            // Treating it as disengagement made failed cranking chatter between
+            // Cranking/Stalled and replay start/stop feedback every few substeps.
+            bool starterEngaged = input.StarterRequested && input.IgnitionOn && prerequisites.CanCrank;
 
             VehicleEngineStatus status = state.EngineStatus;
             if (!input.IgnitionOn && status != VehicleEngineStatus.Off)
             {
                 status = VehicleEngineStatus.Off;
             }
-            else if (starterTorque > 0f && status != VehicleEngineStatus.Running)
+            else if (starterEngaged && status != VehicleEngineStatus.Running)
             {
                 status = VehicleEngineStatus.Cranking;
             }
 
-            bool combustionAvailable = prerequisites.CanRun && input.IgnitionOn;
+            bool combustionAvailable = prerequisites.CanRun && input.IgnitionOn &&
+                (operatingPoint?.CombustionAllowed ?? true);
             if (combustionAvailable &&
                 status == VehicleEngineStatus.Cranking &&
                 state.EngineRpm >= engine.StartThresholdRpm)
             {
                 status = VehicleEngineStatus.Running;
             }
-            else if (status == VehicleEngineStatus.Cranking && starterTorque <= 0f)
+            else if (status == VehicleEngineStatus.Cranking && !starterEngaged)
             {
                 status = VehicleEngineStatus.Stalled;
             }
 
-            float idleError = engine.IdleTargetRpm - state.EngineRpm;
+            float idleTarget = operatingPoint?.IdleRpm ?? engine.IdleTargetRpm;
+            float idleError = idleTarget - state.EngineRpm;
             float idleThrottle = status == VehicleEngineStatus.Running
-                ? Mathf.Clamp01(0.14f + idleError / Mathf.Max(400f, engine.IdleTargetRpm) * 0.55f)
+                ? Mathf.Clamp01(0.14f + idleError / Mathf.Max(400f, idleTarget) * 0.55f)
                 : 0f;
             float effectiveThrottle = Mathf.Max(throttle, idleThrottle);
             float combustionTorque = status == VehicleEngineStatus.Running &&
                                       state.EngineRpm < engine.RedlineRpm && combustionAvailable
-                ? engine.EvaluateTorque(state.EngineRpm) * effectiveThrottle
+                ? engine.EvaluateTorque(state.EngineRpm) * effectiveThrottle * (operatingPoint?.TorqueScale ?? 1f)
                 : 0f;
             float angularSpeed = state.EngineRpm * VehicleSimulationMath.RpmToRadiansPerSecond;
             float frictionMagnitude = angularSpeed > 0.01f
                 ? engine.BaseFrictionNewtonMeters +
                   engine.ViscousFrictionNewtonMetersPerRadian * angularSpeed +
+                  (operatingPoint?.ExtraFriction ?? 0f) +
                   (effectiveThrottle < 0.05f ? engine.EngineBrakingNewtonMeters : 0f)
                 : 0f;
             float netTorque = starterTorque + combustionTorque - frictionMagnitude - clutchLoadTorque;
@@ -155,6 +163,10 @@ namespace MSC.Vehicle.Simulation
             }
 
             state.EngineStatus = status;
+            if (status == VehicleEngineStatus.Running && combustionTorque > 0f)
+                state.CombustionRundownActive = true;
+            else if (status == VehicleEngineStatus.Cranking || rpm <= 0f)
+                state.CombustionRundownActive = false;
             state.EngineRpm = rpm;
             state.FilteredThrottle01 = throttle;
             state.EngineTorqueNewtonMeters = combustionTorque;
@@ -301,7 +313,9 @@ namespace MSC.Vehicle.Simulation
             float rightDriveTorque,
             float steeringDegrees,
             in VehicleInputState input,
-            WheelPhysicsCommand[] destination)
+            WheelPhysicsCommand[] destination,
+            float frontBrakeEfficiency = 1f,
+            float rearBrakeEfficiency = 1f)
         {
             for (int index = 0; index < destination.Length; index++)
             {
@@ -314,7 +328,8 @@ namespace MSC.Vehicle.Simulation
                     ? config.Dynamics.MaximumRearBrakeTorqueNewtonMeters
                     : config.Dynamics.MaximumBrakeTorqueNewtonMeters;
                 float brakeTorque = Mathf.Clamp01(input.Brake01) *
-                                    serviceBrakeTorque;
+                                    serviceBrakeTorque * Mathf.Clamp01(index >= 2
+                                        ? rearBrakeEfficiency : frontBrakeEfficiency);
                 destination[index] = new WheelPhysicsCommand(
                     driveTorque,
                     brakeTorque,

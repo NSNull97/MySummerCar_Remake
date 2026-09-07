@@ -23,6 +23,7 @@ namespace MSC.Tests.EditMode.LegacyImport
                 VehicleAssemblySaveData legacy = assembly.CaptureSaveData();
                 AssertCurrentShape(legacy);
                 legacy.fasteners = BuildLegacy252Shape(legacy);
+                SatsumaCanonicalNightTestShape.StripAddedMountsFromHistoricalInput(legacy);
                 Assert.That(legacy.fasteners, Has.Length.EqualTo(252));
                 string originalJson = JsonUtility.ToJson(legacy);
                 string[] originalStates = UnchangedFastenerStates(legacy);
@@ -46,14 +47,14 @@ namespace MSC.Tests.EditMode.LegacyImport
                 }
                 Assert.That(JsonUtility.ToJson(legacy), Is.EqualTo(originalJson),
                     "Migration must not rewrite the caller's legacy payload.");
-                Assert.That(migrated.fastenerGroups.Select(GroupState),
+                Assert.That(migrated.fastenerGroups.Where(value => !SatsumaCanonicalNightTestShape.IsAddedMount(value.mountId)).Select(GroupState),
                     Is.EquivalentTo(legacy.fastenerGroups.Select(GroupState)));
             }
             finally { Object.DestroyImmediate(instance); }
         }
 
         [Test]
-        public void Current280FastenerSaveRoundTripRetainsAllIdsAndStages()
+        public void CurrentCanonicalFastenerSaveRoundTripRetainsAllIdsAndStages()
         {
             GameObject instance = CreateFixture();
             try
@@ -91,6 +92,7 @@ namespace MSC.Tests.EditMode.LegacyImport
                 corrupt.fasteners = BuildLegacy252Shape(current).Where(value =>
                     value.fastenerDefinitionId !=
                         "fastener.satsuma.strut-fl.boltpm-1").ToArray();
+                SatsumaCanonicalNightTestShape.StripAddedMountsFromHistoricalInput(corrupt);
                 if (keep252Records)
                 {
                     // Same count is insufficient: an old upper bolt is missing
@@ -183,6 +185,7 @@ namespace MSC.Tests.EditMode.LegacyImport
         {
             var legacy = current.fasteners
                 .Where(value => !IsNewLower(value) &&
+                    !SatsumaCanonicalNightTestShape.IsAddedFastener(value) &&
                     !IsExteriorPanelFastener(value) &&
                     !IsSteeringWheelNut(value))
                 .Select(CloneFastener)
@@ -200,8 +203,27 @@ namespace MSC.Tests.EditMode.LegacyImport
                 seated = secondPhysicalColumnBolt.seated,
                 stage = secondPhysicalColumnBolt.stage,
             });
-            return legacy.ToArray();
+            // The historical252 roster predates the six cover alias and one
+            // carb tuning-screw retirement. Reconstruct those exact IDs too.
+            string[] stock = SatsumaRockerCoverFastenerMigration.CanonicalIds;
+            string[] aliases = SatsumaRockerCoverFastenerMigration.RetiredIds;
+            for (int i = 0; i < aliases.Length; i++)
+            {
+                FastenerSaveDto copy = CloneFastener(legacy.Single(value => value.fastenerDefinitionId == stock[i]));
+                copy.fastenerDefinitionId = aliases[i];
+                legacy.Add(copy);
+            }
+            FastenerSaveDto carb = CloneFastener(legacy.First(value => value.mountId == SatsumaCarburetorFastenerMigration.MountId));
+            carb.fastenerDefinitionId = SatsumaCarburetorFastenerMigration.RetiredId;
+            carb.stage = 0;
+            legacy.Add(carb);
+            return SatsumaCanonicalNightTestShape.RestoreHistoricalValveFasteners(legacy);
         }
+
+        private static bool IsRetiredEngineShapeFastener(FastenerSaveDto value) =>
+            SatsumaRockerShaftFastenerMigration.RetiredIds.Contains(value.fastenerDefinitionId) ||
+            SatsumaRockerCoverFastenerMigration.RetiredIds.Contains(value.fastenerDefinitionId) ||
+            value.fastenerDefinitionId == SatsumaCarburetorFastenerMigration.RetiredId;
 
         private static bool IsExteriorPanelFastener(FastenerSaveDto value)
         {
@@ -256,6 +278,8 @@ namespace MSC.Tests.EditMode.LegacyImport
         private static string[] UnchangedFastenerStates(
             VehicleAssemblySaveData data) => data.fasteners.Where(value =>
                 !IsNewLower(value) &&
+                !SatsumaCanonicalNightTestShape.IsAddedFastener(value) &&
+                !IsRetiredEngineShapeFastener(value) &&
                 !IsExteriorPanelFastener(value) &&
                 !IsSteeringWheelNut(value) &&
                 !IsSteeringColumnRevisionFastener(value)).Select(value =>
@@ -272,9 +296,7 @@ namespace MSC.Tests.EditMode.LegacyImport
         private static void AssertCurrentShape(VehicleAssemblySaveData data)
         {
             Assert.That(data.parts, Has.Length.EqualTo(126));
-            Assert.That(data.mounts, Has.Length.EqualTo(117));
-            Assert.That(data.fasteners, Has.Length.EqualTo(280));
-            Assert.That(data.fastenerGroups, Has.Length.EqualTo(117));
+            SatsumaCanonicalNightTestShape.AssertCanonical(data);
             Assert.That(data.fasteners.Count(IsNewLower), Is.EqualTo(8));
         }
     }

@@ -205,9 +205,11 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
         {
             VehicleAssemblyController assembly = instance.GetComponent<VehicleAssemblyController>();
             Install(assembly, FindPart(assembly, "sub-frame"), FindMount(assembly, "sub-frame"));
+            TightenToInstallationThreshold(assembly, FindMount(assembly, "sub-frame"));
             if (includeRods)
             {
                 Install(assembly, FindPart(assembly, "steering-rack"), FindMount(assembly, "steering-rack"));
+                TightenToInstallationThreshold(assembly, FindMount(assembly, "steering-rack"));
             }
             foreach (SatsumaFrontSuspensionCornerBinding corner in instance.GetComponent<SatsumaFrontSteeringController>().Corners)
             {
@@ -331,6 +333,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                 }
 
                 Install(assembly, FindPart(assembly, "sub-frame"), FindMount(assembly, "sub-frame"));
+                TightenToInstallationThreshold(assembly, FindMount(assembly, "sub-frame"));
                 foreach (SatsumaFrontSuspensionCornerBinding corner in steering.Corners)
                 {
                     Install(assembly, FindPart(assembly, "wishbone-" + corner.CornerId), corner.WishboneMount);
@@ -435,16 +438,21 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
         private static void TightenToInstallationThreshold(VehicleAssemblyController assembly, MountPointAuthoring authoring)
         {
             MountPointRuntime mount = assembly.ResolveMount(authoring);
-            FastenerInstance fastener = mount.Fasteners.First();
-            ToolDefinition tool = assembly.Tools.First(value => value != null && value.Size == fastener.Definition.Size);
-            int attempts = 0;
-            while (!mount.FastenerGroup.IsBolted)
+            // Prepare a valid assembly, not an accidental old ON=1 shortcut.
+            // The free strut/rod under test remains untouched by this helper.
+            foreach (FastenerInstance fastener in mount.Fasteners)
             {
-                Assert.That(attempts++, Is.LessThan(8), "The prerequisite never became bolted.");
-                AssemblyOperationResult result = assembly.TryOperateFastener(mount.MountId,
-                    fastener.Definition.DefinitionId, tool, tighten: true);
-                Assert.That(result.Succeeded, Is.True, result.Message);
+                ToolDefinition tool = assembly.Tools.First(value => value != null && value.Size == fastener.Definition.Size);
+                int attempts = 0;
+                while (!mount.FastenerGroup.IsBolted && fastener.Stage < fastener.Definition.MaximumStage)
+                {
+                    Assert.That(attempts++, Is.LessThan(fastener.Definition.MaximumStage));
+                    AssemblyOperationResult result = assembly.TryOperateFastener(mount.MountId,
+                        fastener.Definition.DefinitionId, tool, tighten: true);
+                    Assert.That(result.Succeeded, Is.True, result.Message);
+                }
             }
+            Assert.That(mount.FastenerGroup.IsBolted, Is.True, "The prerequisite never became bolted.");
         }
 
         private static PartInstance FindPart(VehicleAssemblyController assembly, string slug) =>

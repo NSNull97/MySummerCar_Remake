@@ -82,19 +82,30 @@ namespace MSC.Bootstrap
             if (presenter == null ||
                 action.Action != ItemActionKind.LiquidSpilled ||
                 action.AffectedAmount <= 0f ||
-                !string.Equals(
-                    action.LiquidId,
-                    LiquidTypeIds.Water,
-                    StringComparison.Ordinal) ||
+                !TryResolveSpillTint(action.LiquidId, out Color? tint) ||
                 !items.TryGetInstance(action.StableId.Value, out WorldItemInstance item))
             {
                 return;
             }
 
+            ServiceFluidPourController pour = item.GetComponent<ServiceFluidPourController>();
             presenter.AddLocalPuddle(
-                item.transform.position,
+                pour != null ? pour.LastSpillPosition + Vector3.up * .03f : item.transform.position,
                 action.AffectedAmount,
-                item.transform);
+                item.transform,
+                tint);
+        }
+
+        private static bool TryResolveSpillTint(string liquidId, out Color? tint)
+        {
+            tint = liquidId switch
+            {
+                "liquid.motor-oil" => new Color(.065f, .035f, .009f, 1.8f),
+                "liquid.coolant" => new Color(.012f, .17f, .038f, 1.35f),
+                "liquid.brake-fluid" => new Color(.11f, .08f, .025f, 1.1f),
+                _ => null,
+            };
+            return tint.HasValue || liquidId == LiquidTypeIds.Water;
         }
 
         private void OnDestroy()

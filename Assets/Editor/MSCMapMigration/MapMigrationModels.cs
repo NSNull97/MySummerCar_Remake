@@ -52,7 +52,7 @@ namespace MSCMapMigration
     [Serializable]
     public sealed class MapMeshInventory
     {
-        public string schemaVersion = "1.0";
+        public string schemaVersion = "1.1";
         public string generatedUtc = string.Empty;
         public string unityVersion = string.Empty;
         public string sourceScene = string.Empty;
@@ -91,7 +91,11 @@ namespace MSCMapMigration
         public string meshAssetName = string.Empty;
         public string assetGuid = string.Empty;
         public long localFileId;
+        // Legacy report field: preserved when reading 1.0 reports; new scans leave it zero.
         public int instanceId;
+        // Full Unity 6.6 session identity for diagnostics only, never a persistent record key.
+        // Absent from 1.0 reports, where its default zero means unavailable.
+        public ulong entityId;
         public int vertexCount;
         public int triangleCount;
         public int subMeshCount;

@@ -13,6 +13,9 @@ namespace MSC.Vehicle.Simulation
         private readonly VehicleSimulationConfig config;
         private readonly IWheelPhysicsBackend wheelBackend;
         private readonly IVehicleSimulationPrerequisiteSource prerequisiteSource;
+        private readonly ISatsumaOperatingConditionSource satsumaConditionSource;
+        private readonly SatsumaOperatingModel satsumaOperatingModel;
+        private SatsumaOperatingInputs satsumaConditions;
         private readonly WheelPhysicsSample[] wheelSamples;
         private readonly WheelPhysicsCommand[] wheelCommands;
         private readonly WheelPhysicsCommand[] commandAccumulator;
@@ -33,7 +36,8 @@ namespace MSC.Vehicle.Simulation
         public VehicleSimulationRoot(
             VehicleSimulationConfig simulationConfig,
             IWheelPhysicsBackend physicsBackend,
-            IVehicleSimulationPrerequisiteSource simulationPrerequisiteSource)
+            IVehicleSimulationPrerequisiteSource simulationPrerequisiteSource,
+            ISatsumaOperatingConditionSource satsumaSource = null)
         {
             config = simulationConfig != null
                 ? simulationConfig
@@ -41,6 +45,8 @@ namespace MSC.Vehicle.Simulation
             wheelBackend = physicsBackend ?? throw new ArgumentNullException(nameof(physicsBackend));
             prerequisiteSource = simulationPrerequisiteSource ??
                 throw new ArgumentNullException(nameof(simulationPrerequisiteSource));
+            satsumaConditionSource = satsumaSource;
+            if (satsumaSource != null) satsumaOperatingModel = new SatsumaOperatingModel();
             if (!powertrainGraph.Validate(config, out string configFailure))
             {
                 throw new ArgumentException(configFailure, nameof(simulationConfig));
@@ -58,6 +64,7 @@ namespace MSC.Vehicle.Simulation
             commandAccumulator = new WheelPhysicsCommand[config.WheelCount];
             State = new VehicleSimulationState();
             State.Reset(config);
+            if (satsumaOperatingModel != null) State.EnableSatsumaOperatingState();
             Telemetry = new VehicleTelemetry();
             Telemetry.ConfigureWheelCount(config.WheelCount);
             prerequisites.Reset();
@@ -70,6 +77,7 @@ namespace MSC.Vehicle.Simulation
         public VehicleSimulationPrerequisites Prerequisites => prerequisites;
         public PowertrainGraph PowertrainGraph => powertrainGraph;
         public bool LastTickWasFinite { get; private set; } = true;
+        public SatsumaOperatingModel SatsumaOperatingModel => satsumaOperatingModel;
 
         public void Tick(float fixedDeltaSeconds, in VehicleInputState requestedInput)
         {
@@ -98,6 +106,9 @@ namespace MSC.Vehicle.Simulation
             }
 
             State.VehicleSpeedMetersPerSecond = sampledVehicleSpeed;
+            // Satsuma-only persistent mechanical distance, exactly once per
+            // physics tick (not per solver substep or rendered needle frame).
+            State.SatsumaOperating?.AccumulateTravel(Math.Abs((double)sampledVehicleSpeed) * fixedDeltaSeconds);
 
             bool shiftAccepted = true;
             State.ShiftStatus = VehicleShiftStatus.Stable;
@@ -118,6 +129,7 @@ namespace MSC.Vehicle.Simulation
             }
 
             EvaluatePrerequisites(input, shiftAccepted, inputWasFinite);
+            if (satsumaConditionSource != null) satsumaConditions = satsumaConditionSource.CaptureConditions();
             Array.Clear(commandAccumulator, 0, commandAccumulator.Length);
 
             int substeps = Mathf.Clamp(config.SubstepCount, 1, 8);
@@ -181,7 +193,9 @@ namespace MSC.Vehicle.Simulation
         public void Reset()
         {
             wheelBackend.Reset();
+            satsumaOperatingModel?.Reset();
             State.Reset(config);
+            if (satsumaOperatingModel != null) State.EnableSatsumaOperatingState();
             prerequisites.Reset();
             Array.Clear(wheelSamples, 0, wheelSamples.Length);
             Array.Clear(wheelCommands, 0, wheelCommands.Length);
@@ -195,6 +209,11 @@ namespace MSC.Vehicle.Simulation
             VehicleSimulationStateDto dto,
             out string failure)
         {
+            if (dto != null && dto.hasSatsumaOperatingState && satsumaOperatingModel == null)
+            {
+                failure = "This vehicle host does not support saved Satsuma operating state.";
+                return false;
+            }
             var probe = new VehicleSimulationState();
             probe.Reset(config);
             if (!probe.TryRestoreDto(dto, config))
@@ -222,7 +241,9 @@ namespace MSC.Vehicle.Simulation
                 failure = "Vehicle simulation DTO changed after preflight.";
                 return false;
             }
+            if (satsumaOperatingModel != null) State.EnableSatsumaOperatingState();
 
+            satsumaOperatingModel?.Reset();
             prerequisites.Reset();
             Array.Clear(wheelSamples, 0, wheelSamples.Length);
             Array.Clear(wheelCommands, 0, wheelCommands.Length);
@@ -240,6 +261,13 @@ namespace MSC.Vehicle.Simulation
             float steeringDegrees,
             ref float accumulatedDifferentialTorque)
         {
+            SatsumaEngineOperatingPoint? operating = null;
+            if (satsumaOperatingModel != null)
+            {
+                operating = satsumaOperatingModel.Evaluate(State, input, satsumaConditions, deltaSeconds);
+                prerequisites.UseSatsumaOperatingRequirements(operating.Value.IgnitionPowered);
+            }
+            float effectiveClutchPedal = input.ClutchPedal01 * (operating?.ClutchPedalEfficiency ?? 1f);
             float ratio = gearbox.GetRatio(config.Gearbox, State.SelectedGear);
             float drivenWheelOmega = 0.5f *
                 (wheelSamples[config.LeftDrivenWheelIndex].AngularSpeedRadiansPerSecond +
@@ -252,7 +280,7 @@ namespace MSC.Vehicle.Simulation
                     config.Clutch,
                     engineOmega,
                     gearboxInputOmega,
-                    input.ClutchPedal01,
+                    effectiveClutchPedal,
                     out _);
             if (!prerequisites.CanTransmitDrive)
             {
@@ -270,7 +298,8 @@ namespace MSC.Vehicle.Simulation
                 prerequisites,
                 clutchTorque,
                 deltaSeconds,
-                starter);
+                starter,
+                operating);
 
             engineOmega = State.EngineRpm * VehicleSimulationMath.RpmToRadiansPerSecond;
             float slipOmega = engineOmega - gearboxInputOmega;
@@ -281,7 +310,7 @@ namespace MSC.Vehicle.Simulation
                     config.Clutch,
                     engineOmega,
                     gearboxInputOmega,
-                    input.ClutchPedal01,
+                    effectiveClutchPedal,
                     out slipOmega);
             }
 
@@ -289,7 +318,7 @@ namespace MSC.Vehicle.Simulation
             {
                 clutchTorque = 0f;
             }
-            float engagement = clutch.CalculateEngagement(config.Clutch, input.ClutchPedal01);
+            float engagement = clutch.CalculateEngagement(config.Clutch, effectiveClutchPedal);
             State.ClutchEngagement01 = engagement;
             State.ClutchSlipRpm = slipOmega * VehicleSimulationMath.RadiansPerSecondToRpm;
             State.ClutchTransferredTorqueNewtonMeters = clutchTorque;
@@ -315,12 +344,26 @@ namespace MSC.Vehicle.Simulation
                 rightTorque,
                 steeringDegrees,
                 input,
-                wheelCommands);
+                wheelCommands,
+                operating?.FrontBrakeEfficiency ?? 1f,
+                operating?.RearBrakeEfficiency ?? 1f);
 
             bool running = State.EngineStatus == VehicleEngineStatus.Running;
-            electrical.Step(config, State, starterActive, running, deltaSeconds);
+            // An absent/unwired alternator does not prohibit battery starting,
+            // but it must not receive the prototype's automatic charging output.
+            if (satsumaOperatingModel != null)
+            {
+                SatsumaWearDelta wear = satsumaOperatingModel.StepSupport(config, State, input,
+                    satsumaConditions, starterActive, deltaSeconds);
+                satsumaConditionSource.ApplyWear(wear);
+            }
+            else
+            {
+                electrical.Step(config, State, starterActive, running &&
+                    !prerequisites.HasAny(VehicleSimulationPrerequisiteFailure.AlternatorUnavailable), deltaSeconds);
+                thermal.Step(config, State, running, State.EngineLoad01, deltaSeconds);
+            }
             fluids.Step(config, State, State.FilteredThrottle01, running, deltaSeconds);
-            thermal.Step(config, State, running, State.EngineLoad01, deltaSeconds);
             State.ElapsedSeconds += deltaSeconds;
         }
 
@@ -332,17 +375,21 @@ namespace MSC.Vehicle.Simulation
             prerequisites.Reset();
             prerequisiteSource.Evaluate(input, ref prerequisites);
             VehicleSupportSystemsConfig support = config.SupportSystems;
-            if (State.FuelLiters <= support.MinimumFuelLiters)
+            bool ignoreFluidReadiness = prerequisiteSource is IVehicleFluidReadinessTestOverride testOverride &&
+                testOverride.IgnoreFluidReadinessForTesting;
+            bool ignoreFuelReadiness = ignoreFluidReadiness || prerequisiteSource is IVehicleFuelReadinessTestOverride fuelOverride &&
+                fuelOverride.IgnoreFuelReadinessForTesting;
+            if (!ignoreFuelReadiness && State.FuelLiters <= support.MinimumFuelLiters)
             {
                 prerequisites.Add(VehicleSimulationPrerequisiteFailure.FuelUnavailable);
             }
 
-            if (State.OilLiters <= support.MinimumOilLiters)
+            if (!ignoreFluidReadiness && State.OilLiters <= support.MinimumOilLiters)
             {
                 prerequisites.Add(VehicleSimulationPrerequisiteFailure.OilUnavailable);
             }
 
-            if (State.CoolantLiters <= support.MinimumCoolantLiters)
+            if (!ignoreFluidReadiness && State.CoolantLiters <= support.MinimumCoolantLiters)
             {
                 prerequisites.Add(VehicleSimulationPrerequisiteFailure.CoolantUnavailable);
             }

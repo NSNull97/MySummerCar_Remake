@@ -231,6 +231,14 @@ namespace MSC.Tests.EditMode.LegacyImport
                 Assert.That(assembly.EvaluateInstall(spring, springMount).Succeeded, Is.True);
                 Assert.That(assembly.EvaluateInstall(shock, shockMount).Succeeded, Is.True);
 
+                Install(assembly, spring, springMount);
+                MountPointRuntime springRuntime = ResolveRuntimeMount(
+                    assembly,
+                    springMount.MountId);
+                Assert.That(
+                    springRuntime.FastenerGroup.Definition.HasFasteners,
+                    Is.False);
+
                 Install(assembly, shock, shockMount);
                 MountPointRuntime shockRuntime = ResolveRuntimeMount(
                     assembly,
@@ -313,13 +321,6 @@ namespace MSC.Tests.EditMode.LegacyImport
                     expected: true,
                     state: "At donor BoltedOffThreshold.");
 
-                Install(assembly, spring, springMount);
-                MountPointRuntime springRuntime = ResolveRuntimeMount(
-                    assembly,
-                    springMount.MountId);
-                Assert.That(
-                    springRuntime.FastenerGroup.Definition.HasFasteners,
-                    Is.False);
                 AssemblyInstalledPartInteractionTarget springRemoval = spring
                     .GetComponent<AssemblyInstalledPartInteractionTarget>();
                 InteractionTargetHost springHost = spring

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MSC.Audio
 {
@@ -23,7 +24,8 @@ namespace MSC.Audio
 
         Transform AudioTransform { get; }
 
-        int OwningSceneHandle { get; }
+        // Session-local Unity identity, never a serialized/stable entity ID.
+        SceneHandle OwningSceneHandle { get; }
 
         bool IsAudioEmitterActive { get; }
 

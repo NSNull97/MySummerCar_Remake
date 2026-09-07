@@ -48,6 +48,8 @@ namespace MSC.Bootstrap
             "Phase1Characters/CharacterPresentationCatalog";
         private const string TrafficPresentationResourcePath =
             "Phase1Traffic/TrafficPresentationCatalog";
+        public const string LightingSwitchAudioResourcesPath =
+            "Phase1LightingSwitchAudio/Phase1LightingSwitchAudioEventLibrary";
 
         [SerializeField] private GameCompositionRoot compositionRoot;
         [SerializeField] private ProductionWorldStreamingService worldStreaming;
@@ -610,6 +612,9 @@ namespace MSC.Bootstrap
             if (startupMode ==
                 ProductionWorldStartupMode.ProductionEnvironmentRequired)
             {
+                if (!audioComposition.TryLoadFallbackSupplementalEventLibrary(
+                        LightingSwitchAudioResourcesPath, out string lightingAudioFailure))
+                    Debug.LogWarning("Private Phase 1 lighting switch audio is unavailable: " + lightingAudioFailure, this);
                 puddleBridge = GetComponent<ProductionPuddleBridge>() ??
                     gameObject.AddComponent<ProductionPuddleBridge>();
                 puddleBridge.Initialize(
@@ -701,9 +706,8 @@ namespace MSC.Bootstrap
                             .FallbackOverrideResourcesPath,
                         out string satsumaAudioFailure))
                 {
-                    // Gameplay posts stable IDs through the router. The Unity
-                    // fallback resolves the private override locally, while a
-                    // ready official Wwise backend receives the same IDs.
+                    // The router explicitly selects the loaded private override
+                    // before posting, even while official Wwise is ready.
                     satsumaAssemblyAudioBackend =
                         audioComposition.Backend as MonoBehaviour;
                 }
@@ -720,6 +724,29 @@ namespace MSC.Bootstrap
                 GameObject spawnedSatsuma = satsumaInstaller.Initialize(
                     compositionRoot.transform,
                     satsumaAssemblyAudioBackend);
+                SatsumaEngineOperatingSource engineOperating = spawnedSatsuma != null
+                    ? spawnedSatsuma.GetComponent<SatsumaEngineOperatingSource>() : null;
+                if (engineOperating != null)
+                    spawnedSatsuma.AddComponent<SatsumaEngineEnvironmentBridge>().Bind(environment, engineOperating);
+                var instruments = spawnedSatsuma != null ? spawnedSatsuma.GetComponent<SatsumaInstrumentPresenter>() : null;
+                if (instruments != null) instruments.BindGameTime(environment.GameTime);
+                SatsumaServiceLevelComposition.Configure(spawnedSatsuma);
+                if (spawnedSatsuma != null)
+                {
+                    var station = spawnedSatsuma.GetComponent<SatsumaDriverStation>() ??
+                        throw new InvalidOperationException("The canonical Satsuma driver trigger has not been authored.");
+                    var driving = spawnedPlayer.AddComponent<SatsumaDrivingSessionController>();
+                    driving.Initialize(input, motor, spawnedPlayer.GetComponentInChildren<FirstPersonLook>(true),
+                        spawnedPlayer.GetComponentInChildren<PlayerInteractionController>(true), spawnedPlayerCamera,
+                        station, spawnedSatsuma.GetComponent<VehicleInputRouter>(),
+                        message => lifeActionPresenter.ShowStatusMessage(message));
+                }
+                if (audioComposition.TryLoadFallbackSupplementalEventLibrary(
+                        SatsumaEngineFeedbackPresenter.FallbackResourcesPath,
+                        out string engineAudioFailure))
+                    satsumaInstaller.ConfigureEngineFeedback(audioComposition.Backend as MonoBehaviour);
+                else
+                    Debug.LogWarning("Private Satsuma engine audio is unavailable: " + engineAudioFailure, this);
 
                 economyRuntime = GetComponent<EconomyRuntime>() ??
                     gameObject.AddComponent<EconomyRuntime>();
@@ -908,6 +935,8 @@ namespace MSC.Bootstrap
                     environment,
                     lifeActionPresenter,
                     homeRuntime);
+                developerConsole.BindVehicleTesting(spawnedSatsuma != null
+                    ? spawnedSatsuma.GetComponent<AssemblyVehiclePrerequisiteAdapter>() : null, engineOperating);
 
                 nativeSaveSession =
                     GetComponent<NativeSaveSessionController>() ??

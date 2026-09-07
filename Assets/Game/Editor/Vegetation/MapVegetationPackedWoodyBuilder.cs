@@ -1518,7 +1518,7 @@ namespace MSC.Editor.Vegetation
                 unchecked
                 {
                     int hash = Material != null
-                        ? Material.GetInstanceID() : 0;
+                        ? Material.GetEntityId().GetHashCode() : 0;
                     hash = hash * 397 ^ NegativeWinding.GetHashCode();
                     hash = hash * 397 ^ (int)ShadowCasting;
                     hash = hash * 397 ^ ReceiveShadows.GetHashCode();

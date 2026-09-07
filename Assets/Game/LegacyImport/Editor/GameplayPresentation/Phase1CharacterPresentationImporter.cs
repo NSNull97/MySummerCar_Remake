@@ -334,6 +334,14 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                         : null;
                 bool conditionalValid = conditional != null &&
                     conditional.TryValidate(out _);
+                // The catalog deliberately replaces only default Suski with the
+                // approved StoryTraffic wrapper. Its materials have a separate
+                // source contract; all baseline structural checks still apply.
+                bool usesValidatedSuskiOverride = found &&
+                    Phase1StoryTrafficPresentationImporter
+                        .TryValidateDefaultSuskiOverrideForBuild(
+                            fixture.bindingId,
+                            entry.WrapperPrefab);
                 if (!found || entry.WrapperPrefab == null ||
                     binding == null ||
                     !string.Equals(binding.GeometryReplacementKey,
@@ -351,6 +359,7 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                         .Any(renderer =>
                             renderer.sharedMaterials.Length != renderer.sharedMesh.subMeshCount ||
                             renderer.sharedMaterials.Any(material =>
+                                 !usesValidatedSuskiOverride &&
                                  !IsGeneratedMaterialValid(material, manifest))) ||
                     entry.WrapperPrefab
                         .GetComponentsInChildren<MeshRenderer>(true)

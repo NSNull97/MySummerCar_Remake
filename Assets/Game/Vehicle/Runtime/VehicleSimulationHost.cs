@@ -21,6 +21,7 @@ namespace MSC.Vehicle
         [SerializeField] private AssemblyVehiclePrerequisiteAdapter prerequisiteSource;
         [SerializeField] private MonoBehaviour inputSourceComponent;
         [SerializeField] private VehicleResetController resetController;
+        [SerializeField] private MonoBehaviour satsumaOperatingSource;
 
         private IWheelPhysicsBackend wheelBackend;
         private IVehicleInputSource inputSource;
@@ -35,6 +36,7 @@ namespace MSC.Vehicle
         public AssemblyVehiclePrerequisiteAdapter PrerequisiteSource => prerequisiteSource;
 
         public MonoBehaviour InputSourceComponent => inputSourceComponent;
+        public MonoBehaviour SatsumaOperatingSourceComponent => satsumaOperatingSource;
 
         public IVehicleInputSource InputSource => inputSource;
 
@@ -116,6 +118,14 @@ namespace MSC.Vehicle
             resetController = controller;
         }
 
+        public void ConfigureSatsumaOperatingSource(MonoBehaviour source)
+        {
+            if (root != null) throw new InvalidOperationException("Configure operating conditions before simulation initialization.");
+            if (source != null && source is not ISatsumaOperatingConditionSource)
+                throw new ArgumentException("The source must implement ISatsumaOperatingConditionSource.", nameof(source));
+            satsumaOperatingSource = source;
+        }
+
         public bool TryInitialize(out string failure)
         {
             if (root != null)
@@ -158,7 +168,16 @@ namespace MSC.Vehicle
                 }
             }
 
-            root = new VehicleSimulationRoot(config, wheelBackend, prerequisiteSource);
+            if (satsumaOperatingSource != null && satsumaOperatingSource is not ISatsumaOperatingConditionSource)
+            {
+                failure = "The serialized Satsuma operating source has an unsupported component type.";
+                return false;
+            }
+            if (satsumaOperatingSource is SatsumaEngineOperatingSource operating && !operating.ValidateBindings(out failure))
+                return false;
+            root = new VehicleSimulationRoot(config, wheelBackend, prerequisiteSource,
+                satsumaOperatingSource as ISatsumaOperatingConditionSource);
+            prerequisiteSource.UseSimulationFluidAuthority(satsumaOperatingSource != null);
             LastInput = VehicleInputState.Neutral();
             FixedTickCount = 0;
             failure = string.Empty;

@@ -16,6 +16,27 @@ namespace MSC.Tests.PlayMode.AudioPlayerIntegration
 {
     public sealed class PlayerVoiceReactionControllerTests
     {
+        private bool ownsProductionSession;
+        private float previousTimeScale;
+
+        [UnityTearDown]
+        public IEnumerator ReleaseProductionSession()
+        {
+            if (!ownsProductionSession) yield break;
+            GameCompositionRoot root = GameCompositionRoot.ActiveRoot;
+            if (root != null)
+            {
+                root.gameObject.SetActive(false);
+                Object.Destroy(root.gameObject);
+            }
+            yield return null;
+            yield return null;
+            // Bootstrap opens its menu paused. Leaving its persistent owners
+            // and time scale behind stalls the next fixture's physics waits.
+            Time.timeScale = previousTimeScale;
+            ownsProductionSession = false;
+        }
+
         [Test]
         public void ManualSwear_PostsStableEventAndAppliesOnlyStressRelief()
         {
@@ -156,6 +177,8 @@ namespace MSC.Tests.PlayMode.AudioPlayerIntegration
         [UnityTest]
         public IEnumerator ProductionBootstrap_InstallsControllerAndPrivateFallbackLibrary()
         {
+            previousTimeScale = Time.timeScale;
+            ownsProductionSession = true;
             AsyncOperation load = SceneManager.LoadSceneAsync(
                 "Assets/Game/Bootstrap/Bootstrap.unity",
                 LoadSceneMode.Single);

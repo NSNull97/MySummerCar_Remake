@@ -60,9 +60,11 @@ namespace MSC.UI.Runtime.Settings
     [Serializable]
     public sealed class UiSettingsDocument
     {
-        public const int CurrentSchemaVersion = 6;
+        public const int CurrentSchemaVersion = 7;
 
         public int SchemaVersion = CurrentSchemaVersion;
+        // A menu preference, separate from the paint state of a saved vehicle.
+        public int MainMenuCarColourIndex;
         public GraphicsSettingsDto Graphics = new GraphicsSettingsDto();
         public AudioSettingsDto Audio = new AudioSettingsDto();
         public ControlsSettingsDto Controls = new ControlsSettingsDto();
@@ -74,6 +76,7 @@ namespace MSC.UI.Runtime.Settings
             return new UiSettingsDocument
             {
                 SchemaVersion = SchemaVersion,
+                MainMenuCarColourIndex = MainMenuCarColourIndex,
                 Graphics = Graphics == null ? null : Graphics.DeepClone(),
                 Audio = Audio == null ? null : Audio.DeepClone(),
                 Controls = Controls == null ? null : Controls.DeepClone(),
@@ -86,6 +89,7 @@ namespace MSC.UI.Runtime.Settings
         {
             return other != null &&
                    SchemaVersion == other.SchemaVersion &&
+                   MainMenuCarColourIndex == other.MainMenuCarColourIndex &&
                    Graphics != null && Graphics.ContentEquals(other.Graphics) &&
                    Audio != null && Audio.ContentEquals(other.Audio) &&
                    Controls != null && Controls.ContentEquals(other.Controls) &&

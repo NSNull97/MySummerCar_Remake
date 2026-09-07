@@ -1,0 +1,12 @@
+{
+  "name": "MSC.UI.Validation.Editor",
+  "rootNamespace": "MSC.UI.Validation.EditorTools",
+  "references": [
+    "MSC.UI.Presentation.Runtime",
+    "MSC.UI.Runtime",
+    "UnityEditor.TestRunner",
+    "UnityEngine.TestRunner"
+  ],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": true
+}

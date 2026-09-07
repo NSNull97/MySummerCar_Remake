@@ -5,6 +5,7 @@ using MSC.Audio.Composition;
 using MSC.Audio.UnityFallback;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools.Utils;
 
 namespace MSC.Tests.EditMode.AudioRuntime
@@ -12,6 +13,23 @@ namespace MSC.Tests.EditMode.AudioRuntime
     public sealed class AudioRuntimeEditModeTests
     {
         private readonly List<UnityEngine.Object> cleanup = new List<UnityEngine.Object>();
+
+        [Test]
+        public void EmitterSceneIdentityPreservesUpperHandleBitsAfterUnityUpgrade()
+        {
+            Assert.That(typeof(IAudioEmitter).GetProperty(nameof(IAudioEmitter.OwningSceneHandle))
+                .PropertyType, Is.EqualTo(typeof(SceneHandle)));
+            SceneHandle first = SceneHandle.FromRawData(23UL);
+            SceneHandle second = SceneHandle.FromRawData((1UL << 32) | 23UL);
+            var registrations = new Dictionary<SceneHandle, string>
+            {
+                [first] = "first scene",
+                [second] = "second scene",
+            };
+            Assert.That(registrations.Count, Is.EqualTo(2));
+            Assert.That(second.GetRawData(), Is.EqualTo((1UL << 32) | 23UL));
+            Assert.That(registrations[first], Is.EqualTo("first scene"));
+        }
 
         [TearDown]
         public void TearDown()
@@ -209,7 +227,8 @@ namespace MSC.Tests.EditMode.AudioRuntime
                 wind01: 0f,
                 day.WorldPosition + Vector3.right * 2000f);
 
-            Assert.That(nearClear, Is.EqualTo(day.BaseVolume01).Within(0.0001f));
+            Assert.That(nearClear, Is.EqualTo(day.BaseVolume01 * WorldAmbientAudioPresenter.WorldAmbienceMixGain).Within(0.0001f));
+            Assert.That(WorldAmbientAudioPresenter.WorldAmbienceMixGain, Is.EqualTo(Mathf.Pow(10f, -4f / 20f)).Within(.000001f));
             Assert.That(nearRain, Is.LessThan(nearClear * 0.2f));
             Assert.That(wrongPhase, Is.Zero.Within(0.0001f));
             Assert.That(outOfRange, Is.Zero.Within(0.0001f));
@@ -519,7 +538,7 @@ namespace MSC.Tests.EditMode.AudioRuntime
 
             public string StableId { get; }
             public Transform AudioTransform { get; }
-            public int OwningSceneHandle => AudioTransform.gameObject.scene.handle;
+            public SceneHandle OwningSceneHandle => AudioTransform.gameObject.scene.handle;
             public bool IsAudioEmitterActive => AudioTransform.gameObject.activeInHierarchy;
             public AudioSurfaceContext SurfaceContext => AudioSurfaceContext.Unknown;
             public AudioEnvironmentContext EnvironmentContext => AudioEnvironmentContext.Exterior;

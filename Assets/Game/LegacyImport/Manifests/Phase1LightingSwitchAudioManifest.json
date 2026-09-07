@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "manifestId": "phase1.lighting-switch.audio.v1",
+  "eventId": "audio.event.lighting.switch",
+  "classification": "TemporaryDirectImport",
+  "productionReplacementKey": "presentation.audio.lighting-switch.phase2",
+  "stagingRootRelativePath": "raw/world/milestone-04a1/assetripper-unity-project/ExportedProject/Assets",
+  "sceneRelativePath": "_Scenes/GAME.unity",
+  "sceneSha256": "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4",
+  "clipRelativePath": "AudioClip/house_light_switch.ogg",
+  "clipSha256": "03ae4856d6515ffe539da16c2e6be100ef18204e9f8a59f38719376fec8bcc37",
+  "evidence": "Frozen GAME.unity AudioSource94656 on GameObject11333 light_switch; clip GUID3cb43f687046eb84495b520acf746461; one shot, no play-on-awake, volume1 pitch1 minDistance1 maxDistance10. Existing project lighting adapter already posts the stable switch event.",
+  "knownDifference": "Unity spatial rolloff uses existing project backend policy rather than importing donor custom AudioSource curves. No donor gameplay owner, FSM or AudioSource is imported."
+}

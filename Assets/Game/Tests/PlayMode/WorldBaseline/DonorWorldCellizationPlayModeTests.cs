@@ -189,10 +189,10 @@ namespace MSC.Tests.PlayMode.WorldBaseline
         {
             RuntimeSession session = null;
             yield return StartSession(value => session = value);
-            int globalRootInstanceId =
-                session.GlobalMetadata.gameObject.GetInstanceID();
-            int registryInstanceId =
-                session.Registry.gameObject.GetInstanceID();
+            EntityId globalRootInstanceId =
+                session.GlobalMetadata.gameObject.GetEntityId();
+            EntityId registryInstanceId =
+                session.Registry.gameObject.GetEntityId();
 
             Assert.That(
                 session.Streaming.EffectiveLoadingRadiusCells,
@@ -255,10 +255,10 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                 manifest.Cells
                     .OrderBy(cell => cell.CellId, StringComparer.Ordinal)
                     .ToArray();
-            int globalRootInstanceId =
-                session.GlobalMetadata.gameObject.GetInstanceID();
-            int registryInstanceId =
-                session.Registry.gameObject.GetInstanceID();
+            EntityId globalRootInstanceId =
+                session.GlobalMetadata.gameObject.GetEntityId();
+            EntityId registryInstanceId =
+                session.Registry.gameObject.GetEntityId();
 
             Assert.That(cells.Length, Is.EqualTo(49));
             Assert.That(manifest.GlobalScenes.Count, Is.EqualTo(1));
@@ -630,9 +630,9 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                 Is.EqualTo(
                     DonorWorldLegacyPresentationMode.LegacyDiagnostic));
 
-            HashSet<int> materialIdsBefore =
+            HashSet<EntityId> materialIdsBefore =
                 CaptureGeneratedAssetIds<Material>();
-            HashSet<int> textureIdsBefore =
+            HashSet<EntityId> textureIdsBefore =
                 CaptureGeneratedAssetIds<Texture>();
             Assert.That(materialIdsBefore, Is.Not.Empty);
             Assert.That(textureIdsBefore, Is.Not.Empty);
@@ -718,7 +718,7 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                 supplemental.All(entity =>
                     entity.SourceCellId == farmCellId &&
                     entity.ManifestId ==
-                        "phase1-job-location-presentation-10b-r1-v3" &&
+                        "phase1-job-location-presentation-10b-r3-v6" &&
                     entity.Classification ==
                         DonorWorldBaselineClassification
                             .TemporaryDirectImport),
@@ -1015,8 +1015,8 @@ namespace MSC.Tests.PlayMode.WorldBaseline
 
         private static void AssertGlobalLifetime(
             RuntimeSession session,
-            int expectedGlobalRootInstanceId,
-            int expectedRegistryInstanceId)
+            EntityId expectedGlobalRootInstanceId,
+            EntityId expectedRegistryInstanceId)
         {
             Assert.That(
                 session.Streaming.IsGlobalSceneLoaded("global-legacy"),
@@ -1037,10 +1037,10 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                         FindObjectsSortMode.None)
                     .Single();
             Assert.That(
-                globalMetadata.gameObject.GetInstanceID(),
+                globalMetadata.gameObject.GetEntityId(),
                 Is.EqualTo(expectedGlobalRootInstanceId));
             Assert.That(
-                registry.gameObject.GetInstanceID(),
+                registry.gameObject.GetEntityId(),
                 Is.EqualTo(expectedRegistryInstanceId));
         }
 
@@ -1162,14 +1162,14 @@ namespace MSC.Tests.PlayMode.WorldBaseline
             }
         }
 
-        private static HashSet<int> CaptureGeneratedAssetIds<T>()
+        private static HashSet<EntityId> CaptureGeneratedAssetIds<T>()
             where T : Object =>
             Resources.FindObjectsOfTypeAll<T>()
                 .Where(asset =>
                     asset.name.StartsWith(
                         "M06B2_",
                         StringComparison.Ordinal))
-                .Select(asset => asset.GetInstanceID())
+                .Select(asset => asset.GetEntityId())
                 .ToHashSet();
 
         private static bool TryRaycastUpwardFacingTriangle(

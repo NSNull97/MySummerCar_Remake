@@ -16,8 +16,8 @@ namespace MSC.Weather.Production
     {
         [SerializeField] private WeatherZoneCellCatalog catalog;
 
-        private readonly Dictionary<int, GameObject> rootsByScene =
-            new Dictionary<int, GameObject>();
+        private readonly Dictionary<SceneHandle, GameObject> rootsByScene =
+            new Dictionary<SceneHandle, GameObject>();
         private readonly List<WeatherZoneCellDefinition> sceneDefinitions =
             new List<WeatherZoneCellDefinition>(8);
 
@@ -49,7 +49,7 @@ namespace MSC.Weather.Production
         {
             SceneManager.sceneLoaded -= HandleSceneLoaded;
             SceneManager.sceneUnloaded -= HandleSceneUnloaded;
-            foreach (KeyValuePair<int, GameObject> pair in rootsByScene)
+            foreach (KeyValuePair<SceneHandle, GameObject> pair in rootsByScene)
             {
                 if (pair.Value != null)
                 {
@@ -147,7 +147,7 @@ namespace MSC.Weather.Production
         private void RecountSpawnedZones()
         {
             int count = 0;
-            foreach (KeyValuePair<int, GameObject> pair in rootsByScene)
+            foreach (KeyValuePair<SceneHandle, GameObject> pair in rootsByScene)
             {
                 if (pair.Value != null)
                 {

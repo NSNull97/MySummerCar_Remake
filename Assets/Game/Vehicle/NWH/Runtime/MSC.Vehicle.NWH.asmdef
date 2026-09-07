@@ -3,9 +3,11 @@
   "rootNamespace": "MSC.Vehicle.NWH",
   "references": [
     "MSC.Characters.Runtime",
+    "MSC.Vehicle.Runtime",
     "MSC.Vehicle.Assembly",
     "MSC.Vehicle.Simulation",
     "NWH.Common",
+    "Unity.Collections",
     "NWH.WheelController"
   ],
   "includePlatforms": [],

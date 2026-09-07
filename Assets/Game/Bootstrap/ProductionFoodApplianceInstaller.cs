@@ -64,7 +64,7 @@ namespace MSC.Bootstrap
         private IAudioBackend audioBackend;
         private Transform fixedTargetRoot;
         private FridgeDoorInteractionTarget fridgeDoor;
-        private int fridgeSceneHandle;
+        private SceneHandle fridgeSceneHandle;
         private bool initialized;
 
         public bool IsInitialized => initialized;
@@ -220,7 +220,7 @@ namespace MSC.Bootstrap
             if (scene.handle == fridgeSceneHandle)
             {
                 fridgeDoor = null;
-                fridgeSceneHandle = 0;
+                fridgeSceneHandle = default;
             }
         }
 

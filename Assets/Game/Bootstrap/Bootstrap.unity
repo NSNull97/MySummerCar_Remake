@@ -946,9 +946,12 @@ MonoBehaviour:
   worldInstaller: {fileID: 161771368}
   playerActions: {fileID: -944628639613478452, guid: f327eb21151ec584f9bcbdb57248ce15, type: 3}
   vehicleActions: {fileID: -944628639613478452, guid: a9ef473ba79d43d5a224f3fbb6afade6, type: 3}
-  mainMenuBackdrop: {fileID: 2800000, guid: 97fb9a0a46d3b264e90d602527e24ec1, type: 3}
+  mainMenuBackdrop: {fileID: 0}
   mainMenuLogo: {fileID: 2800000, guid: 5c8bc6c8574ac974bbc58d4a8ca6dc85, type: 3}
   uiBlurShader: {fileID: 4800000, guid: 327ca4297f8fefb4b9ac7adff5c6dc55, type: 3}
+  mainMenuVehiclePrefab: {fileID: 4477405205298907805, guid: d7781dd50e27a6642ad706677b8363e6, type: 3}
+  mainMenuEnvironmentPrefab: {fileID: 3794607937906716635, guid: 724b340386c31ab43ae77225e9e5f211, type: 3}
+  mainMenuPreviewBackdropShader: {fileID: 0}
   startInMainMenu: 1
 --- !u!114 &161771383
 MonoBehaviour:

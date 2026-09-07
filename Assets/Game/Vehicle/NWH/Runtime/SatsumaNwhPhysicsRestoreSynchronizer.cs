@@ -20,6 +20,7 @@ namespace MSC.Vehicle.NWH
         [SerializeField] private SatsumaFrontSteeringController frontSteering;
         [SerializeField] private SatsumaFrontSuspensionController frontSuspension;
         [SerializeField] private SatsumaRearNwhSuspensionController rearSuspension;
+        [SerializeField] private SatsumaHandbrakeNwhAdapter handbrake;
 
         public VehicleAssemblyController AssemblyController =>
             assemblyController;
@@ -30,6 +31,7 @@ namespace MSC.Vehicle.NWH
             frontSuspension;
         public SatsumaRearNwhSuspensionController RearSuspension =>
             rearSuspension;
+        public SatsumaHandbrakeNwhAdapter Handbrake => handbrake;
         public int SynchronizationCount { get; private set; }
         public bool LastSynchronizationHeldChassisKinematic {
             get;
@@ -42,7 +44,8 @@ namespace MSC.Vehicle.NWH
             NwhAssemblyWheelSupportController configuredWheelSupport,
             SatsumaFrontSteeringController configuredFrontSteering,
             SatsumaFrontSuspensionController configuredFrontSuspension,
-            SatsumaRearNwhSuspensionController configuredRearSuspension)
+            SatsumaRearNwhSuspensionController configuredRearSuspension,
+            SatsumaHandbrakeNwhAdapter configuredHandbrake = null)
         {
             assemblyController = configuredAssemblyController;
             chassis = configuredChassis;
@@ -50,6 +53,7 @@ namespace MSC.Vehicle.NWH
             frontSteering = configuredFrontSteering;
             frontSuspension = configuredFrontSuspension;
             rearSuspension = configuredRearSuspension;
+            handbrake = configuredHandbrake;
         }
 
         public bool TrySynchronizeRestoredPhysics(out string failure)
@@ -76,6 +80,7 @@ namespace MSC.Vehicle.NWH
             frontSuspension.ApplyNow();
             rearSuspension.ApplyNow();
             assemblyController.SynchronizeInstalledParts();
+            handbrake?.ApplyNow();
 
             if (Application.isPlaying)
             {

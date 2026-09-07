@@ -9,7 +9,8 @@
     "MSC.Save.Integration",
     "MSC.World.Runtime",
     "MSC.Services.Runtime",
-    "MSC.Vehicle.ItemsIntegration"
+    "MSC.Vehicle.ItemsIntegration",
+    "MSC.Vehicle.Assembly"
   ],
   "includePlatforms": ["Editor"],
   "excludePlatforms": [],

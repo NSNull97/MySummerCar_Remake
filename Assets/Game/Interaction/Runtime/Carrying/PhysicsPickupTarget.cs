@@ -21,6 +21,8 @@ namespace MSC.Interaction.Carrying
         [SerializeField, Min(0.01f)]
         private float maximumCarryMassKilograms = 35f;
 
+        [SerializeField] private bool allowAssemblyMassDebugOverride;
+
         [SerializeField]
         private bool pickupEnabled = true;
 
@@ -40,6 +42,7 @@ namespace MSC.Interaction.Carrying
             stableIdAuthoring != null && stableIdAuthoring.TryGetStableId(out StableEntityId id) ? id : default;
 
         public bool IsCarried => isCarried;
+        public float MaximumCarryMassKilograms => maximumCarryMassKilograms;
 
         /// <summary>
         /// Loose world items use ordinary dynamic Rigidbody physics. This is
@@ -54,8 +57,19 @@ namespace MSC.Interaction.Carrying
                 !isCarried &&
                 targetBody != null &&
                 (!targetBody.isKinematic || allowKinematicPickup) &&
-                targetBody.mass <= maximumCarryMassKilograms &&
+                (targetBody.mass <= maximumCarryMassKilograms || HasAssemblyMassOverride(context)) &&
                 StableId.IsValid;
+        }
+
+        private bool HasAssemblyMassOverride(in InteractionContext context) =>
+            allowAssemblyMassDebugOverride && context.Interactor != null &&
+            context.Interactor.GetComponentInParent<AssemblyCarryDebugOverride>() is
+                AssemblyCarryDebugOverride debug && debug.IgnoreAssemblyMassLimit;
+
+        public void ConfigureAssemblyCarryLimit(float maximumMassKilograms)
+        {
+            maximumCarryMassKilograms = Mathf.Max(0.01f, maximumMassKilograms);
+            allowAssemblyMassDebugOverride = true;
         }
 
         public void NotifyPickedUp(in InteractionContext context)

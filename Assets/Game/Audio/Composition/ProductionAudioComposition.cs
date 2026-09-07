@@ -16,6 +16,8 @@ namespace MSC.Audio.Composition
     [DisallowMultipleComponent]
     public sealed class ProductionAudioComposition : MonoBehaviour
     {
+        public const string UserReplacementResourcesPath =
+            "Phase1UserSelectedAudio/Phase1UserSelectedAudioEventLibrary";
         [SerializeField] private AudioBackendRouter router;
         [SerializeField] private MonoBehaviour preferredBackendComponent;
         [SerializeField] private MonoBehaviour fallbackBackendComponent;
@@ -23,6 +25,7 @@ namespace MSC.Audio.Composition
         [SerializeField] private AudioEmitterAuthoring ambienceEmitter;
         [SerializeField] private WeatherAudioPresenter weatherPresenter;
         [SerializeField] private WeatherExposureResolver weatherExposureResolver;
+        [SerializeField] private string userReplacementLibraryResourcesPath = UserReplacementResourcesPath;
 
         public IAudioBackend Backend => router;
         public IAudioBackend FallbackBackend =>
@@ -64,6 +67,14 @@ namespace MSC.Audio.Composition
             {
                 return Fail("The spawned player has no PhysicalCarryController for interaction audio.");
             }
+
+            // Load the optional selection before any session producers post.
+            // It only supplies presentation; missing private content keeps the
+            // existing libraries usable and is explicitly reported.
+            if (!string.IsNullOrEmpty(userReplacementLibraryResourcesPath) &&
+                fallbackBackendComponent is IAudioReplacementContentBackend replacement &&
+                !replacement.TryLoadReplacementEventLibrary(userReplacementLibraryResourcesPath, out string replacementFailure))
+                Debug.LogWarning("Optional user-selected audio is unavailable: " + replacementFailure, this);
 
             router.Configure(
                 preferredBackendComponent,

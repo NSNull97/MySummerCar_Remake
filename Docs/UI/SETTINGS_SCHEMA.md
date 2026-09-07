@@ -1,6 +1,6 @@
 # UI settings schema
 
-Status: `SchemaV6Implemented / AntiAliasingAdapterImplemented /
+Status: `SchemaV7Implemented / AntiAliasingAdapterImplemented /
 CameraAdapterImplemented / TargetedTestsPassed / VisualApprovalPending`
 
 Settings are versioned independently from world saves. The production path is:
@@ -9,7 +9,16 @@ Settings are versioned independently from world saves. The production path is:
 Application.persistentDataPath/Settings/ui-settings.json
 ```
 
-The current schema is `6` and is represented by `UiSettingsDocument`.
+The current schema is `7` and is represented by `UiSettingsDocument`.
+
+Schema 7 adds `MainMenuCarColourIndex`, a main-menu preference independent of
+native vehicle save state. The version-6 migration preserves all categories
+and defaults this preference to index 0. Palette bounds are validated by the
+main-menu presentation owner before use. A swatch selection saves the detached
+Applied snapshot through this store, updates only the same preference in
+Pending, and retains unrelated pending settings edits. No graphics/audio/input
+adapter is reapplied by choosing paint. See
+`MAIN_MENU_REDESIGN_2026-09-04.md` for integration and executed tests.
 
 ## Transaction contract
 

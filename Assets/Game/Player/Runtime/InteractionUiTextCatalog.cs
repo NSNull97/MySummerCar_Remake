@@ -597,6 +597,18 @@ namespace MSC.Player
                     localeId);
             }
 
+            bool combinedRaiseLower =
+                (folded.Contains("поднять") || folded.Contains("raise")) &&
+                (folded.Contains("опустить") || folded.Contains("lower"));
+            if (combinedRaiseLower)
+            {
+                return Select(
+                    binding == InteractionActionBinding.Throw
+                        ? new LocalizedText("LOWER", "ОПУСТИТЬ")
+                        : new LocalizedText("RAISE", "ПОДНЯТЬ"),
+                    localeId);
+            }
+
             if (TryResolve(ActionByAlias, normalized, out LocalizedText exact))
             {
                 return Select(exact, localeId);

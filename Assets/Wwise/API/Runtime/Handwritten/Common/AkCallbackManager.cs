@@ -369,7 +369,11 @@ public static class AkCallbackManager
 #if UNITY_EDITOR
 				if (gId != AkUnitySoundEngine.AK_INVALID_GAME_OBJECT)
 				{
-#if UNITY_6000_3_OR_NEWER
+#if UNITY_6000_6_OR_NEWER
+					var obj =
+						UnityEditor.EditorUtility.EntityIdToObject(UnityEngine.EntityId.FromULong(AkMonitoringCallbackInfo.gameObjID)) as
+							UnityEngine.GameObject;
+#elif UNITY_6000_3_OR_NEWER
 					var obj =
 						UnityEditor.EditorUtility.EntityIdToObject((int)AkMonitoringCallbackInfo.gameObjID) as
 							UnityEngine.GameObject;

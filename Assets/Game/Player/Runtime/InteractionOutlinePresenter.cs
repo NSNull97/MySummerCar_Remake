@@ -101,7 +101,9 @@ namespace MSC.Player
             in InteractionCandidate candidate,
             bool actionable)
         {
-            if (!actionable || !candidate.IsValid)
+            if (!actionable || !candidate.IsValid ||
+                candidate.TryGetCapability(out IInteractionOutlineVisibility visibility) &&
+                !visibility.ShouldShowOutline)
             {
                 ClearHighlight();
                 return;

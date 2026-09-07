@@ -370,27 +370,86 @@ namespace MSC.Tests.EditMode.LegacyImport
                 Is.Not.Null);
             Assert.That(
                 assembly.MountPoints,
-                Has.Length.EqualTo(117),
+                Has.Length.EqualTo(124),
                 "The generated graph must retain the current donor-evidenced mount roster.");
+            SatsumaCanonicalNightTestShape.AssertCanonical(assembly);
             Assert.That(
                 assembly.Dependencies,
-                Has.Length.EqualTo(40),
-                "The donor front installation checks add four bolted-support gates to the existing graph.");
+                Has.Length.EqualTo(30),
+                "Donor click-time bolt checks are not preview gates; steering rods do not require spindles; " +
+                "four false-positive clutch/chain dependencies were replaced by reviewed mount rules.");
+            foreach (AssemblyDependency removedEngineEdge in new[]
+            {
+                AssemblyDependency.Create("vehicle.satsuma.part.clutch", "vehicle.satsuma.part.clutch-cover-plate",
+                    AssemblyDependencyKind.InstallRequiresInstalled),
+                AssemblyDependency.Create("vehicle.satsuma.part.clutch-cover-plate", "vehicle.satsuma.part.clutch",
+                    AssemblyDependencyKind.RemovalBlockedWhileInstalled),
+                AssemblyDependency.Create("vehicle.satsuma.part.timing-chain", "vehicle.satsuma.part.timing-cover",
+                    AssemblyDependencyKind.InstallRequiresInstalled),
+                AssemblyDependency.Create("vehicle.satsuma.part.timing-cover", "vehicle.satsuma.part.timing-chain",
+                    AssemblyDependencyKind.RemovalBlockedWhileInstalled),
+            })
+            {
+                Assert.That(assembly.Dependencies.Any(value =>
+                    value.Kind == removedEngineEdge.Kind &&
+                    value.DependentPartDefinitionId == removedEngineEdge.DependentPartDefinitionId &&
+                    value.RelatedPartDefinitionId == removedEngineEdge.RelatedPartDefinitionId), Is.False,
+                    "False-positive engine dependency survived: " + removedEngineEdge.DependentPartDefinitionId +
+                    " -> " + removedEngineEdge.RelatedPartDefinitionId + " (" + removedEngineEdge.Kind + ")");
+            }
             Assert.That(
                 assembly.Dependencies
-                    .Where(value => value.Kind == AssemblyDependencyKind.InstallRequiresBolted)
-                    .Select(value => value.DependentPartDefinitionId + " -> " +
-                        value.RelatedPartDefinitionId),
+                    .Where(value => value.Kind == AssemblyDependencyKind.InstallRequiresBolted),
+                Is.Empty);
+            Assert.That(
+                assembly.MountPoints
+                    .Where(value => !string.IsNullOrEmpty(
+                        value.Definition.InstallAttemptBoltedSupportMountId))
+                    .Select(value => value.MountId + " -> " +
+                        value.Definition.InstallAttemptBoltedSupportMountId),
                 Is.EquivalentTo(new[]
                 {
-                    "vehicle.satsuma.part.spindle-fl -> vehicle.satsuma.part.wishbone-fl",
-                    "vehicle.satsuma.part.spindle-fr -> vehicle.satsuma.part.wishbone-fr",
-                    "vehicle.satsuma.part.strut-fl -> vehicle.satsuma.part.spindle-fl",
-                    "vehicle.satsuma.part.strut-fr -> vehicle.satsuma.part.spindle-fr",
+                    "mount.satsuma.steering-rack -> mount.satsuma.sub-frame",
+                    "mount.satsuma.steering-column -> mount.satsuma.steering-rack",
+                    "mount.satsuma.wishbone-fl -> mount.satsuma.sub-frame",
+                    "mount.satsuma.wishbone-fr -> mount.satsuma.sub-frame",
+                    "mount.satsuma.spindle-fl -> mount.satsuma.wishbone-fl",
+                    "mount.satsuma.spindle-fr -> mount.satsuma.wishbone-fr",
+                    "mount.satsuma.strut-fl -> mount.satsuma.spindle-fl",
+                    "mount.satsuma.strut-fr -> mount.satsuma.spindle-fr",
+                    "mount.satsuma.discbrake-fl -> mount.satsuma.spindle-fl",
+                    "mount.satsuma.discbrake-fr -> mount.satsuma.spindle-fr",
+                    "mount.satsuma.steering-rod-fl -> mount.satsuma.steering-rack",
+                    "mount.satsuma.steering-rod-fr -> mount.satsuma.steering-rack",
                 }));
-            Assert.That(assembly.Tools, Has.Length.EqualTo(10));
+            foreach (MountPointAuthoring mount in assembly.MountPoints.Where(
+                         value => !string.IsNullOrEmpty(
+                             value.Definition.InstallAttemptBoltedSupportMountId)))
+            {
+                Assert.That(mount.Definition.RequiredOccupiedMountIds,
+                    Does.Contain(mount.Definition.InstallAttemptBoltedSupportMountId),
+                    mount.MountId);
+                Assert.That(mount.Definition.RequiredBoltedMountIds, Is.Empty,
+                    mount.MountId + " must remain visible before its click-time check.");
+            }
+            foreach (string corner in new[] { "fl", "fr" })
+            {
+                MountPointDefinition halfshaft = assembly.MountPoints.Single(
+                    value => value.MountId == "mount.satsuma.halfshaft-" + corner).Definition;
+                Assert.That(halfshaft.RequiredOccupiedMountIds,
+                    Is.EqualTo(new[] { "mount.satsuma.discbrake-" + corner }));
+                Assert.That(halfshaft.InstallationBlockedWhileBoltedMountIds,
+                    Is.EqualTo(new[] { "mount.satsuma.discbrake-" + corner }));
+                Assert.That(halfshaft.InstallAttemptBoltedSupportMountId, Is.Empty);
+            }
+            Assert.That(assembly.Tools, Has.Length.EqualTo(12));
+            Assert.That(assembly.Tools.Count(value => value.DefinitionId == SatsumaAuxiliaryAssemblyTools.SparkPlugWrenchDefinitionId), Is.EqualTo(1));
+            ToolDefinition screwdriver = assembly.Tools.Single(value =>
+                value.DefinitionId == SatsumaAuxiliaryAssemblyTools.ScrewdriverDefinitionId);
+            Assert.That(screwdriver.ToolType, Is.EqualTo(SatsumaAuxiliaryAssemblyTools.ScrewdriverType));
+            Assert.That(screwdriver.Size, Is.EqualTo(FastenerSize.None));
             Assert.That(
-                assembly.Tools.Select(value => value.Size),
+                assembly.Tools.Where(value => value.ToolType == "Wrench").Select(value => value.Size),
                 Is.EquivalentTo(new[]
                 {
                     FastenerSize.Millimeter5,
@@ -406,7 +465,7 @@ namespace MSC.Tests.EditMode.LegacyImport
                 }));
             AssemblyFastenerInteractionTarget[] generatedFasteners = prefab
                 .GetComponentsInChildren<AssemblyFastenerInteractionTarget>(true);
-            Assert.That(generatedFasteners, Has.Length.EqualTo(280));
+            SatsumaCanonicalNightTestShape.AssertCanonicalTargets(generatedFasteners);
             Assert.That(
                 generatedFasteners,
                 Is.All.Matches<AssemblyFastenerInteractionTarget>(target =>
@@ -510,9 +569,17 @@ namespace MSC.Tests.EditMode.LegacyImport
                     .Replace('\\', '/'),
                 Does.EndWith("/662715305f835b4448f1b4165566e97e.png"),
                 "Temporary Phase 1 fasteners must use the donor BOLTS texture rather than the synthetic placeholder.");
-            Assert.That(
-                prefab.GetComponentsInChildren<AssemblyOwnedMountAuthoring>(true),
-                Has.Length.EqualTo(52));
+            AssemblyOwnedMountAuthoring[] ownedMounts = prefab
+                .GetComponentsInChildren<AssemblyOwnedMountAuthoring>(true);
+            Assert.That(ownedMounts, Has.Length.EqualTo(59));
+            MountPointAuthoring[] ownedPoints = ownedMounts
+                .Select(value => value.GetComponent<MountPointAuthoring>()).ToArray();
+            Assert.That(ownedPoints.All(value => value != null), Is.True);
+            Assert.That(ownedPoints.Where(value => SatsumaCanonicalNightTestShape.IsAddedMount(value.MountId))
+                    .Select(value => value.MountId),
+                Is.EquivalentTo(SatsumaCanonicalNightTestShape.AddedMountIds));
+            Assert.That(ownedPoints.Count(value => !SatsumaCanonicalNightTestShape.IsAddedMount(value.MountId)),
+                Is.EqualTo(52), "The seven purchased sockets preserve all previous owned mounts.");
             Assert.That(
                 prefab.GetComponentsInChildren<AssemblySurfaceMountHandoffTarget>(true),
                 Has.Length.EqualTo(126));
@@ -528,16 +595,22 @@ namespace MSC.Tests.EditMode.LegacyImport
             Assert.That(
                 prefab.GetComponentsInChildren<AssemblyInstalledPartInteractionTarget>(true),
                 Has.Length.EqualTo(125));
-            Assert.That(
-                VehicleAssemblyValidator.Validate(
+            VehicleItemAssemblyBridge itemBridge = assembly.GetComponent<VehicleItemAssemblyBridge>();
+            Assert.That(itemBridge, Is.Not.Null);
+            Assert.That(itemBridge.Assembly, Is.SameAs(assembly));
+            Assert.That(itemBridge.Catalog, Is.Not.Null);
+            Assert.That(itemBridge.Catalog.TryValidate(out string catalogFailure), Is.True, catalogFailure);
+            VehicleAssemblyValidationIssue[] validationErrors = VehicleAssemblyValidator.Validate(
                     assembly.Parts,
                     assembly.MountPoints,
                     assembly.Dependencies,
-                    assembly.Tools)
+                    assembly.Tools,
+                    itemBridge.Catalog.GetPartDefinitions())
                     .Where(issue =>
                         issue.Severity ==
-                        VehicleAssemblyValidationSeverity.Error),
-                Is.Empty);
+                        VehicleAssemblyValidationSeverity.Error).ToArray();
+            Assert.That(validationErrors, Is.Empty,
+                string.Join("\n", validationErrors.Select(issue => issue.Code + ": " + issue.Message)));
         }
 
         [Test]
@@ -585,7 +658,7 @@ namespace MSC.Tests.EditMode.LegacyImport
                     "vehicle.satsuma.part.steering-rod-fl" &&
                     value.RelatedPartDefinitionId ==
                     "vehicle.satsuma.part.spindle-fl"),
-                Is.True);
+                Is.False, "The rod installs on the secured rack before a spindle exists.");
             Assert.That(
                 dependencies.Any(value =>
                     value.Kind == AssemblyDependencyKind.InstallRequiresInstalled &&
@@ -593,7 +666,7 @@ namespace MSC.Tests.EditMode.LegacyImport
                     "vehicle.satsuma.part.steering-rod-fr" &&
                     value.RelatedPartDefinitionId ==
                     "vehicle.satsuma.part.spindle-fr"),
-                Is.True);
+                Is.False, "The rod installs on the secured rack before a spindle exists.");
         }
 
         [Test]
@@ -666,7 +739,11 @@ namespace MSC.Tests.EditMode.LegacyImport
                     Is.EqualTo(new[] { "mount.satsuma.trail-arm-rl" }));
                 Assert.That(
                     springMount.Definition.BlockedWhileOccupiedMountIds,
-                    Is.EqualTo(new[] { "mount.satsuma.long-coilspring-rl" }));
+                    Is.EquivalentTo(new[]
+                    {
+                        "mount.satsuma.long-coilspring-rl",
+                        "mount.satsuma.shock-rl",
+                    }));
                 foreach (string corner in new[] { "rl", "rr" })
                 {
                     string shockMountId = "mount.satsuma.shock-" + corner;
@@ -683,6 +760,11 @@ namespace MSC.Tests.EditMode.LegacyImport
                             reviewedSpringMount.Definition
                                 .RemovalBlockedWhileOccupiedMountIds,
                             Is.EqualTo(new[] { shockMountId }),
+                            springMountId);
+                        Assert.That(
+                            reviewedSpringMount.Definition
+                                .BlockedWhileOccupiedMountIds,
+                            Does.Contain(shockMountId),
                             springMountId);
                     }
                 }
@@ -787,6 +869,10 @@ namespace MSC.Tests.EditMode.LegacyImport
                     Is.True);
                 Assert.That(spring.IsInstalled, Is.False);
                 Assert.That(drum.IsInstalled, Is.False);
+                Assert.That(
+                    assembly.EvaluateInstall(spring, springMount).Succeeded,
+                    Is.False,
+                    "The installed same-corner shock blocks the stock spring.");
 
                 PartInstance alternateSpring = assembly.Parts.Single(part =>
                     part.Definition.DefinitionId ==
@@ -797,8 +883,9 @@ namespace MSC.Tests.EditMode.LegacyImport
                 Assert.That(
                     assembly.EvaluateInstall(alternateSpring, longSpringMount)
                         .Succeeded,
-                    Is.True,
-                    "Stock and long springs are alternatives, but neither depends on the shock or drum.");
+                    Is.False,
+                    "Every rear spring variant must wait until the installed " +
+                    "same-corner shock has been removed.");
             }
             finally
             {
@@ -840,19 +927,7 @@ namespace MSC.Tests.EditMode.LegacyImport
                         mountId + ": " + assembly.LastOperationResult.Message);
                     if (tightenForNextMount)
                     {
-                        MountPointRuntime runtime = assembly.ResolveMount(mount);
-                        FastenerDefinition fastener = mount.Definition.Fasteners[0];
-                        ToolDefinition tool = assembly.Tools.First(value =>
-                            value != null && value.Size == fastener.Size);
-                        int attempts = 0;
-                        while (!runtime.FastenerGroup.IsBolted)
-                        {
-                            Assert.That(attempts++, Is.LessThan(fastener.MaximumStage));
-                            Assert.That(
-                                assembly.TryOperateFastener(mountId, fastener.DefinitionId,
-                                    tool, tighten: true).Succeeded,
-                                Is.True);
-                        }
+                        TightenUntilBolted(assembly, mount);
                     }
                     return part;
                 }
@@ -883,7 +958,7 @@ namespace MSC.Tests.EditMode.LegacyImport
                         targetMountId + ": " + surface.HandoffPrompt);
                 }
 
-                PartInstance subFrame = InstallAt("mount.satsuma.sub-frame");
+                PartInstance subFrame = InstallAt("mount.satsuma.sub-frame", tightenForNextMount: true);
                 AssertRoutes(subFrame, "mount.satsuma.wishbone-fl");
                 PartInstance wishbone = InstallAt("mount.satsuma.wishbone-fl", tightenForNextMount: true);
                 AssertRoutes(wishbone, "mount.satsuma.spindle-fl");
@@ -941,10 +1016,18 @@ namespace MSC.Tests.EditMode.LegacyImport
                 foreach (string acceptedId in
                          mount.Definition.AcceptedPartDefinitionIds)
                 {
-                    PartInstance part = assembly.Parts.Single(candidate =>
+                    PartInstance part = assembly.Parts.SingleOrDefault(candidate =>
                         candidate.Definition.DefinitionId == acceptedId);
+                    PartDefinition definition = part != null ? part.Definition : null;
+                    if (definition == null)
+                    {
+                        Assert.That(new[] { SatsumaConsumableAssemblyRules.SparkPlugPartId,
+                            SatsumaConsumableAssemblyRules.BeltPartId, SatsumaConsumableAssemblyRules.BulbPartId },
+                            Does.Contain(acceptedId), "Only the reviewed purchased parts have no starting instance.");
+                        Assert.That(assembly.TryGetDynamicPartDefinition(acceptedId, out definition), Is.True, acceptedId);
+                    }
                     Assert.That(
-                        part.Definition.IsCompatibleWith(mount.Definition),
+                        definition.IsCompatibleWith(mount.Definition),
                         Is.True,
                         mount.MountId + " -> " + acceptedId);
                 }
@@ -1553,7 +1636,6 @@ namespace MSC.Tests.EditMode.LegacyImport
                     Is.EqualTo(new[]
                     {
                         "mount.satsuma.spindle-" + corner,
-                        "mount.satsuma.strut-" + corner,
                     }));
                 Assert.That(
                     binding.RoadWheelMount.Definition
@@ -2009,6 +2091,19 @@ namespace MSC.Tests.EditMode.LegacyImport
                 Assert.That(
                     runtime.Fasteners.Select(value => value.Definition.Size),
                     Is.All.EqualTo(FastenerSize.Millimeter11));
+                Assert.That(
+                    Quaternion.Angle(
+                        engineMount.transform.localRotation,
+                        new Quaternion(0.00795983151f, -0.6982286f, -0.7158303f, -0.0007621968f)),
+                    Is.LessThan(0.001f));
+                AssemblyEngineDockingState docking = block.GetComponent<AssemblyEngineDockingState>();
+                Assert.That(docking, Is.Not.Null);
+                Assert.That(engineMount.GetComponent<AssemblyPhysicalDockingOnly>(), Is.Not.Null);
+
+                // The pose fixture must satisfy the donor's engine-to-car prerequisites.
+                InstallAtOnlyCompatibleMount(assembly, "vehicle.satsuma.part.sub-frame", tightenForNextMount: true);
+                InstallAtOnlyCompatibleMount(assembly, "vehicle.satsuma.part.gearbox", tightenForNextMount: true);
+                InstallAtOnlyCompatibleMount(assembly, "vehicle.satsuma.part.oilpan", tightenForNextMount: true);
 
                 block.transform.SetPositionAndRotation(
                     engineMount.Pose.position + Vector3.right * 0.65f,
@@ -2026,11 +2121,48 @@ namespace MSC.Tests.EditMode.LegacyImport
                     engineMount.Pose.forward);
                 Assert.That(
                     chassisSurface.CanAccept(block.PickupTarget, context),
-                    Is.True,
-                    chassisSurface.HandoffPrompt);
+                    Is.False,
+                    "The engine is physically docked with its bolts, never by clicking the chassis.");
                 chassisSurface.Accept(block.PickupTarget, context);
+                Assert.That(block.IsInstalled, Is.False);
+                Assert.That(docking.CanExposePending(0), Is.False);
+
+                block.transform.SetPositionAndRotation(engineMount.Pose.position, engineMount.Pose.rotation);
+                block.Body.position = engineMount.Pose.position;
+                block.Body.rotation = engineMount.Pose.rotation;
+                Physics.SyncTransforms();
+                for (int index = 0; index < 3; index++)
+                    Assert.That(docking.CanExposePending(index), Is.True, "Docking bolt " + (index + 1));
+                Assert.That(block.IsInstalled, Is.False, "Proximity alone must not attach the engine.");
+                Assert.That(chassisSurface.CanAccept(block.PickupTarget, context), Is.False);
+                chassisSurface.Accept(block.PickupTarget, context);
+                Assert.That(block.IsInstalled, Is.False, "Click installation also stays disabled when aligned.");
+
+                string firstBoltId = docking.FastenerIds[0];
+                AssemblyFastenerInteractionTarget firstBolt = instance
+                    .GetComponentsInChildren<AssemblyFastenerInteractionTarget>(true)
+                    .Single(value => value.FastenerDefinitionId == firstBoltId);
+                Assert.That(firstBolt.PendingDocking, Is.SameAs(docking));
+                firstBolt.RefreshAvailability();
+                Assert.That(firstBolt.GetComponent<Collider>().enabled, Is.True);
+                Assert.That(firstBolt.CanActivateHeldTool(
+                    new TestHeldToolIdentity("Wrench", "11"), context, InteractionScrollDirection.Positive), Is.True);
+                ToolDefinition key = assembly.Tools.Single(value =>
+                    value != null && value.ToolType == "Wrench" && value.Size == FastenerSize.Millimeter11);
+                Assert.That(docking.TryTurnPending(firstBoltId, key,
+                    FastenerRotationDirection.Clockwise).Succeeded, Is.True);
+                Assert.That(block.IsInstalled, Is.False);
+                Assert.That(block.Body.isKinematic, Is.False);
+                Assert.That(docking.CaptureSaveData().pendingStages, Is.EqualTo(new[] { 1, 0, 0 }));
+                Assert.That(docking.TryTurnPending(firstBoltId, key,
+                    FastenerRotationDirection.Clockwise).Succeeded, Is.True);
                 Assert.That(block.RuntimeState.InstalledMountId, Is.EqualTo(engineMount.MountId));
                 Assert.That(block.transform.parent, Is.EqualTo(engineMount.Pose));
+                Assert.That(runtime.FastenerGroup.Tightness, Is.EqualTo(2));
+                Assert.That(runtime.FastenerGroup.IsBolted, Is.True);
+                Assert.That(docking.CaptureSaveData().IsEmpty, Is.True);
+                Assert.That(Vector3.Distance(block.transform.position, engineMount.Pose.position), Is.LessThan(0.00001f));
+                Assert.That(Quaternion.Angle(block.transform.rotation, engineMount.Pose.rotation), Is.LessThan(0.001f));
             }
             finally
             {
@@ -2749,10 +2881,12 @@ namespace MSC.Tests.EditMode.LegacyImport
 
                 InstallAtOnlyCompatibleMount(
                     assembly,
-                    "vehicle.satsuma.part.sub-frame");
+                    "vehicle.satsuma.part.sub-frame",
+                    tightenForNextMount: true);
                 InstallAtOnlyCompatibleMount(
                     assembly,
-                    "vehicle.satsuma.part.steering-rack");
+                    "vehicle.satsuma.part.steering-rack",
+                    tightenForNextMount: true);
                 PartInstance column = InstallAtOnlyCompatibleMount(
                     assembly,
                     "vehicle.satsuma.part.steering-column");
@@ -2867,11 +3001,20 @@ namespace MSC.Tests.EditMode.LegacyImport
                      targetIndex < targets.Length;
                      targetIndex++)
                 {
-                    Assert.That(
-                        targets[targetIndex].ResolveOutlineRenderer(),
-                        Is.SameAs(fastenerVisuals[targetIndex]),
-                        expected.mountId +
-                        " hover must outline the authored bolt, not its panel.");
+                    if (expected.partId == "vehicle.satsuma.part.door-left" ||
+                        expected.partId == "vehicle.satsuma.part.door-right")
+                    {
+                        Assert.That(targets[targetIndex].ResolveOutlineRenderer(), Is.Null,
+                            expected.mountId + " a hidden loose-door bolt must not offer an outline.");
+                    }
+                    else
+                    {
+                        Assert.That(
+                            targets[targetIndex].ResolveOutlineRenderer(),
+                            Is.SameAs(fastenerVisuals[targetIndex]),
+                            expected.mountId +
+                            " hover must outline the authored bolt, not its panel.");
+                    }
                 }
                 Assert.That(
                     fastenerVisuals.Select(value => value
@@ -2881,9 +3024,10 @@ namespace MSC.Tests.EditMode.LegacyImport
                     " donor body fasteners are short bolts, not nuts.");
                 Assert.That(
                     fastenerVisuals.Select(value => value.enabled),
-                    Is.All.True,
+                    Is.All.EqualTo(expected.partId != "vehicle.satsuma.part.door-left" &&
+                        expected.partId != "vehicle.satsuma.part.door-right"),
                     expected.mountId +
-                    " bolts must remain visible on the loose donor panel.");
+                    " only the reviewed door bolts are hidden on the loose panel.");
                 Assert.That(
                     fastenerVisuals.Select(value => value.transform.parent),
                     Is.All.EqualTo(part.transform),
@@ -2898,6 +3042,8 @@ namespace MSC.Tests.EditMode.LegacyImport
                 if (expected.partId == "vehicle.satsuma.part.door-left" ||
                     expected.partId == "vehicle.satsuma.part.door-right")
                 {
+                    Assert.That(targets.Select(value => value.InstalledOnlyExternalPresentationRenderer),
+                        Is.EquivalentTo(fastenerVisuals), expected.mountId + " must bind visibility without reparenting door bolts.");
                     Assert.That(
                         fastenerVisuals.Select(value =>
                             value.transform.localScale.x),
@@ -3846,9 +3992,7 @@ namespace MSC.Tests.EditMode.LegacyImport
                     instance.GetComponent<VehicleAssemblyController>();
                 VehicleAssemblySaveData captured = assembly.CaptureSaveData();
                 Assert.That(captured.parts, Has.Length.EqualTo(126));
-                Assert.That(captured.mounts, Has.Length.EqualTo(117));
-                Assert.That(captured.fasteners, Has.Length.EqualTo(280));
-                Assert.That(captured.fastenerGroups, Has.Length.EqualTo(117));
+                SatsumaCanonicalNightTestShape.AssertCanonical(captured);
                 Assert.That(
                     assembly.ValidateSaveDataForRestore(captured).Succeeded,
                     Is.True);
@@ -3887,13 +4031,14 @@ namespace MSC.Tests.EditMode.LegacyImport
                 {
                     schemaVersion = current.schemaVersion,
                     parts = current.parts,
-                    mounts = current.mounts,
+                    mounts = current.mounts.Where(value => !SatsumaCanonicalNightTestShape.IsAddedMount(value.mountId)).ToArray(),
                     fasteners = BuildPrevious260FastenerShape(current),
-                    fastenerGroups = current.fastenerGroups,
+                    fastenerGroups = current.fastenerGroups.Where(value => !SatsumaCanonicalNightTestShape.IsAddedMount(value.mountId)).ToArray(),
                 };
                 string originalJson = JsonUtility.ToJson(legacy);
                 string[] preservedFasteners = legacy.fasteners
                     .Where(value => !IsRetiredSteeringShapeFastener(value))
+                    .Where(value => !IsRetiredEngineShapeFastener(value))
                     .Select(FastenerFingerprint)
                     .OrderBy(value => value, StringComparer.Ordinal)
                     .ToArray();
@@ -3906,7 +4051,7 @@ namespace MSC.Tests.EditMode.LegacyImport
                 Assert.That(restore.Succeeded, Is.True, restore.Message);
 
                 VehicleAssemblySaveData migrated = assembly.CaptureSaveData();
-                Assert.That(migrated.fasteners, Has.Length.EqualTo(280));
+                SatsumaCanonicalNightTestShape.AssertCanonical(migrated);
                 Assert.That(
                     migrated.fasteners.Count(IsPost260AddedFastener),
                     Is.EqualTo(21));
@@ -3921,6 +4066,7 @@ namespace MSC.Tests.EditMode.LegacyImport
                 Assert.That(
                     migrated.fasteners
                         .Where(value => !IsPost260AddedFastener(value))
+                        .Where(value => !SatsumaCanonicalNightTestShape.IsAddedFastener(value))
                         .Where(value => !IsRetiredSteeringShapeFastener(value))
                         .Select(FastenerFingerprint)
                         .OrderBy(value => value, StringComparer.Ordinal),
@@ -3976,12 +4122,12 @@ namespace MSC.Tests.EditMode.LegacyImport
                 {
                     schemaVersion = current.schemaVersion,
                     parts = current.parts,
-                    mounts = current.mounts,
+                    mounts = current.mounts.Where(value => !SatsumaCanonicalNightTestShape.IsAddedMount(value.mountId)).ToArray(),
                     fasteners = expectedLegacy
                         .Skip(1)
                         .Concat(new[] { unexpectedNew })
                         .ToArray(),
-                    fastenerGroups = current.fastenerGroups,
+                    fastenerGroups = current.fastenerGroups.Where(value => !SatsumaCanonicalNightTestShape.IsAddedMount(value.mountId)).ToArray(),
                 };
 
                 Assert.That(corrupt.fasteners, Has.Length.EqualTo(260));
@@ -4029,6 +4175,8 @@ namespace MSC.Tests.EditMode.LegacyImport
                     Is.True);
 
                 VehicleAssemblySaveData legacy = assembly.CaptureSaveData();
+                legacy.fasteners = legacy.fasteners.Where(value => !SatsumaCanonicalNightTestShape.IsAddedFastener(value)).ToArray();
+                SatsumaCanonicalNightTestShape.StripAddedMountsFromHistoricalInput(legacy);
                 PartSaveDto partDto = legacy.parts.Single(value =>
                     value.stableEntityId == subframe.StableId.Value);
                 MountSaveDto canonicalDto = legacy.mounts.Single(value =>
@@ -4051,7 +4199,7 @@ namespace MSC.Tests.EditMode.LegacyImport
                     Is.True);
                 Assert.That(assembly.RestoreSaveData(legacy).Succeeded, Is.True);
                 VehicleAssemblySaveData migrated = assembly.CaptureSaveData();
-                Assert.That(migrated.mounts, Has.Length.EqualTo(117));
+                SatsumaCanonicalNightTestShape.AssertCanonical(migrated);
                 Assert.That(
                     migrated.mounts.Any(value =>
                         value.mountId == "mount.satsuma.subframe"),
@@ -4085,7 +4233,9 @@ namespace MSC.Tests.EditMode.LegacyImport
                 VehicleAssemblyController assembly =
                     instance.GetComponent<VehicleAssemblyController>();
                 VehicleAssemblySaveData legacy = assembly.CaptureSaveData();
+                SatsumaCanonicalNightTestShape.StripAddedMountsFromHistoricalInput(legacy);
                 legacy.fasteners = legacy.fasteners
+                    .Where(value => !SatsumaCanonicalNightTestShape.IsAddedFastener(value))
                     .Take(57)
                     .ToArray();
                 string[] fastenerMountIds = legacy.fasteners
@@ -4101,13 +4251,18 @@ namespace MSC.Tests.EditMode.LegacyImport
 
                 Assert.That(legacy.mounts, Has.Length.EqualTo(46));
                 Assert.That(legacy.fasteners, Has.Length.EqualTo(57));
+                // A current-schema historical fixture must carry exactly one
+                // latch per saved socket, not 117 groups beside only 46 mounts.
+                legacy.fastenerGroups = legacy.fastenerGroups.Where(group =>
+                    legacy.mounts.Any(mount => mount.mountId == group.mountId)).ToArray();
+                Assert.That(legacy.fastenerGroups, Has.Length.EqualTo(46));
+                AssemblyOperationResult validation = assembly.ValidateSaveDataForRestore(legacy);
                 Assert.That(
-                    assembly.ValidateSaveDataForRestore(legacy).Succeeded,
-                    Is.True);
+                    validation.Succeeded,
+                    Is.True, validation.Message);
                 Assert.That(assembly.RestoreSaveData(legacy).Succeeded, Is.True);
                 VehicleAssemblySaveData migrated = assembly.CaptureSaveData();
-                Assert.That(migrated.mounts, Has.Length.EqualTo(117));
-                Assert.That(migrated.fasteners, Has.Length.EqualTo(280));
+                SatsumaCanonicalNightTestShape.AssertCanonical(migrated);
                 Assert.That(
                     migrated.mounts.Single(dto =>
                         dto.mountId == "mount.satsuma.engine-assembly")
@@ -4460,7 +4615,8 @@ namespace MSC.Tests.EditMode.LegacyImport
 
         private static PartInstance InstallAtOnlyCompatibleMount(
             VehicleAssemblyController assembly,
-            string definitionId)
+            string definitionId,
+            bool tightenForNextMount = false)
         {
             PartInstance part = assembly.Parts.Single(value =>
                 value.Definition != null &&
@@ -4481,7 +4637,33 @@ namespace MSC.Tests.EditMode.LegacyImport
             part.Body.rotation = mount.Pose.rotation;
             AssemblyOperationResult result = assembly.TryInstall(part, mount);
             Assert.That(result.Succeeded, Is.True, result.Message);
+            if (tightenForNextMount)
+            {
+                TightenUntilBolted(assembly, mount);
+            }
             return part;
+        }
+
+        private static void TightenUntilBolted(
+            VehicleAssemblyController assembly,
+            MountPointAuthoring mount)
+        {
+            MountPointRuntime runtime = assembly.ResolveMount(mount);
+            foreach (FastenerDefinition fastener in mount.Definition.Fasteners)
+            {
+                ToolDefinition tool = assembly.Tools.First(value =>
+                    value != null && value.Size == fastener.Size);
+                for (int stage = 0;
+                     stage < fastener.MaximumStage && !runtime.FastenerGroup.IsBolted;
+                     stage++)
+                {
+                    AssemblyOperationResult result = assembly.TryOperateFastener(
+                        mount.MountId, fastener.DefinitionId, tool, tighten: true);
+                    Assert.That(result.Succeeded, Is.True, result.Message);
+                }
+            }
+            Assert.That(runtime.FastenerGroup.IsBolted, Is.True,
+                mount.MountId + " fixture must reach the authored group latch threshold.");
         }
 
         private static bool IsPost260AddedFastener(
@@ -4495,6 +4677,7 @@ namespace MSC.Tests.EditMode.LegacyImport
         {
             var legacy = current.fasteners
                 .Where(value => !IsPost260AddedFastener(value))
+                .Where(value => !SatsumaCanonicalNightTestShape.IsAddedFastener(value))
                 .Select(CloneFastener)
                 .ToList();
             FastenerSaveDto secondPhysicalColumnBolt = legacy.Single(value =>
@@ -4510,8 +4693,27 @@ namespace MSC.Tests.EditMode.LegacyImport
                 seated = secondPhysicalColumnBolt.seated,
                 stage = secondPhysicalColumnBolt.stage,
             });
-            return legacy.ToArray();
+            // Reconstruct the actual old engine roster, not merely its old
+            // total count. These seven IDs were retired by the engine repair.
+            string[] stock = SatsumaRockerCoverFastenerMigration.CanonicalIds;
+            string[] aliases = SatsumaRockerCoverFastenerMigration.RetiredIds;
+            for (int index = 0; index < aliases.Length; index++)
+            {
+                FastenerSaveDto copy = CloneFastener(legacy.Single(value => value.fastenerDefinitionId == stock[index]));
+                copy.fastenerDefinitionId = aliases[index];
+                legacy.Add(copy);
+            }
+            FastenerSaveDto carb = CloneFastener(legacy.First(value => value.mountId == SatsumaCarburetorFastenerMigration.MountId));
+            carb.fastenerDefinitionId = SatsumaCarburetorFastenerMigration.RetiredId;
+            carb.stage = 0;
+            legacy.Add(carb);
+            return SatsumaCanonicalNightTestShape.RestoreHistoricalValveFasteners(legacy);
         }
+
+        private static bool IsRetiredEngineShapeFastener(FastenerSaveDto value) =>
+            value != null && (SatsumaRockerShaftFastenerMigration.RetiredIds.Contains(value.fastenerDefinitionId) ||
+                SatsumaRockerCoverFastenerMigration.RetiredIds.Contains(value.fastenerDefinitionId) ||
+                value.fastenerDefinitionId == SatsumaCarburetorFastenerMigration.RetiredId);
 
         private static bool IsRetiredSteeringShapeFastener(
             FastenerSaveDto value) => value != null &&

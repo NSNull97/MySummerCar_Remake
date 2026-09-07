@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using MSC.Bootstrap;
+using MSC.UI.Presentation;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -51,9 +52,8 @@ namespace MSC.UI.EditorTools
                     RequireAsset<InputActionAsset>(PlayerActionsPath);
                 InputActionAsset vehicleActions =
                     RequireAsset<InputActionAsset>(VehicleActionsPath);
-                ConfigureMainMenuBackdropImport();
-                Texture2D mainMenuBackdrop =
-                    RequireAsset<Texture2D>(MainMenuBackdropPath);
+                var menuVehicle = RequireAsset<MainMenuVehicleModel>(MainMenuVehicleAuthoring.PrefabPath);
+                var menuEnvironment = RequireAsset<MainMenuEnvironmentModel>(MainMenuEnvironmentAuthoring.PrefabPath);
                 ConfigureMainMenuLogoImport();
                 Texture2D mainMenuLogo =
                     RequireAsset<Texture2D>(MainMenuLogoPath);
@@ -78,10 +78,11 @@ namespace MSC.UI.EditorTools
                     worldInstaller,
                     playerActions,
                     vehicleActions,
-                    mainMenuBackdrop,
+                    null,
                     mainMenuLogo,
                     uiBlurShader,
                     configuredStartInMainMenu: true);
+                uiInstaller.ConfigureMenuEnvironmentForAuthoring(menuVehicle, menuEnvironment);
                 if (!uiInstaller.TryValidateAuthoringConfiguration(
                         out string configurationFailure))
                 {
@@ -144,8 +145,12 @@ namespace MSC.UI.EditorTools
                         RequireAsset<InputActionAsset>(PlayerActionsPath) ||
                     uiInstaller.VehicleActions !=
                         RequireAsset<InputActionAsset>(VehicleActionsPath) ||
-                    uiInstaller.MainMenuBackdrop !=
-                        RequireAsset<Texture2D>(MainMenuBackdropPath) ||
+                    uiInstaller.MainMenuBackdrop != null ||
+                    uiInstaller.MainMenuPreviewBackdropShader != null ||
+                    uiInstaller.MainMenuVehiclePrefab !=
+                        RequireAsset<MainMenuVehicleModel>(MainMenuVehicleAuthoring.PrefabPath) ||
+                    uiInstaller.MainMenuEnvironmentPrefab !=
+                        RequireAsset<MainMenuEnvironmentModel>(MainMenuEnvironmentAuthoring.PrefabPath) ||
                     uiInstaller.MainMenuLogo !=
                         RequireAsset<Texture2D>(MainMenuLogoPath) ||
                     uiInstaller.UiBlurShader !=

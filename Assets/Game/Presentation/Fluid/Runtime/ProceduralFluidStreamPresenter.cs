@@ -11,6 +11,9 @@ namespace MSC.Presentation.Fluid
         Urine = 0,
         Faucet = 1,
         Shower = 2,
+        MotorOil = 3,
+        Coolant = 4,
+        BrakeFluid = 5,
     }
 
     /// <summary>
@@ -83,6 +86,28 @@ namespace MSC.Presentation.Fluid
             int maximumParticles;
             switch (profile)
             {
+                case FluidStreamProfile.MotorOil:
+                case FluidStreamProfile.Coolant:
+                case FluidStreamProfile.BrakeFluid:
+                    bool oil = profile == FluidStreamProfile.MotorOil;
+                    bool coolant = profile == FluidStreamProfile.Coolant;
+                    start = oil ? new Color(.24f, .12f, .025f, .94f) : coolant ?
+                        new Color(.12f, .68f, .34f, .65f) : new Color(.76f, .66f, .34f, .56f);
+                    middle = start; middle.a *= .85f;
+                    end = start; end.a = 0f;
+                    lifetime = .7f;
+                    speed = oil ? .2f : coolant ? .45f : .35f;
+                    minimumSize = oil ? .006f : .004f;
+                    maximumSize = oil ? .009f : .007f;
+                    coneAngle = oil ? .2f : 1.1f;
+                    coneRadius = .002f;
+                    noiseStrength = oil ? .0003f : .005f;
+                    rendererVelocityScale = .025f;
+                    rendererLengthScale = oil ? 1.8f : .8f;
+                    baseEmissionRate = oil ? 240f : 330f;
+                    maximumParticles = 260;
+                    break;
+
                 case FluidStreamProfile.Shower:
                     // A dense fan of short translucent droplets. Long stretched
                     // cards read as black needles at grazing angles in HDRP.

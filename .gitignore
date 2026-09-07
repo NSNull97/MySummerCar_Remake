@@ -16,6 +16,7 @@ Recordings/
 .idea/
 *.csproj
 !Tools/WorldTransfer/**/*.csproj
+!Tools/SaveMaster/**/*.csproj
 *.sln
 *.slnx
 *.suo
@@ -40,6 +41,7 @@ __pycache__/
 Config/DonorPaths.local.json
 Config/PresentationAssets.local.json
 Config/UnityEditor.local.json
+Config/UserAudioPack.local.json
 Config/WorldTransferConfig.local.json
 Config/WorldTransferRules.local.json
 

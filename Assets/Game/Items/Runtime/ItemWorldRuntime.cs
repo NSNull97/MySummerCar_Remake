@@ -14,7 +14,7 @@ using UnityEngine.SceneManagement;
 namespace MSC.Items
 {
     [DisallowMultipleComponent]
-    public sealed class ItemWorldRuntime : MonoBehaviour
+    public sealed partial class ItemWorldRuntime : MonoBehaviour
     {
         public const int WorldItemCollisionLayer = 8;
         private readonly Dictionary<string, WorldItemInstance> instances =
@@ -280,6 +280,15 @@ namespace MSC.Items
             string sourceCellId = "",
             int variantIndex = 0)
         {
+            return SpawnDynamicCore(definitionId, stableId, worldPosition, worldRotation,
+                targetScene, sourceCellId, variantIndex, null);
+        }
+
+        private WorldItemInstance SpawnDynamicCore(
+            string definitionId, StableEntityId stableId, Vector3 worldPosition,
+            Quaternion worldRotation, Scene targetScene, string sourceCellId,
+            int variantIndex, ItemInstanceState restoredState)
+        {
             if (!initialized ||
                 !stableId.IsValid ||
                 TryGetInstance(stableId.Value, out _) ||
@@ -290,27 +299,33 @@ namespace MSC.Items
                     "Dynamic item materialization request is invalid.");
             }
 
-            WorldItemInstance instance = CreateInstance(
+            bool hadOwnershipPlan = externalOwnershipPlan.Contains(stableId.Value);
+            // Establish provenance before any materialization/presentation callback.
+            if (!string.IsNullOrEmpty(sourceCellId))
+                sourceCellIds[stableId.Value] = sourceCellId;
+            else if (worldStreaming.TryGetCellIdForPosition(worldPosition, out string resolvedCellId))
+                sourceCellIds[stableId.Value] = resolvedCellId;
+            recoveryPoses[stableId.Value] = new Pose(worldPosition, worldRotation);
+            WorldItemInstance instance;
+            try
+            {
+                instance = CreateInstance(
                 definition,
                 stableId,
                 worldPosition,
                 worldRotation,
                 targetScene,
                 variantIndex,
-                null);
-            if (!string.IsNullOrEmpty(sourceCellId))
-            {
-                sourceCellIds[stableId.Value] = sourceCellId;
+                    null,
+                    restoredState);
+                dynamicRestoreTransaction?.TrackMaterialized(instance);
             }
-            else if (worldStreaming.TryGetCellIdForPosition(
-                         worldPosition,
-                         out string resolvedCellId))
+            catch
             {
-                sourceCellIds[stableId.Value] = resolvedCellId;
+                AbortDynamicMaterialization(stableId.Value);
+                if (!hadOwnershipPlan) externalOwnershipPlan.Remove(stableId.Value);
+                throw;
             }
-
-            recoveryPoses[stableId.Value] =
-                new Pose(worldPosition, worldRotation);
             return instance;
         }
 
@@ -368,6 +383,15 @@ namespace MSC.Items
                 return existing;
             }
 
+            if (dynamicRestoreTransaction != null &&
+                dynamicRestoreTransaction.TryRestoreRetainedInstance(
+                    record.state.stableEntityId, out WorldItemInstance retained))
+            {
+                if (retained.Definition.DefinitionId != record.state.definitionId)
+                    throw new InvalidOperationException("A retained item cannot change definition during restore.");
+                return retained;
+            }
+
             if (record.isCanonicalPlacement)
             {
                 return null;
@@ -384,14 +408,15 @@ namespace MSC.Items
             Scene materializationScene = targetScene.IsValid() && targetScene.isLoaded
                 ? targetScene
                 : persistentScene;
-            return SpawnDynamic(
+            return SpawnDynamicCore(
                 record.state.definitionId,
                 stableId,
                 record.materializationPosition,
                 record.materializationRotation,
                 materializationScene,
                 record.sourceCellId,
-                record.state.variantIndex);
+                record.state.variantIndex,
+                record.state);
         }
 
         public void RemoveDynamicInstancesExcept(
@@ -405,18 +430,8 @@ namespace MSC.Items
                 .ToArray();
             foreach (WorldItemInstance instance in remove)
             {
-                NotifyDestroyed(instance);
-                sourceCellIds.Remove(instance.StableId.Value);
-                recoveryPoses.Remove(instance.StableId.Value);
-                instance.gameObject.SetActive(false);
-                if (Application.isPlaying)
-                {
-                    Destroy(instance.gameObject);
-                }
-                else
-                {
-                    DestroyImmediate(instance.gameObject);
-                }
+                if (!TryRemoveDynamic(instance))
+                    throw new InvalidOperationException("An externally owned item must be detached before restore removes it.");
             }
         }
 
@@ -432,9 +447,20 @@ namespace MSC.Items
                 return false;
             }
 
+            if (externalPhysicsOwner != null && IsExternallyOwned(instance.StableId.Value) &&
+                !externalPhysicsOwner.TryReleaseInstance(instance, out _))
+                return false;
+
+            if (dynamicRestoreTransaction != null)
+            {
+                dynamicRestoreTransaction.StageRemoval(instance);
+                return true;
+            }
+
             NotifyDestroyed(instance);
             sourceCellIds.Remove(instance.StableId.Value);
             recoveryPoses.Remove(instance.StableId.Value);
+            externalOwnershipPlan.Remove(instance.StableId.Value);
             instance.gameObject.SetActive(false);
             if (Application.isPlaying)
             {
@@ -473,14 +499,6 @@ namespace MSC.Items
                 return false;
             }
 
-            if (!container.TryTakeContainedIdentity(
-                    out StableEntityId takenChildId) ||
-                takenChildId != childId)
-            {
-                throw new InvalidOperationException(
-                    "Contained item identity changed during dispense preflight.");
-            }
-
             Rigidbody sourceBody = container.GetComponent<Rigidbody>();
             Collider sourceCollider = container.GetComponent<Collider>();
             Vector3 direction = context.Direction.sqrMagnitude > 0.0001f
@@ -506,13 +524,22 @@ namespace MSC.Items
                     out string resolvedCellId)
                 ? resolvedCellId
                 : string.Empty;
-            WorldItemInstance child = SpawnDynamic(
-                container.Definition.ChildDefinitionId,
-                childId,
-                position,
-                container.transform.rotation,
-                scene,
-                sourceCellId);
+            ItemInstanceState packageCheckpoint = container.CaptureState();
+            if (!container.TryTakeContainedIdentity(out StableEntityId takenChildId) || takenChildId != childId)
+                throw new InvalidOperationException("Contained item identity changed during dispense materialization.");
+            WorldItemInstance child;
+            try
+            {
+                // Public materialization observers see disjoint package/world identities.
+                child = SpawnDynamic(container.Definition.ChildDefinitionId, childId, position,
+                    container.transform.rotation, scene, sourceCellId);
+            }
+            catch
+            {
+                // Owner registration failure must not consume a paid-for child identity.
+                container.ApplyState(packageCheckpoint);
+                throw;
+            }
             child.InheritFoodStateFrom(container);
             return true;
         }
@@ -671,6 +698,7 @@ namespace MSC.Items
             {
                 if (instance == null ||
                     instance.Definition == null ||
+                    IsExternallyOwned(instance.StableId.Value) ||
                     !instance.Definition.CriticalRecovery)
                 {
                     continue;
@@ -1014,7 +1042,8 @@ namespace MSC.Items
             Quaternion worldRotation,
             Scene scene,
             int variantIndex,
-            ItemPlacementRecord canonicalPlacement)
+            ItemPlacementRecord canonicalPlacement,
+            ItemInstanceState restoredState = null)
         {
             var root = new GameObject(
                 $"World item [{definition.DefinitionId}]");
@@ -1133,6 +1162,9 @@ namespace MSC.Items
             WorldItemInstance instance =
                 root.AddComponent<WorldItemInstance>();
             instance.Configure(this, definition, identity, variantIndex);
+            // The external owner must see saved tombstones/condition before it can
+            // register a new PartInstance or publish materialization notifications.
+            if (restoredState != null) instance.ApplyState(restoredState, worldPosition);
             if (definition.HeatSource.ProvidesCookingHeat)
             {
                 ItemHeatSourceVolume heatSource =
@@ -1148,6 +1180,8 @@ namespace MSC.Items
                     root.AddComponent<ItemFuelPourReceiver>();
                 fuelReceiver.Configure(instance);
             }
+            if (ServiceFluidPourController.TryGetProfile(definition.DefinitionId, out _))
+                root.AddComponent<ServiceFluidPourController>().Configure(instance);
             if (LiquidContainerTiltSpiller.TryGetLocalOpenAxis(
                     definition.DefinitionId,
                     out Vector3 liquidOpenAxis))
@@ -1174,6 +1208,10 @@ namespace MSC.Items
             }
 
             instances.Add(stableId.Value, instance);
+            externalPhysicsOwner?.BindMaterialized(instance);
+            if (!instance.State.isConsumed && externalPhysicsOwner != null &&
+                externalPhysicsOwner.OwnsDefinition(instance.Definition.DefinitionId))
+                RetainExternalOwnership(instance);
             AttachPresentation(instance, collider);
             if (body != null)
             {
@@ -1270,6 +1308,7 @@ namespace MSC.Items
                     instance.Definition);
                 SetLayerRecursively(visualRoot, WorldItemCollisionLayer);
                 instance.SetPresentationRoot(visualRoot);
+                externalPhysicsOwner?.ReconcilePresentation(instance, visualRoot);
                 PresentationAttached?.Invoke(instance, visualRoot);
                 return;
             }
@@ -1285,7 +1324,9 @@ namespace MSC.Items
                 Collider proxyCollider = proxy.GetComponent<Collider>();
                 if (proxyCollider != null)
                 {
-                    Destroy(proxyCollider);
+                    proxyCollider.enabled = false;
+                    if (Application.isPlaying) Destroy(proxyCollider);
+                    else DestroyImmediate(proxyCollider);
                 }
 
                 proxy.AddComponent<ItemProxyPresentation>();
@@ -1297,6 +1338,7 @@ namespace MSC.Items
             }
 
             instance.SetPresentationRoot(presentationRoot);
+            externalPhysicsOwner?.ReconcilePresentation(instance, presentationRoot);
             PresentationAttached?.Invoke(instance, presentationRoot);
         }
 

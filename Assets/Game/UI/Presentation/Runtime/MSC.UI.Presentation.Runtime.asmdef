@@ -11,6 +11,7 @@
     "MSC.Presentation.AntiAliasing.Runtime",
     "Unity.InputSystem",
     "UnityEngine.UI",
+    "Unity.RenderPipelines.Core.Runtime",
     "Unity.RenderPipelines.HighDefinition.Runtime"
   ],
   "includePlatforms": [],

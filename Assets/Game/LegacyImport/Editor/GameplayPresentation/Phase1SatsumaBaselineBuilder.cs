@@ -29,7 +29,7 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
 {
     public static class Phase1SatsumaBaselineBuilder
     {
-        public const string BuilderVersion = "11A-V1d.60";
+        public const string BuilderVersion = "11A-V1d.66";
         public const string StableVehicleId = "323d9fece916469ea30c705ebfcf68df";
         public const string LockedSceneSha256 =
             "c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4";
@@ -124,6 +124,26 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
             "bd64aade39680ac43a380f1c62373e0b";
         private const string DonorFastenerMaterialSourceGuid =
             "98697bae08a8c114ba9774c487f2658d";
+        private const string DonorStandardMetalMaterialSourceGuid =
+            "ad2f7b6e8cc080845a7a7fd4264fbb83";
+        private const string DonorHandbrakeRodMeshSourceGuid =
+            "1114fb760fb4d7a4cac87438f8bdc8a9";
+        private const string DonorHandbrakeRodMaterialSourceGuid =
+            "244b34167b8e8de4992ebb466651484d";
+        private const string DonorWiperTapMeshSourceGuid =
+            "a40b23abe89f9b8469ef646fd52f0957";
+        private const string DonorWiperRodMeshSourceGuid =
+            "ca35edd514b81b44d9864911ad9f5d5c";
+        private const string DonorWiringSwitchLightsMeshSourceGuid =
+            "3f95a862b9f417d4d8a5a74cc3fa2127";
+        private const string DonorWiringBatteryHarnessMeshSourceGuid =
+            "32aa759866b501a4eac8558a23c3eea4";
+        private const string DonorWiringIgnitionMeshSourceGuid =
+            "cfe641defee778e40a43c7ed120df1f1";
+        private const string DonorWiringBatteryPlusMeshSourceGuid =
+            "c78646cea8d36a44bb7ae5837f51ab87";
+        private const string DonorWiringBatteryMinusMeshSourceGuid =
+            "1720722b21c41b5439f711a928c13821";
         // Frozen MeshFilter references, not an inference from a BoltPM name.
         // The legacy default is a nut; only these reviewed front markers change.
         private static readonly IReadOnlyDictionary<long, string>
@@ -878,6 +898,8 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                             !string.IsNullOrWhiteSpace(collider.MeshGuid) &&
                             !IsUnityBuiltInGuid(collider.MeshGuid))
                         .Select(collider => collider.MeshGuid)))
+                .Concat(BuildSatsumaElectricalDonorConnectionDefinitions()
+                    .Select(value => value.MeshGuid))
                 .Concat(new[]
                 {
                     DonorStockTireMeshSourceGuid,
@@ -885,6 +907,13 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                     DonorFastenerMeshSourceGuid,
                     DonorShortBoltMeshSourceGuid,
                     DonorLongBoltMeshSourceGuid,
+                    DonorHandbrakeRodMeshSourceGuid,
+                    DonorWiperTapMeshSourceGuid,
+                    DonorWiperRodMeshSourceGuid,
+                    DonorWiringBatteryPlusMeshSourceGuid,
+                    DonorWiringBatteryMinusMeshSourceGuid,
+                    Phase1SatsumaIgnitionAuthoring.KeyMeshGuid,
+                    Phase1SatsumaIgnitionAuthoring.SocketMeshGuid,
                 })
                 .Where(value => !IsUnityBuiltInGuid(value))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
@@ -908,6 +937,9 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                     DonorRimMetallicMaterialSourceGuid,
                     DonorStockTireMaterialSourceGuid,
                     DonorFastenerMaterialSourceGuid,
+                    DonorStandardMetalMaterialSourceGuid,
+                    DonorHandbrakeRodMaterialSourceGuid,
+                    Phase1SatsumaIgnitionAuthoring.AtlasMaterialGuid,
                 })
                 .Where(value => !IsUnityBuiltInGuid(value))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
@@ -996,6 +1028,9 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
             ApplyReviewedFrontConnectionFasteners(scene, mountBuilds);
             ApplyReviewedFrontFastenerMeshes(scene, mountBuilds);
             ApplyReviewedRearSuspensionFastenerMeshes(scene, mountBuilds);
+            ApplyReviewedHandbrakeFastenerMeshes(scene, mountBuilds);
+            ApplyReviewedEngineFastenerMeshes(scene, mountBuilds);
+            ApplyAdditionalEngineFastenerMeshes(scene, mountBuilds);
             ConfigureFastenerGroups(mountBuilds, boltCheckEvidence);
             ValidateReferencedBoltCoverage(
                 mountBuilds,
@@ -1003,6 +1038,20 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                 assemblyFsmEvidence,
                 loosePartAssemblyEvidence);
             ConfigureSatsumaMountSequence(mountBuilds);
+            ConfigureSatsumaFrontMountSequence(mountBuilds);
+            ConfigureSatsumaRemovalChecks(mountBuilds);
+            Phase1SatsumaEngineAssemblyRules.ApplyEngineAccessRules(
+                mountBuilds.Select(value => value.Definition).ToArray());
+            Phase1SatsumaEngineCompoundAssemblyRules.ApplyEngineCompoundRules(
+                mountBuilds.Select(value => value.Definition).ToArray());
+            Phase1SatsumaEngineCompoundAssemblyRules.ApplyEngineToCarRules(
+                mountBuilds.Select(value => value.Definition).ToArray());
+            Phase1SatsumaCockpitRules.ApplyDashboardMeterLatch(mountBuilds.Single(value =>
+                value.Definition.DefinitionId ==
+                Phase1SatsumaCockpitRules.DashboardMeterMountId).Definition);
+            Phase1SatsumaCockpitRules.ApplySteeringWheelRules(mountBuilds.Single(value =>
+                value.Definition.DefinitionId ==
+                Phase1SatsumaCockpitRules.SteeringWheelMountId).Definition);
             ToolDefinition[] toolDefinitions = BuildToolAssets(mountBuilds);
             AssemblyDependency[] dependencies = BuildVerifiedAssemblyDependencies(
                 scene,
@@ -1010,6 +1059,7 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                 assemblyFsmEvidence
                     .Concat(loosePartAssemblyEvidence)
                     .ToArray());
+            dependencies = Phase1SatsumaEngineCompoundAssemblyRules.FilterEngineDependencies(dependencies);
             GameObject runtimePrefab = BuildRuntimePrefab(
                 scene,
                 satsumaRoot,
@@ -1078,6 +1128,460 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
         public static void RunBatch()
         {
             Build();
+        }
+
+        [MenuItem("Tools/MSC Remake/Phase 1/Satsuma/Refresh Front Installation Rules")]
+        public static void RefreshFrontInstallationRulesBatch()
+        {
+            // Reuse the already generated, hash-locked baseline. In particular,
+            // do not parse GAME, rebuild presentation or rewrite the full-build
+            // manifest just to migrate a small set of authored mechanical rules.
+            ManifestDto manifest = JsonUtility.FromJson<ManifestDto>(
+                File.ReadAllText(ToFileSystemPath(ManifestPath)));
+            if (manifest == null || manifest.sourceSceneSha256 != LockedSceneSha256 ||
+                manifest.stableVehicleId != StableVehicleId ||
+                manifest.runtimePrefabPath != RuntimePrefabPath ||
+                manifest.builderVersion != "11A-V1d.64" &&
+                manifest.builderVersion != "11A-V1d.65" &&
+                manifest.builderVersion != BuilderVersion)
+            {
+                throw new InvalidDataException(
+                    "Front rules refresh requires the existing V64/V65/V66 locked Satsuma baseline.");
+            }
+
+            GameObject contents = PrefabUtility.LoadPrefabContents(RuntimePrefabPath);
+            try
+            {
+                MountPointDefinition[] changed = RefreshFrontInstallationRules(
+                    contents, out int removedDependencies);
+                if (removedDependencies > 0 && PrefabUtility.SaveAsPrefabAsset(
+                        contents, RuntimePrefabPath) == null)
+                {
+                    throw new InvalidOperationException(
+                        "Could not save the scoped front dependency refresh.");
+                }
+
+                foreach (MountPointDefinition definition in changed)
+                {
+                    AssetDatabase.SaveAssetIfDirty(definition);
+                }
+
+                Debug.Log("PHASE1_SATSUMA_FRONT_RULES_REFRESH_OK version=" +
+                    BuilderVersion + " fullRebuild=false manifestUnchanged=true" +
+                    " changedMountDefinitions=" + changed.Length +
+                    " removedLegacyDependencies=" + removedDependencies +
+                    " sourceSceneSha256=" + LockedSceneSha256);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(contents);
+            }
+        }
+
+        internal static MountPointDefinition[] RefreshFrontInstallationRules(
+            GameObject prefabContents,
+            out int removedDependencies)
+        {
+            removedDependencies = 0;
+            VehicleAssemblyController assembly = prefabContents != null
+                ? prefabContents.GetComponent<VehicleAssemblyController>() : null;
+            if (assembly == null || assembly.MountPoints.Any(value => value == null) ||
+                !Phase1SatsumaReviewedGraphShape.HasReviewedMountRoster(
+                    assembly.MountPoints.Select(value => value.MountId)))
+            {
+                throw new InvalidDataException(
+                    "Front rules refresh requires the reviewed base or additive Satsuma mount roster.");
+            }
+
+            string[] ids = new[] { "sub-frame", "steering-rack", "steering-column" }
+                .Concat(new[] { "fl", "fr" }.SelectMany(corner =>
+                    new[] { "wishbone", "spindle", "strut", "steering-rod", "discbrake", "halfshaft" }
+                        .Select(slug => slug + "-" + corner)))
+                .Select(slug => "mount.satsuma." + slug).ToArray();
+            MountBuild[] current = ids.Select(id =>
+            {
+                MountPointAuthoring authoring = assembly.MountPoints.SingleOrDefault(
+                    value => value != null && value.MountId == id);
+                MountPointDefinition definition = authoring != null ? authoring.Definition : null;
+                if (definition == null || definition.DefinitionId != id ||
+                    definition.OwnerPartDefinitionId != "vehicle.satsuma.part.body-shell" ||
+                    AssetDatabase.GetAssetPath(definition) !=
+                    CanonicalGeneratedRoot + "/MountDefinitions/" + id + ".asset")
+                {
+                    throw new InvalidDataException(
+                        "Unexpected front definition binding during scoped refresh: " + id);
+                }
+
+                return ExistingMountDefinition(definition);
+            }).ToArray();
+            var obsolete = new HashSet<string>(StringComparer.Ordinal);
+            foreach (string corner in new[] { "fl", "fr" })
+            {
+                obsolete.Add(BuildDependencyKey(AssemblyDependency.Create(
+                    "vehicle.satsuma.part.spindle-" + corner,
+                    "vehicle.satsuma.part.wishbone-" + corner,
+                    AssemblyDependencyKind.InstallRequiresBolted)));
+                obsolete.Add(BuildDependencyKey(AssemblyDependency.Create(
+                    "vehicle.satsuma.part.strut-" + corner,
+                    "vehicle.satsuma.part.spindle-" + corner,
+                    AssemblyDependencyKind.InstallRequiresBolted)));
+                obsolete.Add(BuildDependencyKey(InstallRequires(
+                    "steering-rod-" + corner, "spindle-" + corner)));
+            }
+
+            string[] keys = assembly.Dependencies.Select(BuildDependencyKey).ToArray();
+            int oldCount = keys.Count(obsolete.Contains);
+            // The later, independently scoped engine migration removes exactly
+            // four false-positive clutch/chain edges. Accept either complete
+            // generation, never a partially migrated or count-only lookalike.
+            int legacyEngineCount = assembly.Dependencies.Length -
+                Phase1SatsumaEngineCompoundAssemblyRules.FilterEngineDependencies(
+                    assembly.Dependencies).Length;
+            int migratedFrontCount = legacyEngineCount == 0 ? 30 : 34;
+            if (keys.Distinct(StringComparer.Ordinal).Count() != keys.Length ||
+                oldCount != 0 && oldCount != 6 ||
+                legacyEngineCount != 0 && legacyEngineCount != 4 ||
+                keys.Length != migratedFrontCount + oldCount)
+            {
+                throw new InvalidDataException(
+                    "Front rules refresh expected 40/34 unique dependencies before the engine migration, " +
+                    "or 36/30 with all four reviewed engine edges absent.");
+            }
+
+            // Validate all sizes/stages and old-or-new rule shapes on disposable
+            // definitions before dirtying even the first real asset.
+            var expected = new List<MountBuild>();
+            try
+            {
+                foreach (MountBuild build in current)
+                {
+                    MountPointDefinition copy = UnityEngine.Object.Instantiate(build.Definition);
+                    copy.name = build.Definition.name;
+                    expected.Add(ExistingMountDefinition(copy));
+                }
+
+                ConfigureFrontFastenerGroups(expected);
+                ConfigureSatsumaFrontMountSequence(expected);
+                for (int index = 0; index < current.Length; index++)
+                {
+                    ValidateFrontRefreshShape(current[index].Definition, expected[index].Definition);
+                }
+
+                string[] before = current.Select(value =>
+                    EditorJsonUtility.ToJson(value.Definition)).ToArray();
+                bool alreadyCurrent = current.Select((value, index) =>
+                    before[index] == EditorJsonUtility.ToJson(expected[index].Definition)).All(value => value);
+                if (!alreadyCurrent)
+                {
+                    ConfigureFrontFastenerGroups(current);
+                    ConfigureSatsumaFrontMountSequence(current);
+                }
+
+                var serialized = new SerializedObject(assembly);
+                SerializedProperty dependencies = serialized.FindProperty("dependencies");
+                for (int index = keys.Length - 1; index >= 0; index--)
+                {
+                    if (obsolete.Contains(keys[index]))
+                    {
+                        dependencies.DeleteArrayElementAtIndex(index);
+                        removedDependencies++;
+                    }
+                }
+
+                if (removedDependencies > 0)
+                {
+                    serialized.ApplyModifiedPropertiesWithoutUndo();
+                }
+
+                return current.Where((value, index) => before[index] !=
+                    EditorJsonUtility.ToJson(value.Definition)).Select(value => value.Definition).ToArray();
+            }
+            finally
+            {
+                foreach (MountBuild build in expected)
+                {
+                    UnityEngine.Object.DestroyImmediate(build.Definition);
+                }
+            }
+        }
+
+        [MenuItem("Tools/MSC Remake/Phase 1/Satsuma/Refresh Suspension Removal Rules")]
+        public static void RefreshSuspensionRemovalRulesBatch()
+        {
+            // This migration only updates the reviewed mount definitions. It
+            // deliberately leaves the prefab, full-build manifest and donor
+            // extraction untouched.
+            ManifestDto manifest = JsonUtility.FromJson<ManifestDto>(
+                File.ReadAllText(ToFileSystemPath(ManifestPath)));
+            if (manifest == null || manifest.sourceSceneSha256 != LockedSceneSha256 ||
+                manifest.stableVehicleId != StableVehicleId ||
+                manifest.runtimePrefabPath != RuntimePrefabPath ||
+                manifest.builderVersion != "11A-V1d.64" &&
+                manifest.builderVersion != "11A-V1d.65" &&
+                manifest.builderVersion != BuilderVersion)
+            {
+                throw new InvalidDataException(
+                    "Removal rules refresh requires the existing V64/V65/V66 locked Satsuma baseline.");
+            }
+
+            GameObject contents = PrefabUtility.LoadPrefabContents(RuntimePrefabPath);
+            try
+            {
+                MountPointDefinition[] changed = RefreshSuspensionRemovalRules(contents);
+                foreach (MountPointDefinition definition in changed)
+                {
+                    AssetDatabase.SaveAssetIfDirty(definition);
+                }
+
+                Debug.Log("PHASE1_SATSUMA_REMOVAL_RULES_REFRESH_OK version=" +
+                    BuilderVersion + " fullRebuild=false prefabUnchanged=true" +
+                    " manifestUnchanged=true changedMountDefinitions=" + changed.Length +
+                    " sourceSceneSha256=" + LockedSceneSha256);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(contents);
+            }
+        }
+
+        internal static MountPointDefinition[] RefreshSuspensionRemovalRules(
+            GameObject prefabContents)
+        {
+            VehicleAssemblyController assembly = prefabContents != null
+                ? prefabContents.GetComponent<VehicleAssemblyController>() : null;
+            if (assembly == null || assembly.MountPoints.Any(value => value == null) ||
+                !Phase1SatsumaReviewedGraphShape.HasReviewedMountRoster(
+                    assembly.MountPoints.Select(value => value.MountId)))
+            {
+                throw new InvalidDataException(
+                    "Removal rules refresh requires the reviewed base or additive Satsuma mount roster.");
+            }
+
+            string[] ids = new[] { "fl", "fr" }.SelectMany(corner => new[]
+                {
+                    "strut-" + corner,
+                    "halfshaft-" + corner,
+                    "discbrake-" + corner,
+                    "spindle-" + corner,
+                })
+                .Concat(new[] { "rl", "rr" }.SelectMany(corner => new[]
+                {
+                    "trail-arm-" + corner,
+                    "coilspring-" + corner,
+                    "long-coilspring-" + corner,
+                }))
+                .Select(slug => "mount.satsuma." + slug).ToArray();
+            MountBuild[] current = ids.Select(id =>
+            {
+                MountPointAuthoring authoring = assembly.MountPoints.SingleOrDefault(
+                    value => value != null && value.MountId == id);
+                MountPointDefinition definition = authoring != null ? authoring.Definition : null;
+                if (definition == null || definition.DefinitionId != id ||
+                    definition.OwnerPartDefinitionId != "vehicle.satsuma.part.body-shell" ||
+                    AssetDatabase.GetAssetPath(definition) !=
+                    CanonicalGeneratedRoot + "/MountDefinitions/" + id + ".asset")
+                {
+                    throw new InvalidDataException(
+                        "Unexpected removal definition binding during scoped refresh: " + id);
+                }
+
+                return ExistingMountDefinition(definition);
+            }).ToArray();
+
+            var expected = new List<MountBuild>();
+            try
+            {
+                foreach (MountBuild build in current)
+                {
+                    MountPointDefinition copy = UnityEngine.Object.Instantiate(build.Definition);
+                    copy.name = build.Definition.name;
+                    expected.Add(ExistingMountDefinition(copy));
+                }
+
+                ConfigureSatsumaRemovalChecks(expected);
+                for (int index = 0; index < current.Length; index++)
+                {
+                    ValidateRemovalRefreshShape(current[index].Definition,
+                        expected[index].Definition);
+                }
+
+                string[] before = current.Select(value =>
+                    EditorJsonUtility.ToJson(value.Definition)).ToArray();
+                bool alreadyCurrent = current.Select((value, index) =>
+                    before[index] == EditorJsonUtility.ToJson(expected[index].Definition)).All(value => value);
+                if (!alreadyCurrent)
+                {
+                    ConfigureSatsumaRemovalChecks(current);
+                }
+
+                return current.Where((value, index) => before[index] !=
+                    EditorJsonUtility.ToJson(value.Definition)).Select(value => value.Definition).ToArray();
+            }
+            finally
+            {
+                foreach (MountBuild build in expected)
+                {
+                    UnityEngine.Object.DestroyImmediate(build.Definition);
+                }
+            }
+        }
+
+        private static void ValidateRemovalRefreshShape(
+            MountPointDefinition current,
+            MountPointDefinition expected)
+        {
+            string id = current.DefinitionId;
+            bool legacy = current.RemovalBlockedWhileBoltedMountIds.Length == 0 &&
+                current.RemovalIgnoredDependentMountIds.Length == 0;
+            bool migrated = current.RemovalBlockedWhileOccupiedMountIds.SequenceEqual(
+                    expected.RemovalBlockedWhileOccupiedMountIds) &&
+                current.RemovalBlockedWhileBoltedMountIds.SequenceEqual(
+                    expected.RemovalBlockedWhileBoltedMountIds) &&
+                current.RemovalIgnoredDependentMountIds.SequenceEqual(
+                    expected.RemovalIgnoredDependentMountIds);
+            if (id.Contains("strut-", StringComparison.Ordinal))
+            {
+                legacy &= current.RemovalBlockedWhileOccupiedMountIds.Length == 0;
+            }
+            else if (id.Contains("coilspring-", StringComparison.Ordinal))
+            {
+                string corner = id.EndsWith("-rl", StringComparison.Ordinal) ? "rl" : "rr";
+                legacy &= current.RemovalBlockedWhileOccupiedMountIds.Length == 0 ||
+                    current.RemovalBlockedWhileOccupiedMountIds.SequenceEqual(
+                        new[] { "mount.satsuma.shock-" + corner });
+                string oppositeSpring = id.Contains("long-coilspring-", StringComparison.Ordinal)
+                    ? "mount.satsuma.coilspring-" + corner
+                    : "mount.satsuma.long-coilspring-" + corner;
+                bool commonInstall = current.RequiredOccupiedMountIds.SequenceEqual(
+                        new[] { "mount.satsuma.trail-arm-" + corner }) &&
+                    current.RequiredAnyOccupiedMountIds.Length == 0 &&
+                    current.RequiredBoltedMountIds.SequenceEqual(
+                        new[] { "mount.satsuma.trail-arm-" + corner });
+                legacy &= commonInstall && current.BlockedWhileOccupiedMountIds.SequenceEqual(
+                    new[] { oppositeSpring });
+                migrated &= commonInstall && current.BlockedWhileOccupiedMountIds.SequenceEqual(
+                    new[] { oppositeSpring, "mount.satsuma.shock-" + corner });
+            }
+            else
+            {
+                legacy &= current.RemovalBlockedWhileOccupiedMountIds.Length == 0;
+            }
+
+            if (id.Contains("trail-arm-", StringComparison.Ordinal))
+            {
+                string corner = id.EndsWith("-rl", StringComparison.Ordinal) ? "rl" : "rr";
+                bool legacyInstall = current.RequiredOccupiedMountIds.Length == 0 &&
+                    current.RequiredAnyOccupiedMountIds.Length == 0 &&
+                    current.BlockedWhileOccupiedMountIds.Length == 0;
+                bool migratedInstall = current.RequiredOccupiedMountIds.Length == 0 &&
+                    current.RequiredAnyOccupiedMountIds.Length == 0 &&
+                    current.BlockedWhileOccupiedMountIds.SequenceEqual(
+                        new[] { "mount.satsuma.shock-" + corner });
+                legacy &= legacyInstall;
+                migrated &= migratedInstall;
+            }
+
+            if ((!legacy && !migrated) ||
+                current.RequiredBoltedMountIds.Length != expected.RequiredBoltedMountIds.Length ||
+                !current.RequiredBoltedMountIds.SequenceEqual(expected.RequiredBoltedMountIds) ||
+                !current.RequiredAnyBoltedMountIds.SequenceEqual(expected.RequiredAnyBoltedMountIds))
+            {
+                throw new InvalidDataException(
+                    "Removal rules refresh refuses an unexpected old/new rule shape: " + id);
+            }
+        }
+
+        private static MountBuild ExistingMountDefinition(MountPointDefinition definition) =>
+            new MountBuild(null, definition, Vector3.zero, Quaternion.identity,
+                Vector3.one, 0L, Array.Empty<FastenerBuild>());
+
+        private static void ValidateFrontRefreshShape(
+            MountPointDefinition current, MountPointDefinition expected)
+        {
+            string id = current.DefinitionId;
+            string corner = id.EndsWith("-fl", StringComparison.Ordinal) ? "fl" : "fr";
+            string[] oldRequired = expected.RequiredOccupiedMountIds;
+            if (id.Contains("discbrake-"))
+            {
+                oldRequired = new[] { "mount.satsuma.spindle-" + corner, "mount.satsuma.strut-" + corner };
+            }
+            else if (id.Contains("halfshaft-") || id.Contains("steering-rod-") ||
+                     id == "mount.satsuma.steering-rack" || id == "mount.satsuma.steering-column")
+            {
+                oldRequired = Array.Empty<string>();
+            }
+
+            FastenerGroupDefinition group = current.FastenerGroup;
+            FastenerGroupDefinition expectedGroup = expected.FastenerGroup;
+            int oldOn = id.Contains("wishbone-") || id.Contains("spindle-") ? 2 :
+                id.Contains("steering-rod-") ? 8 : 1;
+            bool legacy = group != null && group.BoltedOnThreshold == oldOn &&
+                current.RequiredOccupiedMountIds.SequenceEqual(oldRequired) &&
+                string.IsNullOrEmpty(current.InstallAttemptBoltedSupportMountId) &&
+                current.InstallationBlockedWhileBoltedMountIds.Length == 0;
+            bool migrated = group != null && group.BoltedOnThreshold == expectedGroup.BoltedOnThreshold &&
+                current.RequiredOccupiedMountIds.SequenceEqual(expected.RequiredOccupiedMountIds) &&
+                current.InstallAttemptBoltedSupportMountId == expected.InstallAttemptBoltedSupportMountId &&
+                current.InstallationBlockedWhileBoltedMountIds.SequenceEqual(expected.InstallationBlockedWhileBoltedMountIds);
+            if ((!legacy && !migrated) || group == null ||
+                group.AggregateMaximumTightness != expectedGroup.AggregateMaximumTightness ||
+                !group.FastenerDefinitionIds.SequenceEqual(expectedGroup.FastenerDefinitionIds) ||
+                group.BoltedOffThreshold != 0 ||
+                group.SpeedRetentionPolicy != FastenerSpeedRetentionPolicy.None ||
+                group.BreakAction != FastenerBreakAction.None ||
+                group.LooseBreakSpeedKph != 0f || group.PartialCheckSpeedKph != 0f ||
+                group.ChanceDivisor != 100f ||
+                current.RequiredAnyOccupiedMountIds.Length != 0 ||
+                current.BlockedWhileOccupiedMountIds.Length != 0 ||
+                !HasSupportedFrontRemovalShape(current) ||
+                current.RequiredBoltedMountIds.Length != 0 ||
+                current.RequiredAnyBoltedMountIds.Length != 0)
+            {
+                throw new InvalidDataException(
+                    "Front rules refresh refuses an unexpected old/new rule shape: " + id);
+            }
+        }
+
+        private static bool HasSupportedFrontRemovalShape(
+            MountPointDefinition definition)
+        {
+            string id = definition.DefinitionId;
+            string corner = id.EndsWith("-fl", StringComparison.Ordinal) ? "fl" : "fr";
+            string[] occupied = definition.RemovalBlockedWhileOccupiedMountIds;
+            string[] bolted = definition.RemovalBlockedWhileBoltedMountIds;
+            string[] ignored = definition.RemovalIgnoredDependentMountIds;
+            bool allLegacy = occupied.Length == 0 && bolted.Length == 0 && ignored.Length == 0;
+            if (allLegacy)
+            {
+                return true;
+            }
+
+            if (id.Contains("strut-", StringComparison.Ordinal))
+            {
+                return occupied.SequenceEqual(new[] { "mount.satsuma.steering-rod-" + corner }) &&
+                    bolted.Length == 0 && ignored.Length == 0;
+            }
+
+            if (id.Contains("halfshaft-", StringComparison.Ordinal))
+            {
+                return occupied.Length == 0 &&
+                    bolted.SequenceEqual(new[] { "mount.satsuma.discbrake-" + corner }) &&
+                    ignored.Length == 0;
+            }
+
+            if (id.Contains("discbrake-", StringComparison.Ordinal))
+            {
+                return occupied.Length == 0 && bolted.Length == 0 &&
+                    ignored.SequenceEqual(new[] { "mount.satsuma.halfshaft-" + corner });
+            }
+
+            if (id.Contains("spindle-", StringComparison.Ordinal))
+            {
+                return occupied.Length == 0 && bolted.Length == 0 &&
+                    ignored.SequenceEqual(new[] { "mount.satsuma.discbrake-" + corner });
+            }
+
+            return false;
         }
 
         private static GameObject BuildPresentationPrefab(
@@ -3853,6 +4357,136 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
             }
         }
 
+        private static void ApplyReviewedHandbrakeFastenerMeshes(
+            DonorUnitySceneModel scene,
+            MountBuild[] mounts)
+        {
+            int mountIndex = Array.FindIndex(mounts, value =>
+                value.Definition.DefinitionId == "mount.satsuma.handbrake");
+            long[] markerIds = { 55735L, 63139L, 65746L, 68029L, 68693L };
+            if (mountIndex < 0 || mounts[mountIndex].Fasteners.Count != markerIds.Length)
+            {
+                throw new InvalidDataException("Locked donor handbrake mount/fasteners drifted.");
+            }
+
+            FastenerBuild[] fasteners = mounts[mountIndex].Fasteners.ToArray();
+            for (int index = 0; index < fasteners.Length; index++)
+            {
+                FastenerBuild fastener = fasteners[index];
+                if (fastener.MarkerTransformId != markerIds[index])
+                {
+                    throw new InvalidDataException("Locked donor handbrake marker order drifted.");
+                }
+
+                // All five actual donor MeshFilters use the short bolt, including
+                // the smaller 5 mm drive attachment. BoltPM alone does not prove type.
+                fasteners[index] = fastener.WithMeshSourceGuid(
+                    ReadReviewedFastenerMeshGuid(scene, markerIds[index],
+                        DonorShortBoltMeshSourceGuid, "handbrake"));
+            }
+
+            mounts[mountIndex] = mounts[mountIndex].WithFasteners(fasteners);
+        }
+
+        private static void ApplyAdditionalEngineFastenerMeshes(
+            DonorUnitySceneModel scene,
+            MountBuild[] mounts)
+        {
+            foreach (Phase1SatsumaEngineAdditionalFastenerPresentation.Binding binding in
+                     Phase1SatsumaEngineAdditionalFastenerPresentation.ReviewedBindings)
+            {
+                int mountIndex = Array.FindIndex(mounts, value =>
+                    value.Definition.DefinitionId == binding.MountId);
+                if (mountIndex < 0)
+                {
+                    throw new InvalidDataException("Missing reviewed engine mount: " + binding.MountId);
+                }
+                FastenerBuild[] fasteners = mounts[mountIndex].Fasteners.ToArray();
+                int index = Array.FindIndex(fasteners, value =>
+                    value.Definition.DefinitionId == binding.FastenerId);
+                if (index < 0 || fasteners[index].MarkerTransformId != binding.MarkerTransformId ||
+                    (int)fasteners[index].Definition.Size != binding.SizeMillimeters ||
+                    fasteners[index].MeshSourceGuid != DonorFastenerMeshSourceGuid)
+                {
+                    throw new InvalidDataException("Reviewed engine fastener binding drifted: " + binding.FastenerId);
+                }
+                Phase1SatsumaEngineAdditionalFastenerPresentation.ValidateDonorBinding(scene, binding);
+                fasteners[index] = fasteners[index].WithMeshSourceGuid(binding.MeshSourceGuid);
+                mounts[mountIndex] = mounts[mountIndex].WithFasteners(fasteners);
+            }
+        }
+
+        private static void ApplyReviewedEngineFastenerMeshes(
+            DonorUnitySceneModel scene,
+            MountBuild[] mounts)
+        {
+            IReadOnlyList<Phase1SatsumaEngineFastenerPresentation.
+                ReviewedFastenerBinding> bindings =
+                Phase1SatsumaEngineFastenerPresentation.ReviewedBindings;
+            var reviewedMarkers = new HashSet<long>();
+            foreach (IGrouping<string, Phase1SatsumaEngineFastenerPresentation.
+                         ReviewedFastenerBinding> group in bindings.GroupBy(
+                         value => value.MountId,
+                         StringComparer.Ordinal))
+            {
+                int mountIndex = Array.FindIndex(mounts, value =>
+                    value.Definition.DefinitionId == group.Key);
+                Phase1SatsumaEngineFastenerPresentation.
+                    ReviewedFastenerBinding[] expected = group.ToArray();
+                if (mountIndex < 0 ||
+                    mounts[mountIndex].Fasteners.Count != expected.Length)
+                {
+                    throw new InvalidDataException(
+                        "Locked donor engine fastener mount drifted: " +
+                        group.Key);
+                }
+
+                FastenerBuild[] fasteners = mounts[mountIndex].Fasteners.ToArray();
+                for (int index = 0; index < fasteners.Length; index++)
+                {
+                    FastenerBuild fastener = fasteners[index];
+                    Phase1SatsumaEngineFastenerPresentation.
+                        ReviewedFastenerBinding binding = expected[index];
+                    if (fastener.Definition.DefinitionId != binding.FastenerId ||
+                        fastener.Definition.Size != binding.ExpectedSize ||
+                        fastener.MarkerTransformId !=
+                        binding.DonorMarkerTransformId ||
+                        fastener.MeshSourceGuid != DonorFastenerMeshSourceGuid ||
+                        !reviewedMarkers.Add(binding.DonorMarkerTransformId))
+                    {
+                        throw new InvalidDataException(
+                            "Locked donor engine fastener order drifted: " +
+                            binding.FastenerId);
+                    }
+
+                    string expectedMeshGuid = binding.ExpectedMeshSourceGuid;
+                    if (expectedMeshGuid != DonorShortBoltMeshSourceGuid &&
+                        expectedMeshGuid != DonorLongBoltMeshSourceGuid)
+                    {
+                        throw new InvalidDataException(
+                            "Locked donor engine fastener mesh is unsupported: " +
+                            binding.FastenerId);
+                    }
+
+                    fasteners[index] = fastener.WithMeshSourceGuid(
+                        ReadReviewedFastenerMeshGuid(
+                            scene,
+                            binding.DonorMarkerTransformId,
+                            expectedMeshGuid,
+                            "engine",
+                            binding.ExpectedDonorRendererChildLocalPosition));
+                }
+
+                mounts[mountIndex] = mounts[mountIndex].WithFasteners(fasteners);
+            }
+
+            if (reviewedMarkers.Count != bindings.Count)
+            {
+                throw new InvalidDataException(
+                    "Expected all 16 reviewed engine fastener presentation markers.");
+            }
+        }
+
         internal static string ReadReviewedFrontFastenerMeshGuid(
             DonorUnitySceneModel scene,
             long markerTransformId,
@@ -3875,7 +4509,8 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
             DonorUnitySceneModel scene,
             long markerTransformId,
             string expectedMeshGuid,
-            string scope)
+            string scope,
+            Vector3? expectedVisualLocalPosition = null)
         {
             IReadOnlyList<DonorStaticRendererRecord> renderers =
                 scene.GetStaticRenderersBelowIncludingInactive(markerTransformId);
@@ -3890,10 +4525,19 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
             DonorStaticRendererRecord renderer = renderers[0];
             DonorTransformRecord visual = scene.GetTransform(
                 scene.GetTransformIdForGameObject(renderer.GameObjectId));
+            Vector3 expectedLocalPosition =
+                expectedVisualLocalPosition ?? Vector3.zero;
             // A changed child frame needs explicit pose/animation review rather
             // than silently flattening that transform onto the marker.
             if (visual.FatherTransformId != markerTransformId ||
-                visual.LocalPosition.sqrMagnitude > 0.000000000001f ||
+                !float.IsFinite(expectedLocalPosition.x) ||
+                !float.IsFinite(expectedLocalPosition.y) ||
+                !float.IsFinite(expectedLocalPosition.z) ||
+                !float.IsFinite(visual.LocalPosition.x) ||
+                !float.IsFinite(visual.LocalPosition.y) ||
+                !float.IsFinite(visual.LocalPosition.z) ||
+                (visual.LocalPosition - expectedLocalPosition).sqrMagnitude >
+                    0.000000000001f ||
                 Quaternion.Angle(visual.LocalRotation, Quaternion.identity) > 0.001f ||
                 Vector3.Distance(visual.LocalScale, Vector3.one) > 0.00001f ||
                 !string.Equals(renderer.MeshGuid, expectedMeshGuid,
@@ -4028,6 +4672,13 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                 EditorUtility.SetDirty(mount.Definition);
             }
 
+            ConfigureFrontFastenerGroups(mounts);
+            ConfigureOtherFastenerGroups(mounts);
+        }
+
+        private static void ConfigureFrontFastenerGroups(
+            IReadOnlyList<MountBuild> mounts)
+        {
             foreach (string corner in new[] { "fl", "fr" })
             {
                 ConfigureLockedFastenerGroup(
@@ -4051,8 +4702,65 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                     aggregateMaximumTightness: 8,
                     boltedOnThreshold: 8,
                     boltedOffThreshold: 0);
+                ConfigureLockedFastenerGroup(
+                    mounts,
+                    "mount.satsuma.strut-" + corner,
+                    new[]
+                    {
+                        FastenerSize.Millimeter10, FastenerSize.Millimeter10,
+                        FastenerSize.Millimeter10, FastenerSize.Millimeter9,
+                        FastenerSize.Millimeter9, FastenerSize.Millimeter9,
+                        FastenerSize.Millimeter9,
+                    },
+                    aggregateMaximumTightness: 56,
+                    boltedOnThreshold: 3,
+                    boltedOffThreshold: 0);
+                ConfigureLockedFastenerGroup(
+                    mounts,
+                    "mount.satsuma.discbrake-" + corner,
+                    new[] { FastenerSize.Millimeter14 },
+                    aggregateMaximumTightness: 8,
+                    boltedOnThreshold: 2,
+                    boltedOffThreshold: 0);
+                ConfigureLockedFastenerGroup(
+                    mounts,
+                    "mount.satsuma.halfshaft-" + corner,
+                    new[]
+                    {
+                        FastenerSize.Millimeter9, FastenerSize.Millimeter9,
+                        FastenerSize.Millimeter9,
+                    },
+                    aggregateMaximumTightness: 24,
+                    boltedOnThreshold: 2,
+                    boltedOffThreshold: 0);
             }
 
+            ConfigureLockedFastenerGroup(
+                mounts,
+                "mount.satsuma.sub-frame",
+                Enumerable.Repeat(FastenerSize.Millimeter10, 4).ToArray(),
+                aggregateMaximumTightness: 32,
+                boltedOnThreshold: 26,
+                boltedOffThreshold: 0);
+            ConfigureLockedFastenerGroup(
+                mounts,
+                "mount.satsuma.steering-rack",
+                Enumerable.Repeat(FastenerSize.Millimeter9, 4).ToArray(),
+                aggregateMaximumTightness: 32,
+                boltedOnThreshold: 24,
+                boltedOffThreshold: 0);
+            ConfigureLockedFastenerGroup(
+                mounts,
+                "mount.satsuma.steering-column",
+                new[] { FastenerSize.Millimeter8, FastenerSize.Millimeter8 },
+                aggregateMaximumTightness: 16,
+                boltedOnThreshold: 10,
+                boltedOffThreshold: 0);
+        }
+
+        private static void ConfigureOtherFastenerGroups(
+            IReadOnlyList<MountBuild> mounts)
+        {
             ConfigureLockedFastenerGroup(
                 mounts,
                 "mount.satsuma.trail-arm-rl",
@@ -4170,6 +4878,19 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                 boltedOnThreshold: 28,
                 boltedOffThreshold: 0);
 
+            ConfigureLockedFastenerGroup(
+                mounts,
+                "mount.satsuma.handbrake",
+                new[]
+                {
+                    FastenerSize.Millimeter8, FastenerSize.Millimeter8,
+                    FastenerSize.Millimeter8, FastenerSize.Millimeter8,
+                    FastenerSize.Millimeter5,
+                },
+                aggregateMaximumTightness: 40,
+                boltedOnThreshold: 6,
+                boltedOffThreshold: 0);
+
             foreach (string wheelMountId in new[]
                      {
                          "mount.satsuma.wheelfl-new",
@@ -4217,6 +4938,31 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
             ValidateLockedPartBoltCheck(rows, "/SpindleFR/OFFSET/spindle fr", 2f);
             ValidateLockedPartBoltCheck(rows, "/Chassis/steering rod fl", 8f);
             ValidateLockedPartBoltCheck(rows, "/Chassis/steering rod fr", 8f);
+            ValidateLockedPartBoltCheck(rows, "/Chassis/sub frame(xxxxx)", 26f);
+            ValidateLockedPartBoltCheck(rows, "/Chassis/steering rack(xxxxx)", 24f);
+            ValidateLockedPartBoltCheck(
+                rows,
+                "/Dashboard/Steering/CarSteeringPivot/steering column(xxxxx)",
+                10f);
+            ValidateLockedPartBoltCheck(rows, "/Chassis/FL/strut fl(xxxxx)", 3f);
+            ValidateLockedPartBoltCheck(rows, "/Chassis/FR/strut fr(xxxxx)", 3f);
+            ValidateLockedPartBoltCheck(
+                rows,
+                "/FL/AckerFL/wheelFL/TireFL/OFFSET/discbrake(flxxx)",
+                2f);
+            ValidateLockedPartBoltCheck(
+                rows,
+                "/FR/AckerFR/wheelFR/TireFR/OFFSET/discbrake(frxxx)",
+                2f);
+            ValidateLockedPartBoltCheck(
+                rows,
+                "/Chassis/FL/halfshaft_fl/halfshaft(xxxxx)",
+                2f);
+            ValidateLockedPartBoltCheck(
+                rows,
+                "/Chassis/FR/halfshaft_fr/halfshaft(xxxxx)",
+                2f);
+            ValidateLockedPartBoltCheck(rows, "/MiscParts/HandBrake/handbrake(xxxxx)", 6f);
 
             ValidateLockedPartBoltCheck(
                 rows,
@@ -6197,7 +6943,7 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
             "satsuma.socket." + partDefinitionId.Substring(
                 "vehicle.satsuma.part.".Length);
 
-        private static void ConfigureSatsumaMountSequence(
+        private static void ConfigureSatsumaFrontMountSequence(
             IReadOnlyList<MountBuild> mounts)
         {
             ConfigureMountSequence(
@@ -6239,23 +6985,33 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
             ConfigureMountSequence(
                 mounts,
                 "mount.satsuma.discbrake-fl",
-                new[]
-                {
-                    "mount.satsuma.spindle-fl",
-                    "mount.satsuma.strut-fl",
-                },
+                new[] { "mount.satsuma.spindle-fl" },
                 Array.Empty<string>(),
                 Array.Empty<string>());
             ConfigureMountSequence(
                 mounts,
                 "mount.satsuma.discbrake-fr",
-                new[]
-                {
-                    "mount.satsuma.spindle-fr",
-                    "mount.satsuma.strut-fr",
-                },
+                new[] { "mount.satsuma.spindle-fr" },
                 Array.Empty<string>(),
                 Array.Empty<string>());
+            ConfigureMountSequence(
+                mounts,
+                "mount.satsuma.halfshaft-fl",
+                new[] { "mount.satsuma.discbrake-fl" },
+                Array.Empty<string>(),
+                Array.Empty<string>());
+            ConfigureMountSequence(
+                mounts,
+                "mount.satsuma.halfshaft-fr",
+                new[] { "mount.satsuma.discbrake-fr" },
+                Array.Empty<string>(),
+                Array.Empty<string>());
+            ConfigureSatsumaFrontInstallationChecks(mounts);
+        }
+
+        private static void ConfigureSatsumaMountSequence(
+            IReadOnlyList<MountBuild> mounts)
+        {
             ConfigureMountSequence(
                 mounts,
                 "mount.satsuma.wheelfl-new",
@@ -6359,6 +7115,164 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                 new[] { "mount.satsuma.shock-rr" });
         }
 
+        private static void ConfigureSatsumaFrontInstallationChecks(
+            IReadOnlyList<MountBuild> mounts)
+        {
+            // Frozen donor Assembly Check bolts is evaluated on the install
+            // command, after a point is offered for an installed support. It is
+            // not a persistent structural-retention condition or a preview gate.
+            ConfigureMountSequence(
+                mounts, "mount.satsuma.steering-rack",
+                new[] { "mount.satsuma.sub-frame" },
+                Array.Empty<string>(), Array.Empty<string>());
+            ConfigureMountSequence(
+                mounts, "mount.satsuma.steering-column",
+                new[] { "mount.satsuma.steering-rack" },
+                Array.Empty<string>(), Array.Empty<string>());
+            ConfigureMountInstallationChecks(
+                mounts, "mount.satsuma.steering-rack", "mount.satsuma.sub-frame");
+            ConfigureMountInstallationChecks(
+                mounts, "mount.satsuma.steering-column", "mount.satsuma.steering-rack");
+            foreach (string corner in new[] { "fl", "fr" })
+            {
+                ConfigureMountInstallationChecks(
+                    mounts, "mount.satsuma.wishbone-" + corner,
+                    "mount.satsuma.sub-frame");
+                ConfigureMountInstallationChecks(
+                    mounts, "mount.satsuma.spindle-" + corner,
+                    "mount.satsuma.wishbone-" + corner);
+                ConfigureMountInstallationChecks(
+                    mounts, "mount.satsuma.strut-" + corner,
+                    "mount.satsuma.spindle-" + corner);
+                ConfigureMountInstallationChecks(
+                    mounts, "mount.satsuma.discbrake-" + corner,
+                    "mount.satsuma.spindle-" + corner);
+                ConfigureMountSequence(
+                    mounts, "mount.satsuma.steering-rod-" + corner,
+                    new[] { "mount.satsuma.steering-rack" },
+                    Array.Empty<string>(), Array.Empty<string>());
+                ConfigureMountInstallationChecks(
+                    mounts, "mount.satsuma.steering-rod-" + corner,
+                    "mount.satsuma.steering-rack");
+
+                // Halfshaft Assembly Brake bolted has the opposite branch:
+                // an installed disc must be unbolted before the shaft fits.
+                // Both shafts are interchangeable, so this belongs to the
+                // selected corner mount rather than a global part dependency.
+                ConfigureMountInstallationChecks(
+                    mounts, "mount.satsuma.halfshaft-" + corner, string.Empty,
+                    new[] { "mount.satsuma.discbrake-" + corner });
+            }
+        }
+
+        private static void ConfigureSatsumaRemovalChecks(
+            IReadOnlyList<MountBuild> mounts)
+        {
+            foreach (string corner in new[] { "fl", "fr" })
+            {
+                // Removal FSM 108086/108453 reads steering-rod Installed,
+                // independent of the rod's own Bolted latch.
+                ConfigureMountRemovalBlockers(
+                    mounts,
+                    "mount.satsuma.strut-" + corner,
+                    new[] { "mount.satsuma.steering-rod-" + corner });
+
+                // Removal FSM 107526/110144 reads disc Bolted. Keeping this
+                // separate from InstallationBlockedWhileBolted preserves the
+                // opposite installation/removal predicates.
+                ConfigureMountRemovalChecks(
+                    mounts,
+                    "mount.satsuma.halfshaft-" + corner,
+                    new[] { "mount.satsuma.discbrake-" + corner },
+                    Array.Empty<string>());
+
+                // Donor disc Removal checks wheel presence, not the halfshaft;
+                // spindle Removal checks strut presence, not the disc. Suppress
+                // only those two inferred reverse installation dependencies.
+                ConfigureMountRemovalChecks(
+                    mounts,
+                    "mount.satsuma.discbrake-" + corner,
+                    Array.Empty<string>(),
+                    new[] { "mount.satsuma.halfshaft-" + corner });
+                ConfigureMountRemovalChecks(
+                    mounts,
+                    "mount.satsuma.spindle-" + corner,
+                    Array.Empty<string>(),
+                    new[] { "mount.satsuma.discbrake-" + corner });
+            }
+
+            foreach (string corner in new[] { "rl", "rr" })
+            {
+                // Rear arm Assembly 106827/104310 blocks installation while
+                // the same-corner stock shock is installed. This is an install
+                // gate only; the pending spring/manual-removal outcome remains
+                // governed by the existing reverse dependency behavior.
+                ConfigureMountSequence(
+                    mounts,
+                    "mount.satsuma.trail-arm-" + corner,
+                    Array.Empty<string>(),
+                    Array.Empty<string>(),
+                    new[] { "mount.satsuma.shock-" + corner });
+
+                // All six reviewed rear Assembly FSMs reject an install while
+                // the same-corner stock shock is present. Preserve the existing
+                // stock/long mutual exclusion alongside that new install gate.
+                ConfigureMountSequence(
+                    mounts,
+                    "mount.satsuma.coilspring-" + corner,
+                    new[] { "mount.satsuma.trail-arm-" + corner },
+                    Array.Empty<string>(),
+                    new[]
+                    {
+                        "mount.satsuma.long-coilspring-" + corner,
+                        "mount.satsuma.shock-" + corner,
+                    },
+                    new[] { "mount.satsuma.trail-arm-" + corner });
+                ConfigureMountSequence(
+                    mounts,
+                    "mount.satsuma.long-coilspring-" + corner,
+                    new[] { "mount.satsuma.trail-arm-" + corner },
+                    Array.Empty<string>(),
+                    new[]
+                    {
+                        "mount.satsuma.coilspring-" + corner,
+                        "mount.satsuma.shock-" + corner,
+                    },
+                    new[] { "mount.satsuma.trail-arm-" + corner });
+
+                // Preserve the independently accepted spring removal gate.
+                ConfigureMountRemovalBlockers(
+                    mounts,
+                    "mount.satsuma.coilspring-" + corner,
+                    new[] { "mount.satsuma.shock-" + corner });
+                ConfigureMountRemovalBlockers(
+                    mounts,
+                    "mount.satsuma.long-coilspring-" + corner,
+                    new[] { "mount.satsuma.shock-" + corner });
+            }
+        }
+
+        private static void ConfigureMountInstallationChecks(
+            IReadOnlyList<MountBuild> mounts,
+            string mountId,
+            string boltedSupportMountId,
+            string[] blockedWhileBoltedMountIds = null)
+        {
+            MountBuild build = mounts.SingleOrDefault(value =>
+                value.Definition != null &&
+                string.Equals(value.Definition.DefinitionId, mountId,
+                    StringComparison.Ordinal));
+            if (build.Definition == null)
+            {
+                throw new InvalidOperationException(
+                    "Required Satsuma installation-check mount is missing: " + mountId);
+            }
+
+            build.Definition.ConfigureInstallationChecks(
+                boltedSupportMountId, blockedWhileBoltedMountIds);
+            EditorUtility.SetDirty(build.Definition);
+        }
+
         private static void ConfigureMountSequence(
             IReadOnlyList<MountBuild> mounts,
             string mountId,
@@ -6405,6 +7319,30 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
             }
 
             build.Definition.ConfigureRemovalBlockers(blockedMountIds);
+            EditorUtility.SetDirty(build.Definition);
+        }
+
+        private static void ConfigureMountRemovalChecks(
+            IReadOnlyList<MountBuild> mounts,
+            string mountId,
+            string[] blockedWhileBoltedMountIds,
+            string[] ignoredDependentMountIds)
+        {
+            MountBuild build = mounts.SingleOrDefault(value =>
+                value.Definition != null &&
+                string.Equals(
+                    value.Definition.DefinitionId,
+                    mountId,
+                    StringComparison.Ordinal));
+            if (build.Definition == null)
+            {
+                throw new InvalidOperationException(
+                    "Required Satsuma removal-check mount is missing: " + mountId);
+            }
+
+            build.Definition.ConfigureRemovalChecks(
+                blockedWhileBoltedMountIds,
+                ignoredDependentMountIds);
             EditorUtility.SetDirty(build.Definition);
         }
 
@@ -6590,30 +7528,20 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                 InstallRequires("wishbone-fr", "sub-frame"),
                 RemovalBlocked("sub-frame", "wishbone-fr"),
                 InstallRequires("spindle-fl", "wishbone-fl"),
-                AssemblyDependency.Create("vehicle.satsuma.part.spindle-fl",
-                    "vehicle.satsuma.part.wishbone-fl", AssemblyDependencyKind.InstallRequiresBolted),
                 RemovalBlocked("wishbone-fl", "spindle-fl"),
                 InstallRequires("spindle-fr", "wishbone-fr"),
-                AssemblyDependency.Create("vehicle.satsuma.part.spindle-fr",
-                    "vehicle.satsuma.part.wishbone-fr", AssemblyDependencyKind.InstallRequiresBolted),
                 RemovalBlocked("wishbone-fr", "spindle-fr"),
                 InstallRequires("strut-fl", "spindle-fl"),
-                AssemblyDependency.Create("vehicle.satsuma.part.strut-fl",
-                    "vehicle.satsuma.part.spindle-fl", AssemblyDependencyKind.InstallRequiresBolted),
                 RemovalBlocked("spindle-fl", "strut-fl"),
                 InstallRequires("strut-fr", "spindle-fr"),
-                AssemblyDependency.Create("vehicle.satsuma.part.strut-fr",
-                    "vehicle.satsuma.part.spindle-fr", AssemblyDependencyKind.InstallRequiresBolted),
                 RemovalBlocked("spindle-fr", "strut-fr"),
                 InstallRequires("steering-rack", "sub-frame"),
                 RemovalBlocked("sub-frame", "steering-rack"),
                 InstallRequires("steering-column", "steering-rack"),
                 RemovalBlocked("steering-rack", "steering-column"),
                 InstallRequires("steering-rod-fl", "steering-rack"),
-                InstallRequires("steering-rod-fl", "spindle-fl"),
                 RemovalBlocked("steering-rack", "steering-rod-fl"),
                 InstallRequires("steering-rod-fr", "steering-rack"),
-                InstallRequires("steering-rod-fr", "spindle-fr"),
                 RemovalBlocked("steering-rack", "steering-rod-fr"),
             };
 
@@ -6829,7 +7757,9 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                 body.linearDamping = 0.02f;
                 body.angularDamping = 0.205f;
                 body.interpolation = RigidbodyInterpolation.Interpolate;
-                body.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                // Paired actual-road audit: speculative CCD generated a
+                // 9.2 kN s false floor contact and rolled this compound body.
+                body.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 body.isKinematic = false;
                 body.useGravity = true;
                 body.maxDepenetrationVelocity = 1.5f;
@@ -7020,6 +7950,7 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                     configuredRetentionSpeedSource: body);
                 BuildJackLiftPoints(root.transform, body);
                 ConfigureInstalledPartInteractions(parts, assembly);
+                Phase1SatsumaEnginePickupAuthoring.Configure(assembly);
                 ConfigureBootlidHingeArmPresentation(
                     presentation,
                     parts);
@@ -7209,6 +8140,7 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                 NwhWheelPhysicsBackend backend =
                     root.AddComponent<NwhWheelPhysicsBackend>();
                 backend.Configure(body, physicsWheels);
+                backend.ConfigureUnbrakedSlopeRelease(true);
                 backend.ConfigureAssemblySupport(wheelSupport);
                 backend.ConfigureAxleStability(
                     configuredFrontAntiRollForceNewtons: 2200f,
@@ -7233,6 +8165,13 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                     throw new InvalidDataException(
                         "Satsuma restore synchronization requires the reviewed front rig.");
                 }
+                SatsumaHandbrakeController handbrake = BuildSatsumaHandbrake(
+                    scene, satsumaRoot.TransformId, root.transform, parts,
+                    assembly, importedMeshes, materials);
+                SatsumaHandbrakeNwhAdapter handbrakeBrakes = root
+                    .AddComponent<SatsumaHandbrakeNwhAdapter>();
+                handbrakeBrakes.Configure(handbrake, backend,
+                    physicsWheels[2], physicsWheels[3]);
                 AssemblyChassisMassController massController = root
                     .AddComponent<AssemblyChassisMassController>();
                 massController.Configure(
@@ -7247,7 +8186,8 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                     wheelSupport,
                     frontSteering,
                     frontSuspension,
-                    rearNwhController);
+                    rearNwhController,
+                    handbrakeBrakes);
                 VehicleInputRouter inputRouter =
                     root.AddComponent<VehicleInputRouter>();
                 inputRouter.Configure(
@@ -7259,6 +8199,19 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                 VehicleSimulationHost simulation =
                     root.AddComponent<VehicleSimulationHost>();
                 simulation.Configure(config, backend, prerequisites, inputRouter);
+                BuildSatsumaElectricalAndWipers(
+                    scene,
+                    satsumaRoot,
+                    root.transform,
+                    parts,
+                    loosePartBuilds,
+                    assembly,
+                    simulation,
+                    prerequisites,
+                    importedMeshes,
+                    materials,
+                    out SatsumaElectricalSystem electrical,
+                    out SatsumaWiperController wipers);
                 VehiclePersistenceBinding persistence =
                     root.AddComponent<VehiclePersistenceBinding>();
                 Material donorRustPaintMaterial = RequireAsset<Material>(
@@ -7373,7 +8326,7 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                         shouldApplyBodyColor: false),
                 };
                 paint.Configure(paintBindings, paintProfiles);
-                ConfigureVehicleGlassRainPresentation(root, body);
+                ConfigureVehicleGlassRainPresentation(root, body, wipers);
                 persistence.Configure(
                     identity,
                     assembly,
@@ -7382,7 +8335,37 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                     body,
                     paint,
                     massController,
-                    physicsRestore);
+                    physicsRestore,
+                    electrical,
+                    wipers,
+                    handbrake);
+
+                Phase1SatsumaIgnitionAuthoring.ApplyBindings(root, GeneratedRoot);
+                Phase1SatsumaEngineFastenerPresentation.ApplyReviewedMeshes(
+                    root,
+                    GeneratedRoot);
+                Phase1SatsumaEngineAdditionalFastenerPresentation.ApplyReviewedMeshes(
+                    root,
+                    GeneratedRoot);
+                Phase1SatsumaCamshaftTimingAuthoring.ApplyToInstance(assembly, GeneratedRoot);
+                Phase1SatsumaEngineScrewdriverAuthoring.Configure(assembly,
+                    Phase1SatsumaEngineScrewdriverAuthoring.GetOrCreateScrewdriver(ToolDefinitionRoot));
+                Phase1SatsumaEngineCapAndCoverAuthoring.Configure(root, GeneratedRoot);
+                Phase1SatsumaEngineAdjustmentsAuthoring.ApplyToInstance(assembly, GeneratedRoot);
+                Phase1SatsumaValveAdjustmentsAuthoring.ApplyToInstance(assembly);
+                Phase1SatsumaServiceCapsAuthoring.ApplyToInstance(assembly, GeneratedRoot);
+            Phase1SatsumaOperatingAuthoring.ApplyToInstance(assembly);
+            Phase1SatsumaEngineMotionAuthoring.ApplyToInstance(assembly);
+                Phase1SatsumaEngineFastenerTravel.ApplyReviewedTravel(root);
+                Phase1SatsumaEngineCompoundPhysicsAuthoring.Configure(assembly);
+                Phase1SatsumaEngineDockingAuthoring.ApplyToInstance(assembly);
+
+                // Additive first-start packet runs after the original 117-mount
+                // assembly passes. Keep staging asset references within staging.
+                Phase1SatsumaInstalledBeltAssets.ImportReviewedAssets(GeneratedRoot);
+                Phase1SatsumaStartableCarNightBatch.ApplyToInstance(assembly, GeneratedRoot);
+                Phase1SatsumaInstrumentAuthoring.ApplyToInstance(assembly, GeneratedRoot);
+                Phase1SatsumaFlexibleConnectionsAuthoring.ApplyToInstance(assembly, GeneratedRoot);
 
                 LegacySatsumaBaselineMetadata metadata =
                     root.AddComponent<LegacySatsumaBaselineMetadata>();
@@ -7399,6 +8382,10 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                     loosePartBuilds.Count,
                     loosePartBuilds.Count(value =>
                         IsLoosePartActiveAtNewGame(value.Source)));
+
+            Phase1SatsumaDriverStationAuthoring.ApplyToInstance(assembly);
+            Phase1SatsumaCockpitSteeringAuthoring.ApplyToInstance(assembly);
+            Phase1SatsumaRoadPhysicsAuthoring.ApplyToInstance(assembly);
 
                 GameObject prefab = SavePrefabPreservingScriptReferences(
                     root,
@@ -7421,9 +8408,763 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
             }
         }
 
+        private static SatsumaHandbrakeController BuildSatsumaHandbrake(
+            DonorUnitySceneModel scene,
+            long satsumaRootTransformId,
+            Transform vehicleRoot,
+            IReadOnlyList<PartInstance> parts,
+            VehicleAssemblyController assembly,
+            IReadOnlyDictionary<string, string> importedMeshes,
+            IReadOnlyDictionary<string, Material> materials)
+        {
+            // Frozen rod 60945 is always present on the chassis, including
+            // while the removable lever/base part is lying in the garage.
+            Transform rod = CreateDonorTransform(scene, 60945L,
+                satsumaRootTransformId, vehicleRoot, "Handbrake fixed linkage rod");
+            AddReviewedDirectRenderer(scene, 60945L, rod.gameObject,
+                DonorHandbrakeRodMeshSourceGuid, importedMeshes, materials,
+                DonorHandbrakeRodMaterialSourceGuid, ShadowCastingMode.Off);
+            PartInstance part = parts.Single(value => value.Definition != null &&
+                value.Definition.DefinitionId == "vehicle.satsuma.part.handbrake");
+            const string leverMeshGuid = "ab90c359dad610a4a8325d7a8a3c3162";
+            Mesh leverMesh = RequireAsset<Mesh>(importedMeshes[leverMeshGuid]);
+            MeshFilter lever = part.GetComponentsInChildren<MeshFilter>(true)
+                .Single(value => value.sharedMesh == leverMesh);
+            GameObject presentationInstance = PrefabUtility
+                .GetOutermostPrefabInstanceRoot(lever.gameObject);
+            if (presentationInstance != null)
+            {
+                if (presentationInstance == part.gameObject ||
+                    !presentationInstance.transform.IsChildOf(part.transform))
+                {
+                    throw new InvalidDataException("Handbrake presentation escaped its part wrapper.");
+                }
+
+                // Unity refuses to reparent a nested prefab's mesh child. Only
+                // unpack this generated temporary presentation, never the car.
+                PrefabUtility.UnpackPrefabInstance(presentationInstance,
+                    PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+            }
+            // The loose donor part's root is the lever pivot, not the fixed base.
+            // Moving the PartInstance would rotate its mount, base and pickup body.
+            Transform pivot = new GameObject("Handbrake lever pivot").transform;
+            pivot.SetParent(part.transform, false);
+            lever.transform.SetParent(pivot, true);
+            if (lever.transform.parent != pivot ||
+                pivot.GetComponentsInChildren<MeshFilter>(true).Length != 1)
+            {
+                throw new InvalidDataException("Handbrake moving-only lever binding was not applied.");
+            }
+
+            SatsumaHandbrakeController handbrake = vehicleRoot.gameObject
+                .AddComponent<SatsumaHandbrakeController>();
+            handbrake.Configure(assembly, part, pivot);
+
+            DonorColliderRecord source = scene.GetCollidersForGameObject(
+                    9481L, includeDisabled: true, includeTriggers: true)
+                .Single(value => value.ComponentId == 100769L);
+            if (source.Kind != DonorColliderKind.Capsule)
+            {
+                throw new InvalidDataException("Locked donor handbrake interaction shape drifted.");
+            }
+            var targetObject = new GameObject("Handbrake held interaction");
+            targetObject.transform.SetParent(part.transform, false);
+            var capsule = targetObject.AddComponent<CapsuleCollider>();
+            capsule.center = source.Center;
+            capsule.radius = source.Radius;
+            capsule.height = source.Height;
+            capsule.direction = source.Direction;
+            capsule.isTrigger = true;
+            SatsumaHandbrakeInteractionTarget target = targetObject
+                .AddComponent<SatsumaHandbrakeInteractionTarget>();
+            target.Configure(handbrake, capsule);
+            InteractionTargetHost host = targetObject.AddComponent<InteractionTargetHost>();
+            host.Configure(target);
+            host.ConfigureOutlineRenderers(lever.GetComponent<Renderer>());
+            host.ConfigureSelectionPriority(45);
+            return handbrake;
+        }
+
+        private static void BuildSatsumaElectricalAndWipers(
+            DonorUnitySceneModel scene,
+            DonorTransformRecord satsumaRoot,
+            Transform vehicleRoot,
+            IReadOnlyList<PartInstance> parts,
+            IReadOnlyList<LoosePartBuild> loosePartBuilds,
+            VehicleAssemblyController assembly,
+            VehicleSimulationHost simulation,
+            AssemblyVehiclePrerequisiteAdapter prerequisites,
+            IReadOnlyDictionary<string, string> importedMeshes,
+            IReadOnlyDictionary<string, Material> materials,
+            out SatsumaElectricalSystem electrical,
+            out SatsumaWiperController wipers)
+        {
+            Transform electricalPresentationRoot = new GameObject(
+                "Donor Satsuma Electrical Presentation").transform;
+            electricalPresentationRoot.SetParent(vehicleRoot, false);
+
+            SatsumaElectricalDonorConnectionDefinition[] connectionDefinitions =
+                BuildSatsumaElectricalDonorConnectionDefinitions();
+            GameObject batteryPlus = CreateDirectDonorRendererObject(
+                scene,
+                satsumaRoot.TransformId,
+                electricalPresentationRoot,
+                60044L,
+                DonorWiringBatteryPlusMeshSourceGuid,
+                importedMeshes,
+                materials);
+            GameObject batteryMinus = CreateDirectDonorRendererObject(
+                scene,
+                satsumaRoot.TransformId,
+                electricalPresentationRoot,
+                65291L,
+                DonorWiringBatteryMinusMeshSourceGuid,
+                importedMeshes,
+                materials);
+            var wirePresentations = new Dictionary<
+                SatsumaElectricalConnection,
+                GameObject>();
+            for (int index = 0; index < connectionDefinitions.Length; index++)
+            {
+                SatsumaElectricalDonorConnectionDefinition definition =
+                    connectionDefinitions[index];
+                wirePresentations.Add(
+                    definition.Connection,
+                    CreateDirectDonorRendererObject(
+                        scene,
+                        satsumaRoot.TransformId,
+                        electricalPresentationRoot,
+                        definition.PresentationTransformId,
+                        definition.MeshGuid,
+                        importedMeshes,
+                        materials));
+            }
+
+            electrical = vehicleRoot.gameObject
+                .AddComponent<SatsumaElectricalSystem>();
+            var electricalBindings = new List<SatsumaElectricalConnectionBinding>(
+                connectionDefinitions.Length + 2)
+            {
+                new SatsumaElectricalConnectionBinding(
+                    SatsumaElectricalPresentationRule.BatteryPositiveShoe,
+                    batteryPlus),
+                new SatsumaElectricalConnectionBinding(
+                    SatsumaElectricalPresentationRule.BatteryNegativeShoe,
+                    batteryMinus),
+            };
+            for (int index = 0; index < connectionDefinitions.Length; index++)
+            {
+                SatsumaElectricalDonorConnectionDefinition definition =
+                    connectionDefinitions[index];
+                electricalBindings.Add(new SatsumaElectricalConnectionBinding(
+                    definition.Connection,
+                    wirePresentations[definition.Connection]));
+            }
+
+            electrical.Configure(
+                assembly,
+                simulation,
+                prerequisites,
+                electricalBindings.ToArray());
+
+            for (int index = 0; index < connectionDefinitions.Length; index++)
+            {
+                SatsumaElectricalDonorConnectionDefinition definition =
+                    connectionDefinitions[index];
+                BuildSatsumaWiringEndpoint(
+                    scene,
+                    satsumaRoot.TransformId,
+                    vehicleRoot,
+                    electrical,
+                    definition.Connection,
+                    0,
+                    definition.FirstEndpoint);
+                BuildSatsumaWiringEndpoint(
+                    scene,
+                    satsumaRoot.TransformId,
+                    vehicleRoot,
+                    electrical,
+                    definition.Connection,
+                    1,
+                    definition.SecondEndpoint);
+            }
+
+            BuildSatsumaElectricalFastener(
+                scene,
+                batteryPlus.transform,
+                60044L,
+                53709L,
+                55114L,
+                electrical,
+                SatsumaElectricalFastener.BatteryPositiveTerminal,
+                DonorShortBoltMeshSourceGuid,
+                importedMeshes,
+                materials);
+            BuildSatsumaElectricalFastener(
+                scene,
+                batteryMinus.transform,
+                65291L,
+                63573L,
+                44832L,
+                electrical,
+                SatsumaElectricalFastener.BatteryNegativeTerminal,
+                DonorShortBoltMeshSourceGuid,
+                importedMeshes,
+                materials);
+            BuildSatsumaElectricalFastener(
+                scene,
+                wirePresentations[SatsumaElectricalConnection.Starter].transform,
+                67843L,
+                66724L,
+                48986L,
+                electrical,
+                SatsumaElectricalFastener.StarterCable,
+                DonorFastenerMeshSourceGuid,
+                importedMeshes,
+                materials);
+
+            Transform wiperRoot = CreateDonorTransform(
+                scene,
+                65304L,
+                satsumaRoot.TransformId,
+                vehicleRoot,
+                "Fixed donor wipers");
+            Transform leftPivot = CreateDonorChildTransform(
+                scene, 53042L, wiperRoot, "WiperLeftPivot");
+            Transform leftTap = CreateDonorChildRendererTransform(
+                scene,
+                38584L,
+                leftPivot,
+                DonorWiperTapMeshSourceGuid,
+                importedMeshes,
+                materials);
+            Transform leftRod = CreateDonorChildRendererTransform(
+                scene,
+                38914L,
+                leftTap,
+                DonorWiperRodMeshSourceGuid,
+                importedMeshes,
+                materials);
+            Transform rightPivot = CreateDonorChildTransform(
+                scene, 62572L, wiperRoot, "WiperRightPivot");
+            Transform rightTap = CreateDonorChildRendererTransform(
+                scene,
+                39441L,
+                rightPivot,
+                DonorWiperTapMeshSourceGuid,
+                importedMeshes,
+                materials);
+            Transform rightRod = CreateDonorChildRendererTransform(
+                scene,
+                51240L,
+                rightTap,
+                DonorWiperRodMeshSourceGuid,
+                importedMeshes,
+                materials);
+
+            PartInstance dashboardMeters = parts.Single(value =>
+                value.Definition != null &&
+                string.Equals(
+                    value.Definition.DefinitionId,
+                    "vehicle.satsuma.part.dashboard-meters",
+                    StringComparison.Ordinal));
+            LoosePartBuild dashboardBuild = loosePartBuilds.Single(value =>
+                value.Source.DefinitionId ==
+                "vehicle.satsuma.part.dashboard-meters");
+            if (dashboardBuild.Source.Root == null)
+            {
+                throw new InvalidDataException(
+                    "Dashboard meters donor source is missing.");
+            }
+
+            Transform switchKnob = dashboardMeters
+                .GetComponentsInChildren<Transform>(true)
+                .Single(value => value.name == "knob_75512");
+            wipers = vehicleRoot.gameObject.AddComponent<SatsumaWiperController>();
+            wipers.Configure(
+                electrical,
+                leftTap,
+                leftRod,
+                rightTap,
+                rightRod,
+                switchKnob);
+
+            SphereCollider switchCollider = switchKnob.gameObject
+                .AddComponent<SphereCollider>();
+            switchCollider.isTrigger = true;
+            switchCollider.center = new Vector3(0f, -0.03f, 0f);
+            switchCollider.radius = 0.025f;
+            SatsumaWiperSwitchInteractionTarget switchTarget = switchKnob
+                .gameObject.AddComponent<SatsumaWiperSwitchInteractionTarget>();
+            switchTarget.Configure(wipers);
+            InteractionTargetHost switchHost = switchKnob.gameObject
+                .AddComponent<InteractionTargetHost>();
+            switchHost.Configure(switchTarget);
+            Renderer knobRenderer = switchKnob.GetComponent<Renderer>();
+            if (knobRenderer != null)
+            {
+                switchHost.ConfigureOutlineRenderers(knobRenderer);
+            }
+            switchHost.ConfigureSelectionPriority(45);
+        }
+
+        private static SatsumaElectricalDonorConnectionDefinition[]
+            BuildSatsumaElectricalDonorConnectionDefinitions()
+        {
+            const string EngineBlock = "vehicle.satsuma.part.engine-block";
+            const string Alternator = "vehicle.satsuma.part.alternator";
+            const string PlugWires = "vehicle.satsuma.part.electrics";
+            const string Starter = "vehicle.satsuma.part.starter";
+            const string Battery = "vehicle.satsuma.part.battery";
+            const string SteeringColumn = "vehicle.satsuma.part.steering-column";
+            const string Dashboard = "vehicle.satsuma.part.dashboard";
+            const string DashboardMeters = "vehicle.satsuma.part.dashboard-meters";
+            const string HeadlightLeft = "vehicle.satsuma.part.headlight-left";
+            const string HeadlightRight = "vehicle.satsuma.part.headlight-right";
+            const string RearlightLeft = "vehicle.satsuma.part.rear-light-left";
+            const string RearlightRight = "vehicle.satsuma.part.rear-light-right";
+            const string FuelTank = "vehicle.satsuma.part.fuel-tank";
+            const string Radio = "vehicle.satsuma.part.radio";
+            const string Amplifier = "vehicle.satsuma.part.amplifier";
+            const string CdPlayer = "vehicle.satsuma.part.cd-player";
+            const string SubwooferPanel = "vehicle.satsuma.part.subwoofer-panel";
+            const string SubwooferLeft = "vehicle.satsuma.part.subwoofer-left";
+            const string SubwooferRight = "vehicle.satsuma.part.subwoofer-right";
+            const string GaugeAfr = "vehicle.satsuma.part.gauge-fuel-mixture";
+            const string GaugeExtra = "vehicle.satsuma.part.gauge-cluster-extra";
+            const string Radiator = "vehicle.satsuma.part.radiator";
+            const string RacingRadiator = "vehicle.satsuma.part.radiator-racing";
+            const string MarkerLeft = "vehicle.satsuma.part.marker-light-left";
+            const string MarkerRight = "vehicle.satsuma.part.marker-light-right";
+
+            return new[]
+            {
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.Alternator, 66635L,
+                    "5ccfd79fcd2aaf14db01de51b09f58f6",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        41844L, "REGULATOR"),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        44324L, "ALTERNATOR", EngineBlock, Alternator)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.AmplifierPower, 68322L,
+                    "869cee1ada5c95948b1138860f57aef3",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        57373L, "AMPLIFIER POWER", Amplifier),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        57885L, "RADIO HARNESS")),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.AmplifierAudio, 37309L,
+                    "d3ea9bced9ed4264fb1a0b6db93c49a6",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        71781L, "RADIO", Dashboard, CdPlayer),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        71826L, "AMPLIFIER AUDIO", Amplifier)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.BatteryHarness, 42873L,
+                    "32aa759866b501a4eac8558a23c3eea4",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        41555L, "POSITIVE TERMINAL", Battery),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        57488L, "MAIN HARNESS CONNECTOR")),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.CoilHarness, 53935L,
+                    "419972dfeb53f2f4385d9f5138c43620",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        52626L, "IGNITION COIL", EngineBlock, PlugWires),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        57998L, "MAIN HARNESS CONNECTOR")),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.Dash1, 47855L,
+                    "3d3dd037494c743459863835417239a1",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        56657L, "FUSEBOX"),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        70777L, "INSTRUMENT PANEL 1", Dashboard, DashboardMeters)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.Dash2, 51049L,
+                    "7c5e9d95b59b9034aa42181561235837",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        60508L, "INSTRUMENT PANEL 2", Dashboard, DashboardMeters),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        68787L, "FUSEBOX")),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.GroundBattery, 64472L,
+                    "b3ac49dc3af2f7b4a9412230029a84e6",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        48345L, "NEGATIVE TERMINAL", Battery),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        68822L,
+                        "BATTERY GROUND CONNECTOR",
+                        "mount.satsuma.engine-plate.starter",
+                        "fastener.satsuma.engine-plate-starter.boltpm-1",
+                        SatsumaElectricalSystem.FastenerMaximumStage,
+                        EngineBlock,
+                        Starter)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.MarkerLeft, 46703L,
+                    "4a3b866b71e8b4640a8cc7046b1eacfe",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        55203L, "MARKER LIGHT LEFT", MarkerLeft),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        58259L, "FRONT LIGHTS CONNECTOR")),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.MarkerRight, 57519L,
+                    "39154d39fb60344489885b0f753a79ef",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        46091L, "MARKER LIGHT RIGHT", MarkerRight),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        55349L, "FRONT LIGHTS CONNECTOR")),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.FuelTank, 56521L,
+                    "08b26f69bf9535d418a73ade2aefc71a",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        45978L, "FUEL TANK", FuelTank),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        51731L, "REAR HARNESS CONNECTOR")),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.GaugeAfr, 45497L,
+                    "6825e6ff13f0c444baa4c60d12d420d7",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        65672L, "DASH HARNESS CONNECTOR"),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        69261L, "AFR GAUGE", GaugeAfr)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.GaugeExtra, 40412L,
+                    "c931e1ce0b5a0d448982de18bf5b2bb1",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        37329L, "DASH HARNESS CONNECTOR"),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        37816L, "EXTRA GAUGES", GaugeExtra)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.FrontLightsHarness, 71083L,
+                    "6ac03bfec2ae9c04b9cd49689a6d0bdc",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        67529L, "MAIN HARNESS CONNECTOR"),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        70826L, "FRONT LIGHTS CONNECTOR")),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.HeadlightLeft, 44457L,
+                    "0da71a3e35b07204da0a1db3e909ad53",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        37388L, "FRONT LIGHTS CONNECTOR"),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        70421L, "HEADLIGHT LEFT", HeadlightLeft)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.HeadlightRight, 47785L,
+                    "65b14cfed2719314a967da6ba14bcda4",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        43848L, "HEADLIGHT RIGHT", HeadlightRight),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        69464L, "FRONT LIGHTS CONNECTOR")),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.Ignition, 59161L,
+                    "cfe641defee778e40a43c7ed120df1f1",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        41681L, "FUSEBOX"),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        63749L, "IGNITION SWITCH", SteeringColumn)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.RadiatorFan, 41561L,
+                    "668c26486f8a1674c8e33780fc4035b2",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        49930L, "MAIN HARNESS CONNECTOR"),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        58684L, "RADIATOR FAN CONNECTOR", true,
+                        Radiator, RacingRadiator)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.Radio, 36561L,
+                    "4f910676b30befe428f83c68f16216aa",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        38589L, "RADIO HARNESS"),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        53201L, "RADIO", Radio)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.RearlightLeft, 57481L,
+                    "400a68d53f8e56244b5055cf5fe957fc",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        41971L, "REAR HARNESS CONNECTOR"),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        64591L, "REARLIGHT LEFT", RearlightLeft)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.RearlightRight, 42145L,
+                    "acc7629d4f4718043891bd8915f7d62a",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        58001L, "REAR HARNESS CONNECTOR"),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        67494L, "REARLIGHT RIGHT", RearlightRight)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.RegulatorHarness, 63726L,
+                    "2816aa1ae63beba47acb9049e10aecb4",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        39474L, "MAIN HARNESS CONNECTOR"),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        68358L, "REGULATOR")),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.Starter, 67843L,
+                    "5e66c44bc1e7b6b4289c10c20c2cd22e",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        61154L, "STARTER", EngineBlock, Starter),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        62386L, "POSITIVE TERMINAL", Battery)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.SubwooferLeft, 58974L,
+                    "889bc1d4c1e6ae440b194b5eda935569",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        60335L, "SUBWOOFER LEFT", SubwooferLeft,
+                        SubwooferPanel, Amplifier),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        64687L, "AUDIO OUT LEFT", SubwooferLeft,
+                        SubwooferPanel, Amplifier)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.SubwooferRight, 63178L,
+                    "09b2da146902a484fa3b8c7e62da45fd",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        50217L, "SUBWOOFER RIGHT", SubwooferRight,
+                        SubwooferPanel, Amplifier),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        55178L, "AUDIO OUT RIGHT", SubwooferRight,
+                        SubwooferPanel, Amplifier)),
+                new SatsumaElectricalDonorConnectionDefinition(
+                    SatsumaElectricalConnection.SwitchLights, 39247L,
+                    "3f95a862b9f417d4d8a5a74cc3fa2127",
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        43339L, "LIGHT SWITCH"),
+                    new SatsumaElectricalDonorEndpointDefinition(
+                        69005L, "DASH HARNESS CONNECTOR", Dashboard, DashboardMeters)),
+            };
+        }
+
+        private static GameObject CreateDirectDonorRendererObject(
+            DonorUnitySceneModel scene,
+            long satsumaRootTransformId,
+            Transform parent,
+            long donorTransformId,
+            string expectedMeshGuid,
+            IReadOnlyDictionary<string, string> importedMeshes,
+            IReadOnlyDictionary<string, Material> materials)
+        {
+            Transform owner = CreateDonorTransform(
+                scene,
+                donorTransformId,
+                satsumaRootTransformId,
+                parent,
+                SanitizeName(scene.GetGameObjectName(
+                    scene.GetTransform(donorTransformId).GameObjectId)));
+            AddReviewedDirectRenderer(
+                scene,
+                donorTransformId,
+                owner.gameObject,
+                expectedMeshGuid,
+                importedMeshes,
+                materials);
+            return owner.gameObject;
+        }
+
+        private static Transform CreateDonorTransform(
+            DonorUnitySceneModel scene,
+            long donorTransformId,
+            long referenceTransformId,
+            Transform parent,
+            string name)
+        {
+            scene.GetTransformRelativeTo(
+                donorTransformId,
+                referenceTransformId,
+                out Vector3 position,
+                out Quaternion rotation,
+                out Vector3 scale);
+            Transform result = new GameObject(name).transform;
+            result.SetParent(parent, false);
+            result.SetLocalPositionAndRotation(position, rotation);
+            result.localScale = scale;
+            return result;
+        }
+
+        private static Transform CreateDonorChildTransform(
+            DonorUnitySceneModel scene,
+            long donorTransformId,
+            Transform parent,
+            string name)
+        {
+            DonorTransformRecord donor = scene.GetTransform(donorTransformId);
+            Transform result = new GameObject(name).transform;
+            result.SetParent(parent, false);
+            result.SetLocalPositionAndRotation(
+                donor.LocalPosition,
+                donor.LocalRotation);
+            result.localScale = donor.LocalScale;
+            return result;
+        }
+
+        private static Transform CreateDonorChildRendererTransform(
+            DonorUnitySceneModel scene,
+            long donorTransformId,
+            Transform parent,
+            string expectedMeshGuid,
+            IReadOnlyDictionary<string, string> importedMeshes,
+            IReadOnlyDictionary<string, Material> materials)
+        {
+            Transform result = CreateDonorChildTransform(
+                scene,
+                donorTransformId,
+                parent,
+                SanitizeName(scene.GetGameObjectName(
+                    scene.GetTransform(donorTransformId).GameObjectId)));
+            AddReviewedDirectRenderer(
+                scene,
+                donorTransformId,
+                result.gameObject,
+                expectedMeshGuid,
+                importedMeshes,
+                materials);
+            return result;
+        }
+
+        private static void AddReviewedDirectRenderer(
+            DonorUnitySceneModel scene,
+            long donorTransformId,
+            GameObject owner,
+            string expectedMeshGuid,
+            IReadOnlyDictionary<string, string> importedMeshes,
+            IReadOnlyDictionary<string, Material> materials,
+            string expectedMaterialGuid = DonorStandardMetalMaterialSourceGuid,
+            ShadowCastingMode shadowCastingMode = ShadowCastingMode.On)
+        {
+            DonorTransformRecord transform = scene.GetTransform(donorTransformId);
+            DonorStaticRendererRecord[] matches = scene
+                .GetStaticRenderersBelowIncludingInactive(donorTransformId)
+                .Where(value => value.GameObjectId == transform.GameObjectId)
+                .ToArray();
+            if (matches.Length != 1 ||
+                !string.Equals(
+                    matches[0].MeshGuid,
+                    expectedMeshGuid,
+                    StringComparison.OrdinalIgnoreCase) ||
+                matches[0].MaterialGuids.Count != 1 ||
+                !string.Equals(
+                    matches[0].MaterialGuids[0],
+                    expectedMaterialGuid,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidDataException(
+                    "Reviewed Satsuma direct renderer drifted at " +
+                    donorTransformId.ToString(CultureInfo.InvariantCulture) + ".");
+            }
+
+            owner.gameObject.AddComponent<MeshFilter>().sharedMesh = RequireAsset<Mesh>(
+                importedMeshes[expectedMeshGuid]);
+            MeshRenderer renderer = owner.AddComponent<MeshRenderer>();
+            renderer.sharedMaterial = materials[expectedMaterialGuid];
+            renderer.shadowCastingMode = shadowCastingMode;
+            renderer.receiveShadows = true;
+        }
+
+        private static void BuildSatsumaWiringEndpoint(
+            DonorUnitySceneModel scene,
+            long satsumaRootTransformId,
+            Transform vehicleRoot,
+            SatsumaElectricalSystem electrical,
+            SatsumaElectricalConnection connection,
+            int endpointIndex,
+            SatsumaElectricalDonorEndpointDefinition definition)
+        {
+            Transform owner = CreateDonorTransform(
+                scene,
+                definition.TransformId,
+                satsumaRootTransformId,
+                vehicleRoot,
+                "Wiring endpoint " +
+                definition.TransformId.ToString(CultureInfo.InvariantCulture));
+            owner.localScale = Vector3.one;
+            SphereCollider collider = owner.gameObject.AddComponent<SphereCollider>();
+            collider.isTrigger = true;
+            // The donor finds an endpoint within 0.1 m of the held wiring tool.
+            // Preserve that tolerance for the explicit project raycast target;
+            // a 28 mm invisible hotspot made bare harness points hard to find.
+            collider.radius = SatsumaElectricalSystem.DonorEndpointToleranceMeters;
+            SatsumaWiringConnectorInteractionTarget target = owner.gameObject
+                .AddComponent<SatsumaWiringConnectorInteractionTarget>();
+            target.Configure(
+                electrical,
+                connection,
+                endpointIndex,
+                definition.Prompt,
+                definition.RequiredPartDefinitionIds,
+                definition.MatchAnyRequiredPart);
+            if (!string.IsNullOrEmpty(definition.RequiredMountId))
+            {
+                // Ground endpoint 68822 reads starter array index 0: donor
+                // Screw 110254 / marker 57844, not the positive-cable nut.
+                // IntCompare routes Stage < 8 to ASSEMBLE, equality to LOOP.
+                target.ConfigureMountFastenerGate(
+                    definition.RequiredMountId,
+                    definition.RequiredMountFastenerDefinitionId,
+                    definition.RequiredMountFastenerMaximumStageExclusive);
+            }
+            InteractionTargetHost host = owner.gameObject
+                .AddComponent<InteractionTargetHost>();
+            host.Configure(target);
+            host.ConfigureSelectionPriority(35);
+        }
+
+        private static void BuildSatsumaElectricalFastener(
+            DonorUnitySceneModel scene,
+            Transform connectionPresentation,
+            long connectionRootTransformId,
+            long boltTransformId,
+            long rendererTransformId,
+            SatsumaElectricalSystem electrical,
+            SatsumaElectricalFastener fastener,
+            string fastenerMeshGuid,
+            IReadOnlyDictionary<string, string> importedMeshes,
+            IReadOnlyDictionary<string, Material> materials)
+        {
+            int layer = LayerMask.NameToLayer(FastenerToolRaycastLayer.Name);
+            if (layer < 0)
+            {
+                throw new InvalidDataException(
+                    "Required fastener tool layer is missing.");
+            }
+
+            Transform owner = CreateDonorTransform(
+                scene,
+                boltTransformId,
+                connectionRootTransformId,
+                connectionPresentation,
+                fastener + " fastener");
+            owner.gameObject.layer = layer;
+            Transform rendererTransform = CreateDonorChildTransform(
+                scene,
+                rendererTransformId,
+                owner,
+                fastener + " fastener mesh");
+            rendererTransform.gameObject.layer = layer;
+            rendererTransform.gameObject.AddComponent<MeshFilter>().sharedMesh =
+                RequireAsset<Mesh>(importedMeshes[fastenerMeshGuid]);
+            MeshRenderer renderer = rendererTransform.gameObject
+                .AddComponent<MeshRenderer>();
+            renderer.sharedMaterial = materials[DonorFastenerMaterialSourceGuid];
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+            SphereCollider collider = owner.gameObject.AddComponent<SphereCollider>();
+            collider.isTrigger = true;
+            collider.radius = 0.024f;
+            SatsumaElectricalTerminalFastenerInteractionTarget target = owner
+                .gameObject.AddComponent<
+                    SatsumaElectricalTerminalFastenerInteractionTarget>();
+            target.Configure(electrical, fastener, owner, renderer);
+            InteractionTargetHost host = owner.gameObject
+                .AddComponent<InteractionTargetHost>();
+            host.Configure(target);
+            host.ConfigureOutlineRenderers(renderer);
+            host.ConfigureSelectionPriority(50);
+        }
+
         private static void ConfigureVehicleGlassRainPresentation(
             GameObject vehicleRoot,
-            Rigidbody vehicleBody)
+            Rigidbody vehicleBody,
+            SatsumaWiperController wipers)
         {
             Material windshieldMaterial = RequireAsset<Material>(
                 MaterialRoot + "/" +
@@ -7465,7 +9206,8 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
             rain.ConfigureForAuthoring(
                 windows,
                 opacities,
-                vehicleBody);
+                vehicleBody,
+                wipers);
         }
 
         private static Vector3 ResolveNwhSuspensionTopLocalPosition(
@@ -7648,10 +9390,10 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                         .AddComponent<MeshRenderer>();
                     fastenerRenderer.sharedMaterial =
                         fastenerPresentationMaterial;
-                    // Donor body bolts are already visible on the loose panel;
-                    // only their Screw collider/FSM waits for installation.
-                    // Keeping this renderer under PartInstance reproduces that
-                    // without retaining the dead imported boltN duplicates.
+                    // Preserve the existing part-owned presentation without
+                    // keeping dead imported boltN duplicates. The scoped door
+                    // visibility authorer hides its eight bolts while loose;
+                    // the other panel visibility contracts remain unchanged.
                     fastenerRenderer.enabled = preserveLooseBodyBolt;
                     if (preserveLooseBodyBolt)
                     {
@@ -7695,7 +9437,7 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
                         // Donor Screw moves the visible child 2.5 mm per
                         // stage below a non-uniformly scaled BoltPM marker.
                         // Body-panel visuals are reparented directly to their
-                        // loose part so they remain visible before assembly;
+                        // loose part so they follow the panel throughout assembly;
                         // carry the missing parent-Z scale explicitly or a
                         // fully tightened bootlid bolt travels twice as far.
                         authoredFastenerPresentationStageTravelScale:
@@ -9481,12 +11223,21 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
             }
 
 
+            VehicleItemAssemblyBridge itemBridge = runtimePrefab.GetComponent<VehicleItemAssemblyBridge>();
+            PartDefinition[] dynamicDefinitions = Array.Empty<PartDefinition>();
+            if (itemBridge != null)
+            {
+                if (itemBridge.Assembly != runtimePrefab.GetComponent<VehicleAssemblyController>() || itemBridge.Catalog == null)
+                    throw new InvalidDataException("The item assembly bridge must reference this Satsuma and its reviewed catalog.");
+                dynamicDefinitions = itemBridge.Catalog.GetPartDefinitions();
+            }
             IReadOnlyList<VehicleAssemblyValidationIssue> assemblyIssues =
                 VehicleAssemblyValidator.Validate(
                     runtimePrefab.GetComponent<VehicleAssemblyController>().Parts,
                     runtimePrefab.GetComponent<VehicleAssemblyController>().MountPoints,
                     runtimePrefab.GetComponent<VehicleAssemblyController>().Dependencies,
-                    runtimePrefab.GetComponent<VehicleAssemblyController>().Tools);
+                    runtimePrefab.GetComponent<VehicleAssemblyController>().Tools,
+                    dynamicDefinitions);
             VehicleAssemblyValidationIssue[] errors = assemblyIssues
                 .Where(value =>
                     value.Severity == VehicleAssemblyValidationSeverity.Error)
@@ -10958,6 +12709,88 @@ namespace MSC.LegacyImport.Editor.GameplayPresentation
 
         private static ColliderSpec Collider(string name, string meshGuid) =>
             new ColliderSpec(name, meshGuid);
+
+        private readonly struct SatsumaElectricalDonorEndpointDefinition
+        {
+            public SatsumaElectricalDonorEndpointDefinition(
+                long transformId,
+                string prompt,
+                params string[] requiredPartDefinitionIds)
+                : this(
+                    transformId,
+                    prompt,
+                    false,
+                    requiredPartDefinitionIds)
+            {
+            }
+
+            public SatsumaElectricalDonorEndpointDefinition(
+                long transformId,
+                string prompt,
+                string requiredMountId,
+                string requiredMountFastenerDefinitionId,
+                int requiredMountFastenerMaximumStageExclusive,
+                params string[] requiredPartDefinitionIds)
+            {
+                TransformId = transformId;
+                Prompt = prompt ?? string.Empty;
+                MatchAnyRequiredPart = false;
+                RequiredPartDefinitionIds = requiredPartDefinitionIds ??
+                    Array.Empty<string>();
+                RequiredMountId = requiredMountId ?? string.Empty;
+                RequiredMountFastenerDefinitionId =
+                    requiredMountFastenerDefinitionId ?? string.Empty;
+                RequiredMountFastenerMaximumStageExclusive =
+                    requiredMountFastenerMaximumStageExclusive;
+            }
+
+            public SatsumaElectricalDonorEndpointDefinition(
+                long transformId,
+                string prompt,
+                bool matchAnyRequiredPart,
+                params string[] requiredPartDefinitionIds)
+            {
+                TransformId = transformId;
+                Prompt = prompt ?? string.Empty;
+                MatchAnyRequiredPart = matchAnyRequiredPart;
+                RequiredPartDefinitionIds = requiredPartDefinitionIds ??
+                    Array.Empty<string>();
+                RequiredMountId = string.Empty;
+                RequiredMountFastenerDefinitionId = string.Empty;
+                RequiredMountFastenerMaximumStageExclusive = 0;
+            }
+
+            public long TransformId { get; }
+            public string Prompt { get; }
+            public bool MatchAnyRequiredPart { get; }
+            public string[] RequiredPartDefinitionIds { get; }
+            public string RequiredMountId { get; }
+            public string RequiredMountFastenerDefinitionId { get; }
+            public int RequiredMountFastenerMaximumStageExclusive { get; }
+        }
+
+        private readonly struct SatsumaElectricalDonorConnectionDefinition
+        {
+            public SatsumaElectricalDonorConnectionDefinition(
+                SatsumaElectricalConnection connection,
+                long presentationTransformId,
+                string meshGuid,
+                SatsumaElectricalDonorEndpointDefinition firstEndpoint,
+                SatsumaElectricalDonorEndpointDefinition secondEndpoint)
+            {
+                Connection = connection;
+                PresentationTransformId = presentationTransformId;
+                MeshGuid = meshGuid ?? string.Empty;
+                FirstEndpoint = firstEndpoint;
+                SecondEndpoint = secondEndpoint;
+            }
+
+            public SatsumaElectricalConnection Connection { get; }
+            public long PresentationTransformId { get; }
+            public string MeshGuid { get; }
+            public SatsumaElectricalDonorEndpointDefinition FirstEndpoint { get; }
+            public SatsumaElectricalDonorEndpointDefinition SecondEndpoint { get; }
+        }
 
         private readonly struct ColliderSpec
         {

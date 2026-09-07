@@ -30,6 +30,8 @@ namespace MSC.UI.Presentation
         Folder,
         Credits,
         Braces,
+        Smile,
+        Puzzle,
     }
 
     /// <summary>
@@ -71,6 +73,12 @@ namespace MSC.UI.Presentation
                 64,
                 UiThemeTokens.TextPrimary,
                 UiThemeTokens.Accent);
+            MainMenuSurfaceSprite = CreateRoundedSprite(48, MainMenuStyle.CornerRadius);
+            MainMenuBorderSprite = CreateRoundedBorderSprite(48, MainMenuStyle.CornerRadius, 1.15f);
+            MainMenuSwatchSprite = CreateRoundedSprite(32, 10);
+            MainMenuSwatchBorderSprite = CreateRoundedBorderSprite(32, 10, 1.5f);
+            MainMenuSoftShadowSprite = CreateMainMenuSoftShadowSprite();
+            MainMenuSwatchShadowSprite = CreateMainMenuSoftShadowSprite(56, 8, 10, "MainMenu_SwatchShadow");
         }
 
         public Font TextFont { get; }
@@ -90,6 +98,18 @@ namespace MSC.UI.Presentation
         public Sprite TrackSprite { get; }
 
         public Sprite NeedGradientSprite { get; }
+
+        public Sprite MainMenuSurfaceSprite { get; }
+
+        public Sprite MainMenuBorderSprite { get; }
+
+        public Sprite MainMenuSwatchSprite { get; }
+
+        public Sprite MainMenuSwatchBorderSprite { get; }
+
+        public Sprite MainMenuSoftShadowSprite { get; }
+
+        public Sprite MainMenuSwatchShadowSprite { get; }
 
         public Sprite GetIcon(UiIconKind kind)
         {
@@ -199,6 +219,29 @@ namespace MSC.UI.Presentation
                 size,
                 new Vector4(radius, radius, radius, radius),
                 "UI08A_Rounded");
+        }
+
+        private Sprite CreateMainMenuSoftShadowSprite(
+            int size = 72, int inset = 10, int radius = MainMenuStyle.CornerRadius,
+            string name = "MainMenu_SoftShadow")
+        {
+            var pixels = new Color32[size * size];
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float nearestX = Mathf.Clamp(x + 0.5f, inset + radius, size - inset - radius);
+                    float nearestY = Mathf.Clamp(y + 0.5f, inset + radius, size - inset - radius);
+                    float dx = x + 0.5f - nearestX;
+                    float dy = y + 0.5f - nearestY;
+                    float outside = Mathf.Max(0f, Mathf.Sqrt(dx * dx + dy * dy) - radius);
+                    float alpha = Mathf.Exp(-outside * outside / (inset * inset / 4.6f));
+                    pixels[y * size + x] = new Color32(255, 255, 255, (byte)Mathf.RoundToInt(alpha * 255f));
+                }
+            }
+
+            float border = inset + radius;
+            return CreateSprite(pixels, size, size, new Vector4(border, border, border, border), name);
         }
 
         private Sprite CreateHorizontalGradientSprite(
@@ -373,6 +416,28 @@ namespace MSC.UI.Presentation
 
             switch (kind)
             {
+                case UiIconKind.Puzzle:
+                    Line(6, 6, 15, 6, 1);
+                    Line(23, 6, 27, 6, 1);
+                    Line(27, 6, 27, 15, 1);
+                    Line(27, 23, 27, 27, 1);
+                    Line(27, 27, 20, 27, 1);
+                    Line(12, 27, 6, 27, 1);
+                    Line(6, 27, 6, 19, 1);
+                    Line(6, 11, 6, 6, 1);
+                    Circle(16, 27, 4, 1);
+                    Circle(27, 19, 4, 1);
+                    Circle(19, 6, 4, 1);
+                    Circle(6, 15, 4, 1);
+                    break;
+                case UiIconKind.Smile:
+                    Circle(16, 16, 12, 1);
+                    Circle(12, 20, 1, 1);
+                    Circle(21, 20, 1, 1);
+                    Line(10, 12, 13, 9, 1);
+                    Line(13, 9, 19, 9, 1);
+                    Line(19, 9, 23, 12, 1);
+                    break;
                 case UiIconKind.Play:
                     for (int x = 9; x <= 23; x++)
                     {

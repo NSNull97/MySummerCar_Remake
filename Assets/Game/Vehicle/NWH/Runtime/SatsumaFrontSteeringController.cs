@@ -108,7 +108,10 @@ namespace MSC.Vehicle.NWH
             runtimeRoot.SetActive(true);
             foreach (CornerState state in states)
             {
-                RefreshCorner(state);
+                if (!RefreshCorner(state))
+                {
+                    return;
+                }
                 state.Binding.Wheel.SteerAngle = state.YawDegrees +
                     (state.Connected ? state.CommandDegrees : 0f);
             }
@@ -150,6 +153,12 @@ namespace MSC.Vehicle.NWH
                 }
             }
 
+            if (!TryNormalizeFrame(chassis.rotation, "chassis capture", string.Empty,
+                    out Quaternion capturedChassisRotation))
+            {
+                return false;
+            }
+
             runtimeRoot = new GameObject("Satsuma front yaw physics")
             {
                 hideFlags = HideFlags.DontSave,
@@ -158,21 +167,33 @@ namespace MSC.Vehicle.NWH
             states = new CornerState[corners.Length];
             for (int i = 0; i < corners.Length; i++)
             {
+                if (!TryNormalizeFrame(corners[i].Wheel.transform.rotation,
+                        "wheel capture", corners[i].CornerId, out Quaternion wheelRotation) ||
+                    !TryNormalizeFrame(Quaternion.Inverse(capturedChassisRotation) * wheelRotation,
+                        "relative capture", corners[i].CornerId, out Quaternion localRotation))
+                {
+                    ReleaseRuntime();
+                    return false;
+                }
+
                 var anchorObject = new GameObject("Yaw anchor " + corners[i].CornerId);
                 anchorObject.transform.SetParent(runtimeRoot.transform, false);
                 Rigidbody anchor = anchorObject.AddComponent<Rigidbody>();
                 anchor.isKinematic = true;
                 anchor.useGravity = false;
                 anchor.detectCollisions = false;
-                states[i] = new CornerState(corners[i], anchor,
-                    Quaternion.Inverse(chassis.rotation) * corners[i].Wheel.transform.rotation);
-                RefreshCorner(states[i]);
+                states[i] = new CornerState(corners[i], anchor, localRotation);
+                if (!RefreshCorner(states[i]))
+                {
+                    ReleaseRuntime();
+                    return false;
+                }
             }
 
             return true;
         }
 
-        private void RefreshCorner(CornerState state)
+        private bool RefreshCorner(CornerState state)
         {
             MountPointRuntime rodMount = assemblyController.ResolveMount(state.Binding.SteeringRodMount);
             MountPointRuntime strutMount = assemblyController.ResolveMount(state.Binding.StrutMount);
@@ -189,7 +210,14 @@ namespace MSC.Vehicle.NWH
             bool revisionChanged = state.AlignmentRevision != alignment.Revision;
             bool connected = rodMount != null && rodMount.IsOccupied &&
                 rodMount.FastenerGroup.IsBolted && strutMount != null && strutMount.IsOccupied;
-            Quaternion baseRotation = chassis.rotation * state.BaseLocalRotation;
+            // Composed Transform/PhysX frames may drift from unit length even
+            // though their orientation remains valid. Normalize at the handoff,
+            // before passing the value to a strict Rigidbody rotation setter.
+            if (!TryNormalizeFrame(chassis.rotation * state.BaseLocalRotation,
+                    "anchor frame", state.Binding.CornerId, out Quaternion baseRotation))
+            {
+                return false;
+            }
             Vector3 anchorPosition = state.Binding.Wheel.transform.position;
             state.Anchor.position = anchorPosition;
             state.Anchor.rotation = baseRotation;
@@ -201,28 +229,42 @@ namespace MSC.Vehicle.NWH
             }
             else
             {
+                Quaternion targetRotation = default;
+                if ((state.FreeBody == null || revisionChanged) &&
+                    !TryNormalizeFrame(baseRotation * Quaternion.Euler(0f, alignmentDegrees, 0f),
+                        "free yaw target", state.Binding.CornerId, out targetRotation))
+                {
+                    return false;
+                }
+
                 if (state.FreeBody == null)
                 {
-                    CreateFreeBody(state, anchorPosition, baseRotation, alignmentDegrees);
+                    CreateFreeBody(state, anchorPosition, baseRotation, targetRotation);
                 }
                 else if (revisionChanged)
                 {
                     // The 14 mm adjuster writes carrier local Y once, including
                     // while disconnected. It does not keep pulling toward toe.
-                    state.FreeBody.rotation = baseRotation * Quaternion.Euler(0f, alignmentDegrees, 0f);
+                    state.FreeBody.rotation = targetRotation;
                 }
 
+                if (!TryNormalizeFrame(state.FreeBody.rotation,
+                        "free yaw sample", state.Binding.CornerId, out Quaternion freeRotation))
+                {
+                    return false;
+                }
                 Vector3 localForward = Quaternion.Inverse(baseRotation) *
-                    (state.FreeBody.rotation * Vector3.forward);
+                    (freeRotation * Vector3.forward);
                 state.YawDegrees = Mathf.Atan2(localForward.x, localForward.z) * Mathf.Rad2Deg;
             }
 
             state.Connected = connected;
             state.AlignmentRevision = alignment.Revision;
+            return true;
         }
 
         private void CreateFreeBody(CornerState state, Vector3 position,
-            Quaternion baseRotation, float alignmentDegrees)
+            Quaternion baseRotation, Quaternion targetRotation)
         {
             // RefreshCorner writes the physics pose, but Rigidbody setters do
             // not update its Transform until the next simulation step. The
@@ -234,8 +276,7 @@ namespace MSC.Vehicle.NWH
 
             var bodyObject = new GameObject("Free yaw " + state.Binding.CornerId);
             bodyObject.transform.SetParent(runtimeRoot.transform, false);
-            bodyObject.transform.SetPositionAndRotation(position,
-                baseRotation * Quaternion.Euler(0f, alignmentDegrees, 0f));
+            bodyObject.transform.SetPositionAndRotation(position, targetRotation);
             Rigidbody body = bodyObject.AddComponent<Rigidbody>();
             body.detectCollisions = false;
 
@@ -257,6 +298,54 @@ namespace MSC.Vehicle.NWH
             joint.limits = limits;
             joint.useLimits = true;
             state.FreeBody = body;
+        }
+
+        // Keep this local to the front-yaw bridge. Existing save validators
+        // validate but do not normalize, and the legacy Editor helper silently
+        // substitutes identity, which is not a valid runtime recovery here.
+        internal static bool TryNormalizePhysicsRotation(Quaternion value,
+            out Quaternion normalized)
+        {
+            normalized = default;
+            if (!float.IsFinite(value.x) || !float.IsFinite(value.y) ||
+                !float.IsFinite(value.z) || !float.IsFinite(value.w))
+            {
+                return false;
+            }
+
+            // Same near-zero squared-magnitude boundary as native vehicle-save
+            // rotation validation; double avoids overflow for finite scalings.
+            double magnitudeSquared = (double)value.x * value.x +
+                (double)value.y * value.y + (double)value.z * value.z +
+                (double)value.w * value.w;
+            if (magnitudeSquared <= 0.000001d)
+            {
+                return false;
+            }
+
+            double inverseMagnitude = 1d / Math.Sqrt(magnitudeSquared);
+            normalized = new Quaternion(
+                (float)(value.x * inverseMagnitude),
+                (float)(value.y * inverseMagnitude),
+                (float)(value.z * inverseMagnitude),
+                (float)(value.w * inverseMagnitude));
+            return true;
+        }
+
+        private bool TryNormalizeFrame(Quaternion value, string frame,
+            string cornerId, out Quaternion normalized)
+        {
+            if (TryNormalizePhysicsRotation(value, out normalized))
+            {
+                return true;
+            }
+
+            Debug.LogError(
+                $"Satsuma front steering rejected invalid {frame} rotation " +
+                $"for '{cornerId}': {value.ToString("G9")}. " +
+                "The yaw helper is disabled; no identity pose was substituted.", this);
+            enabled = false;
+            return false;
         }
 
         private static void ReleaseFreeBody(CornerState state)

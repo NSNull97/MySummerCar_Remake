@@ -16,6 +16,12 @@ namespace MSC.Presentation.AntiAliasing
                 return;
             }
 
+            if (AntiAliasingController.TryGetInstance(out AntiAliasingController controller) &&
+                controller.IsDebugOverlaySuppressed)
+            {
+                return;
+            }
+
             if (!expanded)
             {
                 if (GUI.Button(new Rect(12f, 12f, 92f, 24f), "AA debug"))
@@ -26,7 +32,9 @@ namespace MSC.Presentation.AntiAliasing
                 return;
             }
 
-            windowRect = GUI.Window(GetInstanceID(), windowRect, DrawWindow, "MSC Anti-Aliasing");
+            // IMGUI uses its own int control IDs; do not truncate Unity's 64-bit EntityId.
+            int windowId = GUIUtility.GetControlID(FocusType.Passive);
+            windowRect = GUI.Window(windowId, windowRect, DrawWindow, "MSC Anti-Aliasing");
         }
 
         private void DrawWindow(int id)

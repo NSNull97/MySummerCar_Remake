@@ -23,6 +23,11 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEngine;
+#if UNITY_6000_6_OR_NEWER
+using AkUnityObjectId = UnityEngine.EntityId;
+#else
+using AkUnityObjectId = System.Int32;
+#endif
 
 public class WwiseSetupWizard
 {
@@ -295,13 +300,17 @@ public class WwiseSetupWizard
 			// migration loop, we need to get a valid array of MonoBehaviours again, because it might
 			// have been invalidated by the call to MigrateObject. We then migrate the objects that
 			// need migration by making sure their InstanceID is in the list of unmigrated MonoBehaviours.
-			var instanceIds = new System.Collections.Generic.List<int>();
+			var instanceIds = new System.Collections.Generic.List<AkUnityObjectId>();
 			foreach (var obj in objects)
 			{
 				if (obj == null)
 					continue;
 
+#if UNITY_6000_6_OR_NEWER
+				var id = obj.GetEntityId();
+#else
 				var id = obj.GetInstanceID();
+#endif
 				if (!instanceIds.Contains(id))
 					instanceIds.Add(id);
 			}
@@ -309,8 +318,13 @@ public class WwiseSetupWizard
 			for (; instanceIds.Count > 0; instanceIds.RemoveAt(0))
 			{
 				var id = instanceIds[0];
+#if UNITY_6000_6_OR_NEWER
+				var obj = UnityEditor.EditorUtility.EntityIdToObject(id);
+				if (obj && obj.GetEntityId() == id)
+#else
 				var obj = UnityEditor.EditorUtility.InstanceIDToObject(id);
 				if (obj && obj.GetInstanceID() == id)
+#endif
 				{
 					MigrateObject(obj);
 				}
@@ -415,13 +429,17 @@ public class WwiseSetupWizard
 			// migration loop, we need to get a valid array of MonoBehaviours again, because it might
 			// have been invalidated by the call to MigrateObject. We then migrate the objects that
 			// need migration by making sure their InstanceID is in the list of unmigrated MonoBehaviours.
-			var instanceIds = new System.Collections.Generic.List<int>();
+			var instanceIds = new System.Collections.Generic.List<AkUnityObjectId>();
 			foreach (var obj in objects)
 			{
 				if (obj == null)
 					continue;
 
+#if UNITY_6000_6_OR_NEWER
+				var id = obj.GetEntityId();
+#else
 				var id = obj.GetInstanceID();
+#endif
 				if (!instanceIds.Contains(id))
 					instanceIds.Add(id);
 			}
@@ -429,8 +447,13 @@ public class WwiseSetupWizard
 			for (; instanceIds.Count > 0; instanceIds.RemoveAt(0))
 			{
 				var id = instanceIds[0];
+#if UNITY_6000_6_OR_NEWER
+				var obj = UnityEditor.EditorUtility.EntityIdToObject(id);
+				if (obj && obj.GetEntityId() == id)
+#else
 				var obj = UnityEditor.EditorUtility.InstanceIDToObject(id);
 				if (obj && obj.GetInstanceID() == id)
+#endif
 				{
 					MigrateObject(obj);
 				}

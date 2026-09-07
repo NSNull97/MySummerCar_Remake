@@ -17,6 +17,7 @@
     "MSC.Save.Migration",
     "MSC.Services.Runtime",
     "MSC.Vehicle.Assembly",
+    "MSC.Vehicle.ItemsIntegration",
     "MSC.Vehicle.Runtime",
     "MSC.World.Runtime",
     "MSC.Weather.Runtime",

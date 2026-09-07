@@ -42,6 +42,7 @@ namespace MSC.Presentation.Fluid
             public float TargetAlpha;
             public float FadeStartedAt;
             public bool HasWorldAnchor;
+            public Color Tint = new(.018f, .018f, .018f, 1f);
         }
 
         private Transform followTarget;
@@ -87,7 +88,8 @@ namespace MSC.Presentation.Fluid
         public bool AddLocalPuddle(
             Vector3 spillPosition,
             float waterLitres,
-            Transform ignoredRoot = null)
+            Transform ignoredRoot = null,
+            Color? tint = null)
         {
             if (!configured || !IsFinite(spillPosition) ||
                 !float.IsFinite(waterLitres) || waterLitres <= 0f ||
@@ -100,9 +102,23 @@ namespace MSC.Presentation.Fluid
                 return false;
             }
 
-            PuddleSlot slot = localPuddles[nextLocalSlot];
-            nextLocalSlot = (nextLocalSlot + 1) % localPuddles.Length;
-            slot.Radius = Mathf.Clamp(
+            PuddleSlot slot = null;
+            // Optional service-fluid streams coalesce nearby drops instead of
+            // stacking a new translucent surface every discharge tick. Existing
+            // rain/sauna callers retain their previous placement behavior.
+            if (tint.HasValue)
+                for (int i = 0; i < localPuddles.Length; i++)
+                    if (localPuddles[i].Object.activeSelf && localPuddles[i].Tint == tint.Value &&
+                        Vector3.Distance(localPuddles[i].Object.transform.position, hit.point) < .22f)
+                    { slot = localPuddles[i]; break; }
+            bool merged = slot != null;
+            if (!merged)
+            {
+                slot = localPuddles[nextLocalSlot];
+                nextLocalSlot = (nextLocalSlot + 1) % localPuddles.Length;
+            }
+            slot.Tint = tint ?? new Color(.018f, .018f, .018f, 1f);
+            slot.Radius = merged ? Mathf.Min(1.2f, Mathf.Sqrt(slot.Radius * slot.Radius + waterLitres * .15f)) : Mathf.Clamp(
                 0.18f + Mathf.Sqrt(waterLitres) * 0.5f,
                 0.22f,
                 1.2f);
@@ -329,7 +345,7 @@ namespace MSC.Presentation.Fluid
         private static void SetAppearance(PuddleSlot slot, float alpha)
         {
             MaterialPropertyBlock properties = slot.Properties;
-            Color color = new Color(0.018f, 0.018f, 0.018f, alpha);
+            Color color = slot.Tint; color.a *= alpha;
             properties.SetColor("_BaseColor", color);
             properties.SetColor("_Color", color);
             slot.Renderer.SetPropertyBlock(properties);

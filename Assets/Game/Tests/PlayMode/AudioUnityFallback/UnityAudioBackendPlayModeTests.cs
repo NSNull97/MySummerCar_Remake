@@ -5,6 +5,7 @@ using MSC.Audio;
 using MSC.Audio.UnityFallback;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 namespace MSC.Tests.PlayMode.AudioUnityFallback
@@ -430,7 +431,7 @@ namespace MSC.Tests.PlayMode.AudioUnityFallback
 
             public string StableId { get; }
             public Transform AudioTransform { get; }
-            public int OwningSceneHandle => AudioTransform.gameObject.scene.handle;
+            public SceneHandle OwningSceneHandle => AudioTransform.gameObject.scene.handle;
             public bool IsAudioEmitterActive => AudioTransform.gameObject.activeInHierarchy;
             public AudioSurfaceContext SurfaceContext => AudioSurfaceContext.Unknown;
             public AudioEnvironmentContext EnvironmentContext => AudioEnvironmentContext.Exterior;

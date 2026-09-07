@@ -2,6 +2,12 @@
   "name": "MSC.Save.Integration.Tests.EditMode",
   "rootNamespace": "MSC.Save.Integration.Tests.EditMode",
   "references": [
+    "MSC.Bootstrap.Runtime",
+    "MSC.Player.Runtime",
+    "Unity.InputSystem",
+    "MSC.Vehicle.NWH",
+    "NWH.Common",
+    "NWH.WheelController",
     "MSC.Characters.Runtime",
     "MSC.Core.Runtime",
     "MSC.Economy.Runtime",
@@ -15,10 +21,13 @@
     "MSC.Save.Integration",
     "MSC.Services.Runtime",
     "MSC.Vehicle.Assembly",
+    "MSC.Vehicle.ItemsIntegration",
     "MSC.Vehicle.Runtime",
     "MSC.Vehicle.Simulation",
     "MSC.World.Runtime",
-    "MSC.Weather.Production.Runtime"
+    "MSC.Weather.Production.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
   ],
   "includePlatforms": ["Editor"],
   "excludePlatforms": [],

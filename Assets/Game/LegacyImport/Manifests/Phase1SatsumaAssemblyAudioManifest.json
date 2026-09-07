@@ -57,6 +57,20 @@
       "sourceSha256": "b4593fc5f22e335470bf0f9c8c7fe228c5efad1e8ac1aba9a3976d68ca9a0749",
       "generatedFileName": "satsuma_body_impact_high_02.wav",
       "generatedGuid": "a3a00000000000000000000000000007"
+    },
+    {
+      "clipId": "handbrake-raise",
+      "sourceRelativePath": "AudioClip/handbrake_on.ogg",
+      "sourceSha256": "33539a94161602a487eb5682eeb726291a20f38cf5f905662e1af42e2560bbf1",
+      "generatedFileName": "satsuma_handbrake_raise.ogg",
+      "generatedGuid": "a3a00000000000000000000000000008"
+    },
+    {
+      "clipId": "handbrake-lower",
+      "sourceRelativePath": "AudioClip/handbrake_off.ogg",
+      "sourceSha256": "a7cf8eb023f72b6d6f907c8e1e409ae808c977bb27073dc5348042713f981e5e",
+      "generatedFileName": "satsuma_handbrake_lower.ogg",
+      "generatedGuid": "a3a00000000000000000000000000009"
     }
   ],
   "events": [
@@ -108,6 +122,20 @@
       "volume": 0.95,
       "minimumDistanceMeters": 1.5,
       "maximumDistanceMeters": 70.0
+    },
+    {
+      "eventId": "audio.event.vehicle.handbrake.raise",
+      "clipId": "handbrake-raise",
+      "volume": 1.0,
+      "minimumDistanceMeters": 1.0,
+      "maximumDistanceMeters": 8.0
+    },
+    {
+      "eventId": "audio.event.vehicle.handbrake.lower",
+      "clipId": "handbrake-lower",
+      "volume": 1.0,
+      "minimumDistanceMeters": 1.0,
+      "maximumDistanceMeters": 8.0
     },
     {
       "eventId": "audio.event.vehicle.body.impact.high.02",

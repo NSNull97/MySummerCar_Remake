@@ -355,6 +355,45 @@ small and user-approved; they do not introduce remake-only scope.
 audit/private build; 15C performs stabilization and RC gate. Они не заменяют
 исходного owner 09A–14B в matrix.
 
+2026-09-07 bounded 11A follow-up: Satsuma visual/instrument/steady-idle repairs
+are tracked in `SATSUMA_VISUAL_AUDIO_PACKET_2026-09-07.md`. They preserve the
+accepted architecture/UI and do not open Phase 2 or close broad CAR parity rows.
+The user accepted this bounded packet on 2026-09-07 (“принимаю”); it is no longer
+awaiting user acceptance. This is not a claim that every proposed manual check
+was executed. Its documented limitations and broader 11A-V1 parity gaps remain
+open. Next milestone: continue 11A-V1 full Satsuma state with an evidence audit
+of the remaining gaps; no new implementation is authorized by this acceptance.
+
+Later on 2026-09-07 the user explicitly authorized the bounded first-drive
+packet, requiring an interior driver-place trigger (not outside-door boarding).
+Implementation and executed drive/save evidence are tracked in
+`SATSUMA_DRIVER_TRIGGER_PACKET_2026-09-07.md`. The real native-car test reaches
+first/second/reverse, hydraulic stop, loaded stall and native reload. Human
+road/camera/feel acceptance remains pending; broad CAR parity rows stay open.
+The user also identified AutoClutch during verification: the donor option is
+evidenced, but this implementation uses manual Shift clutch and does not yet
+implement that assistant. It remains an explicit Phase 1 gap, not an approved
+permanent difference; see the packet's boundaries.
+Final scoped results: 18 new EditMode cases passed, driver PlayMode 6/6,
+cockpit/assembly regression 24/24 and actual Bootstrap 1/1. The broader six-
+assembly run was 1990 passed / 22 failed / 1 skipped; the packet report retains
+its unresolved content/fixture/global-regression findings. No clean full-project
+gate is claimed; unrelated content and historical test expectations were not
+rewritten to suppress those failures.
+Update 2026-09-07 after the user's micro-drive: the repaired car is generally
+usable, but handling is excessively grippy/toy-like, especially on dirt, without
+convincing skids/wheelspin. Work is paused at the user's explicit request; no
+more runtime fixes/tests in this session. Preserve the road repairs. Next scoped
+milestone: **11A-V1 surface/handling and part-detachment diagnosis**, not
+Phase 2. Start from `Docs/Phase1/SATSUMA_HANDLING_HANDOFF_2026-09-07.md` for
+the preserved baseline, hypotheses, evidence and unfinished validation gates.
+Latest user clarification: airborne motion exists; both player and car appear
+to treat dirt/rough ground like asphalt, and parts twist out of installed poses
+instead of detaching correctly. These are reported symptoms, not proven causes.
+Additional follow-up: doors can open spontaneously while driving; diagnose
+latch state and hinge/attachment physics separately, without assuming a shared
+cause with distorted parts. Documentation only; work remains paused.
+
 ## Общий acceptance contract
 
 Каждая required row закрывается только при сочетании donor evidence,

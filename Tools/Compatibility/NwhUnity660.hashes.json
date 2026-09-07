@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "classification": "LocalVendorCompatibilityPatch",
+  "vendorVersion": "NWH Vehicle Physics 2 v13.5",
+  "targetUnity": "6000.6.0f1",
+  "patch": "Tools/Compatibility/NwhUnity660.patch",
+  "normalizedHashConvention": "SHA256 of UTF-8 without BOM after CRLF-to-LF normalization; preserve final newline",
+  "files": [
+    {
+      "path": "Assets/NWH/Common/Scripts/NUI/NUIDrawer.cs",
+      "beforeSha256": "F34CED4C9E9EEBFC5F3A72333866935B7D2B07025BE70957D982E817B57CB435",
+      "afterSha256": "0C36420BCBEA920A5EA4447966EE7168827C7E7F77F3AB474C22FACEB94A6970",
+      "beforeNormalizedSha256": "F1573454F8EF789174818C095FF5E016AE51B925F9C7ABBC070991948B7A5992",
+      "afterNormalizedSha256": "3C0CCBA6274FB7E0D3A3D8FE946849D62B519F5EA7C715C5068B2C40D1166380"
+    },
+    {
+      "path": "Assets/NWH/WheelController/Scripts/WheelController.cs",
+      "beforeSha256": "0ED59CB8A4631713E7C91B5AD6CA2DF3E36068478AEA884ED64E712454E3FAF2",
+      "afterSha256": "FBE285CF917CA6E9C9ED37BB0C425714F7C7111D31575B6618BD50804BAA9A0F",
+      "beforeNormalizedSha256": "97B98A47BB54FD3F78E3F9E0BAFE29FFC0373B4A47544C773602807B1B109270",
+      "afterNormalizedSha256": "79F33E52410D6E3A20E2F0C3DE6B781F5112C892886A41BAE0D88BDBDAD0A3D6"
+    }
+  ]
+}

@@ -4,6 +4,7 @@
   "references": [
     "MSC.Core.Runtime",
     "MSC.Audio.Runtime",
+    "MSC.Interaction.Runtime",
     "MSC.Vehicle.Simulation",
     "MSC.Vehicle.Assembly",
     "Unity.InputSystem"

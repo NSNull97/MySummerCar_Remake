@@ -218,6 +218,11 @@ namespace MSC.Interaction.Query
                     {
                         continue;
                     }
+                    if (bypassesOwnParentCollider && HasOtherOccluder(
+                            candidateHost, hit.distance, hitCount))
+                    {
+                        continue;
+                    }
                 }
 
                 int priority = candidateHost.SelectionPriority;
@@ -271,6 +276,29 @@ namespace MSC.Interaction.Query
             rayOrigin = origin;
             maximumDistance = Mathf.Max(0.1f, distance);
             interactionMask = mask;
+        }
+
+        private bool HasOtherOccluder(InteractionTargetHost candidateHost,
+            float candidateDistance, int hitCount)
+        {
+            // An allowed parent collider does not make the rest of the ray
+            // transparent. A wall or sibling part behind that parent must still
+            // block the target. Reuse the fixed query buffer; no extra raycast.
+            candidateHost.TryGetCapability(out IParentColliderOcclusionBypass bypass);
+            for (int i = 0; i < hitCount; i++)
+            {
+                RaycastHit other = hitBuffer[i];
+                if (other.collider == null || other.collider.isTrigger || IsIgnored(other.collider))
+                    continue;
+                InteractionTargetHost host = other.collider.GetComponentInParent<InteractionTargetHost>();
+                float tolerance = host != null ? RegisteredTargetOcclusionToleranceMeters : UnregisteredOcclusionToleranceMeters;
+                if (other.distance + tolerance >= candidateDistance) continue;
+                bool ownParent = host != null && host != candidateHost &&
+                    candidateHost.transform.IsChildOf(host.transform) && bypass != null &&
+                    bypass.CanBypassParentCollider(host);
+                if (!ownParent) return true;
+            }
+            return false;
         }
 
         /// <summary>

@@ -58,8 +58,8 @@ namespace MSC.Weather.Production.LegacyBaseline
         private float alphaClipWetSmoothness =
             ProductionAlphaClipWetSmoothness;
 
-        private readonly Dictionary<int, SceneCache> sceneCaches =
-            new Dictionary<int, SceneCache>();
+        private readonly Dictionary<SceneHandle, SceneCache> sceneCaches =
+            new Dictionary<SceneHandle, SceneCache>();
 
         private MaterialPropertyBlock propertyBlock;
         private LegacyWetnessCoverageCounters coverage;

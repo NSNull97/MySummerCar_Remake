@@ -121,5 +121,16 @@ namespace MSC.Bootstrap
                     presenter.LastFailure);
             }
         }
+
+        public void ConfigureEngineFeedback(MonoBehaviour audioBackend)
+        {
+            if (audioBackend == null) return;
+            SatsumaEngineFeedbackPresenter presenter = spawnedVehicle != null
+                ? spawnedVehicle.GetComponent<SatsumaEngineFeedbackPresenter>() : null;
+            if (presenter == null)
+                throw new InvalidOperationException("The Satsuma engine feedback binding has not been authored.");
+            if (!presenter.ConfigureBackend(audioBackend))
+                throw new InvalidOperationException("Satsuma engine feedback failed: " + presenter.LastFailure);
+        }
     }
 }

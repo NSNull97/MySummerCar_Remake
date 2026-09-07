@@ -148,6 +148,8 @@ namespace MSC.Vehicle.Assembly
     public sealed class AssemblyGraph
     {
         private readonly PartInstance[] parts;
+        private PartInstance[] allRuntimeParts;
+        private readonly List<PartInstance> dynamicParts = new List<PartInstance>();
         private readonly MountPointRuntime[] mounts;
         private readonly AssemblyDependency[] dependencies;
 
@@ -157,11 +159,56 @@ namespace MSC.Vehicle.Assembly
             AssemblyDependency[] registeredDependencies)
         {
             parts = registeredParts ?? Array.Empty<PartInstance>();
+            allRuntimeParts = parts;
             mounts = registeredMounts ?? Array.Empty<MountPointRuntime>();
             dependencies = registeredDependencies ?? Array.Empty<AssemblyDependency>();
         }
 
         public PartInstance[] Parts => parts;
+
+        // The authored roster remains the save/content baseline. This cached view
+        // changes only on registration, never during the per-frame queries.
+        public PartInstance[] AllRuntimeParts => allRuntimeParts;
+
+        internal void SetDynamicPartsForRestore(PartInstance[] registeredParts)
+        {
+            dynamicParts.Clear();
+            dynamicParts.AddRange(registeredParts);
+            RefreshRuntimeParts();
+        }
+
+        public bool TryRegisterDynamicPart(PartInstance part, out string failure)
+        {
+            if (part == null || part.Definition == null || !part.StableId.IsValid ||
+                part.IsAssemblyRoot || TryGetPartByStableId(part.StableId.Value, out _))
+            {
+                failure = "Dynamic part is invalid or its identity is already registered.";
+                return false;
+            }
+            dynamicParts.Add(part);
+            RefreshRuntimeParts();
+            failure = string.Empty;
+            return true;
+        }
+
+        public bool TryUnregisterDynamicPart(PartInstance part, out string failure)
+        {
+            if (part == null || part.IsInstalled || !dynamicParts.Remove(part))
+            {
+                failure = "Only a registered loose dynamic part can be removed.";
+                return false;
+            }
+            RefreshRuntimeParts();
+            failure = string.Empty;
+            return true;
+        }
+
+        private void RefreshRuntimeParts()
+        {
+            allRuntimeParts = new PartInstance[parts.Length + dynamicParts.Count];
+            Array.Copy(parts, allRuntimeParts, parts.Length);
+            dynamicParts.CopyTo(allRuntimeParts, parts.Length);
+        }
 
         public MountPointRuntime[] Mounts => mounts;
 
@@ -169,9 +216,9 @@ namespace MSC.Vehicle.Assembly
 
         public bool IsPartDefinitionInstalled(string partDefinitionId)
         {
-            for (int i = 0; i < parts.Length; i++)
+            for (int i = 0; i < allRuntimeParts.Length; i++)
             {
-                PartInstance part = parts[i];
+                PartInstance part = allRuntimeParts[i];
                 if (part != null && part.Definition != null && part.IsInstalled && string.Equals(
                         part.Definition.DefinitionId,
                         partDefinitionId,
@@ -249,6 +296,20 @@ namespace MSC.Vehicle.Assembly
                 return false;
             }
 
+            string[] installationRequired =
+                target.Definition.InstallationRequiredOccupiedMountIds;
+            for (int index = 0; index < installationRequired.Length; index++)
+            {
+                if (!TryGetMount(
+                        installationRequired[index],
+                        out MountPointRuntime mount) ||
+                    !mount.IsOccupied)
+                {
+                    blockingMountId = installationRequired[index];
+                    return false;
+                }
+            }
+
             string[] required = target.Definition.RequiredOccupiedMountIds;
             for (int index = 0; index < required.Length; index++)
             {
@@ -292,14 +353,25 @@ namespace MSC.Vehicle.Assembly
                 }
             }
 
+            string[] blockedBolted = target.Definition.InstallationBlockedWhileBoltedMountIds;
+            for (int index = 0; index < blockedBolted.Length; index++)
+            {
+                if (!TryGetMount(blockedBolted[index], out MountPointRuntime mount) ||
+                    mount == target || mount.IsOccupied && mount.FastenerGroup.IsBolted)
+                {
+                    blockingMountId = blockedBolted[index];
+                    return false;
+                }
+            }
+
             return true;
         }
 
         /// <summary>
         /// Mount-level Bolted predicates describe structural retention, not
         /// whether the player may place the next part. InstallRequiresBolted
-        /// dependencies express the separate donor installation checks (e.g.
-        /// front spindle/wishbone); they must not create a retention cascade.
+        /// dependencies remain legacy query gates. Authored attempt support
+        /// checks are separate and must not create a retention cascade.
         /// </summary>
         public bool AreMountStructuralRetentionPrerequisitesMet(
             MountPointRuntime target,
@@ -397,9 +469,24 @@ namespace MSC.Vehicle.Assembly
 
         public bool HasInstalledRemovalBlocker(PartDefinition part, out string blockerPartId)
         {
+            return HasInstalledRemovalBlocker(part,
+                part != null ? FindMountForPartDefinition(part.DefinitionId) : null,
+                out blockerPartId);
+        }
+
+        private bool HasInstalledRemovalBlocker(
+            PartDefinition part,
+            MountPointRuntime installedAt,
+            out string blockerPartId)
+        {
             if (part == null)
             {
                 blockerPartId = string.Empty;
+                return true;
+            }
+
+            if (HasMountRemovalBlocker(installedAt, out blockerPartId))
+            {
                 return true;
             }
 
@@ -436,13 +523,22 @@ namespace MSC.Vehicle.Assembly
                     continue;
                 }
 
+                // An audited compound assembly may keep specifically named
+                // owned sockets attached when its outer part is removed. Do
+                // not broaden the existing reverse-dependency exception or
+                // bypass explicit removal blockers checked above.
+                if (installedAt != null && Contains(
+                        installedAt.Definition.RemovalRetainedChildMountIds,
+                        mount.MountId))
+                {
+                    continue;
+                }
+
                 blockerPartId = mount.InstalledPart?.Definition?.DefinitionId ??
                                 mount.MountId;
                 return true;
             }
 
-            MountPointRuntime installedAt = FindMountForPartDefinition(
-                part.DefinitionId);
             if (installedAt != null)
             {
                 for (int index = 0; index < mounts.Length; index++)
@@ -450,6 +546,15 @@ namespace MSC.Vehicle.Assembly
                     MountPointRuntime candidate = mounts[index];
                     if (candidate == null || !candidate.IsOccupied ||
                         candidate.Definition == null || candidate == installedAt)
+                    {
+                        continue;
+                    }
+
+                    // Donor manual Removal is not the inverse of Assembly.
+                    // Keep structural/install edges for forced collapse, while
+                    // suppressing only specifically audited manual blockers.
+                    if (Contains(installedAt.Definition.RemovalIgnoredDependentMountIds,
+                            candidate.MountId))
                     {
                         continue;
                     }
@@ -489,6 +594,16 @@ namespace MSC.Vehicle.Assembly
             }
 
             MountPointRuntime installedAt = FindMountForPart(part);
+            // Interchangeable definitions can occupy both corners. Manual rules
+            // must use this instance's socket, not the first matching definition.
+            return HasInstalledRemovalBlocker(part.Definition, installedAt,
+                out blockerPartId);
+        }
+
+        private bool HasMountRemovalBlocker(
+            MountPointRuntime installedAt,
+            out string blockerPartId)
+        {
             if (installedAt?.Definition != null)
             {
                 string[] blockedMountIds = installedAt.Definition
@@ -507,11 +622,43 @@ namespace MSC.Vehicle.Assembly
                         ?.DefinitionId ?? blocker.MountId;
                     return true;
                 }
+
+                string[] boltedBlockers = installedAt.Definition
+                    .RemovalBlockedWhileBoltedMountIds;
+                for (int index = 0; index < boltedBlockers.Length; index++)
+                {
+                    string id = boltedBlockers[index];
+                    if (!TryGetMount(id, out MountPointRuntime blocker) ||
+                        blocker == installedAt)
+                    {
+                        blockerPartId = id;
+                        return true;
+                    }
+
+                    if (blocker.IsOccupied && blocker.FastenerGroup.IsBolted)
+                    {
+                        blockerPartId = blocker.InstalledPart?.Definition
+                            ?.DefinitionId ?? blocker.MountId;
+                        return true;
+                    }
+                }
+
+                string[] ignoredDependents = installedAt.Definition
+                    .RemovalIgnoredDependentMountIds;
+                for (int index = 0; index < ignoredDependents.Length; index++)
+                {
+                    string id = ignoredDependents[index];
+                    if (!TryGetMount(id, out MountPointRuntime dependent) ||
+                        dependent == installedAt)
+                    {
+                        blockerPartId = id;
+                        return true;
+                    }
+                }
             }
 
-            return HasInstalledRemovalBlocker(
-                part.Definition,
-                out blockerPartId);
+            blockerPartId = string.Empty;
+            return false;
         }
 
         private MountPointRuntime FindMountForPartDefinition(
@@ -572,9 +719,9 @@ namespace MSC.Vehicle.Assembly
 
         public bool TryGetPartByStableId(string stableId, out PartInstance part)
         {
-            for (int i = 0; i < parts.Length; i++)
+            for (int i = 0; i < allRuntimeParts.Length; i++)
             {
-                PartInstance candidate = parts[i];
+                PartInstance candidate = allRuntimeParts[i];
                 if (candidate != null && candidate.StableId.IsValid && string.Equals(
                         candidate.StableId.Value,
                         stableId,
@@ -615,12 +762,12 @@ namespace MSC.Vehicle.Assembly
                 }
 
                 installableCount++;
-                if (!part.IsInstalled)
-                {
-                    continue;
-                }
-
-                MountPointRuntime mount = FindMountForPart(part);
+                // Spare replacements are inventory, not additional required
+                // build steps. A compatible installed replacement fulfils the
+                // original definition without changing the baseline denominator.
+                MountPointRuntime mount = part.IsInstalled
+                    ? FindMountForPart(part)
+                    : FindMountForPartDefinition(part.Definition?.DefinitionId);
                 if (mount == null)
                 {
                     continue;

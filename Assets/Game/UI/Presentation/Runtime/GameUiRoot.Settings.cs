@@ -25,23 +25,21 @@ namespace MSC.UI.Presentation
             GraphicsSettingsDto pending = settings.Pending.Graphics;
             GameObject route = CreateSettingsShell(UiRouteId.SettingsGraphics);
 
-            GameObject panel = factory.GlassPanel(
+            GameObject panel = factory.MainMenuPanel(
                 "GraphicsSettingsPanel",
                 route.transform,
                 370f,
                 135f,
                 618f,
-                730f,
-                UiGlassKind.MenuTinted,
-                CurrentMenuGlassTint);
-            factory.Heading(
+                730f);
+            factory.MenuScreenHeading(
                 panel.transform,
                 textCatalog.Get("ui.category.graphics"),
                 24f,
                 10f,
                 570f,
                 23);
-            factory.Divider(panel.transform, 24f, 57f, 570f);
+            factory.MenuScreenDivider(panel.transform, 24f, 57f, 570f);
 
             float rowY = 64f;
             Text displayMode = null;
@@ -343,23 +341,21 @@ namespace MSC.UI.Presentation
             Transform parent,
             GraphicsSettingsDto pending)
         {
-            GameObject panel = factory.GlassPanel(
+            GameObject panel = factory.MainMenuPanel(
                 "CameraSettingsPanel",
                 parent,
                 1014f,
                 135f,
                 552f,
-                180f,
-                UiGlassKind.MenuTinted,
-                CurrentMenuGlassTint);
-            factory.Heading(
+                180f);
+            factory.MenuScreenHeading(
                 panel.transform,
                 textCatalog.Get("ui.graphics.camera"),
                 24f,
                 10f,
                 504f,
                 23);
-            factory.Divider(panel.transform, 24f, 57f, 504f);
+            factory.MenuScreenDivider(panel.transform, 24f, 57f, 504f);
 
             AddRangeSliderRow(
                 panel.transform,
@@ -400,16 +396,14 @@ namespace MSC.UI.Presentation
             AudioSettingsDto pending = settings.Pending.Audio;
             GameObject route = CreateSettingsShell(UiRouteId.SettingsAudio);
 
-            GameObject panel = factory.GlassPanel(
+            GameObject panel = factory.MainMenuPanel(
                 "AudioSettingsPanel",
                 route.transform,
                 370f,
                 181f,
                 678f,
-                681f,
-                UiGlassKind.MenuTinted,
-                CurrentMenuGlassTint);
-            factory.Heading(
+                681f);
+            factory.MenuScreenHeading(
                 panel.transform,
                 textCatalog.Get("ui.audio.title"),
                 22f,
@@ -487,16 +481,14 @@ namespace MSC.UI.Presentation
             ControlsSettingsDto pending = settings.Pending.Controls;
             GameObject route = CreateSettingsShell(UiRouteId.SettingsControls);
 
-            GameObject bindings = factory.GlassPanel(
+            GameObject bindings = factory.MainMenuPanel(
                 "BindingsPanel",
                 route.transform,
                 370f,
                 119f,
                 643f,
-                741f,
-                UiGlassKind.MenuTinted,
-                CurrentMenuGlassTint);
-            factory.Heading(bindings.transform, textCatalog.Get("ui.category.controls"), 26f, 12f, 590f, 25);
+                741f);
+            factory.MenuScreenHeading(bindings.transform, textCatalog.Get("ui.category.controls"), 26f, 12f, 590f, 25);
             factory.Text(
                 "KeyboardHeading",
                 bindings.transform,
@@ -506,12 +498,12 @@ namespace MSC.UI.Presentation
                 590f,
                 28f,
                 17,
-                UiThemeTokens.Accent,
+                MainMenuStyle.Accent,
                 TextAnchor.MiddleLeft,
-                FontStyle.Bold);
-            factory.Text("ActionColumn", bindings.transform, textCatalog.Get("ui.controls.action"), 36f, 82f, 230f, 24f, 11, UiThemeTokens.TextMuted, TextAnchor.MiddleLeft, FontStyle.Bold);
-            factory.Text("PrimaryColumn", bindings.transform, textCatalog.Get("ui.controls.primary"), 290f, 82f, 142f, 24f, 11, UiThemeTokens.TextMuted, TextAnchor.MiddleCenter, FontStyle.Bold);
-            factory.Text("SecondaryColumn", bindings.transform, textCatalog.Get("ui.controls.secondary"), 448f, 82f, 160f, 24f, 11, UiThemeTokens.TextMuted, TextAnchor.MiddleCenter, FontStyle.Bold);
+                FontStyle.Normal);
+            factory.Text("ActionColumn", bindings.transform, textCatalog.Get("ui.controls.action"), 36f, 82f, 230f, 24f, 11, MainMenuStyle.SecondaryText, TextAnchor.MiddleLeft, FontStyle.Normal);
+            factory.Text("PrimaryColumn", bindings.transform, textCatalog.Get("ui.controls.primary"), 290f, 82f, 142f, 24f, 11, MainMenuStyle.SecondaryText, TextAnchor.MiddleCenter, FontStyle.Normal);
+            factory.Text("SecondaryColumn", bindings.transform, textCatalog.Get("ui.controls.secondary"), 448f, 82f, 160f, 24f, 11, MainMenuStyle.SecondaryText, TextAnchor.MiddleCenter, FontStyle.Normal);
 
             List<InputBindingRow> rows = CreateInputBindingRows();
             const float viewportY = 112f;
@@ -570,16 +562,14 @@ namespace MSC.UI.Presentation
             GameplaySettingsDto pending = settings.Pending.Gameplay;
             GameObject route = CreateSettingsShell(UiRouteId.SettingsGameplay);
 
-            GameObject panel = factory.GlassPanel(
+            GameObject panel = factory.MainMenuPanel(
                 "GameplaySettingsPanel",
                 route.transform,
                 370f,
                 55f,
                 791f,
-                807f,
-                UiGlassKind.MenuTinted,
-                CurrentMenuGlassTint);
-            factory.Heading(panel.transform, textCatalog.Get("ui.category.gameplay"), 36f, 16f, 720f, 27);
+                807f);
+            factory.MenuScreenHeading(panel.transform, textCatalog.Get("ui.category.gameplay"), 36f, 16f, 720f, 27);
             factory.Text(
                 "Subtitle",
                 panel.transform,
@@ -589,7 +579,7 @@ namespace MSC.UI.Presentation
                 720f,
                 28f,
                 13,
-                UiThemeTokens.TextMuted,
+                MainMenuStyle.SecondaryText,
                 TextAnchor.MiddleLeft);
 
             float rowY = 96f;
@@ -688,9 +678,9 @@ namespace MSC.UI.Presentation
             UiSettingsDocument pending = settings.Pending;
             GameObject route = CreateSettingsShell(UiRouteId.SettingsAccessibility);
 
-            GameObject panel = factory.GlassPanel("AccessibilityPanel", route.transform, 370f, 135f, 760f, 716f, UiGlassKind.MenuTinted, CurrentMenuGlassTint);
-            factory.Heading(panel.transform, textCatalog.Get("ui.access.title"), 28f, 18f, 704f, 25);
-            factory.Text("ReferenceState", panel.transform, textCatalog.Get("ui.common.reference_pending"), 28f, 56f, 704f, 24f, 11, UiThemeTokens.Disabled, TextAnchor.MiddleLeft, FontStyle.Bold);
+            GameObject panel = factory.MainMenuPanel("AccessibilityPanel", route.transform, 370f, 135f, 760f, 716f);
+            factory.MenuScreenHeading(panel.transform, textCatalog.Get("ui.access.title"), 28f, 18f, 704f, 25);
+            factory.Text("ReferenceState", panel.transform, textCatalog.Get("ui.common.reference_pending"), 28f, 56f, 704f, 24f, 11, MenuScreenStyle.Disabled, TextAnchor.MiddleLeft, FontStyle.Normal);
 
             float rowY = 104f;
             AddRangeSliderRow(panel.transform, "UiScale", textCatalog.Get("ui.access.scale"), rowY, pending.Accessibility.UiScale, 0.85f, 1.25f, value => settings.EditPending(document => document.Accessibility.UiScale = value), value => Mathf.RoundToInt(value * 100f).ToString(CultureInfo.InvariantCulture) + "%", 704f);
@@ -714,13 +704,13 @@ namespace MSC.UI.Presentation
         partial void BuildModsRoute()
         {
             GameObject route = CreateSettingsShell(UiRouteId.SettingsMods);
-            GameObject panel = factory.GlassPanel("ModsPanel", route.transform, 370f, 184f, 760f, 430f, UiGlassKind.MenuTinted, CurrentMenuGlassTint);
-            factory.Icon("ModsIcon", panel.transform, UiIconKind.Wrench, 40f, 42f, 64f, UiThemeTokens.Disabled);
-            factory.Heading(panel.transform, textCatalog.Get("ui.mods.title"), 128f, 42f, 584f, 30);
-            factory.Text("ReferenceState", panel.transform, textCatalog.Get("ui.common.reference_pending"), 128f, 92f, 584f, 24f, 12, UiThemeTokens.Disabled, TextAnchor.MiddleLeft, FontStyle.Bold);
-            factory.Divider(panel.transform, 40f, 142f, 680f);
-            factory.Text("Unavailable", panel.transform, textCatalog.Get("ui.mods.unavailable"), 40f, 176f, 680f, 132f, 20, UiThemeTokens.TextPrimary, TextAnchor.MiddleCenter, FontStyle.Bold);
-            factory.Text("BuildState", panel.transform, CapabilityText(UiCapabilityId.Mods), 40f, 324f, 680f, 40f, 13, UiThemeTokens.TextMuted, TextAnchor.MiddleCenter);
+            GameObject panel = factory.MainMenuPanel("ModsPanel", route.transform, 370f, 184f, 760f, 430f);
+            factory.Icon("ModsIcon", panel.transform, UiIconKind.Wrench, 40f, 42f, 64f, MenuScreenStyle.Disabled);
+            factory.MenuScreenHeading(panel.transform, textCatalog.Get("ui.mods.title"), 128f, 42f, 584f, 30);
+            factory.Text("ReferenceState", panel.transform, textCatalog.Get("ui.common.reference_pending"), 128f, 92f, 584f, 24f, 12, MenuScreenStyle.Disabled, TextAnchor.MiddleLeft, FontStyle.Normal);
+            factory.MenuScreenDivider(panel.transform, 40f, 142f, 680f);
+            factory.Text("Unavailable", panel.transform, textCatalog.Get("ui.mods.unavailable"), 40f, 176f, 680f, 132f, 20, MainMenuStyle.PrimaryText, TextAnchor.MiddleCenter, FontStyle.Normal);
+            factory.Text("BuildState", panel.transform, CapabilityText(UiCapabilityId.Mods), 40f, 324f, 680f, 40f, 13, MainMenuStyle.SecondaryText, TextAnchor.MiddleCenter);
             BuildVersionLabel(route.transform);
         }
 
@@ -745,7 +735,7 @@ namespace MSC.UI.Presentation
             GameObject route = CreateRoute(selectedRoute);
             CreateLogo(route.transform, logoX, logoY, logoWidth, logoHeight, large: false);
             BuildSettingsNavigation(route.transform, selectedRoute, navigationX, navigationY, navigationWidth, navigationHeight);
-            factory.Button(
+            factory.MenuScreenButton(
                 "Back",
                 route.transform,
                 textCatalog.Get("ui.common.back"),
@@ -755,9 +745,8 @@ namespace MSC.UI.Presentation
                 backWidth,
                 backHeight,
                 ReturnFromSettingsWithBindings,
-                destructive: true,
-                glass: true);
-            CreateGreeting(route.transform, 1352f, 39f, 210f, 68f);
+                destructive: true);
+            factory.MainMenuGreeting("Greeting", route.transform, textCatalog.Get("ui.greeting"), 1352f, 39f, 210f, 68f);
 
             return route;
         }
@@ -803,7 +792,7 @@ namespace MSC.UI.Presentation
             for (int index = 0; index < routeIds.Length; index++)
             {
                 UiRouteId target = routeIds[index];
-                factory.Button(
+                factory.MenuScreenButton(
                     "Navigate" + target,
                     parent,
                     textCatalog.Get(labelKeys[index]),
@@ -813,8 +802,7 @@ namespace MSC.UI.Presentation
                     width,
                     buttonHeight,
                     () => NavigateSettings(target),
-                    selected: target == selectedRoute,
-                    glass: true);
+                    selected: target == selectedRoute);
             }
         }
 
@@ -826,6 +814,12 @@ namespace MSC.UI.Presentation
 
         private void BuildVersionLabel(Transform parent)
         {
+            bool reducedMotion = settings.Applied.Accessibility.ReducedMotion || reviewDataEnabled;
+            foreach (MainMenuActionButton button in parent.GetComponentsInChildren<MainMenuActionButton>(true))
+            {
+                button.ReducedMotion = reducedMotion;
+            }
+
             factory.Text(
                 "Version",
                 parent,
@@ -835,7 +829,7 @@ namespace MSC.UI.Presentation
                 260f,
                 24f,
                 11,
-                UiThemeTokens.Disabled,
+                MenuScreenStyle.Disabled,
                 TextAnchor.MiddleLeft);
         }
 
@@ -851,13 +845,13 @@ namespace MSC.UI.Presentation
         {
             float rowX = RowOffset(parent, rowWidth);
             AddRowSurface(parent, name + "Row", y, rowWidth);
-            factory.Text(name + "Label", parent, label, rowX + 10f, y, rowWidth * 0.46f, 32f, 13, interactable ? UiThemeTokens.TextPrimary : UiThemeTokens.Disabled, TextAnchor.MiddleLeft, FontStyle.Bold);
+            factory.Text(name + "Label", parent, label, rowX + 10f, y, rowWidth * 0.46f, 32f, 13, interactable ? MainMenuStyle.PrimaryText : MenuScreenStyle.Disabled, TextAnchor.MiddleLeft, FontStyle.Normal);
             float widgetX = rowX + rowWidth * 0.48f;
             float widgetWidth = rowWidth * 0.50f;
-            factory.CompactButton(name + "Previous", parent, "‹", widgetX, y + 3f, 36f, 26f, () => onStep?.Invoke(-1), interactable: interactable);
-            GameObject valuePanel = factory.Panel(name + "ValuePanel", parent, widgetX + 40f, y + 3f, widgetWidth - 80f, 26f, UiThemeTokens.RowAlternate);
-            Text valueText = factory.Text(name + "Value", valuePanel.transform, value, 6f, 0f, widgetWidth - 92f, 26f, 12, interactable ? UiThemeTokens.TextPrimary : UiThemeTokens.Disabled, TextAnchor.MiddleCenter);
-            factory.CompactButton(name + "Next", parent, "›", widgetX + widgetWidth - 36f, y + 3f, 36f, 26f, () => onStep?.Invoke(1), interactable: interactable);
+            factory.MenuScreenCompactButton(name + "Previous", parent, "‹", widgetX, y + 3f, 36f, 26f, () => onStep?.Invoke(-1), interactable: interactable);
+            GameObject valuePanel = factory.MenuScreenField(name + "ValuePanel", parent, widgetX + 40f, y + 3f, widgetWidth - 80f, 26f);
+            Text valueText = factory.Text(name + "Value", valuePanel.transform, value, 6f, 0f, widgetWidth - 92f, 26f, 12, interactable ? MainMenuStyle.PrimaryText : MenuScreenStyle.Disabled, TextAnchor.MiddleCenter);
+            factory.MenuScreenCompactButton(name + "Next", parent, "›", widgetX + widgetWidth - 36f, y + 3f, 36f, 26f, () => onStep?.Invoke(1), interactable: interactable);
             return valueText;
         }
 
@@ -874,13 +868,13 @@ namespace MSC.UI.Presentation
         {
             float rowX = RowOffset(parent, rowWidth);
             AddRowSurface(parent, name + "Row", y, rowWidth);
-            factory.Text(name + "Label", parent, label, rowX + 10f, y, rowWidth * 0.62f, 32f, 13, interactable ? UiThemeTokens.TextPrimary : UiThemeTokens.Disabled, TextAnchor.MiddleLeft, FontStyle.Bold);
+            factory.Text(name + "Label", parent, label, rowX + 10f, y, rowWidth * 0.62f, 32f, 13, interactable ? MainMenuStyle.PrimaryText : MenuScreenStyle.Disabled, TextAnchor.MiddleLeft, FontStyle.Normal);
             if (!string.IsNullOrEmpty(status))
             {
-                factory.Text(name + "State", parent, status, rowX + rowWidth - 220f, y, 130f, 32f, 10, UiThemeTokens.Disabled, TextAnchor.MiddleRight, FontStyle.Bold);
+                factory.Text(name + "State", parent, status, rowX + rowWidth - 220f, y, 130f, 32f, 10, MenuScreenStyle.Disabled, TextAnchor.MiddleRight, FontStyle.Normal);
             }
 
-            factory.Toggle(name + "Toggle", parent, rowX + rowWidth - 80f, y + 2f, value, changed => onChanged?.Invoke(changed), interactable);
+            factory.MenuScreenToggle(name + "Toggle", parent, rowX + rowWidth - 80f, y + 2f, value, changed => onChanged?.Invoke(changed), interactable);
         }
 
         private void AddPendingToggleRow(
@@ -905,9 +899,9 @@ namespace MSC.UI.Presentation
         {
             float rowX = RowOffset(parent, rowWidth);
             AddRowSurface(parent, name + "Row", y, rowWidth);
-            factory.Text(name + "Label", parent, label, rowX + 10f, y, rowWidth * 0.58f, 32f, 13, UiThemeTokens.Disabled, TextAnchor.MiddleLeft, FontStyle.Bold);
-            GameObject statePanel = factory.Panel(name + "StatePanel", parent, rowX + rowWidth * 0.60f, y + 3f, rowWidth * 0.38f, 26f, UiThemeTokens.RowAlternate);
-            factory.Text(name + "State", statePanel.transform, state, 6f, 0f, rowWidth * 0.38f - 12f, 26f, 10, UiThemeTokens.Disabled, TextAnchor.MiddleCenter, FontStyle.Bold);
+            factory.Text(name + "Label", parent, label, rowX + 10f, y, rowWidth * 0.58f, 32f, 13, MenuScreenStyle.Disabled, TextAnchor.MiddleLeft, FontStyle.Normal);
+            GameObject statePanel = factory.MenuScreenField(name + "StatePanel", parent, rowX + rowWidth * 0.60f, y + 3f, rowWidth * 0.38f, 26f);
+            factory.Text(name + "State", statePanel.transform, state, 6f, 0f, rowWidth * 0.38f - 12f, 26f, 10, MenuScreenStyle.Disabled, TextAnchor.MiddleCenter, FontStyle.Normal);
         }
 
         private void AddReadOnlyRow(
@@ -920,9 +914,9 @@ namespace MSC.UI.Presentation
         {
             float rowX = RowOffset(parent, rowWidth);
             AddRowSurface(parent, name + "Row", y, rowWidth);
-            factory.Text(name + "Label", parent, label, rowX + 10f, y, rowWidth * 0.58f, 32f, 13, UiThemeTokens.TextPrimary, TextAnchor.MiddleLeft, FontStyle.Bold);
-            GameObject valuePanel = factory.Panel(name + "StatePanel", parent, rowX + rowWidth * 0.60f, y + 3f, rowWidth * 0.38f, 26f, UiThemeTokens.RowAlternate);
-            factory.Text(name + "State", valuePanel.transform, value, 6f, 0f, rowWidth * 0.38f - 12f, 26f, 10, UiThemeTokens.TextPrimary, TextAnchor.MiddleCenter, FontStyle.Bold);
+            factory.Text(name + "Label", parent, label, rowX + 10f, y, rowWidth * 0.58f, 32f, 13, MainMenuStyle.PrimaryText, TextAnchor.MiddleLeft, FontStyle.Normal);
+            GameObject valuePanel = factory.MenuScreenField(name + "StatePanel", parent, rowX + rowWidth * 0.60f, y + 3f, rowWidth * 0.38f, 26f);
+            factory.Text(name + "State", valuePanel.transform, value, 6f, 0f, rowWidth * 0.38f - 12f, 26f, 10, MainMenuStyle.PrimaryText, TextAnchor.MiddleCenter, FontStyle.Normal);
         }
 
         private void AddNormalizedSliderRow(
@@ -962,10 +956,10 @@ namespace MSC.UI.Presentation
         {
             float rowX = RowOffset(parent, rowWidth);
             AddRowSurface(parent, name + "Row", y, rowWidth);
-            factory.Text(name + "Label", parent, label, rowX + 10f, y, rowWidth * 0.46f, 32f, 13, interactable ? UiThemeTokens.TextPrimary : UiThemeTokens.Disabled, TextAnchor.MiddleLeft, FontStyle.Bold);
-            Text valueText = factory.Text(name + "Value", parent, format(value), rowX + rowWidth - 64f, y, 54f, 32f, 11, interactable ? UiThemeTokens.TextPrimary : UiThemeTokens.Disabled, TextAnchor.MiddleRight);
+            factory.Text(name + "Label", parent, label, rowX + 10f, y, rowWidth * 0.46f, 32f, 13, interactable ? MainMenuStyle.PrimaryText : MenuScreenStyle.Disabled, TextAnchor.MiddleLeft, FontStyle.Normal);
+            Text valueText = factory.Text(name + "Value", parent, format(value), rowX + rowWidth - 64f, y, 54f, 32f, 11, interactable ? MainMenuStyle.PrimaryText : MenuScreenStyle.Disabled, TextAnchor.MiddleRight);
             float normalized = Mathf.InverseLerp(minimum, maximum, value);
-            return factory.Slider(
+            return factory.MenuScreenSlider(
                 name + "Slider",
                 parent,
                 rowX + rowWidth * 0.49f,
@@ -985,7 +979,7 @@ namespace MSC.UI.Presentation
         {
             GameObject row = factory.CreateObject(name, parent);
             factory.Place(row, RowOffset(parent, rowWidth), y, rowWidth, 32f);
-            factory.AddSurface(row, UiThemeTokens.RowAlternate);
+            factory.AddSurface(row, MenuScreenStyle.RowAlternate);
         }
 
         private static float RowOffset(Transform parent, float rowWidth)
@@ -1021,10 +1015,10 @@ namespace MSC.UI.Presentation
         {
             GameObject row = factory.CreateObject(name + "Row", parent);
             factory.Place(row, 12f, y, 654f, 40f);
-            factory.AddSurface(row, UiThemeTokens.RowAlternate);
-            factory.Text(name + "Label", row.transform, label, 12f, 0f, 244f, 40f, 12, UiThemeTokens.TextPrimary, TextAnchor.MiddleLeft, FontStyle.Bold);
-            Text valueText = factory.Text(name + "Value", row.transform, PercentText(value), 574f, 0f, 64f, 40f, 12, UiThemeTokens.TextPrimary, TextAnchor.MiddleRight);
-            factory.Slider(name + "Slider", row.transform, 278f, 9f, 276f, value, sliderValue =>
+            factory.AddSurface(row, MenuScreenStyle.RowAlternate);
+            factory.Text(name + "Label", row.transform, label, 12f, 0f, 244f, 40f, 12, MainMenuStyle.PrimaryText, TextAnchor.MiddleLeft, FontStyle.Normal);
+            Text valueText = factory.Text(name + "Value", row.transform, PercentText(value), 574f, 0f, 64f, 40f, 12, MainMenuStyle.PrimaryText, TextAnchor.MiddleRight);
+            factory.MenuScreenSlider(name + "Slider", row.transform, 278f, 9f, 276f, value, sliderValue =>
             {
                 valueText.text = PercentText(sliderValue);
                 onChanged?.Invoke(sliderValue);
@@ -1040,31 +1034,31 @@ namespace MSC.UI.Presentation
         {
             GameObject row = factory.CreateObject(name + "Row", parent);
             factory.Place(row, 12f, y, 654f, 40f);
-            factory.AddSurface(row, UiThemeTokens.RowAlternate);
-            factory.Text(name + "Label", row.transform, label, 12f, 0f, 244f, 40f, 12, UiThemeTokens.Disabled, TextAnchor.MiddleLeft, FontStyle.Bold);
-            factory.Text(name + "State", row.transform, CapabilityText(capability), 278f, 0f, 360f, 40f, 10, UiThemeTokens.Disabled, TextAnchor.MiddleRight, FontStyle.Bold);
+            factory.AddSurface(row, MenuScreenStyle.RowAlternate);
+            factory.Text(name + "Label", row.transform, label, 12f, 0f, 244f, 40f, 12, MenuScreenStyle.Disabled, TextAnchor.MiddleLeft, FontStyle.Normal);
+            factory.Text(name + "State", row.transform, CapabilityText(capability), 278f, 0f, 360f, 40f, 10, MenuScreenStyle.Disabled, TextAnchor.MiddleRight, FontStyle.Normal);
         }
 
         private void BuildAudioProfileCard(Transform parent)
         {
-            GameObject card = factory.GlassPanel("AudioProfileCard", parent, 1200f, 489f, 391f, 224f, UiGlassKind.MenuTinted, CurrentMenuGlassTint);
-            factory.Heading(card.transform, textCatalog.Get("ui.audio.profile"), 22f, 14f, 347f, 20);
+            GameObject card = factory.MainMenuPanel("AudioProfileCard", parent, 1200f, 489f, 391f, 224f);
+            factory.MenuScreenHeading(card.transform, textCatalog.Get("ui.audio.profile"), 22f, 14f, 347f, 20);
             string backendId = dependencies.Audio == null
                 ? textCatalog.Get("ui.common.unavailable")
                 : dependencies.Audio.BackendId;
             string backendState = dependencies.Audio != null && dependencies.Audio.IsReady
                 ? textCatalog.Get("ui.audio.backend_ready")
                 : textCatalog.Get("ui.audio.backend_unavailable");
-            factory.Text("Backend", card.transform, textCatalog.Get("ui.audio.backend") + "\n" + textCatalog.Get("ui.audio.state"), 22f, 58f, 126f, 56f, 11, UiThemeTokens.TextMuted, TextAnchor.UpperLeft);
-            factory.Text("BackendValue", card.transform, backendId + "\n" + backendState, 152f, 58f, 217f, 56f, 11, UiThemeTokens.TextPrimary, TextAnchor.UpperRight, FontStyle.Bold);
-            factory.Divider(card.transform, 22f, 126f, 347f);
-            factory.Text("Tip", card.transform, textCatalog.Get("ui.audio.profile_tip"), 22f, 143f, 347f, 62f, 11, UiThemeTokens.TextMuted, TextAnchor.UpperLeft);
+            factory.Text("Backend", card.transform, textCatalog.Get("ui.audio.backend") + "\n" + textCatalog.Get("ui.audio.state"), 22f, 58f, 126f, 56f, 11, MainMenuStyle.SecondaryText, TextAnchor.UpperLeft);
+            factory.Text("BackendValue", card.transform, backendId + "\n" + backendState, 152f, 58f, 217f, 56f, 11, MainMenuStyle.PrimaryText, TextAnchor.UpperRight, FontStyle.Normal);
+            factory.MenuScreenDivider(card.transform, 22f, 126f, 347f);
+            factory.Text("Tip", card.transform, textCatalog.Get("ui.audio.profile_tip"), 22f, 143f, 347f, 62f, 11, MainMenuStyle.SecondaryText, TextAnchor.UpperLeft);
         }
 
         private void BuildMouseSettingsCard(Transform parent, ControlsSettingsDto pending)
         {
-            GameObject card = factory.GlassPanel("MouseSettings", parent, 1027f, 121f, 538f, 174f, UiGlassKind.MenuTinted, CurrentMenuGlassTint);
-            factory.Heading(card.transform, textCatalog.Get("ui.controls.mouse"), 26f, 12f, 486f, 20);
+            GameObject card = factory.MainMenuPanel("MouseSettings", parent, 1027f, 121f, 538f, 174f);
+            factory.MenuScreenHeading(card.transform, textCatalog.Get("ui.controls.mouse"), 26f, 12f, 486f, 20);
             AddRangeSliderRow(card.transform, "MouseSensitivity", textCatalog.Get("ui.controls.look_sensitivity"), 54f, pending.MouseSensitivity, 0.05f, 3f, value =>
             {
                 settings.EditPending(document => document.Controls.MouseSensitivity = value);
@@ -1077,8 +1071,8 @@ namespace MSC.UI.Presentation
 
         private void BuildGamepadSettingsCard(Transform parent, ControlsSettingsDto pending)
         {
-            GameObject card = factory.GlassPanel("GamepadSettings", parent, 1027f, 311f, 538f, 282f, UiGlassKind.MenuTinted, CurrentMenuGlassTint);
-            factory.Heading(card.transform, textCatalog.Get("ui.controls.gamepad"), 26f, 12f, 486f, 20);
+            GameObject card = factory.MainMenuPanel("GamepadSettings", parent, 1027f, 311f, 538f, 282f);
+            factory.MenuScreenHeading(card.transform, textCatalog.Get("ui.controls.gamepad"), 26f, 12f, 486f, 20);
             AddRangeSliderRow(card.transform, "GamepadSensitivity", textCatalog.Get("ui.controls.gamepad_sensitivity"), 50f, pending.GamepadSensitivity, 0.05f, 3f, value =>
             {
                 settings.EditPending(document => document.Controls.GamepadSensitivity = value);
@@ -1137,15 +1131,15 @@ namespace MSC.UI.Presentation
         {
             GameObject row = factory.CreateObject("BindingRow" + index, parent);
             factory.Place(row, 26f, y, 591f, 35f);
-            factory.AddSurface(row, index % 2 == 0 ? UiThemeTokens.Row : UiThemeTokens.RowAlternate);
+            factory.AddSurface(row, index % 2 == 0 ? MenuScreenStyle.Row : MenuScreenStyle.RowAlternate);
             bool actionAvailable = TryResolveBinding(definition.Asset, definition.ActionId, definition.PrimaryBindingId, out InputAction primaryAction, out int primaryIndex);
-            Color labelColor = actionAvailable ? UiThemeTokens.TextPrimary : UiThemeTokens.Disabled;
+            Color labelColor = actionAvailable ? MainMenuStyle.PrimaryText : MenuScreenStyle.Disabled;
             factory.Text("Action", row.transform, textCatalog.Get(definition.LabelKey), 10f, 0f, 244f, 35f, 13, labelColor, TextAnchor.MiddleLeft);
 
             string primaryLabel = actionAvailable
                 ? BindingDisplayString(primaryAction, primaryIndex)
                 : CapabilityText(definition.MissingCapability);
-            Button primary = factory.CompactButton("Primary", row.transform, primaryLabel, 254f, 3f, 147f, 29f, null, interactable: actionAvailable);
+            Button primary = factory.MenuScreenCompactButton("Primary", row.transform, primaryLabel, 254f, 3f, 147f, 29f, null, interactable: actionAvailable);
             if (actionAvailable)
             {
                 primary.onClick.AddListener(() => BeginInteractiveRebind(definition.Asset, definition.ActionId, definition.PrimaryBindingId, primary));
@@ -1155,7 +1149,7 @@ namespace MSC.UI.Presentation
             string secondaryLabel = secondaryAvailable
                 ? BindingDisplayString(secondaryAction, secondaryIndex)
                 : textCatalog.Get("ui.controls.none");
-            Button secondary = factory.CompactButton("Secondary", row.transform, secondaryLabel, 411f, 3f, 170f, 29f, null, interactable: secondaryAvailable);
+            Button secondary = factory.MenuScreenCompactButton("Secondary", row.transform, secondaryLabel, 411f, 3f, 170f, 29f, null, interactable: secondaryAvailable);
             if (secondaryAvailable)
             {
                 secondary.onClick.AddListener(() => BeginInteractiveRebind(definition.Asset, definition.ActionId, definition.SecondaryBindingId, secondary));
@@ -1484,9 +1478,9 @@ namespace MSC.UI.Presentation
 
             GameObject actions = factory.CreateObject("SettingsActions", parent);
             factory.Place(actions, x, y, 455f, UiThemeTokens.UtilityActionButtonHeight);
-            factory.CompactButton("Apply", actions.transform, textCatalog.Get("ui.common.apply"), 0f, 0f, UiThemeTokens.UtilityActionFirstWidth, UiThemeTokens.UtilityActionButtonHeight, ApplySettingsWithBindings, primary: true);
-            factory.CompactButton("Reset", actions.transform, textCatalog.Get("ui.common.reset"), secondX, 0f, UiThemeTokens.UtilityActionSecondWidth, UiThemeTokens.UtilityActionButtonHeight, ResetAllPendingSettings, glass: true);
-            factory.CompactButton("Cancel", actions.transform, textCatalog.Get("ui.common.cancel"), thirdX, 0f, UiThemeTokens.UtilityActionThirdWidth, UiThemeTokens.UtilityActionButtonHeight, RevertAllPendingSettings, glass: true);
+            factory.MenuScreenCompactButton("Apply", actions.transform, textCatalog.Get("ui.common.apply"), 0f, 0f, UiThemeTokens.UtilityActionFirstWidth, UiThemeTokens.UtilityActionButtonHeight, ApplySettingsWithBindings, primary: true);
+            factory.MenuScreenCompactButton("Reset", actions.transform, textCatalog.Get("ui.common.reset"), secondX, 0f, UiThemeTokens.UtilityActionSecondWidth, UiThemeTokens.UtilityActionButtonHeight, ResetAllPendingSettings);
+            factory.MenuScreenCompactButton("Cancel", actions.transform, textCatalog.Get("ui.common.cancel"), thirdX, 0f, UiThemeTokens.UtilityActionThirdWidth, UiThemeTokens.UtilityActionButtonHeight, RevertAllPendingSettings);
         }
 
         private void ApplySettingsWithBindings()

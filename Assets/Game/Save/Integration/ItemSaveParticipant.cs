@@ -14,6 +14,9 @@ namespace MSC.Save.Integration
 
         private readonly ItemWorldRuntime runtime;
         private readonly DeferredStableEntityStore deferredEntities;
+        private Func<string, bool> assemblyOwnerUnavailable;
+
+        internal void ConfigureAssemblyOwnerAvailability(Func<string, bool> unavailable) => assemblyOwnerUnavailable = unavailable;
 
         public ItemSaveParticipant(
             ItemWorldRuntime itemRuntime,
@@ -58,7 +61,7 @@ namespace MSC.Save.Integration
             return state;
         }
 
-        private void NormalizeLegacyFoodState(ItemDomainSaveDto domain)
+        internal void NormalizeLegacyFoodState(ItemDomainSaveDto domain)
         {
             if (domain?.instances == null)
             {
@@ -354,10 +357,13 @@ namespace MSC.Save.Integration
             WorldItemInstance instance)
         {
             Rigidbody body = instance.GetComponent<Rigidbody>();
-            Vector3 position = body != null
+            // Consumed or parent-disabled wrappers can remain registered. Their
+            // inactive Unity 6000.6 actor getters do not retain the saved pose.
+            bool hasActiveBody = body != null && body.gameObject.activeInHierarchy;
+            Vector3 position = hasActiveBody
                 ? body.position
                 : instance.transform.position;
-            Quaternion rotation = body != null
+            Quaternion rotation = hasActiveBody
                 ? body.rotation
                 : instance.transform.rotation;
             string id = instance.StableId.Value;
@@ -402,6 +408,8 @@ namespace MSC.Save.Integration
         private bool ShouldArchiveUntilSourceCellLoads(
             ItemRuntimeSaveRecord record)
         {
+            if (runtime.IsExternallyOwned(record.state.stableEntityId))
+                return assemblyOwnerUnavailable?.Invoke(record.state.stableEntityId) == true;
             return !record.isCanonicalPlacement &&
                    runtime.IsPositionInCell(
                        record.materializationPosition,
@@ -431,6 +439,7 @@ namespace MSC.Save.Integration
                 ItemRuntimeSaveRecord record =
                     SaveParticipantJson.Deserialize<ItemRuntimeSaveRecord>(
                         payload.PayloadJson);
+                if (runtime.IsExternallyOwned(record?.state?.stableEntityId ?? string.Empty)) continue;
                 if (!record.TryValidate(
                         runtime.Definitions,
                         out string failure) ||

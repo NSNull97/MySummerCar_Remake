@@ -1187,7 +1187,7 @@ namespace MSC.Weather.Production
         {
             shelterBuffer.Clear();
             shelterIds.Clear();
-            var visitedRoots = new HashSet<int>();
+            var visitedRoots = new HashSet<EntityId>();
 
             // GameCompositionRoot moves this controller and its authored
             // Bootstrap shelters into the special DontDestroyOnLoad scene.
@@ -1223,9 +1223,9 @@ namespace MSC.Weather.Production
 
         private void CollectSheltersFromRoot(
             GameObject root,
-            ISet<int> visitedRoots)
+            ISet<EntityId> visitedRoots)
         {
-            if (root == null || !visitedRoots.Add(root.GetInstanceID()))
+            if (root == null || !visitedRoots.Add(root.GetEntityId()))
             {
                 return;
             }

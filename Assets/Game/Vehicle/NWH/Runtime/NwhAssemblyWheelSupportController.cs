@@ -716,7 +716,7 @@ namespace MSC.Vehicle.NWH
                         profile.RoadWheelMountId);
                     PartInstance part = mount?.InstalledPart;
                     hash = hash * 31 + (part != null
-                        ? part.GetInstanceID()
+                        ? part.GetEntityId().GetHashCode()
                         : 0);
                     AssemblyWheelTireState tireState = part != null
                         ? part.GetComponentInChildren<

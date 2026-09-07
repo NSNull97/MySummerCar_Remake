@@ -9,6 +9,7 @@ using MSC.Interaction.Carrying;
 using MSC.Interaction.Notifications;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MSC.Tests.EditMode.AudioInteractionIntegration
 {
@@ -223,7 +224,7 @@ namespace MSC.Tests.EditMode.AudioInteractionIntegration
 
         public string StableId => stableId;
         public Transform AudioTransform => transform;
-        public int OwningSceneHandle => gameObject.scene.handle;
+        public SceneHandle OwningSceneHandle => gameObject.scene.handle;
         public bool IsAudioEmitterActive => isActiveAndEnabled;
         public AudioSurfaceContext SurfaceContext => AudioSurfaceContext.Unknown;
         public AudioEnvironmentContext EnvironmentContext => AudioEnvironmentContext.Exterior;

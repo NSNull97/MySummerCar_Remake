@@ -181,6 +181,89 @@ namespace MSC.Tests.EditMode.VehicleNwhIntegration
         }
 
         [Test]
+        public void GravityRollRelease_RequiresExplicitVehicleOptIn()
+        {
+            NwhWheelPhysicsBackend backend = CreateBackend(out _, out _);
+            Assert.That(backend.ReleaseUnbrakedWheelsOnSlopes, Is.False);
+            backend.ConfigureUnbrakedSlopeRelease(true);
+            Assert.That(backend.ReleaseUnbrakedWheelsOnSlopes, Is.True);
+        }
+
+        [TestCase(-40f)]
+        [TestCase(0f)]
+        [TestCase(35f)]
+        public void GravityRoll_FlatContactDoesNotReleaseBecauseChassisIsPitched(float pitch)
+        {
+            Vector3 forward = Quaternion.Euler(pitch, 0f, 0f) * Vector3.forward;
+            Assert.That(NwhWheelPhysicsBackend.ShouldReleaseGravityRollLock(
+                true, 1000f, Vector3.down * 9.81f, Vector3.up,
+                forward, 0.27f, 0f, 0f), Is.False);
+        }
+
+        [TestCase(0f, 0f, true)]
+        [TestCase(10f, 3f, true)]
+        [TestCase(25f, 3f, false)]
+        [TestCase(1000f, 3f, false)]
+        [TestCase(0f, 30f, false)]
+        public void GravityRoll_DownhillComparesPhysicalGradeAndResistingTorques(
+            float brakeTorque, float rollingTorque, bool expected)
+        {
+            Quaternion slope = Quaternion.Euler(5f, 0f, 0f);
+            // 1000 N * tan(5 degrees) * 0.27 m = about 23.62 N m.
+            Assert.That(NwhWheelPhysicsBackend.ShouldReleaseGravityRollLock(
+                true, 1000f, Vector3.down * 9.81f, slope * Vector3.up,
+                slope * Vector3.forward, 0.27f, brakeTorque, rollingTorque),
+                Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void GravityRoll_SidewaysGradeDoesNotReleaseLongitudinalLock()
+        {
+            Vector3 sidewaysNormal = Quaternion.Euler(0f, 0f, 5f) * Vector3.up;
+            Assert.That(NwhWheelPhysicsBackend.ShouldReleaseGravityRollLock(
+                true, 1000f, Vector3.down * 9.81f, sidewaysNormal,
+                Vector3.forward, 0.27f, 0f, 0f), Is.False);
+        }
+
+        [TestCase(false, 1000f, 0.27f, 0f, 0f)]
+        [TestCase(true, 0f, 0.27f, 0f, 0f)]
+        [TestCase(true, -1f, 0.27f, 0f, 0f)]
+        [TestCase(true, float.NaN, 0.27f, 0f, 0f)]
+        [TestCase(true, 1000f, 0f, 0f, 0f)]
+        [TestCase(true, 1000f, float.PositiveInfinity, 0f, 0f)]
+        [TestCase(true, 1000f, 0.27f, -1f, 0f)]
+        [TestCase(true, 1000f, 0.27f, float.NaN, 0f)]
+        [TestCase(true, 1000f, 0.27f, 0f, -1f)]
+        public void GravityRoll_RejectsMissingLoadContactAndInvalidScalarInputs(
+            bool grounded, float load, float radius, float brake, float rolling)
+        {
+            Quaternion slope = Quaternion.Euler(5f, 0f, 0f);
+            Assert.That(NwhWheelPhysicsBackend.ShouldReleaseGravityRollLock(
+                grounded, load, Vector3.down * 9.81f, slope * Vector3.up,
+                slope * Vector3.forward, radius, brake, rolling), Is.False);
+        }
+
+        [Test]
+        public void GravityRoll_RejectsInvalidAndDegenerateContactVectors()
+        {
+            Vector3 invalid = new Vector3(float.NaN, 0f, 0f);
+            Vector3 normal = Quaternion.Euler(5f, 0f, 0f) * Vector3.up;
+            Vector3 gravity = Vector3.down * 9.81f;
+            Assert.That(NwhWheelPhysicsBackend.ShouldReleaseGravityRollLock(
+                true, 1000f, invalid, normal, Vector3.forward, 0.27f, 0f, 0f), Is.False);
+            Assert.That(NwhWheelPhysicsBackend.ShouldReleaseGravityRollLock(
+                true, 1000f, gravity, invalid, Vector3.forward, 0.27f, 0f, 0f), Is.False);
+            Assert.That(NwhWheelPhysicsBackend.ShouldReleaseGravityRollLock(
+                true, 1000f, gravity, Vector3.zero, Vector3.forward, 0.27f, 0f, 0f), Is.False);
+            Assert.That(NwhWheelPhysicsBackend.ShouldReleaseGravityRollLock(
+                true, 1000f, gravity, normal, invalid, 0.27f, 0f, 0f), Is.False);
+            Assert.That(NwhWheelPhysicsBackend.ShouldReleaseGravityRollLock(
+                true, 1000f, gravity, normal, normal, 0.27f, 0f, 0f), Is.False);
+            Assert.That(NwhWheelPhysicsBackend.ShouldReleaseGravityRollLock(
+                true, 1000f, Vector3.zero, normal, Vector3.forward, 0.27f, 0f, 0f), Is.False);
+        }
+
+        [Test]
         public void SuspensionOffset_CompressionMovesWheelUpFromAuthoredRest()
         {
             Vector3 offset = NwhStoryTrafficVehicleMotionBackend

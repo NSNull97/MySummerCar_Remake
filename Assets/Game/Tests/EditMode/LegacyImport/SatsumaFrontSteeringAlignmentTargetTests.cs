@@ -40,8 +40,10 @@ namespace MSC.Tests.EditMode.LegacyImport
             Assert.That(targets.Length, Is.EqualTo(2));
             Assert.That(prefab.GetComponentsInChildren<AssemblySteeringAlignmentState>(true).Length,
                 Is.EqualTo(2));
-            Assert.That(prefab.GetComponentsInChildren<AssemblyFastenerInteractionTarget>(true).Length,
-                Is.EqualTo(280), "Toe adjustment targets are not staged fasteners.");
+            SatsumaCanonicalNightTestShape.AssertCanonicalTargets(
+                prefab.GetComponentsInChildren<AssemblyFastenerInteractionTarget>(true));
+            Assert.That(targets.All(target => target.GetComponent<AssemblyFastenerInteractionTarget>() == null),
+                Is.True, "Toe adjustment targets are not staged fasteners.");
             SatsumaFrontSuspensionCornerBinding[] corners = prefab
                 .GetComponent<SatsumaFrontSuspensionController>().Corners;
             foreach (AssemblySteeringAlignmentInteractionTarget target in targets)
@@ -115,16 +117,21 @@ namespace MSC.Tests.EditMode.LegacyImport
                 AssertInstallGate(assembly, "strut-" + corner, "spindle-" + corner);
             }
             Assert.That(assembly.Dependencies.Count(value =>
-                value.Kind == AssemblyDependencyKind.InstallRequiresBolted), Is.EqualTo(4));
+                value.Kind == AssemblyDependencyKind.InstallRequiresBolted), Is.Zero,
+                "Donor Check bolts is an attempted-install outcome, not a preview blocker.");
         }
 
         private static void AssertInstallGate(VehicleAssemblyController assembly,
             string dependent, string prerequisite)
         {
-            Assert.That(assembly.Dependencies.Count(value =>
-                value.DependentPartDefinitionId == "vehicle.satsuma.part." + dependent &&
-                value.RelatedPartDefinitionId == "vehicle.satsuma.part." + prerequisite &&
-                value.Kind == AssemblyDependencyKind.InstallRequiresBolted), Is.EqualTo(1));
+            MountPointDefinition mount = assembly.MountPoints.Single(value =>
+                value.MountId == "mount.satsuma." + dependent).Definition;
+            Assert.That(mount.RequiredOccupiedMountIds,
+                Does.Contain("mount.satsuma." + prerequisite));
+            Assert.That(mount.InstallAttemptBoltedSupportMountId,
+                Is.EqualTo("mount.satsuma." + prerequisite));
+            Assert.That(mount.RequiredBoltedMountIds, Is.Empty,
+                "An install-attempt check must not become a permanent structural constraint.");
         }
 
         private static GameObject LoadPrefab()

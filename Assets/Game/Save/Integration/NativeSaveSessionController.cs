@@ -15,6 +15,7 @@ using MSC.NPC;
 using MSC.Save.Migration;
 using MSC.Services;
 using MSC.Traffic;
+using MSC.Vehicle;
 using MSC.Weather.Production;
 using MSC.World.Streaming;
 using UnityEngine;
@@ -51,6 +52,7 @@ namespace MSC.Save.Integration
         private ItemSaveParticipant itemParticipant;
         private WorldEntitySaveParticipant worldParticipant;
         private VehicleSaveParticipant vehicleParticipant;
+        private SatsumaKeyAccessState satsumaKeyAccess;
         private CarrySaveParticipant carryParticipant;
         private SaveCoordinator coordinator;
         private string bootstrapScenePath = string.Empty;
@@ -75,6 +77,7 @@ namespace MSC.Save.Integration
         public SaveLoadResult LastLoadResult { get; private set; }
         public SaveReadStatus? LastLoadReadStatus => LastLoadResult?.ReadStatus;
         public DeferredStableEntityStore DeferredEntities => deferredEntities;
+        public ISatsumaKeyAccess SatsumaKeyAccess => satsumaKeyAccess;
 
         public void ConfigureImportantObjectRecovery(
             Vector3 recoveryOrigin,
@@ -260,6 +263,7 @@ namespace MSC.Save.Integration
             bootstrapScenePath = bootstrapScene.path;
             bootstrapSceneBuildIndex = bootstrapScene.buildIndex;
             deferredEntities = new DeferredStableEntityStore();
+            satsumaKeyAccess = new SatsumaKeyAccessState();
             PhysicalCarryController physicalCarry =
                 player.GetComponentInChildren<PhysicalCarryController>(true) ??
                 throw new InvalidOperationException(
@@ -295,7 +299,9 @@ namespace MSC.Save.Integration
                 deferredEntities,
                 worldStreaming,
                 recoveryFormation,
-                importantObjectRecoveryMinimumY);
+                importantObjectRecoveryMinimumY,
+                satsumaKeyAccess,
+                this.itemRuntime);
             carryParticipant = new CarrySaveParticipant(
                 player,
                 worldParticipant,
@@ -304,6 +310,7 @@ namespace MSC.Save.Integration
                 new ProductionEnvironmentRestoreBridge(environment);
             var participants = new List<ISaveParticipant>
             {
+                new SatsumaKeyAccessSaveParticipant(satsumaKeyAccess),
                 new CoreTimeSaveParticipant(
                     environment,
                     environmentRestoreBridge),
@@ -361,7 +368,16 @@ namespace MSC.Save.Integration
             participants.Add(vehicleParticipant);
             participants.Add(new PlayerSaveParticipant(player));
             participants.Add(carryParticipant);
-            var participantRegistry = new SaveParticipantRegistry(participants);
+            VehicleItemSaveRestorePlanFactory itemAssemblyRestore = null;
+            if (this.itemRuntime != null)
+            {
+                worldParticipant.ConfigureExternalOwnership(this.itemRuntime.IsExternallyOwned);
+                itemAssemblyRestore = new VehicleItemSaveRestorePlanFactory(
+                    this.itemRuntime, vehicleParticipant, worldParticipant, deferredEntities,
+                    itemParticipant.NormalizeLegacyFoodState);
+                itemParticipant.ConfigureAssemblyOwnerAvailability(itemAssemblyRestore.IsOwnerUnavailable);
+            }
+            var participantRegistry = new SaveParticipantRegistry(participants, itemAssemblyRestore);
             string saveRoot = Path.Combine(
                 Application.persistentDataPath,
                 SaveDirectoryName,
@@ -407,6 +423,8 @@ namespace MSC.Save.Integration
                             : null,
                         domainRequired: serviceRuntime != null),
                     new VehicleJackItemStateSaveMigration(),
+                    new SatsumaKeyAccessSaveMigration(),
+                    new SatsumaDynamicAssemblySaveMigration(),
                 }),
                 deferredEntities);
             coordinator.OperationCompleted += HandleOperationCompleted;

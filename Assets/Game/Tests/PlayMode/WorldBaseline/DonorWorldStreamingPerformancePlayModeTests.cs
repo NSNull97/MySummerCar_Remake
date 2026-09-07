@@ -615,7 +615,7 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                         FindObjectsSortMode.None).Length,
                 generatedMaterialCount =
                     generatedMaterials.Select(material =>
-                            material.GetInstanceID())
+                            material.GetEntityId())
                         .Distinct()
                         .Count(),
                 runtimeMaterialInstanceCount =
@@ -625,7 +625,7 @@ namespace MSC.Tests.PlayMode.WorldBaseline
                             StringComparison.Ordinal)),
                 generatedTextureCount =
                     generatedTextures.Select(texture =>
-                            texture.GetInstanceID())
+                            texture.GetEntityId())
                         .Distinct()
                         .Count(),
                 generatedTextureMemoryBytes =

@@ -262,6 +262,10 @@ namespace MSC.NPC
 
         private void Update()
         {
+            // The Unity presentation backend pauses voices without discarding
+            // their cursor. Do not advance the radio cycle or restart driving
+            // while the owning gameplay clock is suspended by the menu.
+            if (AudioPausePolicy.ShouldPausePlayback(false, Time.timeScale)) return;
             if (motion != null)
             {
                 SynchronizeBoundMotionPose();

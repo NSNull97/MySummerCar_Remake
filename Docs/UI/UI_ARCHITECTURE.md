@@ -1,11 +1,28 @@
 # Milestone 08A UI architecture
 
+The direct 2026-09-04 MainMenu revision is documented in
+`MAIN_MENU_REDESIGN_2026-09-04.md`: bounded glass widgets, two-page paint palette,
+settings schema 7 preference persistence, explicit input navigation and a
+centred safe workspace. This supersedes the historical main-menu geometry and
+performance-card descriptions below. The user accepted the real-car canonical
+spawn/orbit revision, then requested the final lamp/rear-fog amendment and the
+same glass style for Pause/Settings. The latter retains existing geometry and
+behavior; see `MENU_STYLE_UNIFICATION_2026-09-04.md`. HUD and service boundaries
+remain established dependencies. These latest amendments await visual review.
+The final combined revision passes 54 EditMode and 40 PlayMode checks. Its
+`MainMenuLightingTime` calculation reads local system time through an optional
+presentation-only provider; it never changes `IGameTimeService`. The isolated
+preview checks the clock once a second and refreshes only on a new minute,
+visibility return or existing camera/paint changes. Settings/Pause reuse the
+main menu's opt-in glass widgets and existing cached/frozen blur owner.
+
 Status: `BoundedImplementationComplete / ContextActionRevisionImplemented /
 VisualReviewPending`
-Visual status: five locked menu/settings screens remain `VisuallyApproved`;
-the `2026-08-05` HUD and `2026-09-02` context-action revisions are
-`VisualApprovalPending`
-Date: `2026-09-02`
+Visual status: the historical four settings layouts retain their approval.
+Their new glass styling and Pause styling are `VisualApprovalPending`, as is
+the latest lamp/rear-fog amendment of the accepted MainMenu. The `2026-08-05`
+HUD and `2026-09-02` context-action revisions remain `VisualApprovalPending`.
+Date: `2026-09-04`
 
 This document describes the project-owned UI implementation used for the
 reference-locked Milestone 08A screens. It records the current code, not a
@@ -40,7 +57,7 @@ review.
 - the production world installer;
 - `M4_Player.inputactions`;
 - `M06_Vehicle.inputactions`;
-- the project-owned temporary 1672x941 menu garage plate;
+- explicit mesh-only Satsuma and home-yard menu prefabs;
 - the project-owned separable Gaussian blur shader;
 - the start-in-main-menu policy.
 
@@ -169,7 +186,7 @@ The overlay `CanvasScaler` uses the `1672 x 941` reference resolution with
 `ScreenMatchMode.Expand`. A fixed, centred `1672 x 941` logical safe frame owns
 every menu, settings, pause and HUD route, so narrower viewports add vertical
 space and wider viewports add horizontal space without changing route geometry
-or pushing edge-aligned content off-screen. The static menu plate lives in a
+or pushing edge-aligned content off-screen. The menu backdrop lives in a
 sibling full-canvas backdrop frame using
 `AspectRatioFitter.EnvelopeParent`: it covers every viewport edge and crops
 without stretching. It is outside the accessible `UiScale` root, so values such
@@ -179,8 +196,19 @@ frame so the locked 100% layout remains measurable.
 
 Backdrop ownership is explicit and route-aware:
 
-- `MenuStatic` shows the sharp project-owned garage plate. Glass masks sample a
-  one-time full-resolution `1672x941`, `ARGBHalf`, Linear Gaussian result. Four
+- `MenuStatic` is the retained route-mode name. Production composes an explicit
+  mesh-only home yard and Satsuma through
+  `MainMenuVehiclePreview`. One isolated HDRP camera renders initial/paint/orbit
+  changes to a cached opaque texture; it never renders continuously at idle.
+  `MainMenuOrbitDrag` receives free-background uGUI pointer events. Bounded
+  yaw/pitch moves only the preview camera and car fill light; double-click resets
+  the view. Panels, routes, modal windows and focus loss cancel pointer ownership.
+  Settings retain the cached background with the preview hierarchy hidden.
+  Fixtures may omit the models and use their supplied static plate. Production
+  clears the historical photographic plate/shader references. The rendered
+  environment uses actual viewport aspect with capped internal resolution;
+  glass masks share a matching `ARGBHalf`, Linear Gaussian result, refreshed only when
+  the menu preview signals a new frame. Four
   separable horizontal/vertical iterations use radii `2 / 4 / 6 / 8`. Their UV
   rectangles come from actual world corners relative to the unscaled backdrop
   frame, so slices stay aligned under aspect fitting while accessible UI scale

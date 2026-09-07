@@ -123,7 +123,7 @@ namespace MSC.Weather.Enviro3Integration
             }
 
             var stableIds = new HashSet<string>(StringComparer.Ordinal);
-            var visitedRoots = new HashSet<int>();
+            var visitedRoots = new HashSet<EntityId>();
 
             // The bridge and Bootstrap-authored shelters live under the same
             // project-owned root after DontDestroyOnLoad. That special scene
@@ -161,9 +161,9 @@ namespace MSC.Weather.Enviro3Integration
         private void CreateRuntimeZonesFromRoot(
             GameObject root,
             ISet<string> stableIds,
-            ISet<int> visitedRoots)
+            ISet<EntityId> visitedRoots)
         {
-            if (root == null || !visitedRoots.Add(root.GetInstanceID()))
+            if (root == null || !visitedRoots.Add(root.GetEntityId()))
             {
                 return;
             }

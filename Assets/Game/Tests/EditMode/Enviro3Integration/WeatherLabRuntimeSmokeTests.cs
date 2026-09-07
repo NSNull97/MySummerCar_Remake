@@ -324,14 +324,14 @@ namespace MSC.Tests.EditMode.Enviro3Integration
                     "puddleSamples"
                 };
                 var renderers = new List<Renderer>();
-                var instanceIds = new HashSet<int>();
+                var instanceIds = new HashSet<EntityId>();
                 for (int fieldIndex = 0; fieldIndex < fieldNames.Length; fieldIndex++)
                 {
                     Renderer[] values = GetPrivateField<Renderer[]>(bridge, fieldNames[fieldIndex]);
                     for (int rendererIndex = 0; rendererIndex < values.Length; rendererIndex++)
                     {
                         Renderer renderer = values[rendererIndex];
-                        if (renderer != null && instanceIds.Add(renderer.GetInstanceID()))
+                        if (renderer != null && instanceIds.Add(renderer.GetEntityId()))
                         {
                             renderers.Add(renderer);
                         }

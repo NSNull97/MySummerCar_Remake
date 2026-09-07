@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Enviro;
 using MSC.Bootstrap;
 using MSC.Weather.Enviro3Integration;
@@ -26,6 +27,33 @@ namespace MSC.Tests.EditMode.WeatherProductionIntegration
 {
     public sealed class ProductionEnvironmentContentTests
     {
+        [Test]
+        public void GlobalSceneAudit_PreservesLegacyAndAllowsOnlyExistingExplicitPresentationLayer()
+        {
+            MethodInfo audit = typeof(ProductionEnvironmentValidator).GetMethod(
+                "HasApprovedGlobalSceneSet", BindingFlags.NonPublic | BindingFlags.Static);
+            Assert.That(audit, Is.Not.Null);
+            var legacy = new ProductionWorldGlobalScene("global-legacy", 11,
+                "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/World_Global_Legacy.unity");
+            var vegetation = new ProductionWorldGlobalScene("vegetation-global-presentation", 232,
+                "Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Global/World_Global_VegetationPresentation.unity");
+            var unknown = new ProductionWorldGlobalScene("unapproved", 233, "Assets/Unknown.unity");
+            var redirected = new ProductionWorldGlobalScene(vegetation.SceneId, 232, "Assets/Unknown.unity");
+
+            Assert.That(Accepts(legacy), Is.True);
+            Assert.That(Accepts(legacy, vegetation), Is.True);
+            Assert.That(Accepts(vegetation, legacy), Is.True);
+            Assert.That(Accepts(), Is.False);
+            Assert.That(Accepts(vegetation), Is.False);
+            Assert.That(Accepts(legacy, unknown), Is.False);
+            Assert.That(Accepts(legacy, redirected), Is.False);
+            Assert.That(Accepts(legacy, legacy), Is.False);
+            Assert.That(Accepts(legacy, vegetation, unknown), Is.False);
+
+            bool Accepts(params ProductionWorldGlobalScene[] scenes) =>
+                (bool)audit.Invoke(null, new object[] { scenes });
+        }
+
         [Test]
         public void BootstrapEnvironment_PassesProductionOwnerAndContentAudit()
         {

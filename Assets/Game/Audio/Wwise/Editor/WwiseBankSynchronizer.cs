@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using UnityEditor;
@@ -62,6 +63,27 @@ namespace MSC.Audio.Wwise.Editor
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             Debug.Log(
                 "M08_WWISE_WINDOWS_BANK_SYNC_OK banks=6 destination=" + destination);
+        }
+
+        /// <summary>
+        /// Optional stronger gate for a caller that has resolved actual backend
+        /// ownership. Never assumes that every mapped event belongs to Wwise.
+        /// The original menu/copy entry point retains its existing behaviour.
+        /// </summary>
+        public static void ValidateAndSynchronizeWindowsBanks(
+            IReadOnlyList<AudioEventMapEntry> expectedWwiseRoutes)
+        {
+            string source = Path.Combine(
+                Path.GetDirectoryName(AkWwiseEditorSettings.WwiseProjectAbsolutePath) ??
+                string.Empty, "GeneratedSoundBanks", "Windows");
+            WwiseBankContentValidator.Inspect(source, expectedWwiseRoutes).ThrowIfFailed();
+            SynchronizeWindowsBanks();
+            string destination = Path.Combine(
+                AkBasePathGetter.GetFullSoundBankPathEditor(), "Windows");
+            WwiseBankContentReport report =
+                WwiseBankContentValidator.Inspect(destination, expectedWwiseRoutes);
+            report.ThrowIfFailed();
+            Debug.Log("MSC_WWISE_WINDOWS_BANK_CONTENT_OK routes=" + report.InspectedRouteCount);
         }
 
         private static string ComputeSha256(string path)

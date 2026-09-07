@@ -80,6 +80,9 @@ namespace MSC.Audio.Composition
         private const float EnvironmentRefreshSeconds = 3f;
         private const float MinimumAudibleGain = 0.025f;
         private const float LayerRestartGainDelta = 0.12f;
+        // User-requested background trim, independent of donor layer evidence
+        // and user settings. Applies equally through Unity and Wwise routing.
+        public const float WorldAmbienceMixGain = 0.63095734f; // -4 dB
 
         // Frozen M04A1 donor-world -> project garage-anchored coordinates.
         public static readonly Vector3 SourceToProjectTranslation =
@@ -289,7 +292,7 @@ namespace MSC.Audio.Composition
                 definition.MinimumDistanceMeters,
                 definition.MaximumDistanceMeters);
             return Mathf.Clamp01(
-                definition.BaseVolume01 * rainGain * windGain * distanceGain);
+                definition.BaseVolume01 * rainGain * windGain * distanceGain * WorldAmbienceMixGain);
         }
 
         // Retained compatibility policy for callers/tests from the bounded
@@ -412,7 +415,7 @@ namespace MSC.Audio.Composition
             chainsawHandle = backend.PostEvent(new AudioEventRequest(
                 AudioProjectIds.Events.WorldChainsaw,
                 chainsawEmitter,
-                volume01: 0.62f,
+                volume01: 0.62f * WorldAmbienceMixGain,
                 allowMultiple: false));
             nextChainsawAt = Time.unscaledTime +
                 CalculateNextInterval(ref scheduleState, initial: false);

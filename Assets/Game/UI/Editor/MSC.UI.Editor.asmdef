@@ -4,7 +4,13 @@
   "references": [
     "MSC.Bootstrap.Runtime",
     "MSC.UI.Presentation.Runtime",
-    "Unity.InputSystem"
+    "MSC.Vehicle.Runtime",
+    "MSC.Vehicle.Assembly",
+    "MSC.LegacyImport.Runtime",
+    "MSC.World.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.InputSystem",
+    "UnityEngine.UI"
   ],
   "includePlatforms": [
     "Editor"

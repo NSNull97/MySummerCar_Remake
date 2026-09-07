@@ -77,12 +77,13 @@ namespace MSC.Vehicle
             float total = bareChassisMassKilograms;
             Vector3 weightedCenter =
                 bareChassisCenterOfMass * bareChassisMassKilograms;
-            PartInstance[] parts = assemblyController.Graph.Parts;
+            PartInstance[] parts = assemblyController.Graph.AllRuntimeParts;
             for (int index = 0; index < parts.Length; index++)
             {
                 PartInstance part = parts[index];
                 if (part == null || part.IsAssemblyRoot || !part.IsInstalled ||
-                    part.Definition == null || part.UsesDynamicInstalledPhysics)
+                    part.Definition == null || part.UsesDynamicInstalledPhysics ||
+                    !HasInstalledPathToChassis(part))
                 {
                     continue;
                 }
@@ -139,7 +140,8 @@ namespace MSC.Vehicle
             RefreshMass(force: true);
             if (chassis == null || chassis.isKinematic ||
                 notification.Action != AssemblyActionKind.PartInstalled ||
-                notification.TransferredMassKilograms <= 0f)
+                notification.TransferredMassKilograms <= 0f ||
+                !HasInstalledPathToChassis(notification.Part))
             {
                 return;
             }
@@ -153,6 +155,44 @@ namespace MSC.Vehicle
                     notification.WorldPosition,
                     ForceMode.Impulse);
             }
+        }
+
+        private bool HasInstalledPathToChassis(PartInstance part)
+        {
+            // Installed describes one occupied socket, including assemblies on
+            // the floor. A retained child contributes to the car only while its
+            // complete owner chain reaches this chassis. Evaluate on every
+            // aggregate refresh: children's own Installed flags need not change
+            // when their complete engine is installed or removed.
+            PartInstance current = part;
+            for (int depth = 0; depth < assemblyController.AllRuntimeParts.Length; depth++)
+            {
+                if (current == null)
+                {
+                    return false;
+                }
+                if (current.IsAssemblyRoot)
+                {
+                    return current.Body == chassis;
+                }
+                if (!current.IsInstalled)
+                {
+                    return false;
+                }
+                MountPointRuntime installedAt = assemblyController.Graph.FindMountForPart(current);
+                if (installedAt?.Authoring == null)
+                {
+                    return false;
+                }
+                AssemblyOwnedMountAuthoring owner = installedAt.Authoring
+                    .GetComponent<AssemblyOwnedMountAuthoring>();
+                // Older chassis-owned mounts have no explicit loose-owner
+                // component. Their authored pose is already bound to its logical
+                // owner by VehicleAssemblyController, as in pose synchronization.
+                current = owner != null ? owner.OwnerPart :
+                    installedAt.Authoring.Pose.GetComponentInParent<PartInstance>();
+            }
+            return false;
         }
     }
 }

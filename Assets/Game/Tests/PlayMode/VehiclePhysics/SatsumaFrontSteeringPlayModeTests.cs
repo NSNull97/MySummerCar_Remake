@@ -100,8 +100,22 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     steering.ApplyNow();
                     AssertState(steering, corner, connected: true, yaw: 3f);
 
-                    AssemblyOperationResult removal = assembly.TryRemove(strut);
-                    Assert.That(removal.Succeeded, Is.True, removal.Message);
+                    AssemblyOperationResult manualRemoval = assembly.TryRemove(strut);
+                    Assert.That(manualRemoval.Succeeded, Is.False);
+                    Assert.That(manualRemoval.FailureReason,
+                        Is.EqualTo(AssemblyFailureReason.RemovalBlocked),
+                        "An installed steering rod must block manual strut removal.");
+                    Assert.That(strut.IsInstalled, Is.True);
+                    Assert.That(mount.InstalledPart, Is.Not.Null);
+                    Assert.That(mount.FastenerGroup.IsBolted, Is.True);
+                    PartInstance installedRod = mount.InstalledPart;
+
+                    AssemblyOperationResult forcedRemoval =
+                        assembly.TryBreakInstalledPart(strut);
+                    Assert.That(forcedRemoval.Succeeded, Is.True, forcedRemoval.Message);
+                    Assert.That(mount.InstalledPart, Is.SameAs(installedRod),
+                        "Forced strut failure must not detach the steering rod.");
+                    Assert.That(mount.InstalledPart.IsInstalled, Is.True);
                     strut.Body.isKinematic = true;
                     strut.Body.detectCollisions = false;
                     steering.ApplyNow();

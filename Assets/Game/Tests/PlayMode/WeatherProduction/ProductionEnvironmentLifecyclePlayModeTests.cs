@@ -466,19 +466,34 @@ namespace MSC.Tests.PlayMode.WeatherProduction
                 Object.FindFirstObjectByType<Enviro3WeatherZoneRemovalBridge>(
                     FindObjectsInactive.Include);
             Assert.That(hybridShelterBridge, Is.Not.Null);
+            // House 7 + garage 3 + garage doorway transition 7 + yard hall 3.
+            // The doorway was authored on 2026-08-14; the same 13 -> 20 mismatch
+            // already exists in DonorWorldLightingBootstrapPlayMode-retry.xml
+            // from 2026-09-01, before the Unity 6.6 migration.
+            const int expectedRemovalZoneCount = 20;
             for (int frame = 0;
-                 frame < 60 && hybridShelterBridge.ActiveRemovalZoneCount != 13;
+                 frame < 60 &&
+                 hybridShelterBridge.ActiveRemovalZoneCount != expectedRemovalZoneCount;
                  frame++)
             {
                 yield return null;
             }
 
             Assert.That(owner.ActiveShelterVolumeCount, Is.EqualTo(2));
+            WeatherZoneRegistry zoneRegistry = WeatherZoneRegistry.Active;
+            Assert.That(zoneRegistry, Is.Not.Null);
+            Assert.That(zoneRegistry.Zones, Has.Count.EqualTo(3));
+            Assert.That(zoneRegistry.TryGetZone(
+                "weather.shelter.home.house.interior.v1", out _), Is.True);
+            Assert.That(zoneRegistry.TryGetZone(
+                "weather.shelter.home.garage.interior.v1", out _), Is.True);
+            Assert.That(zoneRegistry.TryGetZone(
+                "weather.zone.cell_0_-3.yard.machine_hall.v1", out _), Is.True);
             Assert.That(
                 hybridShelterBridge.ActiveRemovalZoneCount,
-                Is.EqualTo(13),
-                "The ten compound home removal ellipsoids plus the three-tile " +
-                "home-yard machine-hall shelter must be active.");
+                Is.EqualTo(expectedRemovalZoneCount),
+                "The house (7), garage (3), garage doorway transition (7), " +
+                "and home-yard machine hall (3) removal ellipsoids must be active.");
 
             ProductionShelterVolumeAuthoring[] authoredShelters =
                 Object.FindObjectsByType<ProductionShelterVolumeAuthoring>(

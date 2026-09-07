@@ -1,10 +1,48 @@
 # Native Save Architecture
 
-## Current audited state — 2026-09-02
+## Current C2 save state — 2026-09-05
 
-Current native document version: **16**.
+Current native document version: **17**.
 
-The production composition currently registers 14 participants:
+The full production composition now registers 15 participants:
+`core.time`, `weather.environment`, `player.state`, `world.entities`,
+`interaction.carry`, `items.instances`, `vehicle.satsuma`,
+`vehicle.satsuma.key-access`, `player.needs`, `home.state`,
+`lighting.electrical-grid`, `economy.player`, `services.state`, `npc.state` and
+`traffic.state`.
+
+`vehicle.satsuma.key-access` is a required schema-1 logical domain restored in
+`SaveRestorePhase.GlobalState`. It persists the project-owned
+`vehicle.satsuma.key` access flag, including `false`; it is not a physical item
+or a vehicle-hierarchy identity. `NativeSaveSessionController` owns one fresh
+state per initialization and gives the same read-only capability to the save
+participant and each valid Satsuma binding. Binding occurs after duplicate
+vehicle-ID rejection but before registration or deferred vehicle restore. The
+global participant therefore applies before `vehicle.satsuma` phase 300, and
+its checkpoint participates in reverse-order rollback if any later domain
+fails.
+
+Migration `16 -> 17` deep-clones the source, rejects a pre-existing key-access
+domain, adds required schema 1 with fresh access `true`, sorts the envelopes
+and leaves the source document untouched. This is intentionally one-way for
+the delivered v16 player build `024640`: that build cannot read v17 and must
+not be used to write an upgraded user slot. No live user save was opened,
+migrated or rewritten while implementing C2. The C2-inclusive broad EditMode
+suite is `518/518 PASS`, the related fixture PlayMode suite is `63/63 PASS`,
+and the production native-save regression is `1/1 PASS` in `27.5199175 s`.
+That regression performed two real clean-session `RequestLoad` cycles and
+confirmed saved `false` in v17 plus migrated fresh `true` from v16 before world
+reveal. Evidence:
+`Logs/codex-cockpit-c2-native-play-final.xml`, SHA-256
+`70FF7EC1A916D96F7576D8B91D7AF1F790FE96F06E360DEE111D30ADB53CD8FB`.
+It used and removed an isolated GUID test slot; no live user save was written.
+Manual acceptance remains pending.
+
+## Historical audited state — 2026-09-02
+
+Native document version at this checkpoint: **16**.
+
+The production composition registered 14 participants:
 `core.time`, `weather.environment`, `player.state`, `world.entities`,
 `interaction.carry`, `items.instances`, `vehicle.satsuma`, `player.needs`,
 `home.state`, `lighting.electrical-grid`, `economy.player`, `services.state`,
@@ -90,7 +128,9 @@ until the normal transactional load succeeds.
 
 Historical section status: **Milestone 09B implementation baseline**
 Historical format at this point: `msc.native-save`, document version `11`.
-The current audited format is version `16` as recorded at the top of this file.
+The later 2026-09-02 audited format was version `16`; the C2 section above
+records the current version and participant count without rewriting this
+historical checkpoint.
 
 ## Граница ответственности
 
@@ -143,7 +183,7 @@ recovery произойдёт при Load. Фактический runtime Load �
 current. Поэтому просмотр меню не изменяет хранилище, а начатая пользователем
 загрузка завершает восстановление атомарно.
 
-## Текущие домены через 09B
+## Исторические домены через 09B
 
 | DomainId | Schema owner | Restore phase | Фактическое покрытие |
 |---|---|---:|---|
@@ -253,6 +293,10 @@ Document migration pipeline построен как явная цепочка
 миграции завершает load понятной ошибкой, исходный файл остаётся неизменным.
 Текущая цепочка после NPC v9 дополнительно включает `9 -> 10` для безопасного
 возврата gravity свободным item bodies и `10 -> 11` для helmet paint state.
+Последующие принятые шаги доводят документ до v16; C2 добавляет строго последний
+`16 -> 17`, который создаёт required `vehicle.satsuma.key-access` schema 1 с
+fresh `true`. Runtime-восстановление сохранённого `false` выполняется отдельным
+GlobalState participant до vehicle assembly и участвует в общем rollback.
 
 ## Обязательный контракт нового Phase 1 домена
 

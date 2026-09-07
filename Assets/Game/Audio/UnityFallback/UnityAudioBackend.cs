@@ -21,7 +21,10 @@ namespace MSC.Audio.UnityFallback
     public sealed class UnityAudioBackend : MonoBehaviour,
         IVehicleAudioBackend,
         IAudioSupplementalContentBackend,
-        IAudioOverrideContentBackend
+        IAudioOverrideContentBackend,
+        IAudioReplacementContentBackend,
+        IAudioEventTimingSource,
+        IAudioExplicitContentBackend
     {
         private const string RuntimeBackendId = "unity.fallback";
         private const string DisabledFailure = "Unity Audio fallback is disabled.";
@@ -35,6 +38,7 @@ namespace MSC.Audio.UnityFallback
             Array.Empty<UnityAudioEventLibrary>();
         [SerializeField] private UnityAudioEventLibrary[] overrideEventLibraries =
             Array.Empty<UnityAudioEventLibrary>();
+        [SerializeField] private UnityAudioEventLibrary replacementEventLibrary;
         [SerializeField, Min(1)] private int maximumGenericVoices = 32;
 
         [Header("Private M06 vehicle diagnostic")]
@@ -58,6 +62,8 @@ namespace MSC.Audio.UnityFallback
             new Dictionary<AudioStateId, AudioStateId>();
         private readonly List<UnityVoice> voices = new List<UnityVoice>();
         private readonly List<string> emitterRemovalBuffer = new List<string>();
+        private readonly HashSet<AudioEventId> explicitEventIds = new HashSet<AudioEventId>();
+        private readonly HashSet<AudioParameterId> explicitParameterIds = new HashSet<AudioParameterId>();
 
         private AudioSource idleSource;
         private AudioSource middleSource;
@@ -97,6 +103,97 @@ namespace MSC.Audio.UnityFallback
         public bool IsLocalDiagnosticLoadComplete { get; private set; }
         public string LocalDiagnosticFailureReason { get; private set; } = string.Empty;
         public int ActiveGenericVoiceCount => CountActiveGenericVoices();
+
+        public bool OwnsEvent(AudioEventId eventId) => explicitEventIds.Contains(eventId);
+        public bool OwnsParameter(AudioParameterId parameterId) => explicitParameterIds.Contains(parameterId);
+
+        public bool TryGetEventDurationSeconds(AudioEventId eventId, out float seconds)
+        {
+            if (TryResolveDefinition(eventId, out var definition) && definition.Clip != null)
+            {
+                seconds = definition.Clip.length / definition.Pitch;
+                return float.IsFinite(seconds) && seconds > 0f;
+            }
+            seconds = 0f;
+            return false;
+        }
+
+        private void RebuildExplicitContentRoutes()
+        {
+            explicitEventIds.Clear();
+            explicitParameterIds.Clear();
+            CollectExplicitContentRoutes(supplementalEventLibraries);
+            CollectExplicitContentRoutes(overrideEventLibraries);
+            CollectExplicitContentRoutes(replacementEventLibrary);
+        }
+
+        private void CollectExplicitContentRoutes(UnityAudioEventLibrary[] libraries)
+        {
+            if (libraries == null) return;
+            for (int i = 0; i < libraries.Length; i++)
+            {
+                if (libraries[i] == null) continue;
+                CollectExplicitContentRoutes(libraries[i]);
+            }
+        }
+
+        private void CollectExplicitContentRoutes(UnityAudioEventLibrary library)
+        {
+            if (library == null) return;
+            foreach (UnityAudioEventDefinition definition in library.Definitions)
+            {
+                if (definition == null || string.IsNullOrEmpty(definition.EventId)) continue;
+                explicitEventIds.Add(new AudioEventId(definition.EventId));
+                if (!definition.VolumeParameterId.IsEmpty) explicitParameterIds.Add(definition.VolumeParameterId);
+                if (!definition.PitchParameterId.IsEmpty) explicitParameterIds.Add(definition.PitchParameterId);
+            }
+        }
+
+        public bool TryLoadReplacementEventLibrary(string resourcesPath, out string failure)
+        {
+            string path = resourcesPath?.Trim() ?? string.Empty;
+            if (path.Length == 0 || path.Contains(":") || path.Contains("\\") ||
+                path.StartsWith("/", StringComparison.Ordinal) || path.Contains("..") ||
+                path.EndsWith(".asset", StringComparison.OrdinalIgnoreCase))
+            {
+                failure = "A contained Resources-relative replacement library path without an extension is required.";
+                return false;
+            }
+            return TrySetReplacementEventLibrary(Resources.Load<UnityAudioEventLibrary>(path), out failure);
+        }
+
+        public bool TrySetReplacementEventLibrary(UnityAudioEventLibrary library, out string failure)
+        {
+            if (library == null)
+            {
+                failure = "The optional user audio replacement library is not installed.";
+                return false;
+            }
+            if (!library.Validate(out string[] errors))
+            {
+                failure = "Invalid user audio replacement library: " + string.Join(" | ", errors);
+                return false;
+            }
+            if (replacementEventLibrary != null && !ReferenceEquals(replacementEventLibrary, library))
+            {
+                failure = "Only one user audio replacement library may be selected per backend session.";
+                return false;
+            }
+            if (ReferenceEquals(replacementEventLibrary, library))
+            {
+                failure = string.Empty;
+                return true;
+            }
+            if (ActiveGenericVoiceCount != 0)
+            {
+                failure = "Select user audio before playback starts; existing voices are not silently replaced.";
+                return false;
+            }
+            replacementEventLibrary = library;
+            RebuildExplicitContentRoutes();
+            failure = string.Empty;
+            return true;
+        }
 
         public bool TryLoadSupplementalEventLibrary(
             string resourcesPath,
@@ -167,6 +264,7 @@ namespace MSC.Audio.UnityFallback
             Array.Copy(current, updated, current.Length);
             updated[current.Length] = library;
             supplementalEventLibraries = updated;
+            RebuildExplicitContentRoutes();
             lastOperationalFailure = string.Empty;
             failure = string.Empty;
             return true;
@@ -231,6 +329,7 @@ namespace MSC.Audio.UnityFallback
             Array.Copy(current, updated, current.Length);
             updated[current.Length] = library;
             overrideEventLibraries = updated;
+            RebuildExplicitContentRoutes();
             lastOperationalFailure = string.Empty;
             failure = string.Empty;
             return true;
@@ -247,6 +346,7 @@ namespace MSC.Audio.UnityFallback
         {
             supplementalEventLibraries = configuredLibraries ??
                 Array.Empty<UnityAudioEventLibrary>();
+            RebuildExplicitContentRoutes();
         }
 
         public void ConfigureOverrideEventLibrariesForAuthoring(
@@ -254,11 +354,13 @@ namespace MSC.Audio.UnityFallback
         {
             overrideEventLibraries = configuredLibraries ??
                 Array.Empty<UnityAudioEventLibrary>();
+            RebuildExplicitContentRoutes();
         }
 #endif
 
         private void Awake()
         {
+            RebuildExplicitContentRoutes();
             maximumGenericVoices = Mathf.Max(1, maximumGenericVoices);
             idleSource = CreateDiagnosticSource(true);
             middleSource = CreateDiagnosticSource(true);
@@ -619,7 +721,7 @@ namespace MSC.Audio.UnityFallback
 
         private bool HasAnyConfiguredLibrary()
         {
-            if (eventLibrary != null)
+            if (eventLibrary != null || replacementEventLibrary != null)
             {
                 return true;
             }
@@ -651,6 +753,8 @@ namespace MSC.Audio.UnityFallback
             AudioEventId eventId,
             out UnityAudioEventDefinition definition)
         {
+            if (replacementEventLibrary != null && replacementEventLibrary.TryResolve(eventId, out definition))
+                return true;
             UnityAudioEventLibrary[] overrides = overrideEventLibraries ??
                 Array.Empty<UnityAudioEventLibrary>();
             for (int index = overrides.Length - 1; index >= 0; index--)
@@ -687,6 +791,8 @@ namespace MSC.Audio.UnityFallback
             var failures = new List<string>();
             var eventIds = new HashSet<string>(StringComparer.Ordinal);
             ValidateLibrary(eventLibrary, "primary", failures, eventIds);
+            ValidateLibrary(replacementEventLibrary, "user replacement", failures,
+                new HashSet<string>(StringComparer.Ordinal));
 
             UnityAudioEventLibrary[] supplemental = supplementalEventLibraries ??
                 Array.Empty<UnityAudioEventLibrary>();
@@ -888,7 +994,9 @@ namespace MSC.Audio.UnityFallback
             UnityDialogueGainFilter dialogueGain =
                 voiceObject.AddComponent<UnityDialogueGainFilter>();
             dialogueGain.enabled = false;
-            var voice = new UnityVoice(source, dialogueGain);
+            var calibration = voiceObject.AddComponent<UnityAudioCalibrationFilter>();
+            calibration.Configure(1f);
+            var voice = new UnityVoice(source, dialogueGain, calibration);
             voices.Add(voice);
             return voice;
         }
@@ -924,8 +1032,11 @@ namespace MSC.Audio.UnityFallback
             source.Stop();
             source.clip = definition.Clip;
             source.loop = definition.Loop;
-            source.pitch = definition.Pitch;
+            source.pitch = Mathf.Clamp(definition.Pitch *
+                ResolveVoiceParameter(voice, definition.PitchParameterId, 1f), 0.1f, 3f);
             source.spatialBlend = definition.SpatialBlend;
+            // Voices are pooled: never inherit the previous event's attenuation.
+            source.rolloffMode = definition.RolloffMode;
             source.minDistance = definition.MinimumDistanceMeters;
             source.maxDistance = definition.MaximumDistanceMeters;
             source.transform.position = request.ResolveWorldPosition();
@@ -983,7 +1094,13 @@ namespace MSC.Audio.UnityFallback
                     voice.Source.transform.position = voice.Emitter.AudioTransform.position;
                 }
 
+                if (UpdateVoicePause(voice, currentDspTime)) continue;
                 UpdateStoryTrafficVoicePitch(voice);
+                if (!voice.Definition.PitchParameterId.IsEmpty)
+                {
+                    voice.Source.pitch = Mathf.Clamp(voice.Definition.Pitch *
+                        ResolveVoiceParameter(voice, voice.Definition.PitchParameterId, 1f), 0.1f, 3f);
+                }
 
                 if (voice.FadingOut)
                 {
@@ -1042,7 +1159,7 @@ namespace MSC.Audio.UnityFallback
                 : 1f;
             float loudnessGain = settings.ReduceLoudSounds ? 0.8f : 1f;
             float weatherExposureGain = ResolveWeatherExposureGain(voice);
-            return Mathf.Clamp01(
+            float originalGain = Mathf.Clamp01(
                 voice.RequestVolume01 *
                 voice.Definition.Volume *
                 ProjectMixHeadroomGain *
@@ -1050,7 +1167,56 @@ namespace MSC.Audio.UnityFallback
                 categoryGain *
                 focusGain *
                 loudnessGain *
-                weatherExposureGain);
+                weatherExposureGain *
+                ResolveVoiceParameter(voice, voice.Definition.VolumeParameterId, 1f));
+            // Preserve the established mix/ceiling, then apply the separately
+            // authored clip normalization and event balance. Zero-dB events
+            // retain the exact old path; all user/scoped mutes remain upstream.
+            float calibratedGain = originalGain * voice.Definition.CalibrationLinearGain;
+            float requestAndUserGain = voice.RequestVolume01 * settings.Master01 * categoryGain *
+                focusGain * loudnessGain * weatherExposureGain;
+            calibratedGain = voice.Definition.ApplyMixGain(calibratedGain, requestAndUserGain);
+            voice.Calibration.Configure(Mathf.Max(1f, calibratedGain));
+            return Mathf.Clamp01(calibratedGain);
+        }
+
+        private static bool UpdateVoicePause(UnityVoice voice, double dspTime)
+        {
+            bool pause = voice.Definition.Category != UnityAudioCategory.UserInterface &&
+                AudioPausePolicy.ShouldPausePlayback(false, Time.timeScale);
+            if (pause)
+            {
+                if (!voice.PlaybackPaused)
+                {
+                    voice.PlaybackPaused = true;
+                    voice.PauseStartedDspTime = dspTime;
+                    voice.PausedBeforeScheduledStart = dspTime < voice.ScheduledStartDspTime;
+                    if (voice.PausedBeforeScheduledStart) voice.Source.Stop();
+                    else voice.Source.Pause();
+                }
+                return true;
+            }
+            if (voice.PlaybackPaused)
+            {
+                double duration = System.Math.Max(0d, dspTime - voice.PauseStartedDspTime);
+                voice.ScheduledStartDspTime += duration;
+                voice.ScheduledEndDspTime += duration;
+                voice.FadeStartDspTime += duration;
+                voice.FadeEndDspTime += duration;
+                if (voice.PausedBeforeScheduledStart) voice.Source.PlayScheduled(voice.ScheduledStartDspTime);
+                else voice.Source.UnPause();
+                voice.PlaybackPaused = false;
+            }
+            return false;
+        }
+
+        private float ResolveVoiceParameter(UnityVoice voice, AudioParameterId parameter, float fallback)
+        {
+            if (parameter.IsEmpty) return fallback;
+            if (voice.Emitter != null && parametersByEmitterId.TryGetValue(
+                    voice.Emitter.StableId, out Dictionary<AudioParameterId, float> scoped) &&
+                scoped.TryGetValue(parameter, out float localValue)) return localValue;
+            return parametersById.TryGetValue(parameter, out float globalValue) ? globalValue : fallback;
         }
 
         private float ResolveWeatherExposureGain(UnityVoice voice)
@@ -1141,7 +1307,10 @@ namespace MSC.Audio.UnityFallback
             voice.EventId = default;
             voice.RequestVolume01 = 0f;
             voice.FadingOut = false;
+            voice.PlaybackPaused = false;
+            voice.PausedBeforeScheduledStart = false;
             voice.DialogueGain.enabled = false;
+            voice.Calibration.Configure(1f);
         }
 
         private void StopVoicesForEmitter(IAudioEmitter emitter)
@@ -1602,14 +1771,17 @@ namespace MSC.Audio.UnityFallback
         {
             public UnityVoice(
                 AudioSource source,
-                UnityDialogueGainFilter dialogueGain)
+                UnityDialogueGainFilter dialogueGain,
+                UnityAudioCalibrationFilter calibration)
             {
                 Source = source;
                 DialogueGain = dialogueGain;
+                Calibration = calibration;
             }
 
             public AudioSource Source { get; }
             public UnityDialogueGainFilter DialogueGain { get; }
+            public UnityAudioCalibrationFilter Calibration { get; }
             public bool Active { get; set; }
             public uint Generation { get; set; }
             public ulong HandleId { get; set; }
@@ -1620,6 +1792,9 @@ namespace MSC.Audio.UnityFallback
             public double ScheduledStartDspTime { get; set; }
             public double ScheduledEndDspTime { get; set; }
             public bool FadingOut { get; set; }
+            public bool PlaybackPaused { get; set; }
+            public bool PausedBeforeScheduledStart { get; set; }
+            public double PauseStartedDspTime { get; set; }
             public double FadeStartDspTime { get; set; }
             public double FadeEndDspTime { get; set; }
         }

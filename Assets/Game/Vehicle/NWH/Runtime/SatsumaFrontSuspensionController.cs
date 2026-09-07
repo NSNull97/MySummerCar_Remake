@@ -412,7 +412,11 @@ namespace MSC.Vehicle.NWH
                 wheel.wheel.meshCollider != null;
             if (useNwhPose)
             {
-                worldPosition = wheel.WheelPosition;
+                // WheelPosition is the last solver WORLD pose. At highway
+                // speed it differs by tens of centimetres from this rendered
+                // chassis frame. NWH's child container retains the same local
+                // compression while following chassis motion/interpolation.
+                worldPosition = nonRotating.position;
                 worldRotation = nonRotating.rotation;
                 rotatingWorldRotation = rotating != null
                     ? rotating.rotation

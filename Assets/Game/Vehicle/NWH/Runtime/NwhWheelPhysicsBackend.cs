@@ -22,6 +22,7 @@ namespace MSC.Vehicle.NWH
         private const float StationaryWheelAngularSpeedRadiansPerSecond = 0.75f;
         private const float StationaryWheelMinimumLoadNewtons = 1f;
         private const float StationaryWheelMaximumDriveTorqueNewtonMeters = 0.01f;
+        private const float GravityRollTorqueEpsilonNewtonMeters = 0.05f;
 
         [SerializeField] private Rigidbody chassis;
         [SerializeField] private WheelController[] wheels =
@@ -30,6 +31,12 @@ namespace MSC.Vehicle.NWH
         [SerializeField, Min(0f)] private float rearAntiRollForceNewtons;
         [SerializeField] private NwhAssemblyWheelSupportController assemblySupport;
         [SerializeField] private SatsumaFrontSteeringController steeringController;
+        [SerializeField] private bool releaseUnbrakedWheelsOnSlopes;
+
+        // Service commands are replaced each simulation tick; a mechanical
+        // parking brake remains engaged even when that host is not running.
+        private float[] serviceBrakeTorques = Array.Empty<float>();
+        private float[] parkingBrakeTorques = Array.Empty<float>();
 
         public Rigidbody Chassis => chassis;
 
@@ -38,6 +45,8 @@ namespace MSC.Vehicle.NWH
         public float FrontAntiRollForceNewtons => frontAntiRollForceNewtons;
 
         public float RearAntiRollForceNewtons => rearAntiRollForceNewtons;
+
+        public bool ReleaseUnbrakedWheelsOnSlopes => releaseUnbrakedWheelsOnSlopes;
 
         public int WheelCount => wheels?.Length ?? 0;
 
@@ -79,6 +88,8 @@ namespace MSC.Vehicle.NWH
         {
             chassis = targetChassis;
             wheels = configuredWheels ?? Array.Empty<WheelController>();
+            serviceBrakeTorques = new float[wheels.Length];
+            parkingBrakeTorques = new float[wheels.Length];
             if (TryValidate(out _))
             {
                 ConfigureWheelExecution();
@@ -113,6 +124,16 @@ namespace MSC.Vehicle.NWH
         public void ConfigureSteeringController(SatsumaFrontSteeringController controller)
         {
             steeringController = controller;
+        }
+
+        /// <summary>
+        /// Satsuma-only opt-in: a released wheel must not acquire NWH's
+        /// unconditional low-speed position lock when gravity can roll it.
+        /// Other vehicle backends retain their accepted default behavior.
+        /// </summary>
+        public void ConfigureUnbrakedSlopeRelease(bool enabledForVehicle)
+        {
+            releaseUnbrakedWheelsOnSlopes = enabledForVehicle;
         }
 
         public bool TryValidate(out string failure)
@@ -204,8 +225,12 @@ namespace MSC.Vehicle.NWH
                     nameof(commands));
             }
 
+            EnsureBrakeChannels();
+
             for (int index = 0; index < wheels.Length; index++)
             {
+                serviceBrakeTorques[index] = Mathf.Max(
+                    0f, commands[index].BrakeTorqueNewtonMeters);
                 WheelController wheel = wheels[index];
                 if (wheel == null || !wheel.enabled ||
                     !wheel.gameObject.activeInHierarchy)
@@ -215,7 +240,8 @@ namespace MSC.Vehicle.NWH
 
                 WheelPhysicsCommand command = commands[index];
                 wheel.MotorTorque = command.DriveTorqueNewtonMeters;
-                wheel.BrakeTorque = command.BrakeTorqueNewtonMeters;
+                wheel.BrakeTorque = serviceBrakeTorques[index] +
+                    parkingBrakeTorques[index];
                 wheel.SteerAngle = steeringController != null
                     ? steeringController.ResolveSteerAngle(wheel, command.SteeringAngleDegrees)
                     : command.SteeringAngleDegrees;
@@ -234,15 +260,20 @@ namespace MSC.Vehicle.NWH
                 return;
             }
 
-            foreach (WheelController wheel in wheels)
+            EnsureBrakeChannels();
+            for (int index = 0; index < wheels.Length; index++)
             {
+                serviceBrakeTorques[index] = 0f;
+                WheelController wheel = wheels[index];
                 if (wheel == null)
                 {
                     continue;
                 }
 
                 wheel.MotorTorque = 0f;
-                wheel.BrakeTorque = 0f;
+                wheel.BrakeTorque = wheel.isActiveAndEnabled
+                    ? parkingBrakeTorques[index]
+                    : 0f;
                 wheel.SteerAngle = steeringController != null
                     ? steeringController.ResolveSteerAngle(wheel, 0f)
                     : 0f;
@@ -262,6 +293,50 @@ namespace MSC.Vehicle.NWH
             if (rightRearWheelIndex != leftRearWheelIndex)
             {
                 ApplyAdditionalBrake(rightRearWheelIndex, torque);
+            }
+        }
+
+        /// <summary>
+        /// A persistent mechanical-brake channel, in N m, independent of the
+        /// engine/hydraulic prerequisites. It is summed with the latest service
+        /// command, not accumulated into the wheel's previous combined torque.
+        /// Only the explicitly bound Satsuma rear wheels use this channel.
+        /// </summary>
+        public void SetParkingBrakeTorque(WheelController wheel, float torqueNewtonMeters)
+        {
+            if (!float.IsFinite(torqueNewtonMeters) || torqueNewtonMeters < 0f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(torqueNewtonMeters));
+            }
+
+            EnsureBrakeChannels();
+            int index = Array.IndexOf(wheels, wheel);
+            if (wheel == null || index < 0)
+            {
+                throw new ArgumentException(
+                    "Parking brake wheel must belong to this backend.", nameof(wheel));
+            }
+
+            bool changed = !Mathf.Approximately(parkingBrakeTorques[index], torqueNewtonMeters);
+            parkingBrakeTorques[index] = torqueNewtonMeters;
+            wheel.BrakeTorque = wheel.isActiveAndEnabled
+                ? serviceBrakeTorques[index] + torqueNewtonMeters
+                : 0f;
+            if (changed && wheel.isActiveAndEnabled)
+            {
+                // Wake on changes, including release. Waking every held frame
+                // would defeat NWH's ordinary low-speed contact stabilization.
+                wheel.WakeFromSleep();
+            }
+        }
+
+        private void EnsureBrakeChannels()
+        {
+            int count = WheelCount;
+            if (serviceBrakeTorques.Length != count)
+            {
+                serviceBrakeTorques = new float[count];
+                parkingBrakeTorques = new float[count];
             }
         }
 
@@ -303,8 +378,30 @@ namespace MSC.Vehicle.NWH
             {
                 WheelController wheel = wheels[index];
                 if (wheel == null || !wheel.enabled ||
-                    !wheel.gameObject.activeInHierarchy ||
-                    !ShouldClampStationaryWheel(
+                    !wheel.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
+
+                // Use the contact plane, not the chassis pitch: an incomplete
+                // car can lean while all of its wheels stand on level ground.
+                // Wake ALL eligible wheels; released front wheels otherwise
+                // remain invisible anchors after the rear handbrake releases.
+                Vector3 wheelForward = Quaternion.AngleAxis(
+                    wheel.SteerAngle, wheel.transform.up) * wheel.transform.forward;
+                if (releaseUnbrakedWheelsOnSlopes && ShouldReleaseGravityRollLock(
+                        wheel.IsGrounded, wheel.Load, gravity, wheel.HitNormal,
+                        wheelForward, wheel.Radius, wheel.BrakeTorque,
+                        wheel.RollingResistanceTorque))
+                {
+                    // This backend executes after NWH (150 vs 100). The public
+                    // wake flag remains set until the NEXT wheel step, where it
+                    // disables anti-creep without injecting force or velocity.
+                    wheel.WakeFromSleep();
+                    continue;
+                }
+
+                if (!ShouldClampStationaryWheel(
                         chassisPlanarSpeed,
                         chassisAngularSpeed,
                         wheel.IsGrounded,
@@ -410,6 +507,59 @@ namespace MSC.Vehicle.NWH
             return new Vector2(
                 leftGrounded ? antiRoll : 0f,
                 rightGrounded ? -antiRoll : 0f);
+        }
+
+        internal static bool ShouldReleaseGravityRollLock(
+            bool grounded,
+            float loadNewtons,
+            Vector3 gravity,
+            Vector3 contactNormal,
+            Vector3 wheelForward,
+            float radiusMeters,
+            float brakeTorqueNewtonMeters,
+            float rollingResistanceTorqueNewtonMeters)
+        {
+            if (!grounded || !float.IsFinite(loadNewtons) ||
+                loadNewtons < StationaryWheelMinimumLoadNewtons ||
+                !IsFiniteVector(gravity) || !IsFiniteVector(contactNormal) ||
+                !IsFiniteVector(wheelForward) ||
+                !float.IsFinite(radiusMeters) || radiusMeters <= 0f ||
+                !float.IsFinite(brakeTorqueNewtonMeters) || brakeTorqueNewtonMeters < 0f ||
+                !float.IsFinite(rollingResistanceTorqueNewtonMeters) ||
+                rollingResistanceTorqueNewtonMeters < 0f ||
+                contactNormal.sqrMagnitude < 0.000001f)
+            {
+                return false;
+            }
+
+            Vector3 normal = contactNormal.normalized;
+            float normalGravity = Mathf.Abs(Vector3.Dot(gravity, normal));
+            Vector3 tangent = Vector3.ProjectOnPlane(wheelForward, normal);
+            if (normalGravity < 0.001f || tangent.sqrMagnitude < 0.000001f)
+            {
+                return false;
+            }
+
+            Vector3 gravityOnContact = Vector3.ProjectOnPlane(gravity, normal);
+            float longitudinalGravity = Mathf.Abs(Vector3.Dot(
+                gravityOnContact, tangent.normalized));
+            // The measured normal load allocates this corner's share of the
+            // supported weight. Convert its grade force to wheel torque. NWH
+            // already exposes full combined service+parking and rolling torque
+            // in N m, so even a weak applied handbrake must not become an
+            // infinitely strong position lock on a steep enough slope.
+            float gravityTorque = loadNewtons * longitudinalGravity /
+                normalGravity * radiusMeters;
+            float resistingTorque = brakeTorqueNewtonMeters +
+                rollingResistanceTorqueNewtonMeters;
+            return float.IsFinite(gravityTorque) &&
+                gravityTorque > resistingTorque + GravityRollTorqueEpsilonNewtonMeters;
+        }
+
+        private static bool IsFiniteVector(Vector3 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y) &&
+                float.IsFinite(value.z);
         }
 
         internal static bool ShouldClampStationaryWheel(

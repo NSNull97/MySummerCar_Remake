@@ -300,6 +300,15 @@ namespace MSC.Interaction.Carrying
             }
 
             IPickupTarget releasedTarget = heldTarget;
+            if (mountTarget is IMountHandoffPreReleaseTarget preReleaseTarget &&
+                !preReleaseTarget.TryPrepareHandoff(releasedTarget, context))
+            {
+                // The attempted mount may fail with a mechanical side effect.
+                // Consume the click, not the held item; do not fall through to
+                // ordinary LMB drop or publish a successful handoff notification.
+                return true;
+            }
+
             StableEntityId targetStableId = releasedTarget.StableId;
             Vector3 releasePosition = heldBody.position;
             Release(PickupReleaseReason.MountHandoff);
@@ -1272,18 +1281,23 @@ namespace MSC.Interaction.Carrying
 
         private Bounds CalculateHeldBounds()
         {
-            if (heldColliders == null || heldColliders.Length == 0)
+            Bounds bounds = new Bounds(heldBody.position, Vector3.one * 0.25f);
+            bool hasSolid = false;
+            for (int i = 0; heldColliders != null && i < heldColliders.Length; i++)
             {
-                return new Bounds(heldBody.position, Vector3.one * 0.25f);
-            }
-
-            Bounds bounds = heldColliders[0].bounds;
-            for (int i = 1; i < heldColliders.Length; i++)
-            {
-                if (heldColliders[i] != null)
+                Collider shape = heldColliders[i];
+                // Installed children keep disabled/query shapes beside the
+                // actual compound contacts. Empty bounds would include world
+                // zero; query volumes and nested bodies aren't carried solids.
+                if (shape == null || !shape.enabled || !shape.gameObject.activeInHierarchy ||
+                    shape.isTrigger || shape.attachedRigidbody != heldBody)
                 {
-                    bounds.Encapsulate(heldColliders[i].bounds);
+                    continue;
                 }
+
+                if (hasSolid) bounds.Encapsulate(shape.bounds);
+                else bounds = shape.bounds;
+                hasSolid = true;
             }
 
             return bounds;

@@ -19,8 +19,8 @@ namespace MSC.Lighting.Production
         private const float ScanIntervalSeconds = 0.75f;
         private const string LowBeamChannel = "low-beam";
 
-        private readonly Dictionary<int, GameObject> fixtureRoots =
-            new Dictionary<int, GameObject>();
+        private readonly Dictionary<EntityId, GameObject> fixtureRoots =
+            new Dictionary<EntityId, GameObject>();
 
         private LightingProfileCatalog profiles;
         private EnviroLightingBridge environment;
@@ -231,14 +231,14 @@ namespace MSC.Lighting.Production
                 StoryTrafficVehiclePresentationBinding vehicle = vehicles[index];
                 if (vehicle == null ||
                     string.IsNullOrWhiteSpace(vehicle.DriverFeatureId) ||
-                    fixtureRoots.ContainsKey(vehicle.GetInstanceID()) ||
+                    fixtureRoots.ContainsKey(vehicle.GetEntityId()) ||
                     HasAuthoredLowBeam(vehicle))
                 {
                     continue;
                 }
 
                 fixtureRoots.Add(
-                    vehicle.GetInstanceID(),
+                    vehicle.GetEntityId(),
                     CreateLowBeams(vehicle));
             }
         }
@@ -402,8 +402,8 @@ namespace MSC.Lighting.Production
                 return;
             }
 
-            var missing = new List<int>();
-            foreach (KeyValuePair<int, GameObject> pair in fixtureRoots)
+            var missing = new List<EntityId>();
+            foreach (KeyValuePair<EntityId, GameObject> pair in fixtureRoots)
             {
                 if (pair.Value == null)
                 {

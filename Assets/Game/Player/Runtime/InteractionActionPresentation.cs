@@ -36,6 +36,7 @@ namespace MSC.Player
         Wave = 4,
         MiddleFinger = 5,
         Swear = 6,
+        DrivingMode = 7,
     }
 
     public readonly struct InteractionActionHint :
@@ -68,6 +69,7 @@ namespace MSC.Player
             InteractionActionBinding.Wave => "Wave",
             InteractionActionBinding.MiddleFinger => "MiddleFinger",
             InteractionActionBinding.Swear => "Swear",
+            InteractionActionBinding.DrivingMode => "DrivingMode",
             _ => string.Empty,
         };
 
@@ -80,6 +82,7 @@ namespace MSC.Player
             InteractionActionBinding.Wave => "H",
             InteractionActionBinding.MiddleFinger => "M",
             InteractionActionBinding.Swear => "N",
+            InteractionActionBinding.DrivingMode => "ENTER",
             _ => string.Empty,
         };
 

@@ -715,6 +715,122 @@ namespace MSC.Tests.EditMode.VehicleSimulation
             }
         }
 
+        [Test]
+        public void FluidTestOverride_SkipsOnlyFluidLevelsAndNeverRefillsTheSaveState()
+        {
+            var source = new FluidTestPrerequisiteSource();
+            var root = new VehicleSimulationRoot(config, new RecordingWheelBackend(config.WheelCount), source);
+            VehicleSimulationStateDto empty = root.State.CaptureDto();
+            empty.fuelLiters = empty.oilLiters = empty.coolantLiters = 0f;
+            Assert.That(root.TryRestoreState(empty, out string failure), Is.True, failure);
+            VehicleInputState input = Input(ignition: true, clutchPedal: 1f);
+            root.Tick(FixedDeltaSeconds, input);
+            Assert.That(root.Prerequisites.HasAny(VehicleSimulationPrerequisiteFailure.FuelUnavailable |
+                VehicleSimulationPrerequisiteFailure.OilUnavailable |
+                VehicleSimulationPrerequisiteFailure.CoolantUnavailable), Is.True);
+            source.IgnoreFluidReadinessForTesting = true;
+            root.Tick(FixedDeltaSeconds, input);
+            Assert.That(root.Prerequisites.CanCrank, Is.True);
+            Assert.That(root.State.FuelLiters + root.State.OilLiters + root.State.CoolantLiters, Is.Zero);
+            source.Failures = VehicleSimulationPrerequisiteFailure.BatteryMissing |
+                VehicleSimulationPrerequisiteFailure.EngineAssemblyMissing;
+            root.Tick(FixedDeltaSeconds, input);
+            Assert.That(root.Prerequisites.CanCrank, Is.False);
+            source.Failures = VehicleSimulationPrerequisiteFailure.None;
+            source.IgnoreFluidReadinessForTesting = false;
+            root.Tick(FixedDeltaSeconds, input);
+            Assert.That(root.Prerequisites.CanRun, Is.False);
+        }
+
+        [Test]
+        public void AssemblyFluidTestOverride_DefaultsOffAndPreservesNonFluidFailures()
+        {
+            var root = new GameObject("Fluid override fixture");
+            try
+            {
+                var adapter = root.AddComponent<AssemblyVehiclePrerequisiteAdapter>();
+                Assert.That(adapter.IgnoreFluidReadinessForTesting, Is.False);
+                adapter.SetPrototypeAvailability(false, false, false, 0f);
+                adapter.SetFluidReadinessTestOverride(true);
+                var result = new VehicleSimulationPrerequisites();
+                adapter.Evaluate(VehicleInputState.Neutral(), ref result);
+                Assert.That(result.HasAny(VehicleSimulationPrerequisiteFailure.OilUnavailable |
+                    VehicleSimulationPrerequisiteFailure.CoolantUnavailable), Is.False);
+                Assert.That(result.HasAny(VehicleSimulationPrerequisiteFailure.PrerequisiteSourceUnavailable |
+                    VehicleSimulationPrerequisiteFailure.BatteryVoltageLow |
+                    VehicleSimulationPrerequisiteFailure.IgnitionOff), Is.True);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(root); }
+        }
+
+        [Test]
+        public void MissingAlternatorStopsAutomaticChargingWithoutStoppingTheRunningEngine()
+        {
+            var source = new FluidTestPrerequisiteSource { Failures = VehicleSimulationPrerequisiteFailure.AlternatorUnavailable };
+            var root = new VehicleSimulationRoot(config, new RecordingWheelBackend(config.WheelCount), source);
+            VehicleSimulationStateDto initial = root.State.CaptureDto();
+            initial.batteryVoltage = 11.5f;
+            Assert.That(root.TryRestoreState(initial, out string failure), Is.True, failure);
+            StartAndSettleAtIdle(root, FixedDeltaSeconds);
+            float voltage = root.State.BatteryVoltage;
+            RunFor(root, FixedDeltaSeconds, 1f, Input(ignition: true, clutchPedal: 1f));
+            Assert.That(root.State.EngineStatus, Is.EqualTo(VehicleEngineStatus.Running));
+            Assert.That(root.State.BatteryVoltage, Is.EqualTo(voltage));
+            source.Failures = VehicleSimulationPrerequisiteFailure.None;
+            RunFor(root, FixedDeltaSeconds, 1f, Input(ignition: true, clutchPedal: 1f));
+            Assert.That(root.State.BatteryVoltage, Is.GreaterThan(voltage));
+        }
+
+        [TestCase(.02f)]
+        [TestCase(.01f)]
+        public void FailedCranking_StaysEngagedAcrossRpmLimiterAndNeverArmsCombustionRundown(float step)
+        {
+            var source = new FluidTestPrerequisiteSource { Failures = VehicleSimulationPrerequisiteFailure.CombustionUnavailable };
+            var root = new VehicleSimulationRoot(config, new RecordingWheelBackend(config.WheelCount), source);
+            for (int i = 0; i < Mathf.RoundToInt(5f / step); i++)
+            {
+                root.Tick(step, Input(ignition: true, clutchPedal: 1f, starter: true));
+                Assert.That(root.State.EngineStatus, Is.EqualTo(VehicleEngineStatus.Cranking), "tick " + i);
+                Assert.That(root.State.CombustionRundownActive, Is.False);
+                Assert.That(root.State.EngineTorqueNewtonMeters, Is.Zero);
+            }
+            Assert.That(root.State.EngineRpm, Is.GreaterThan(config.Engine.StartThresholdRpm));
+            root.Tick(step, Input(ignition: false, clutchPedal: 1f));
+            var dto = root.State.CaptureDto();
+            Assert.That(dto.hasCombustionHistory, Is.True);
+            Assert.That(dto.combustionRundownActive, Is.False);
+            Assert.That(root.TryRestoreState(dto, out string failure), Is.True, failure);
+            Assert.That(root.State.CombustionRundownActive, Is.False);
+        }
+
+        [Test]
+        public void CombustionHistory_RoundTripsGenuineRundownAndPreservesLegacyRestore()
+        {
+            var root = CreateRoot(new RecordingWheelBackend(config.WheelCount));
+            StartAndSettleAtIdle(root, FixedDeltaSeconds);
+            Assert.That(root.State.CombustionRundownActive, Is.True);
+            root.Tick(FixedDeltaSeconds, Input(false, 1f));
+            var dto = root.State.CaptureDto();
+            Assert.That(dto.combustionRundownActive, Is.True);
+            Assert.That(root.TryRestoreState(dto, out _), Is.True);
+            Assert.That(root.State.CombustionRundownActive, Is.True);
+            dto.hasCombustionHistory = false;
+            dto.combustionRundownActive = false;
+            Assert.That(root.TryRestoreState(dto, out _), Is.True);
+            Assert.That(root.State.CombustionRundownActive, Is.True, "Legacy rotating Off saves preserve their previous presentation.");
+            RunFor(root, FixedDeltaSeconds, 5f, Input(false, 1f));
+            Assert.That(root.State.CombustionRundownActive, Is.False);
+        }
+
+        private sealed class FluidTestPrerequisiteSource : IVehicleSimulationPrerequisiteSource,
+            IVehicleFluidReadinessTestOverride
+        {
+            public bool IgnoreFluidReadinessForTesting { get; set; }
+            public VehicleSimulationPrerequisiteFailure Failures { get; set; }
+            public void Evaluate(in VehicleInputState input, ref VehicleSimulationPrerequisites result)
+            { result.Reset(); result.Add(Failures); }
+        }
+
         private VehicleSimulationRoot CreateRoot(RecordingWheelBackend backend)
         {
             return new VehicleSimulationRoot(config, backend, new ReadyPrerequisiteSource());

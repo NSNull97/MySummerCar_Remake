@@ -854,14 +854,14 @@ namespace MSC.Bootstrap
         private readonly struct DoorBinding
         {
             public DoorBinding(
-                int sceneHandle,
+                SceneHandle sceneHandle,
                 HingedDoorInteractionTarget target)
             {
                 SceneHandle = sceneHandle;
                 Target = target;
             }
 
-            public int SceneHandle { get; }
+            public SceneHandle SceneHandle { get; }
             public HingedDoorInteractionTarget Target { get; }
         }
 

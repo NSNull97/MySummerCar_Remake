@@ -11,6 +11,7 @@
     "MSC.UI.Runtime",
     "MSC.UI.Presentation.Runtime",
     "Unity.InputSystem",
+    "Unity.RenderPipelines.HighDefinition.Runtime",
     "UnityEngine.UI"
   ],
   "includePlatforms": [],

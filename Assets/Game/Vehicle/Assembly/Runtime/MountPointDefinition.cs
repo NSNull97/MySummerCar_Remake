@@ -38,6 +38,11 @@ namespace MSC.Vehicle.Assembly
         private string[] requiredOccupiedMountIds = Array.Empty<string>();
 
         [SerializeField]
+        [Tooltip("Occupied mounts required only while installing this part. This does not create removal or structural-collapse dependencies.")]
+        private string[] installationRequiredOccupiedMountIds =
+            Array.Empty<string>();
+
+        [SerializeField]
         private string[] requiredAnyOccupiedMountIds = Array.Empty<string>();
 
         [SerializeField]
@@ -48,10 +53,30 @@ namespace MSC.Vehicle.Assembly
         private string[] removalBlockedWhileOccupiedMountIds = Array.Empty<string>();
 
         [SerializeField]
+        [Tooltip("Other mount groups whose Bolted latch prevents manual removal. Installation and forced detachment are independent.")]
+        private string[] removalBlockedWhileBoltedMountIds = Array.Empty<string>();
+
+        [SerializeField]
+        [Tooltip("Explicit exceptions to inferred reverse-install removal blockers only. Does not bypass owned children, explicit removal blockers or collapse dependencies.")]
+        private string[] removalIgnoredDependentMountIds = Array.Empty<string>();
+
+        [SerializeField]
+        [Tooltip("Explicit owned child sockets retained inside this part when it is manually removed as a compound assembly. Does not bypass explicit blockers or fastening.")]
+        private string[] removalRetainedChildMountIds = Array.Empty<string>();
+
+        [SerializeField]
         private string[] requiredBoltedMountIds = Array.Empty<string>();
 
         [SerializeField]
         private string[] requiredAnyBoltedMountIds = Array.Empty<string>();
+
+        [SerializeField]
+        [Tooltip("Check this support after installation commits. If unbolted, the support and its dependent assembly fall together, including the incoming part.")]
+        private string installAttemptBoltedSupportMountId = string.Empty;
+
+        [SerializeField]
+        [Tooltip("Installation/preview blockers, independent of structural retention and manual removal.")]
+        private string[] installationBlockedWhileBoltedMountIds = Array.Empty<string>();
 
         public string DefinitionId => definitionId;
         public string DisplayName => displayName;
@@ -64,16 +89,28 @@ namespace MSC.Vehicle.Assembly
         public FastenerGroupDefinition FastenerGroup => fastenerGroup;
         public string[] RequiredOccupiedMountIds =>
             requiredOccupiedMountIds ?? Array.Empty<string>();
+        public string[] InstallationRequiredOccupiedMountIds =>
+            installationRequiredOccupiedMountIds ?? Array.Empty<string>();
         public string[] RequiredAnyOccupiedMountIds =>
             requiredAnyOccupiedMountIds ?? Array.Empty<string>();
         public string[] BlockedWhileOccupiedMountIds =>
             blockedWhileOccupiedMountIds ?? Array.Empty<string>();
         public string[] RemovalBlockedWhileOccupiedMountIds =>
             removalBlockedWhileOccupiedMountIds ?? Array.Empty<string>();
+        public string[] RemovalBlockedWhileBoltedMountIds =>
+            removalBlockedWhileBoltedMountIds ?? Array.Empty<string>();
+        public string[] RemovalIgnoredDependentMountIds =>
+            removalIgnoredDependentMountIds ?? Array.Empty<string>();
+        public string[] RemovalRetainedChildMountIds =>
+            removalRetainedChildMountIds ?? Array.Empty<string>();
         public string[] RequiredBoltedMountIds =>
             requiredBoltedMountIds ?? Array.Empty<string>();
         public string[] RequiredAnyBoltedMountIds =>
             requiredAnyBoltedMountIds ?? Array.Empty<string>();
+        public string InstallAttemptBoltedSupportMountId =>
+            installAttemptBoltedSupportMountId ?? string.Empty;
+        public string[] InstallationBlockedWhileBoltedMountIds =>
+            installationBlockedWhileBoltedMountIds ?? Array.Empty<string>();
 
         public bool AcceptsPart(string partDefinitionId)
         {
@@ -127,6 +164,12 @@ namespace MSC.Vehicle.Assembly
             blockedWhileOccupiedMountIds = blockedMountIds ?? Array.Empty<string>();
         }
 
+        public void ConfigureInstallationOccupancy(string[] requiredMountIds)
+        {
+            installationRequiredOccupiedMountIds =
+                requiredMountIds ?? Array.Empty<string>();
+        }
+
         public void ConfigureBoltedSequence(
             string[] requiredMountIds,
             string[] requiredAnyMountIds)
@@ -139,6 +182,30 @@ namespace MSC.Vehicle.Assembly
         {
             removalBlockedWhileOccupiedMountIds =
                 blockedMountIds ?? Array.Empty<string>();
+        }
+
+        public void ConfigureInstallationChecks(
+            string boltedSupportMountId,
+            string[] blockedWhileBoltedMountIds)
+        {
+            installAttemptBoltedSupportMountId = boltedSupportMountId ?? string.Empty;
+            installationBlockedWhileBoltedMountIds =
+                blockedWhileBoltedMountIds ?? Array.Empty<string>();
+        }
+
+        public void ConfigureRemovalChecks(
+            string[] blockedWhileBoltedMountIds,
+            string[] ignoredDependentMountIds)
+        {
+            removalBlockedWhileBoltedMountIds =
+                blockedWhileBoltedMountIds ?? Array.Empty<string>();
+            removalIgnoredDependentMountIds =
+                ignoredDependentMountIds ?? Array.Empty<string>();
+        }
+
+        public void ConfigureRetainedRemovalChildren(string[] retainedChildMountIds)
+        {
+            removalRetainedChildMountIds = retainedChildMountIds ?? Array.Empty<string>();
         }
     }
 }

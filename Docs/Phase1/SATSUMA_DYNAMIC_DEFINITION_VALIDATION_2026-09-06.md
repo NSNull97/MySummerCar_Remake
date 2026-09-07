@@ -1,0 +1,11 @@
+# Explicit purchased-definition validation compatibility
+
+Classification: `Reimplemented` project-owned validation adapter; no donor runtime or new gameplay state.
+
+The integrated EditMode retry reported seven errors in `GeneratedPrefabLoadsAllProjectOwnedRuntimeBoundaries`. Static comparison of the serialized124 socket definitions against the126 fixed roster identities identifies exactly seven `MOUNT-PART` references: spark-plug sockets1–4, alternator-belt, and both headlight bulbs. Their three definitions are explicitly registered in `VehicleItemAssemblyBridge.Catalog`; they intentionally have no starting `PartInstance` and their presentation is supplied by Items.
+
+The original four-argument `VehicleAssemblyValidator.Validate` remains available with identical behavior. An additive five-argument overload accepts an explicit `PartDefinition[] dynamicDefinitions`. It does not infer definitions from unknown sockets, enumerate content assets or relax any existing starting-instance, tool, mount-reference, group or dependency checks. Null definitions, blank IDs, duplicate dynamic IDs and conflicting definition objects are errors. The identical stock-definition reference may be shared, as required by the purchased oil-filter mapping. A starting part still requires its `VisualPrefab`, even if the same definition is also in the dynamic list; a definition-only item entry does not require a static visual.
+
+Dependency/caller audit: the Satsuma baseline builder's existing validation pass and the generated canonical fixture now supply the approved bridge catalog via `GetPartDefinitions()`, which performs the existing catalog validation. The prototype assembly/simulation validators and old test callers remain on the four-argument API. Assembly runtime does not gain an Items dependency; no graph identity, serialized field or save DTO changes were made.
+
+Regression source: `VehicleAssemblyDynamicDefinitionValidationTests` covers explicit-only resolution/old-overload equivalence, null/blank/duplicate identities, exact shared stock references versus conflicting assets, and foreign references/base visual errors remaining visible. Unity execution is owned by the root integration task; these four new cases were not run by this subtask.

@@ -1348,7 +1348,7 @@ namespace MSC.Editor.WorldBaseline
                 maskMapRemapMax =
                     new Vector4(1f, 1f, 1f, 0.025f),
                 smoothnessSource =
-                    TerrainLayerSmoothnessSource.Constant
+                    TerrainLayerSmoothnessSource.ConstantOnly
             };
             string path =
                 $"{TerrainLayerRoot}/{name}.terrainlayer";

@@ -18,7 +18,7 @@ using UnityEngine.SceneManagement;
 
 namespace MSC.Save.Integration.Tests.EditMode
 {
-    public sealed class CurrentDomainSaveIntegrationTests
+    public sealed partial class CurrentDomainSaveIntegrationTests
     {
         private const string EntityId = "9a7a5b9ed31f4f2c8da73b05b2a91041";
         private const string SecondaryEntityId =
@@ -737,11 +737,11 @@ namespace MSC.Save.Integration.Tests.EditMode
                     SaveParticipantJson.Deserialize<VehicleDomainSaveDto>(payload);
                 Assert.That(captured.vehicles, Has.Length.EqualTo(1));
                 Assert.That(captured.vehicles[0].assembly.parts, Has.Length.EqualTo(126));
-                Assert.That(captured.vehicles[0].assembly.schemaVersion, Is.EqualTo(2));
-                Assert.That(captured.vehicles[0].assembly.fasteners, Has.Length.EqualTo(280));
+                Assert.That(captured.vehicles[0].assembly.schemaVersion, Is.EqualTo(VehicleAssemblySaveData.CurrentSchemaVersion));
+                Assert.That(captured.vehicles[0].assembly.fasteners, Has.Length.EqualTo(294));
                 Assert.That(
                     captured.vehicles[0].assembly.fastenerGroups,
-                    Has.Length.EqualTo(117));
+                    Has.Length.EqualTo(124));
 
                 Assert.That(
                     assembly.TryTurnFastener(

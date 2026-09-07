@@ -643,7 +643,7 @@ namespace MSC.Weather.Enviro3Integration.Editor
                 manifest.ProfileKind !=
                     ProductionWorldProfileKind.DonorFeatureParity ||
                 !manifest.PrivateLocalRuntimeBaseline ||
-                manifest.GlobalScenes.Count != 1 ||
+                !HasApprovedGlobalSceneSet(manifest.GlobalScenes) ||
                 manifest.Cells.Count != 49)
             {
                 throw new InvalidOperationException(
@@ -703,6 +703,28 @@ namespace MSC.Weather.Enviro3Integration.Editor
                         "donor feature-parity profile: " + path);
                 }
             }
+        }
+
+        private static bool HasApprovedGlobalSceneSet(
+            IReadOnlyList<ProductionWorldGlobalScene> scenes)
+        {
+            // The preserved 06B2 world now also owns an explicit global rock
+            // presentation layer. Count only those exact approved registrations;
+            // do not reject the accepted layer or admit arbitrary global scenes.
+            if (scenes == null || scenes.Count < 1 || scenes.Count > 2)
+            {
+                return false;
+            }
+
+            bool hasLegacy = scenes.Any(scene =>
+                scene.SceneId == "global-legacy" &&
+                scene.ScenePath ==
+                    "Assets/Game/LegacyImport/RuntimeBaseline/Generated/World/Streaming/Scenes/World_Global_Legacy.unity");
+            bool hasVegetation = scenes.Any(scene =>
+                scene.SceneId == "vegetation-global-presentation" &&
+                scene.ScenePath ==
+                    "Assets/Game/LegacyImport/RuntimeBaseline/VegetationRebuild/Global/World_Global_VegetationPresentation.unity");
+            return hasLegacy && (scenes.Count == 1 || hasVegetation);
         }
 
         private static void ValidateWorldBuildEntry(

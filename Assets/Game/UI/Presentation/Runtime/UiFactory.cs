@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace MSC.UI.Presentation
 {
-    internal sealed class UiFactory
+    internal sealed partial class UiFactory
     {
         private readonly UiVisualAssets assets;
         private readonly UnityAction confirmAudio;

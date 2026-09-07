@@ -7,6 +7,7 @@ namespace MSC.UI.Presentation
     {
         MenuTinted = 0,
         HudDark = 1,
+        MainMenuNeutral = 2,
     }
 
     /// <summary>
@@ -22,12 +23,15 @@ namespace MSC.UI.Presentation
 
         private RectTransform surfaceRect;
         private RectTransform referenceFrame;
-        private RawImage backdropSlice;
-        private Image tintImage;
+        [SerializeField] private RawImage backdropSlice;
+        [SerializeField] private Image tintImage;
+        [SerializeField] private UiGlassKind kind;
         private int lastScreenWidth = -1;
         private int lastScreenHeight = -1;
+        private Matrix4x4 lastSurfaceMatrix;
+        private Matrix4x4 lastReferenceMatrix;
 
-        public UiGlassKind Kind { get; private set; }
+        public UiGlassKind Kind => kind;
 
         public Color Tint => tintImage != null ? tintImage.color : Color.clear;
 
@@ -40,11 +44,18 @@ namespace MSC.UI.Presentation
             RawImage configuredBackdropSlice,
             Image configuredTintImage)
         {
-            Kind = kind;
+            this.kind = kind;
             surfaceRect = transform as RectTransform;
             referenceFrame = configuredReferenceFrame;
             backdropSlice = configuredBackdropSlice;
             tintImage = configuredTintImage;
+            RefreshUv();
+        }
+
+        public void RebindSource(RectTransform configuredReferenceFrame)
+        {
+            surfaceRect = transform as RectTransform;
+            referenceFrame = configuredReferenceFrame;
             RefreshUv();
         }
 
@@ -76,7 +87,11 @@ namespace MSC.UI.Presentation
 
         private void LateUpdate()
         {
-            if (lastScreenWidth == Screen.width && lastScreenHeight == Screen.height)
+            bool moved = Kind == UiGlassKind.MainMenuNeutral &&
+                surfaceRect != null && referenceFrame != null &&
+                (lastSurfaceMatrix != surfaceRect.localToWorldMatrix ||
+                 lastReferenceMatrix != referenceFrame.localToWorldMatrix);
+            if (!moved && lastScreenWidth == Screen.width && lastScreenHeight == Screen.height)
             {
                 return;
             }
@@ -92,6 +107,9 @@ namespace MSC.UI.Presentation
             {
                 return;
             }
+
+            lastSurfaceMatrix = surfaceRect.localToWorldMatrix;
+            lastReferenceMatrix = referenceFrame.localToWorldMatrix;
 
             surfaceRect.GetWorldCorners(surfaceCorners);
             referenceFrame.GetWorldCorners(referenceCorners);

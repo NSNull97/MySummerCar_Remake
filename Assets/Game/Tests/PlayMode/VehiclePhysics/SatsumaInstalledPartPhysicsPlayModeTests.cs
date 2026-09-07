@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using MSC.Vehicle;
 using MSC.Vehicle.Assembly;
@@ -12,16 +13,90 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
 {
     public sealed class SatsumaInstalledPartPhysicsPlayModeTests
     {
+        // UnityTest can abort on an unexpected engine log without reaching the
+        // iterator's finally block. Teardown therefore owns every created object
+        // independently, including parts which installation/removal can reparent.
+        private readonly List<GameObject> ownedObjects = new();
+        private readonly Dictionary<GameObject, GameObject[]> ownedVehicleParts = new();
+
         [UnityTearDown]
         public IEnumerator FlushDeferredFixtureDestruction()
         {
-            // Every fixture tears down with Object.Destroy so joints and
-            // Rigidbody actors remain alive until the end of the frame. Give
-            // PhysX one clean boundary before the next Satsuma is instantiated
-            // at the same coordinates; otherwise class runs intermittently
-            // measure the previous fixture's final solver impulse.
+            for (int index = ownedObjects.Count - 1; index >= 0; index--)
+            {
+                DeactivateAndDestroy(ownedObjects[index]);
+            }
+            ownedObjects.Clear();
+            ownedVehicleParts.Clear();
+
+            // Owner OnDestroy also destroys separate front-yaw helper bodies.
+            // Flush both deferred generations before sharing the default PhysX
+            // scene with the next fixture at the same coordinates.
+            yield return null;
             yield return null;
             Physics.SyncTransforms();
+        }
+
+        private GameObject InstantiateOwnedSatsuma(
+            GameObject prefab, Vector3 position, Quaternion rotation)
+        {
+            GameObject instance = Object.Instantiate(prefab, position, rotation);
+            ownedObjects.Add(instance);
+            VehicleAssemblyController assembly = instance.GetComponent<VehicleAssemblyController>();
+            GameObject[] parts = assembly != null
+                ? assembly.Parts.Where(part => part != null)
+                    .Select(part => part.gameObject).Distinct().ToArray()
+                : new GameObject[0];
+            ownedVehicleParts.Add(instance, parts);
+            foreach (GameObject part in parts)
+            {
+                if (part != instance)
+                {
+                    ownedObjects.Add(part);
+                }
+            }
+            return instance;
+        }
+
+        private GameObject CreateOwnedPrimitive(PrimitiveType type)
+        {
+            GameObject result = GameObject.CreatePrimitive(type);
+            ownedObjects.Add(result);
+            return result;
+        }
+
+        private void DestroyOwnedObject(GameObject instance)
+        {
+            if (instance == null)
+            {
+                return;
+            }
+            if (ownedVehicleParts.TryGetValue(instance, out GameObject[] parts))
+            {
+                // The fresh-save test destroys its source before spawning the
+                // restore target in the same test. Clear detached source parts
+                // now, not only at teardown after they could affect the target.
+                foreach (GameObject part in parts)
+                {
+                    if (part != null && part != instance &&
+                        !part.transform.IsChildOf(instance.transform))
+                    {
+                        DeactivateAndDestroy(part);
+                    }
+                }
+                ownedVehicleParts.Remove(instance);
+            }
+            DeactivateAndDestroy(instance);
+        }
+
+        private static void DeactivateAndDestroy(GameObject instance)
+        {
+            if (instance == null)
+            {
+                return;
+            }
+            instance.SetActive(false);
+            Object.Destroy(instance);
         }
 
         [UnityTest]
@@ -35,7 +110,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -93,7 +168,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
             }
         }
 
@@ -108,7 +183,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -165,7 +240,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
             }
         }
 
@@ -180,7 +255,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -268,7 +343,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
             }
         }
 
@@ -283,7 +358,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -580,7 +655,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
             }
         }
 
@@ -595,7 +670,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -734,7 +809,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
             }
         }
 
@@ -749,7 +824,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -779,7 +854,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                 Assert.That(arm.Body.useGravity, Is.True);
                 Assert.That(hinge, Is.Not.Null);
 
-                ground = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                ground = CreateOwnedPrimitive(PrimitiveType.Cube);
                 ground.name = "Springless rear-arm contact ground";
                 ground.transform.localScale = new Vector3(1f, 0.02f, 1f);
                 float groundTop = solid.bounds.min.y - 0.02f;
@@ -819,8 +894,8 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
-                Object.Destroy(ground);
+                DestroyOwnedObject(instance);
+                DestroyOwnedObject(ground);
             }
         }
 
@@ -835,7 +910,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -1004,7 +1079,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
             }
         }
 
@@ -1020,7 +1095,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
 
             Quaternion vehicleTilt = Quaternion.Euler(31f, 19f, 47f);
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 vehicleTilt);
@@ -1164,7 +1239,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
             }
         }
 
@@ -1179,7 +1254,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 2f, 0f),
                 Quaternion.identity);
@@ -1353,10 +1428,10 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
                 foreach (GameObject patch in patches)
                 {
-                    Object.Destroy(patch);
+                    DestroyOwnedObject(patch);
                 }
             }
         }
@@ -1373,7 +1448,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
 
             const float initialHeight = 0.62f;
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, initialHeight, 0f),
                 Quaternion.identity);
@@ -1458,6 +1533,13 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                 }
 
                 yield return null;
+                for (int index = 0; index < rig.Corners.Length; index++)
+                {
+                    Assert.That(rig.Corners[index].Wheel.HitCollider,
+                        Is.SameAs(patches[index].GetComponent<Collider>()),
+                        rig.Corners[index].CornerId +
+                        ": the no-strut force fixture contacted foreign geometry.");
+                }
                 Assert.That(maximumHeight,
                     Is.LessThanOrEqualTo(initialHeight + 0.02f),
                     "A no-strut contact stage launched the shell upward.");
@@ -1479,10 +1561,10 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
                 foreach (GameObject patch in patches)
                 {
-                    Object.Destroy(patch);
+                    DestroyOwnedObject(patch);
                 }
             }
         }
@@ -1498,13 +1580,13 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject ground = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject ground = CreateOwnedPrimitive(PrimitiveType.Cube);
             ground.name = "Front suspension physics test ground";
             ground.transform.SetPositionAndRotation(
                 new Vector3(0f, -0.1f, 0f),
                 Quaternion.identity);
             ground.transform.localScale = new Vector3(20f, 0.2f, 20f);
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 0.8f, 0f),
                 Quaternion.identity);
@@ -1585,6 +1667,13 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                 }
 
                 yield return null;
+                foreach (SatsumaFrontSuspensionCornerBinding corner in rig.Corners)
+                {
+                    Assert.That(corner.Wheel.HitCollider,
+                        Is.SameAs(ground.GetComponent<Collider>()),
+                        corner.CornerId +
+                        ": the assembled-front force fixture contacted foreign geometry.");
+                }
                 Assert.That(
                     chassis.position.y,
                     Is.GreaterThan(bodyOnlyHeight + 0.01f),
@@ -1656,8 +1745,8 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
-                Object.Destroy(ground);
+                DestroyOwnedObject(instance);
+                DestroyOwnedObject(ground);
             }
         }
 
@@ -1672,7 +1761,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -1875,7 +1964,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
             }
         }
 
@@ -1890,7 +1979,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -1968,7 +2057,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
             }
         }
 
@@ -1983,7 +2072,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -2089,7 +2178,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
             }
         }
 
@@ -2104,7 +2193,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -2178,7 +2267,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     desiredCompression;
                 float groundTop = wheel.transform.position.y -
                     desiredSpringLength - wheel.Radius;
-                patch = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                patch = CreateOwnedPrimitive(PrimitiveType.Cube);
                 patch.name = "Rear NWH compression patch";
                 patch.layer = 0;
                 patch.transform.position = new Vector3(
@@ -2262,8 +2351,8 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
-                Object.Destroy(patch);
+                DestroyOwnedObject(instance);
+                DestroyOwnedObject(patch);
             }
         }
 
@@ -2278,13 +2367,13 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject ground = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject ground = CreateOwnedPrimitive(PrimitiveType.Cube);
             ground.name = "Rear suspension physics test ground";
             ground.transform.SetPositionAndRotation(
                 new Vector3(0f, -0.1f, 0f),
                 Quaternion.identity);
             ground.transform.localScale = new Vector3(20f, 0.2f, 20f);
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 2f, 0f),
                 Quaternion.identity);
@@ -2490,8 +2579,8 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
-                Object.Destroy(ground);
+                DestroyOwnedObject(instance);
+                DestroyOwnedObject(ground);
             }
         }
 
@@ -2506,7 +2595,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -2685,7 +2774,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
             }
         }
 
@@ -2700,7 +2789,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject ground = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject ground = CreateOwnedPrimitive(PrimitiveType.Cube);
             ground.name = "Fresh Satsuma restore ground";
             ground.transform.SetPositionAndRotation(
                 new Vector3(0f, -0.1f, 0f),
@@ -2708,9 +2797,11 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             ground.transform.localScale = new Vector3(20f, 0.2f, 20f);
             GameObject source = null;
             GameObject restored = null;
+            var diagnostics = new List<string>();
+            bool verified = false;
             try
             {
-                source = Object.Instantiate(
+                source = InstantiateOwnedSatsuma(
                     prefab,
                     new Vector3(0f, 1.2f, 0f),
                     Quaternion.identity);
@@ -2741,10 +2832,16 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                 Physics.SyncTransforms();
                 sourceChassis.WakeUp();
 
+                sourceAssembly.ActionCompleted += action =>
+                    diagnostics.Add("FRESH_RESTORE source action " + DescribeFreshRestoreAction(action));
+                diagnostics.Add(CaptureFreshRestoreSnapshot("source before settling", source));
+
                 for (int step = 0; step < 150; step++)
                 {
                     yield return new WaitForFixedUpdate();
                 }
+
+                diagnostics.Add(CaptureFreshRestoreSnapshot("source settled", source));
 
                 NwhAssemblyWheelSupportController sourceSupport = source
                     .GetComponent<NwhAssemblyWheelSupportController>();
@@ -2776,11 +2873,13 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                 Quaternion savedRotation = save.physics.worldRotation;
                 float savedHeight = save.physics.worldPosition.y;
 
-                Object.Destroy(source);
+                DestroyOwnedObject(source);
                 source = null;
                 yield return null;
+                yield return null;
+                Physics.SyncTransforms();
 
-                restored = Object.Instantiate(
+                restored = InstantiateOwnedSatsuma(
                     prefab,
                     new Vector3(4f, 5f, -3f),
                     Quaternion.Euler(20f, 35f, -15f));
@@ -2802,13 +2901,22 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     restoredInitializeFailure);
 
                 int assemblyActions = 0;
-                restoredAssembly.ActionCompleted += _ => assemblyActions++;
+                var restoreActions = new List<string>();
+                restoredAssembly.ActionCompleted += action =>
+                {
+                    assemblyActions++;
+                    string description = DescribeFreshRestoreAction(action);
+                    restoreActions.Add(description);
+                    diagnostics.Add("FRESH_RESTORE restored action " + description);
+                };
+                diagnostics.Add(CaptureFreshRestoreSnapshot("target before restore", restored));
                 Assert.That(
                     restoredPersistence.TryRestore(
                         save,
                         out string restoreFailure),
                     Is.True,
                     restoreFailure);
+                diagnostics.Add(CaptureFreshRestoreSnapshot("target immediately restored", restored));
 
                 // No yield has happened since Instantiate: this is the same
                 // pre-Start restore timing used by the production bootstrap.
@@ -2839,6 +2947,8 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                 for (int step = 0; step < 120; step++)
                 {
                     yield return new WaitForFixedUpdate();
+                    if (step == 0 || step == 29 || step == 119)
+                        diagnostics.Add(CaptureFreshRestoreSnapshot("target fixed " + (step + 1), restored));
                     Assert.That(
                         float.IsFinite(restoredChassis.position.x) &&
                         float.IsFinite(restoredChassis.position.y) &&
@@ -2861,7 +2971,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                 yield return null;
                 NwhAssemblyWheelSupportController restoredSupport = restored
                     .GetComponent<NwhAssemblyWheelSupportController>();
-                Assert.That(assemblyActions, Is.Zero);
+                Assert.That(assemblyActions, Is.Zero, string.Join(" | ", restoreActions));
                 Assert.That(
                     restoredSupport.Bindings,
                     Is.All.Matches<NwhAssemblyWheelSupportBinding>(binding =>
@@ -2890,18 +3000,23 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                         restoredChassis.rotation * Vector3.up),
                     Is.LessThan(12f),
                     "The restored chassis did not settle back to its saved attitude.");
+                verified = true;
             }
             finally
             {
+                // Keep contact/projection evidence for failures without flooding
+                // successful regression runs with diagnostic-only snapshots.
+                if (!verified)
+                    foreach (string diagnostic in diagnostics) TestContext.WriteLine(diagnostic);
                 if (source != null)
                 {
-                    Object.Destroy(source);
+                    DestroyOwnedObject(source);
                 }
                 if (restored != null)
                 {
-                    Object.Destroy(restored);
+                    DestroyOwnedObject(restored);
                 }
-                Object.Destroy(ground);
+                DestroyOwnedObject(ground);
             }
         }
 
@@ -2916,7 +3031,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -2984,7 +3099,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
             }
         }
 
@@ -2999,7 +3114,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     "Private donor-derived Satsuma baseline is unavailable.");
             }
 
-            GameObject instance = Object.Instantiate(
+            GameObject instance = InstantiateOwnedSatsuma(
                 prefab,
                 new Vector3(0f, 50f, 0f),
                 Quaternion.identity);
@@ -3234,7 +3349,7 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
             }
             finally
             {
-                Object.Destroy(instance);
+                DestroyOwnedObject(instance);
             }
         }
 
@@ -3291,17 +3406,42 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                 corner.WishboneMeshZeroLocalRotation;
         }
 
-        private static GameObject CreateFrontContactPatch(
+        private GameObject CreateFrontContactPatch(
             float x,
             float z,
             float topY)
         {
-            GameObject patch = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject patch = CreateOwnedPrimitive(PrimitiveType.Cube);
             patch.name = "Default-layer front no-strut contact patch";
             patch.layer = 0;
             patch.transform.position = new Vector3(x, topY - 0.05f, z);
             patch.transform.localScale = new Vector3(0.28f, 0.1f, 0.38f);
             return patch;
+        }
+
+        private static string DescribeFreshRestoreAction(AssemblyActionCompleted action) =>
+            $"{action.Action}; mount={action.MountId}; part={action.Part?.Definition?.DefinitionId}; " +
+            $"fastener={action.FastenerDefinitionId}; pos={action.WorldPosition:F4}";
+
+        private static string CaptureFreshRestoreSnapshot(string label, GameObject vehicle)
+        {
+            Rigidbody chassis = vehicle.GetComponent<Rigidbody>();
+            VehicleAssemblyController assembly = vehicle.GetComponent<VehicleAssemblyController>();
+            NwhAssemblyWheelSupportController support = vehicle.GetComponent<NwhAssemblyWheelSupportController>();
+            AssemblyLooseCompoundPhysics compound = vehicle.GetComponent<AssemblyLooseCompoundPhysics>();
+            string wheels = string.Join(" | ", support.Bindings.Select((binding, index) => binding.Wheel == null
+                ? index + ": missing"
+                : $"{index}: enabled={binding.Wheel.enabled}; grounded={binding.Wheel.IsGrounded}; " +
+                  $"pos={binding.Wheel.transform.position:F4}; spring={binding.Wheel.spring.length:F4}/" +
+                  $"{binding.Wheel.SpringMaxLength:F4}; previous={binding.Wheel.spring.prevLength:F4}"));
+            string retention = string.Join(" | ", assembly.Graph.Mounts.Where(mount => mount.IsOccupied &&
+                mount.FastenerGroup.Definition.SpeedRetentionPolicy != FastenerSpeedRetentionPolicy.None)
+                .Select(mount => $"{mount.MountId}: bolted={mount.FastenerGroup.IsBolted}; stages=" +
+                    string.Join(",", mount.Fasteners.Select(fastener => fastener.Stage + "/" + fastener.Definition.MaximumStage))));
+            return $"FRESH_RESTORE {label}; pos={chassis.position:F4}; rot={chassis.rotation.eulerAngles:F3}; " +
+                $"velocity={chassis.linearVelocity:F4}; angular={chassis.angularVelocity:F4}; mass={chassis.mass:F3}; " +
+                $"CoM={chassis.centerOfMass:F4}; sleeping={chassis.IsSleeping()}; gravity={chassis.useGravity}; " +
+                $"kinematic={chassis.isKinematic}; proxies={compound?.ActiveProxyCount ?? 0}; wheels=[{wheels}]; retention=[{retention}]";
         }
 
         private static void SuppressLoosePartPhysics(

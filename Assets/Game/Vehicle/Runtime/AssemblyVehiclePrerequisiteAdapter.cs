@@ -12,7 +12,7 @@ namespace MSC.Vehicle
     [DefaultExecutionOrder(-70)]
     [DisallowMultipleComponent]
     public sealed class AssemblyVehiclePrerequisiteAdapter : MonoBehaviour,
-        IVehicleSimulationPrerequisiteSource
+        IVehicleSimulationPrerequisiteSource, IVehicleFluidReadinessTestOverride, IVehicleFuelReadinessTestOverride
     {
         private static readonly string[] DefaultEngineParts = { "m06.engine" };
         private static readonly string[] DefaultStarterParts = { "m06.starter" };
@@ -44,12 +44,41 @@ namespace MSC.Vehicle
         [SerializeField] private bool coolantAvailable = true;
         [SerializeField, Min(0f)] private float batteryVoltage = 12.6f;
         [SerializeField, Min(0f)] private float minimumCrankingVoltage = 9.5f;
+        [SerializeField] private bool useSatsumaAssemblyRequirements;
+        [SerializeField] private SatsumaElectricalSystem satsumaElectrical;
 
         private int cachedGraphMutationCount = int.MinValue;
         private VehicleSimulationPrerequisiteFailure cachedAssemblyFailures =
             VehicleSimulationPrerequisiteFailure.PrerequisiteSourceUnavailable;
+        private bool cachedSatsumaStructuralCombustionReady;
+        private bool simulationOwnsOperatingFluids;
+
+        // Opt-in host composition: the solver's real litres replace the old
+        // authored prototype availability flags, not assembly/fuel-line gates.
+        internal void UseSimulationFluidAuthority(bool value) => simulationOwnsOperatingFluids = value;
+
+        private static readonly string[] SatsumaDrivetrainParts =
+        {
+            "vehicle.satsuma.part.clutch", "vehicle.satsuma.part.gearbox",
+            "vehicle.satsuma.part.halfshaft-1", "vehicle.satsuma.part.halfshaft-2",
+        };
+        private static readonly string[] SatsumaDrivenMountIds =
+        {
+            "mount.satsuma.wheelfl-new", "mount.satsuma.wheelfr-new",
+        };
 
         public VehicleAssemblyController AssemblyController => assemblyController;
+        public bool UsesSatsumaAssemblyRequirements => useSatsumaAssemblyRequirements;
+        public SatsumaElectricalSystem SatsumaElectrical => satsumaElectrical;
+
+        // Deliberately not serialized or captured by native saves. Does not
+        // bypass a missing tank, engine, battery or any electrical circuit.
+        public bool IgnoreFluidReadinessForTesting { get; private set; }
+        public bool IgnoreFuelReadinessForTesting { get; private set; }
+        public void SetFuelReadinessTestOverride(bool enabled) => IgnoreFuelReadinessForTesting = enabled;
+
+        public void SetFluidReadinessTestOverride(bool enabled) =>
+            IgnoreFluidReadinessForTesting = enabled;
 
         public int CachedGraphMutationCount => cachedGraphMutationCount;
 
@@ -58,7 +87,17 @@ namespace MSC.Vehicle
         public void Configure(VehicleAssemblyController controller)
         {
             assemblyController = controller;
+            useSatsumaAssemblyRequirements = false;
+            satsumaElectrical = null;
             UseDefaultRequirements();
+            InvalidateCache();
+        }
+
+        public void ConfigureSatsumaRequirements(SatsumaElectricalSystem electrical)
+        {
+            satsumaElectrical = electrical != null ? electrical :
+                throw new ArgumentNullException(nameof(electrical));
+            useSatsumaAssemblyRequirements = true;
             InvalidateCache();
         }
 
@@ -91,23 +130,48 @@ namespace MSC.Vehicle
             batteryVoltage = Mathf.Max(0f, voltage);
         }
 
+        /// <summary>
+        /// Updates only the electrical feed exposed to the simulation. The
+        /// Satsuma electrical graph owns this value after authoring; fluids
+        /// remain independent prerequisites.
+        /// </summary>
+        public void SetBatteryVoltage(float voltage)
+        {
+            batteryVoltage = Mathf.Max(0f, voltage);
+        }
+
         public void Evaluate(in VehicleInputState input, ref VehicleSimulationPrerequisites result)
         {
             RefreshAssemblyCacheIfRequired();
             result.Reset();
             result.Add(cachedAssemblyFailures);
 
-            if (!fuelAvailable)
+            if (useSatsumaAssemblyRequirements)
+            {
+                result.UseIndependentCrankingRequirements();
+                if (satsumaElectrical == null || !satsumaElectrical.StarterCircuitReady)
+                    result.Add(VehicleSimulationPrerequisiteFailure.StarterMissing);
+                if (!CanSatsumaAlternatorCharge())
+                    result.Add(VehicleSimulationPrerequisiteFailure.AlternatorUnavailable);
+                // Conditions live on purchased wrappers and can change without
+                // an assembly mutation. Never cache their wear as graph state.
+                if (!cachedSatsumaStructuralCombustionReady || assemblyController == null ||
+                    !SatsumaEngineAssemblyReadiness.HasFiringPairs(
+                        SatsumaEngineAssemblyReadiness.EvaluateFiringCylinderMask(assemblyController.Graph)))
+                    result.Add(VehicleSimulationPrerequisiteFailure.CombustionUnavailable);
+            }
+
+            if (!simulationOwnsOperatingFluids && !fuelAvailable && !IgnoreFluidReadinessForTesting && !IgnoreFuelReadinessForTesting)
             {
                 result.Add(VehicleSimulationPrerequisiteFailure.FuelUnavailable);
             }
 
-            if (!oilAvailable)
+            if (!simulationOwnsOperatingFluids && !oilAvailable && !IgnoreFluidReadinessForTesting)
             {
                 result.Add(VehicleSimulationPrerequisiteFailure.OilUnavailable);
             }
 
-            if (!coolantAvailable)
+            if (!simulationOwnsOperatingFluids && !coolantAvailable && !IgnoreFluidReadinessForTesting)
             {
                 result.Add(VehicleSimulationPrerequisiteFailure.CoolantUnavailable);
             }
@@ -126,6 +190,24 @@ namespace MSC.Vehicle
         public void InvalidateCache()
         {
             cachedGraphMutationCount = int.MinValue;
+        }
+
+        private bool CanSatsumaAlternatorCharge()
+        {
+            AssemblyGraph graph = assemblyController != null ? assemblyController.Graph : null;
+            if (graph == null || satsumaElectrical == null || !satsumaElectrical.IsBatteryInstalled ||
+                !graph.IsPartDefinitionInstalled("vehicle.satsuma.part.alternator") ||
+                !satsumaElectrical.IsConnectionInstalled(SatsumaElectricalConnection.Alternator) ||
+                !satsumaElectrical.IsConnectionInstalled(SatsumaElectricalConnection.RegulatorHarness) ||
+                !graph.TryGetMount(SatsumaConsumableAssemblyRules.BeltMountId, out MountPointRuntime belt) ||
+                !belt.IsOccupied)
+                return false;
+            IAssemblyItemCondition condition = belt.InstalledPart.GetComponent<IAssemblyItemCondition>();
+            // Donor belt Wear>99 removes it from the charging chain. Item
+            // condition is remaining health (100-Wear), so require at least1
+            // even if the item's explicit broken flag has not caught up yet.
+            return condition != null && !condition.IsBroken &&
+                float.IsFinite(condition.ConditionPercent) && condition.ConditionPercent >= 1f;
         }
 
         private void RefreshAssemblyCacheIfRequired()
@@ -148,6 +230,31 @@ namespace MSC.Vehicle
             AssemblyGraph graph = assemblyController.Graph;
             VehicleSimulationPrerequisiteFailure failures =
                 VehicleSimulationPrerequisiteFailure.None;
+
+            if (useSatsumaAssemblyRequirements)
+            {
+                if (!graph.IsPartDefinitionBolted(SatsumaEngineAssemblyReadiness.BlockId))
+                    failures |= VehicleSimulationPrerequisiteFailure.EngineAssemblyMissing;
+                if (!graph.IsPartDefinitionInstalled(SatsumaElectricalSystem.StarterPartDefinitionId))
+                    failures |= VehicleSimulationPrerequisiteFailure.StarterMissing;
+                if (!graph.IsPartDefinitionInstalled(SatsumaElectricalSystem.BatteryPartDefinitionId))
+                    failures |= VehicleSimulationPrerequisiteFailure.BatteryMissing;
+                if (!SatsumaEngineAssemblyReadiness.IsStockFuelDeliveryReady(graph))
+                    failures |= VehicleSimulationPrerequisiteFailure.FuelUnavailable;
+                if (!AreAllInstalled(graph, SatsumaDrivetrainParts))
+                    failures |= VehicleSimulationPrerequisiteFailure.DrivetrainMissing;
+                for (int i = 0; i < SatsumaDrivenMountIds.Length; i++)
+                {
+                    if (!graph.TryGetMount(SatsumaDrivenMountIds[i], out MountPointRuntime wheel) || !wheel.IsOccupied)
+                        failures |= VehicleSimulationPrerequisiteFailure.DrivenWheelsMissing;
+                    else if (!wheel.FastenerGroup.IsBolted)
+                        failures |= VehicleSimulationPrerequisiteFailure.DrivenWheelsUnsecured;
+                }
+                cachedSatsumaStructuralCombustionReady = SatsumaEngineAssemblyReadiness.IsStructuralCombustionReady(graph);
+                cachedAssemblyFailures = failures;
+                cachedGraphMutationCount = mutationCount;
+                return;
+            }
 
             if (!AreAllInstalledAndSecured(graph, requiredEnginePartIds))
             {
@@ -263,7 +370,7 @@ namespace MSC.Vehicle
             string definitionId,
             out PartInstance part)
         {
-            PartInstance[] parts = graph.Parts;
+            PartInstance[] parts = graph.AllRuntimeParts;
             for (int index = 0; index < parts.Length; index++)
             {
                 PartInstance candidate = parts[index];

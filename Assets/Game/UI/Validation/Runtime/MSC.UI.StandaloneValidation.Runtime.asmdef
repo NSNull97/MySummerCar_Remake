@@ -1,0 +1,6 @@
+{
+  "name": "MSC.UI.StandaloneValidation.Runtime",
+  "rootNamespace": "MSC.UI.StandaloneValidation",
+  "references": ["MSC.UI.Presentation.Runtime", "MSC.UI.Runtime", "MSC.Save.Runtime", "MSC.Core.Runtime", "MSC.Audio.Runtime", "MSC.Needs.Runtime", "MSC.Economy.Runtime", "Unity.InputSystem", "UnityEngine.UI"],
+  "autoReferenced": true
+}

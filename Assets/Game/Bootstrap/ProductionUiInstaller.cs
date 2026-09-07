@@ -24,6 +24,9 @@ namespace MSC.Bootstrap
         [SerializeField] private Texture2D mainMenuBackdrop;
         [SerializeField] private Texture2D mainMenuLogo;
         [SerializeField] private Shader uiBlurShader;
+        [SerializeField] private MainMenuVehicleModel mainMenuVehiclePrefab;
+        [SerializeField] private MainMenuEnvironmentModel mainMenuEnvironmentPrefab;
+        [SerializeField] private Shader mainMenuPreviewBackdropShader;
         [SerializeField] private bool startInMainMenu = true;
 
         private GameUiRoot uiRoot;
@@ -39,6 +42,12 @@ namespace MSC.Bootstrap
         public Texture2D MainMenuLogo => mainMenuLogo;
 
         public Shader UiBlurShader => uiBlurShader;
+
+        public MainMenuVehicleModel MainMenuVehiclePrefab => mainMenuVehiclePrefab;
+
+        public MainMenuEnvironmentModel MainMenuEnvironmentPrefab => mainMenuEnvironmentPrefab;
+
+        public Shader MainMenuPreviewBackdropShader => mainMenuPreviewBackdropShader;
 
         public bool StartInMainMenu => startInMainMenu;
 
@@ -74,9 +83,9 @@ namespace MSC.Bootstrap
                 return false;
             }
 
-            if (mainMenuBackdrop == null)
+            if (mainMenuBackdrop == null && (mainMenuVehiclePrefab == null || mainMenuEnvironmentPrefab == null))
             {
-                failure = "Project-owned main-menu backdrop is missing.";
+                failure = "Explicit 3D menu environment/vehicle or legacy fixture backdrop is missing.";
                 return false;
             }
 
@@ -127,6 +136,21 @@ namespace MSC.Bootstrap
         }
 
 #if UNITY_EDITOR
+        public void ConfigureMenuEnvironmentForAuthoring(MainMenuVehicleModel vehicle, MainMenuEnvironmentModel environment)
+        {
+            mainMenuVehiclePrefab = vehicle ?? throw new ArgumentNullException(nameof(vehicle));
+            mainMenuEnvironmentPrefab = environment ?? throw new ArgumentNullException(nameof(environment));
+            // Explicit migration of the user-rejected photographic menu composition.
+            mainMenuBackdrop = null;
+            mainMenuPreviewBackdropShader = null;
+        }
+
+        public void ConfigureMenuVehiclePreviewForAuthoring(MainMenuVehicleModel prefab, Shader backdropShader)
+        {
+            mainMenuVehiclePrefab = prefab ?? throw new ArgumentNullException(nameof(prefab));
+            mainMenuPreviewBackdropShader = backdropShader ?? throw new ArgumentNullException(nameof(backdropShader));
+        }
+
         public void ConfigureForAuthoring(
             ProductionWorldStreamingInstaller configuredWorldInstaller,
             InputActionAsset configuredPlayerActions,
@@ -142,8 +166,7 @@ namespace MSC.Bootstrap
                 throw new ArgumentNullException(nameof(configuredPlayerActions));
             vehicleActions = configuredVehicleActions ??
                 throw new ArgumentNullException(nameof(configuredVehicleActions));
-            mainMenuBackdrop = configuredMainMenuBackdrop ??
-                throw new ArgumentNullException(nameof(configuredMainMenuBackdrop));
+            mainMenuBackdrop = configuredMainMenuBackdrop;
             mainMenuLogo = configuredMainMenuLogo ??
                 throw new ArgumentNullException(nameof(configuredMainMenuLogo));
             uiBlurShader = configuredUiBlurShader ??
@@ -222,7 +245,10 @@ namespace MSC.Bootstrap
                             : new Action(
                                 worldInstaller.DeveloperConsole.Open),
                     configureNewGameVehiclePaint:
-                        worldInstaller.TryConfigureNewGameSatsumaPaint));
+                        worldInstaller.TryConfigureNewGameSatsumaPaint,
+                    menuVehiclePrefab: mainMenuVehiclePrefab,
+                    menuPreviewBackdropShader: mainMenuPreviewBackdropShader,
+                    menuEnvironmentPrefab: mainMenuEnvironmentPrefab));
             }
             catch
             {

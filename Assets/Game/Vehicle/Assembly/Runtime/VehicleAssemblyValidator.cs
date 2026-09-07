@@ -37,6 +37,22 @@ namespace MSC.Vehicle.Assembly
             AssemblyDependency[] dependencies,
             ToolDefinition[] tools)
         {
+            return Validate(parts, mounts, dependencies, tools, null);
+        }
+
+        /// <summary>
+        /// Adds explicitly registered item-backed definitions which have no
+        /// starting PartInstance. The caller owns catalog/provenance validation;
+        /// no missing mount definition is inferred or silently manufactured.
+        /// Their presentation belongs to the item wrapper, not VisualPrefab.
+        /// </summary>
+        public static IReadOnlyList<VehicleAssemblyValidationIssue> Validate(
+            PartInstance[] parts,
+            MountPointAuthoring[] mounts,
+            AssemblyDependency[] dependencies,
+            ToolDefinition[] tools,
+            PartDefinition[] dynamicDefinitions)
+        {
             parts = parts ?? Array.Empty<PartInstance>();
             mounts = mounts ?? Array.Empty<MountPointAuthoring>();
             dependencies = dependencies ?? Array.Empty<AssemblyDependency>();
@@ -84,6 +100,36 @@ namespace MSC.Vehicle.Assembly
                 {
                     AddError(issues, "PART-STABLE-DUPLICATE", "Повтор stable ID: " + part.StableId.Value);
                 }
+            }
+
+            var dynamicIds = new HashSet<string>(StringComparer.Ordinal);
+            foreach (PartDefinition definition in dynamicDefinitions ?? Array.Empty<PartDefinition>())
+            {
+                if (definition == null)
+                {
+                    AddError(issues, "PART-DYNAMIC-NULL", "Динамический каталог содержит пустой PartDefinition.");
+                    continue;
+                }
+                string id = definition.DefinitionId;
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    AddError(issues, "PART-DYNAMIC-ID", "Динамический PartDefinition не имеет ID.");
+                    continue;
+                }
+                if (!dynamicIds.Add(id))
+                {
+                    AddError(issues, "PART-DYNAMIC-DUPLICATE", "Повтор динамического PartDefinition ID: " + id);
+                    continue;
+                }
+                if (definitionsById.TryGetValue(id, out PartDefinition existing) && existing != definition)
+                {
+                    AddError(issues, "PART-DYNAMIC-CONFLICT", "Динамический каталог подменяет существующий PartDefinition: " + id);
+                    continue;
+                }
+                // Purchased oil filters intentionally share the exact stock
+                // definition. A second asset with that ID is never accepted.
+                definitionsById[id] = definition;
+                definitionIds.Add(id);
             }
 
             var mountIds = new HashSet<string>(StringComparer.Ordinal);
@@ -175,6 +221,12 @@ namespace MSC.Vehicle.Assembly
                     issues);
                 ValidateMountReferences(
                     mount.MountId,
+                    mount.Definition.InstallationRequiredOccupiedMountIds,
+                    mountIds,
+                    "MOUNT-INSTALLATION-REQUIRES-INSTALLED",
+                    issues);
+                ValidateMountReferences(
+                    mount.MountId,
                     mount.Definition.RequiredAnyOccupiedMountIds,
                     mountIds,
                     "MOUNT-REQUIRES-ANY-INSTALLED",
@@ -203,6 +255,30 @@ namespace MSC.Vehicle.Assembly
                     mountIds,
                     "MOUNT-REMOVAL-BLOCKED",
                     issues);
+                ValidateMountReferences(
+                    mount.MountId,
+                    mount.Definition.RemovalBlockedWhileBoltedMountIds,
+                    mountIds,
+                    "MOUNT-REMOVAL-BLOCKED-BOLTED",
+                    issues);
+                ValidateMountReferences(
+                    mount.MountId,
+                    mount.Definition.RemovalIgnoredDependentMountIds,
+                    mountIds,
+                    "MOUNT-REMOVAL-IGNORED-DEPENDENT",
+                    issues);
+                ValidateMountReferences(
+                    mount.MountId,
+                    mount.Definition.InstallationBlockedWhileBoltedMountIds,
+                    mountIds,
+                    "MOUNT-INSTALLATION-BLOCKED-BOLTED",
+                    issues);
+                string supportId = mount.Definition.InstallAttemptBoltedSupportMountId;
+                if (!string.IsNullOrEmpty(supportId))
+                {
+                    ValidateMountReferences(mount.MountId, new[] { supportId },
+                        mountIds, "MOUNT-INSTALLATION-SUPPORT", issues);
+                }
             }
 
             ValidateDependencies(definitionIds, dependencies, issues);

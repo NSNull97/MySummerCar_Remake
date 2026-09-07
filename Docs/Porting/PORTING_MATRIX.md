@@ -1,5 +1,184 @@
 # Porting Matrix — Phase 1 status synchronized 2026-09-03
 
+## 2026-09-06 — current running-audio acceptance follow-up
+
+The two Satsuma front running beds now have stronger bounded low-end drive and
+a 2 m near field; world ambient layers have a -4 dB trim. Explicit selected
+starter derivatives remove evidenced quiet tails without changing catch
+conditions, event IDs, saves or original media. See
+`Docs/Audio/SATSUMA_RUNNING_MIX_AND_STARTER_CONTINUITY_2026-09-06.md` for executed
+checks and limitations. This does not promote any full-game parity row or
+claim manual sound acceptance.
+
+## 2026-09-06 — live-engine extension; manual acceptance remains separate
+
+The authorized live-engine packet implements opt-in combustion/thermal/wear
+consumers, real adjustment effects, eight typed valve controls, five stock
+service openings, four visible reservoir levels, causal symptom audio and
+render-only mechanical motion. Existing stable parts, purchased-item ownership,
+NWH contact physics, Enviro outputs and accepted 08A layout remain in use.
+
+Current canonical counts are 126 fixed parts / 124 mounts / 294 fasteners after
+exact retirement of eight pseudo-fasteners, not a rewrite of the five true
+rocker-shaft bolts. Optional independently versioned part/operating extensions
+preserve old state and reject unsupported owners. Old hydraulics default empty;
+the user's actual nine purchased descriptors survive native transaction tests.
+
+The 26 selected audio replacements now have measured correction for 15 quiet
+events. Two existing headlamp lens renderers follow the existing powered lamp
+state; the real switch is reused. Temporary media remains replaceable/private.
+Petrol refuelling, purchased-battery ownership, physical engine-mount redesign,
+unbound GT-cap presentation and full manual auditory/road acceptance are not
+claimed complete. No Phase 1 row is promoted to Verified by this packet alone.
+
+See `Docs/Phase1/SATSUMA_LIVE_ENGINE_INTEGRATION_2026-09-06.md` for current
+executed evidence and `Docs/Phase1/SATSUMA_LIVE_ENGINE_FILE_INDEX_2026-09-06.md`
+for the scoped changed-file inventory. Older counts/results below are historical.
+
+## 2026-09-06 — fixed fuel-line fitting extension (generated; automated checks passed)
+
+The earlier missing12mm fitting now has generated bounded fastening/save support:
+fixed vehicle connection, Wrench12, sticky ON8/OFF0, visible only with its tank
+installed. Optional old-save default0/false; graph126/124/302 and seven tank
+bolts unchanged. Scoped04:42 local refresh passed changed11/repeat0 (3fuel+8door
+bindings), fullRebuild=false/nativeSaveWrites=false, in
+`Logs/codex-night-refresh-fuel-door-20260906.log`. All31 fitting tests passed and
+are included in the later1247/1247 EditMode result. New graphics fitting/door
+assertions passed in the final combined Bootstrap3/3; manual acceptance remains
+pending. Final scoped refresh passed changed0/repeat0 with the same graph
+(`Logs/codex-night-refresh-final-idempotent-20260906.log`). Fuel leakage, inspection and
+complete fluid parity remain unimplemented; no startup veto was substituted.
+
+## 2026-09-06 — approved purchased-item/startable-car extension (executed checks; parity limits retained)
+
+The user approved the limited item-to-assembly bridge on5September; historical
+proposal-only entries below are superseded for spark plugs, belt, filter and
+headlight bulbs. Item-owned stable identities/condition remain authoritative;
+the126 fixed parts are not replaced. Seven additive sockets, four plug threads,
+21 stock mounting bolts, four measured headlight mounting bolts and native v18
+migrations are implemented and included in the generated canonical126/124/302
+graph. The previous298 revision is an explicitly supported historical cohort,
+not the current fastener count. The separate Stock21 and Headlight4 packets
+preserve existing IDs/stages and require exact old/new shapes.
+
+Scoped Unity import produced two real purchased-unit wrappers (three meshes)
+and eight engine/key/starter/exhaust clips/events. Corrected first night authoring
+passed97changes/repeat0; the later four-headlight pass passed6changes/repeat0.
+The initial transient-reference blocker was fixed without weakening its guard,
+with six affected definitions restored from verified exact backups. Initial
+test failures and discovery/fixture corrections remain historical evidence in
+the night report, not unresolved final results.
+Final fresh scoped refresh passed changed0/repeat0,126/124/302 with seven
+consumable mounts, fullRebuild=false/nativeSaveWrites=false, in
+`Logs/codex-night-refresh-final-idempotent-20260906.log`.
+
+Latest broad EditMode passed1247/1247,0failures/0skips in
+`Logs/codex-night-editmode-wiring-selection-final-20260906.xml`, including Fuel31, Door10
+and13 strict electrical-binding/empty-inline-JSON cases. All seven new wiring
+selection cases passed in the same312.777s run. Final complete headless Play
+passed108/108,0failures/0skips,105.030s in
+`Logs/codex-night-playmode-service-cabin-final-20260906.xml`: all six physical
+held-spool/F circuit flows, foreign-wall blocking and actual mouse flows for
+choke/hazards/lights passed. Actual four purchased plugs, real tool
+fastening and host/NWH ignition/idle/rev/key-off passed, as did both old-cube bulb
+replacement cases and the actual bulb carry/handoff/live condition/removal route.
+
+Final combined D3D11 Bootstrap passed3/3,0failures/0skips,65.3066s in
+`Logs/codex-night-bootstrap-final-combined-20260906.xml`: graphics1 covers real
+world preparation/startup-guard release/eight clips and the new fitting/eight
+loose-door assertions; native2 covers actual RequestLoad key-access restore and
+v16 migration on temporary slots with the latest electrical guard/fitting state.
+No user slot was rewritten by these checks; explicit
+test-copy preparation/fluid override does not prove untouched-slot first start.
+
+Component-only wiring selection now rejects endpoints beyond the physical spool's
+unchanged0.1m reach. Both individual headlights and complete six-circuit closure
+now pass using measured side approaches, with foreign-solid blocking retained.
+Original held-collision parity remains open: donor PART pickup uses layer16
+Wheel and ignores car layer22 Collider2 hulls; current spool/hull contact remains
+solid. A streaming-safe `CarryCollisionBypassScope` cache/prior-pair extension is
+proposal-only, not a global ignore policy or an implemented fix. See
+`Docs/Phase1/SATSUMA_WIRING_HELD_COLLISION_REFERENCE_2026-09-06.md`.
+Vibration remains renderer-only; physical
+engine/body shake and purchased-battery identity/charge integration await user
+approval. Manual driving/audible/visual acceptance and broader fluid/wear/tuning
+parity remain open. The bridge is not all-Teimo-goods coverage: extinguisher
+mounting and deferred SUOMI-cover effects remain separate backlog.
+High-beam stalk, emissive lenses/flare and full electrical load/aging parity
+remain separate limitations.
+
+Classifications: `BehavioralReference`, `MountPointSource`,
+`ConfigurationTransferred`, `Reimplemented`; reviewed private media is
+`TemporaryDirectImport`. Status: `ImplementedUnverified / AutomatedPassedManualPending`;
+no whole engine, vehicle or Phase1 `Verified` promotion. Current evidence,
+executed logs and remaining limitations:
+`Docs/Phase1/SATSUMA_STARTABLE_CAR_NIGHT_2026-09-06.md`.
+
+## 2026-09-05 — engine assembly follow-up (manual pending)
+
+`Reimplemented`: exact clutch/chain access polarity, engine-to-car access and
+retained-child removal, opt-in loose-subassembly pickup/occlusion, camshaft
+post-tightening adjustment and independently versioned optional saved angle.
+`ConfigurationTransferred`: three auxiliary toolbox tool identities and scoped
+engine mount definitions. `TemporaryDirectImport`: reviewed existing fastener
+mesh references only; not production art. Current stock assembly still cannot
+consume purchased spark plugs/belt/filter. That compatibility extension is a
+proposal requiring approval, not an implemented feature. See
+`Docs/Phase1/SATSUMA_ENGINE_BUILD_CLOSURE_2026-09-05.md` for per-packet validation.
+
+Project integration correction: the existing chassis mass/impulse consumer
+excludes installed children whose outer engine owner is still loose. Tests
+exercise transfer of the entire aggregate on engine install/retained removal.
+
+## 2026-09-05 — engine E2a mesh identity only
+
+Separate `BehavioralReference / ReadOnlyAudit`: Screw stage0/8 overwrite raw
+pre-init poses; representative effective travel differs by about6mm because
+parent scale was moved onto the mesh. No motion fix is implemented. Evidence
+and next-step scope: `SATSUMA_ENGINE_FASTENER_STAGE_FRAME_AUDIT_2026-09-05.md`.
+
+Oilpan9 short bolts; gearbox6 long plus the existing10mm short bolt:
+`ConfigurationTransferred;Reimplemented`, using already imported replaceable
+`TemporaryDirectImport` meshes. Scoped16then0, Edit542/542 and fixturePlay63/63,
+zero failures/skips. Sixteen MeshFilter GUID changes only;403 other protected
+files and all6 user-save/backup hashes unchanged. `ImplementedUnverified /
+AutomatedPassedManualPending`; ownership/counts/latches/stage travel/physics
+are not changed or promoted to parity. Donor oilpan child-.02Z is source-checked
+but not assumed to be an initialized runtime base pose. Exact evidence,
+hashes and manual checklist: `SATSUMA_ENGINE_FASTENER_PRESENTATION_E2A_2026-09-05.md`.
+
+## 2026-09-05 — cockpit C2 physical ignition
+
+| Area | Classification | Current boundary |
+|---|---|---|
+| Physical lock gesture | `BehavioralReference;ConfigurationTransferred;PivotSource;Reimplemented` | Installed steering column exposes an LMB-only `Off / Accessory / Starting` controller. Realtime hold is `0.4 s`, key angles are `0/-30/-60 deg`, and the local attempted-start latch is independent of engine-running feedback |
+| Starter/input bridge | `BehavioralReference;Reimplemented` | Adapter replaces ignition/starter intent only and delegates throttle, clutch, brake, steering, gear and reset. Effective START requires `ElectricsOk`, installed starter, starter connection and stage-8 starter cable; raw key travel remains possible without power |
+| Logical key/save | `BehavioralReference;Reimplemented` | `vehicle.satsuma.key` starts present; required native domain `vehicle.satsuma.key-access` preserves loss and v16→v17 migration supplies `true`. Existing vehicle `ignitionOn` bool remains compatible; START/hold/attempt duration is transient |
+| Temporary presentation | `TemporaryDirectImport` | Hash-locked key `106152c393ea3d944bcccd352b6ee602` and socket `d99cd1a03153439488c620e94c76032d` meshes are explicitly wrapped under the steering-column part; they own no gameplay logic and remain Phase-2 replacement debt |
+| Validation | `ImplementedUnverified / AutomatedPassedManualPending` | Final EditMode518/518, fixturePlay63/63 and real-D3D11 native BootstrapPlay1/1 passed with zero failures/skips. Two RequestLoad reloads verify savedfalse and v16->v17 migratedtrue before world reveal. Manual pending; no full cockpit, seated-driving, audio or engine-completion promotion follows. Exact hashes and failure history: SATSUMA_COCKPIT_IGNITION_C2_2026-09-05.md |
+
+## 2026-09-05 — cockpit C1b bounded update
+
+Steering wheel ON2/OFF0 and installation-only column Installed requirement:
+`BehavioralReference / ConfigurationTransferred / Reimplemented`,
+`ImplementedAutomatedPassedManualPending`. Physical column-surface handoff uses
+the same gate. Existing ownership/removal/collapse/save/physics contracts remain
+unchanged; old wheel-without-column and trueT1 latch DTOs round-trip. Scoped
+refresh1then0; Edit411/411 (49new) and Play61/61, zero failures/skips; only1of120
+protected files changed. No full cockpit/ignition/Sport/Rally completion claim.
+Report: `Docs/Phase1/SATSUMA_COCKPIT_STEERING_RULES_FIX_2026-09-05.md`.
+
+## 2026-09-05 — cockpit C1a bounded update
+
+Dashboard-meter ON12/OFF0 and dashboard installed + meters Bolted switch gate:
+`BehavioralReference / ConfigurationTransferred / Reimplemented`,
+`ImplementedAutomatedPassedManualPending`. Existing power/sweep/park and save
+contracts preserved; no cockpit ignition, seat owner or gauge implementation is
+claimed. Scoped refresh changed one definition then0; protected119 other hashes
+unchanged. Edit190/190, Play31/31; report and manual checklist:
+`Docs/Phase1/SATSUMA_COCKPIT_DASHBOARD_GATE_FIX_2026-09-05.md`.
+
+
 ## Current status summary
 
 The row-level authority is
@@ -1388,6 +1567,17 @@ output.
 | Glass and rain | `BehavioralReference;ConfigurationTransferred;Reimplemented` | Five transparent HDRP windows consume a project-owned 512 atlas with donor rain/gravity/intensity values and shelter gating; no donor runtime/shader ships. Wiper clearing is pending under vehicle electrics/controls: the donor arms are fixed/non-removable and require `ElectricsOK` plus installed `WiringSwitchLights` before their pivots drive the windshield clearing positions |
 | Automated evidence | `ImplementedAutomatedValidationPassedManualInGameAcceptancePending` | Current builder `11A-V1d.60` passed; generated-content EditMode 39/39 and physical hinge PlayMode 4/4 passed. Whole-body rain wetness is not donor-evidenced and remains Phase 2 |
 
+### 2026-09-03 — Satsuma wiring and fixed wipers V62
+
+| Area | Classification | Boundary / evidence |
+|---|---|---|
+| 26 fixed wiring pairs / 52 endpoints | `BehavioralReference;MountPointSource;ConfigurationTransferred;Reimplemented;TemporaryDirectImport` | V63 corrects the V62 misread: CLOSELOOP is local to the waiting Sound state, so both ends must be selected before a wire appears. Shared 0.1 m clusters arm nearby ends; completion resets pending selections. Exact pivots retained; tool-filtered 0.1 m spheres replace 0.028 m targets |
+| Part-dependent availability | `BehavioralReference;Reimplemented` | Engine block gates starter/coil/alternator only; battery, dash/meters, column, lights, fuel tank, radio/accessories and radiator variants gate their own endpoints |
+| Electrical fasteners and power | `ConfigurationTransferred;Reimplemented` | Three electrical fasteners retain stages 0..8. Ground requires first starter mounting bolt below stage 8, not the positive cable tightened; verified donor index0 / marker57844. `ElectricsOK` uses installed/tight shoes, harness, ignition and >9.7 V |
+| Fixed wipers and rain clearing | `BehavioralReference;ConfigurationTransferred;Reimplemented` | Non-removable four-mesh rig, Off/Slow/Fast switch, 86-degree 1 s complete cycle, 3 s slow delay, finish-current-cycle on power loss and live windshield clearing |
+| Persistence and validation | `Reimplemented;ImplementedUnverified` | Schema 2 and existing connections retained; pending endpoint selections are transient. V62 green tests encoded wrong one-click/gate assumptions and are superseded by the V63 tests; current execution results are in SATSUMA_ELECTRICS_AND_WIPERS_PARITY_2026-09-03.md. slot-01 inspected read-only; manual route pending |
+| Known boundary | `Blocked` | Donor hot-install spark/audio and 0.5% electrocution are audited but await project-owned player damage/death authority; connected-part removal/reset requires final accessory assembly integration |
+
 ### 2026-09-03 — Satsuma installed-panel lifetime correction
 
 | Area | Classification | Boundary / evidence |
@@ -1408,3 +1598,154 @@ output.
 | Jump and landing camera | `Reimplemented` | `6.65 m/s` launch force preserves the former `1.05 m` arc; structured landing evidence adds bounded force influence to stronger `0.14 m` / `3 deg` presentation while retaining `Landed(float)` |
 | Posture and eye line | `Reimplemented` | Jumping from crouch commits to standing after headroom validation; rise is `6 m/s`; eye targets and canonical camera are raised `0.08 m` |
 | Automated evidence | `ImplementedAutomatedValidationPassedManualInGameAcceptancePending` | Unity compile and deterministic Satsuma `11A-V1d.60` build passed; focused EditMode `76/76`; original locomotion PlayMode `14/14`; production Bootstrap/home stable-ID binding smoke `1/1`; prior full-project locomotion PlayMode `21/21`; final isolated and full-project Unity `6000.3.11f1` locomotion regressions each passed `23/23`; the generated-prefab collision contract was revalidated `1/1` and runtime activation/isolation `2/2` after the `.60` rebuild. Static-ground occlusion first failed alone (`20/21`); compound-rocker first failed alone (`21/22`); raw CharacterController contact reversed an oncoming `600 kg` body from `+0.2` to about `-1.1157 m/s`, while the kinematic-proxy regression passed. Broader generated-Satsuma fixture is `38/39` with one unrelated existing NUnit `Has.Count` bootlid-test error; the collision contract passed within that run. Subjective camera, active Satsuma suspension, all body-part contacts and gauge motion acceptance remain manual |
+
+### 2026-09-04 — Satsuma handbrake V64 (automated passed, limited manual accepted)
+
+| Area | Classification | Boundary / evidence |
+|---|---|---|
+| Lever and cable control | `BehavioralReference;ConfigurationTransferred;Reimplemented` | Use 106799 / Brake 106798: held LMB/RMB, 100 deg/s, 0..20 deg, initial 0.1; graph-occupied handbrake and Bolted latch required. Force 104529 / GetTightness 104530 require fifth 5 mm fastener stage above zero, not hydraulic lines or fluid |
+| Handbrake fasteners | `MountPointSource;ConfigurationTransferred;TemporaryDirectImport` | Exact five-marker short-bolt override: four 8 mm and one 5 mm, eight stages each; donor aggregate latch 6/0 replaces generic 1/0. No stable-ID or stage-array changes |
+| Moving presentation | `PivotSource;Reimplemented;TemporaryDirectImport` | Only the moving lever renderer rotates; fixed base, pickup body, assembly pose and fastening targets retain ownership. Permanent rod Transform60945 uses mesh1114fb760fb4d7a4cac87438f8bdc8a9/material244b34167b8e8de4992ebb466651484d as an always-active vehicle-root child even with the loose part, shadow casting off and receiving on. Handbrake audio uses null emitter plus explicit lever world position; generated contracts passed post-rebuild EditMode, manual visual/audio acceptance pending |
+| Rear parking torque | `ConfigurationTransferred;Reimplemented` | Independent additive NWH parking channel; 1000 N m maximum per rear wheel, derived from donor 500 N m rear axle and factor 2 in Wheel.FixedUpdate. No front parking torque, chassis lock or hydraulic/engine gate |
+| Gravity release compatibility | `Reimplemented` | Satsuma-only default-off opt-in at backend order 150 before the rest clamp, applied to all four contacts. Grade torque L * longitudinalGravity / normalGravity * R must exceed BrakeTorque + RollingResistanceTorque + 0.05 N m; public wake reaches the next NWH step. No added force, velocity or vendor change; flat/sideways rest behavior retained |
+| Partial fastening | `BehavioralReference;Reimplemented` | Once per released-to-applied transition, BREAK weight (39-T)/40 versus FINISHED 1; non-positive break weights cannot win. Existing graph collapse owns detach; no screw-zeroing removal bypass |
+| Save and validation | `Reimplemented;ImplementedAutomatedFocusedPassedLimitedManualAccepted` | Optional handbrake schema 1 stores finite 0..20 degree position only; absent payload means donor 0.1 default. Held input and derived torque remain transient. V64 build and audio import passed (9 clips / 10 overrides); EditMode 134/134 passed. Historical combined PlayMode 13/22 was followed by regression EditMode 85/85 and combined PlayMode 33/33, including handbrake 2/2 and installed-part 20/20; zero skips. User accepted behavior within limited checks, not a full-car slope/save/audio checklist. P1.CAR.009 stays PartiallyImplemented |
+| Front-yaw/fixture regression compatibility | `Reimplemented;ResolvedAutomatedRegressionPassed` | Valid captured/composed physics rotations are normalized; invalid non-finite/near-zero frames report and disable the helper, never silently identity. Fixture owns vehicle/all parts/ground, including detached parts; two-frame deferred cleanup and source cleanup precede fresh restore. Independent fresh/arm baselines each 0/1 non-unit; 13 new Edit rotation cases and combined 33/33 passed. No geometry, suspension settings, existing numeric tolerances, vendor source, stable IDs or save schema change. See `Docs/Phase1/SATSUMA_FRONT_QUATERNION_REGRESSION_FOLLOWUP_2026-09-04.md`; not a new donor assembly audit |
+
+Authority and executed/pending test evidence:
+`Docs/Phase1/SATSUMA_HANDBRAKE_PARITY_2026-09-04.md`.
+
+### 2026-09-04 — Satsuma assembly-rule audit index (read-only)
+
+Classification `BehavioralReference`; status `EvidenceReviewedNotImplemented`
+applies to newly identified differences, not accepted implementation already
+in place. Frozen GAME SHA256:
+`c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4`.
+
+| Review | Evidence / next-step document |
+|---|---|
+| Front installation, removal and retention rules | `Docs/Phase1/SATSUMA_FRONT_ASSEMBLY_RULES_AUDIT_2026-09-04.md` |
+| Rear installation, drop/removal and retention rules | `Docs/Phase1/SATSUMA_REAR_ASSEMBLY_RULES_AUDIT_2026-09-04.md` |
+| Bounded fix specification, not implemented by this audit | `Docs/Phase1/SATSUMA_SUSPENSION_ASSEMBLY_RULES_FIX_SPEC_2026-09-04.md` |
+
+No assembly behavior, geometry, tuning, stable ID or save migration is delivered
+by this documentation pass. The passed numeric-regression stage remains
+separate; no additional runtime validation or broad `Verified` status is claimed.
+
+### 2026-09-04 — Satsuma package A / V65, historical initial contract
+
+This historical initial contract was subsequently superseded by the explicit
+user revision below; its green tests do not verify the current runtime.
+Frozen GAME SHA256:
+`c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4`.
+
+| Area | Classification | Historical evidence / superseded boundary |
+|---|---|---|
+| Front installation rules | `BehavioralReference;Reimplemented` | Twelve presence-only preview / actual Bolted support checks; addressed support Drop before incoming install, no dependent cascade; optional carry pre-release preserves held target on failure. Halfshaft needs same-corner disc I and !B; removed rod→spindle and disc→strut extra requirements; unique dependencies40→34 |
+| Front thresholds / save compatibility | `ConfigurationTransferred;Reimplemented` | Subframe26/0, rack24/0, column10/0, stockstrut3/0, disc2/0, halfshaft2/0; retained wishbone/spindle2/0 and rod8/0. Schema2/legacy1 and stable IDs unchanged; saved valid hysteretic B retained, including retired-column remap |
+| Scoped generation / validation | `ImplementedAutomatedPackageAPassedManualPending` | `.65` refresh15 definitions/6 edges then idempotent0/0; no full rebuild/GAME parse, manifest remains`.64`. Final Edit233/233 with0skips, including65policy+12save; first232/233 stale ordering assertion corrected. Final Play47/47 with0skips (policy3/installed20/steering3/spawn8/handbrake2/assembly11); first39/47 had eight spawn-fixture support-preparation failures corrected without changing numerical assertions or free strut/rod behavior. Manual pending; packagesB–D open; P1.CAR.002/.003 remain PartiallyImplemented |
+
+Report: `Docs/Phase1/SATSUMA_FRONT_INSTALLATION_RULES_FIX_2026-09-04.md`.
+No physical retuning, vendor edits, new save schema or full-vehicle donor
+verification is claimed. Generated presentation payload remains ignored.
+
+### 2026-09-04 — Current revised A and wheel cadence B
+
+| Area | Classification | Current contract / validation boundary |
+|---|---|---|
+| A installation-triggered collapse | `Reimplemented` | Explicit user revision: incoming completes handoff and PartInstalled, then support/incoming/existing graph descendants each break loose once. Present !B support does not reject or keep the item held. Existing graph closure only; unrelated body branches remain, no continuous T0 collapse. This differs from the literal addressed pre-install donor Drop audit and is not claimed raw-donor-identical |
+| A retained rules / compatibility | `BehavioralReference;ConfigurationTransferred;Reimplemented` | Twelve support mappings, inverse same-corner halfshaft I&&!B gate,34dependencies and corrected ON/OFF remain. Stable IDs/schema2/legacy1/latch remap unchanged; missing/invalid prerequisites still reject normally |
+| B wheel Chance/Wait timing | `BehavioralReference;ConfigurationTransferred;Reimplemented` | Twelve stock/GT/steelwide Use FSMs: initial >33 Chance immediate, FINISHED→Wait1s realtime→ON2; active Wait survives speed/T0/T32 changes; outside Wait OFF/T0 >5 remains direct. Full T32 schedules zero-risk Chance/Wait; per-group transient deadlines reset at occupancy/restore/disable, no catch-up or save field; weights/thresholds/geometry unchanged |
+| Current validation | `AutomatedPassedManualPending` | Offline five assemblies0errors/five existing CS0414 warnings. Current revised A+B Edit250/250 and Play52/52 passed with0failures/0skips/exit0, Logs/codex-suspension-ab-edit.xml and codex-suspension-ab-play.xml. Edit includesA65/B17/save12; Play includesassembly11/A4/steering3/spawn8/handbrake2/installed20/B4. Editor closed normally with user authorization, window released. Manual pending. Prior A233Edit/47Play is historical only; C/D open; CAR.002/.003 remain PartiallyImplemented |
+
+Evidence: `Docs/Phase1/SATSUMA_FRONT_INSTALLATION_RULES_FIX_2026-09-04.md` and
+`Docs/Phase1/SATSUMA_WHEEL_BREAK_CADENCE_FIX_2026-09-04.md`. B source authority
+remains frozen GAME SHA256
+`c3f2f3373ccad4fcbe104840fcb83e364f55438070e808d11ebe4996bc0476c4`.
+No full wheel-family/live-pause or donor weighted-helper verification is claimed.
+
+### 2026-09-04 — Satsuma manual-removal package C
+
+| Area | Classification | Current contract / validation boundary |
+|---|---|---|
+| Front ordinary removal | `BehavioralReference;Reimplemented` | Stock-strut blocked by rod.I; halfshaft blocked by disc.B. Disc ignores only inferred halfshaft dependency; spindle ignores only inferred disc dependency. Own B, explicit blockers, owned children and forced/collapse paths remain authoritative |
+| Rear install ordering | `BehavioralReference;Reimplemented` | Stock/long spring mount blocked by occupied same-corner stock shock; arm mount likewise blocked. Spring still requires arm.I and click-time arm.B. Rally spring/shock runtime definitions remain pending; their evidence is not misapplied to the stock-only generated mount |
+| Deferred rear arm case | `BehavioralReference;Blocked` | Donor permits arm removal with spring present once own B, stock shock.I and drum.I are false, but spring fate is not established. Existing remake blocker remains pending live donor verification |
+| Compatibility / validation | `ImplementedAutomatedPassedManualPending` | Empty-default additive authoring only; stable IDs, schema2/legacy1 and physics unchanged. A/B accepted behavior unchanged. Scoped Unity refresh exit0 changed14 then idempotent changed0, without a full rebuild. Byte-level root checks confirm unchanged prefab `7F4C06B701116F43428C54411C954085E4FA39DAD4736E4BBE1848E7B2F58CF6`, manifest `3BF4C2535BFF9CE40520FE117220FD0AD1434765A8025AEA0847A14DD524B4DF` and EditorBuildSettings `1849B8BE614E204FB0CF463CBCCC784380598D1BB4302E82AC3840F46CF2E454` SHA256. Offline five assemblies compile with 0 errors/5 existing CS0414. EditMode 278/278 passed, failed0/skipped0/exit0 in 55.8245767s (`Logs/codex-suspension-c-edit.xml`; A65/B17/C23/new-generated-C5/generated39/latch-save12/alignment24/steering6/P0-bolt5/assembly27/player52/audio3). Initial Play59/61 exposed a stale manual-removal fixture and exactly one float ULP at world z≈-1039; runtime was unchanged, focused2/2 passed. Final PlayMode 61/61 passed, failed0/skipped0/exit0 in 78.6002265s (`Logs/codex-suspension-c-play-final.xml` / `.log`). Post-run hashes remain identical; manual pending |
+
+Evidence: `Docs/Phase1/SATSUMA_MANUAL_REMOVAL_RULES_FIX_2026-09-04.md`.
+
+### 2026-09-05 — Engine E1 access rules
+
+`BehavioralReference;ConfigurationTransferred;Reimplemented` →
+`ImplementedAutomatedPassedManualPending`. Eight existing engine definitions
+now enforce donor-evidenced crankshaft/cap/piston access exclusions through the
+existing assembly graph. Scope excludes shared crank B, fastener thresholds,
+delayed Drop, compound flywheel gates and engine simulation completeness.
+Scoped refresh8→0; Edit125/125 and targeted assembly Play11/11 passed,0skip/0fail.
+Exactly8 of120 protected hashes changed; prefab, manifest, build scenes and
+the other109 definitions remain byte-identical. See
+`Docs/Phase1/SATSUMA_ENGINE_ACCESS_RULES_FIX_2026-09-05.md`.
+
+
+### 2026-09-05 — Engine repair packet
+
+| Area | Classification | Scope / limitations |
+| --- | --- | --- |
+| Caps, cover and mounting screw frames | BehavioralReference;ConfigurationTransferred;Reimplemented | Four cap visibility bindings; six stock cover IDs and exact saved alias retirement; donor stage travel including rotation-only hose clamp |
+| Engine controls | BehavioralReference;Reimplemented | Alternator/distributor/filter, separate screwdriver mixture and manual throttle; running-engine consumers remain incomplete except throttle input |
+| Loose physical assembly | Reimplemented | Explicit compound shapes, additive mass/CoM; approved 120 kg carry restriction is a documented donor deviation |
+| Engine-to-car docking | BehavioralReference;ConfigurationTransferred;Reimplemented | Three measured proximity pairs and ON2/OFF0; pre-publication stage transfer, in-place release, existing external blockers; no claim of donor joint break-force parity |
+| Validation and compatibility | AutomatedValidatedPendingManual | Stable graph IDs retained except exact seven retired pseudo/duplicate fasteners; optional versioned settings; 799/799 EditMode and 74/74 PlayMode passed; native slot-01 migrated on a copy, six native files unchanged. Manual acceptance and engine-simulation limits remain in SATSUMA_ENGINE_REPAIR_PACKET_2026-09-05.md |
+
+Manual follow-up: the historical automated results above did not catch engine
+motion, mount fastener frame conversion or carburetor mouse routing. Acceptance
+is reopened; current findings and checks are recorded in
+`SATSUMA_ENGINE_MANUAL_REGRESSION_2026-09-05.md`.
+Follow-up final validation: 807/807 EditMode and 81/81 PlayMode passed, zero
+failures/skips; all six native files unchanged. Manual repetition is pending.
+
+### 2026-09-06 — Lighting-switch audio gap repair
+
+| Area | Classification | Status / boundary |
+|---|---|---|
+| Existing lighting-switch event media | TemporaryDirectImport;ConfigurationTransferred;Reimplemented | GeneratedAndAutomatedPlaybackVerified / HumanListeningPending. Hash-pinned frozen `house_light_switch.ogg`; one Effects event at existing `audio.event.lighting.switch`, volume/pitch1, min/max1/10m. Import repeated with changed=0; two content tests in 87/87 EditMode and real Bootstrap playback in both sessions in 49/49 PlayMode. No user-save migration. Evidence: `Docs/Audio/AUDIO_ROUTING_REPAIR_2026-09-06.md`. |
+| Compatibility | Reimplemented | Existing lighting adapter and event ID retained; no donor AudioSource/FSM, save mutation/schema migration or UI change. Private ignored Resources supplement; project rolloff replaces donor custom curve. |
+
+Evidence: `Docs/Audio/AUDIO_COVERAGE_AUDIT_2026-09-06.md`.
+Replacement key: `presentation.audio.lighting-switch.phase2`.
+
+### 2026-09-06 — Satsuma scoped event mix follow-up
+
+| Area | Classification | Status / boundary |
+| --- | --- | --- |
+| Existing Satsuma engine/start/symptom event balance | Reimplemented | Optional zero-default event gain plus added-boost headroom; retained original clip normalization and all stable IDs. Actual listener output is measured; first constant-gain clipping trial rejected. Current executed results: `Docs/Audio/SATSUMA_EVENT_MIX_REPAIR_2026-09-06.md`. Human listening remains pending. |
+| Existing private audio payload | TemporaryDirectImport | Same stock/user files and hashes, no new donor media, no full import or Wwise-bank rebuild. Six selected engine events inherit the stock template balance; other events remain unchanged. |
+
+### 2026-09-07 — Satsuma visual/instrument/steady-idle follow-up
+
+| Area | Classification | Status / boundary |
+| --- | --- | --- |
+| Three measured hose/filter end junctions | Reimplemented | Explicit local anchors on source-hash-locked mesh copies; far ends and physical/save state preserved. Not a complete vehicle connection audit. |
+| Engine descendants, purchased belt/plugs, shaft bolts and exhaust | Reimplemented | Bounded visual motion and lifecycle checks; not chassis forces or donor rigidbody torque. |
+| Stock gauge/clock/odometer/light bindings | Reimplemented | Existing electrical/simulation/time inputs; additive deferred-safe odometer extension. High-beam input and unsupported upgrade gauges remain open. |
+| Existing belt map and stock gauge emission | TemporaryDirectImport | Correct Texture2D binding and stock material variants; actual HDRP checks, not production art or full-night lighting acceptance. |
+| Satsuma-only steady audio derivatives | TemporaryDirectImport | Reviewed frame ranges/hashes; original/NPC media retained. Actual device checks and human-listening boundary are reported, not inferred from source filenames. |
+
+The authoritative execution record is
+`Docs/Phase1/SATSUMA_VISUAL_AUDIO_PACKET_2026-09-07.md`; broad Phase 1 feature rows
+are not promoted to Verified by this corrective packet.
+
+### 2026-09-07 — interior driver-trigger first-drive packet
+
+| Area | Classification | Status / boundary |
+| --- | --- | --- |
+| Measured activation capsule and eye/steering anchors | ConfigurationTransferred | Frozen GAME scene source hash; scoped canonical authoring, no exterior boarding. |
+| Driver session, exclusive input and in-cabin release | Reimplemented | Real input/pause/seat-loss tests; stock seat only, human acceptance pending. |
+| Driving save extension and purchased compound re-registration | Reimplemented | Optional schema-1 player field; native fresh-presentation/repeat-load/rollback coverage; no stable-ID change. |
+| First/second/reverse, hydraulic stop and loaded stall | Reimplemented | Existing simulation/NWH authority exercised on native saved car and flat test pad; not full donor-road calibration. |
+| Stock/GT steering render-leaf motion | Reimplemented | Explicit pivot and installed-part binding; colliders/mounts unchanged, no physics steering replacement. |
+
+Evidence, controls, exact runs and exclusions:
+`Docs/Phase1/SATSUMA_DRIVER_TRIGGER_PACKET_2026-09-07.md`. No broad CAR row is
+promoted to Verified, and the private temporary art is not ProductionReady.

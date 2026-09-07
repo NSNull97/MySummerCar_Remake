@@ -13,7 +13,7 @@ namespace MSC.Audio
     /// </summary>
     [DefaultExecutionOrder(-25000)]
     [DisallowMultipleComponent]
-    public sealed class AudioBackendRouter : MonoBehaviour, IAudioBackend, IGameSessionLifetime
+    public sealed class AudioBackendRouter : MonoBehaviour, IAudioBackend, IGameSessionLifetime, IAudioEventTimingSource
     {
         [SerializeField] private MonoBehaviour preferredBackendComponent;
         [SerializeField] private MonoBehaviour fallbackBackendComponent;
@@ -33,6 +33,8 @@ namespace MSC.Audio
         private IAudioBackend preferredBackend;
         private IAudioBackend fallbackBackend;
         private IAudioBackend activeBackend;
+        private IAudioBackend secondaryBackend;
+        private readonly HashSet<AudioEventId> reportedEventFailures = new HashSet<AudioEventId>();
         private AudioSettingsState settings = AudioSettingsState.Default;
         private AudioListenerContext listenerContext;
         private bool hasListenerContext;
@@ -221,14 +223,26 @@ namespace MSC.Audio
                 return false;
             }
 
-            emitters.Add(emitter.StableId, emitter);
             EnsureActiveBackend();
+            // Binding a newly ready secondary replays all incumbent emitters.
+            // Add this one afterwards so strict backends see one registration.
+            emitters.Add(emitter.StableId, emitter);
             if (activeBackend != null &&
                 !activeBackend.RegisterEmitter(emitter, out string backendFailure))
             {
                 emitters.Remove(emitter.StableId);
                 lastFailure = backendFailure;
                 failure = backendFailure;
+                return false;
+            }
+
+            if (IsBackendAliveAndReady(secondaryBackend) &&
+                !secondaryBackend.RegisterEmitter(emitter, out string secondaryFailure))
+            {
+                activeBackend?.UnregisterEmitter(emitter);
+                emitters.Remove(emitter.StableId);
+                lastFailure = secondaryFailure;
+                failure = secondaryFailure;
                 return false;
             }
 
@@ -253,6 +267,7 @@ namespace MSC.Audio
             RemoveCachedEmitterValues(emitter.StableId);
             EnsureActiveBackend();
             activeBackend?.UnregisterEmitter(emitter);
+            secondaryBackend?.UnregisterEmitter(emitter);
             return true;
         }
 
@@ -285,7 +300,15 @@ namespace MSC.Audio
                 }
             }
 
-            IAudioEventHandle handle = activeBackend.PostEvent(in request);
+            IAudioBackend eventBackend = ResolveEventBackend(request.EventId);
+            IAudioEventHandle handle = eventBackend.IsReady
+                ? eventBackend.PostEvent(in request) : AudioEventHandles.Invalid;
+            if (handle == null || !handle.IsValid)
+            {
+                string detail = eventBackend.CaptureSnapshot().LastFailure;
+                lastFailure = $"Audio event {request.EventId} was rejected by {eventBackend.BackendId}: {detail}";
+                if (reportedEventFailures.Add(request.EventId)) Debug.LogWarning(lastFailure, this);
+            }
             return handle ?? AudioEventHandles.Invalid;
         }
 
@@ -315,9 +338,14 @@ namespace MSC.Audio
                 return true;
             }
 
-            if (!activeBackend.SetParameter(parameterId, value, emitter))
+            bool secondaryUpdated = IsBackendAliveAndReady(secondaryBackend) &&
+                secondaryBackend.SetParameter(parameterId, value, emitter);
+            bool explicitlyOwned = !ReferenceEquals(activeBackend, fallbackBackend) &&
+                IsBackendAlive(fallbackBackend) && fallbackBackend is IAudioExplicitContentBackend content &&
+                content.OwnsParameter(parameterId);
+            if (!(explicitlyOwned ? secondaryUpdated : activeBackend.SetParameter(parameterId, value, emitter)))
             {
-                lastFailure = activeBackend.FailureReason;
+                lastFailure = explicitlyOwned ? fallbackBackend.FailureReason : activeBackend.FailureReason;
                 return false;
             }
 
@@ -350,6 +378,7 @@ namespace MSC.Audio
                 return true;
             }
 
+            secondaryBackend?.SetSwitch(switchGroupId, switchValueId, emitter);
             if (!activeBackend.SetSwitch(switchGroupId, switchValueId, emitter))
             {
                 lastFailure = activeBackend.FailureReason;
@@ -381,6 +410,7 @@ namespace MSC.Audio
                 return true;
             }
 
+            secondaryBackend?.SetState(stateGroupId, stateValueId);
             if (!activeBackend.SetState(stateGroupId, stateValueId))
             {
                 lastFailure = activeBackend.FailureReason;
@@ -400,6 +430,7 @@ namespace MSC.Audio
             {
                 activeBackend.SetListenerContext(in context);
             }
+            secondaryBackend?.SetListenerContext(in context);
         }
 
         public void ApplySettings(in AudioSettingsState value)
@@ -410,12 +441,23 @@ namespace MSC.Audio
             {
                 activeBackend.ApplySettings(in value);
             }
+            secondaryBackend?.ApplySettings(in value);
         }
 
         public void StopAll(float fadeSeconds = 0f)
         {
             EnsureActiveBackend();
             activeBackend?.StopAll(AudioMath.NonNegative(fadeSeconds));
+            secondaryBackend?.StopAll(AudioMath.NonNegative(fadeSeconds));
+        }
+
+        public bool TryGetEventDurationSeconds(AudioEventId eventId, out float seconds)
+        {
+            IAudioBackend selected = ResolveEventBackend(eventId);
+            if (selected is IAudioEventTimingSource timing)
+                return timing.TryGetEventDurationSeconds(eventId, out seconds);
+            seconds = 0f;
+            return false;
         }
 
         public AudioRuntimeSnapshot CaptureSnapshot()
@@ -460,7 +502,7 @@ namespace MSC.Audio
                 backendSnapshot.IsReady,
                 ReferenceEquals(activeBackend, fallbackBackend),
                 emitters.Count,
-                backendSnapshot.ActiveVoiceCount,
+                backendSnapshot.ActiveVoiceCount + (secondaryBackend?.CaptureSnapshot().ActiveVoiceCount ?? 0),
                 backendSnapshot.LoadedBankCount,
                 missingBanks,
                 hasListenerContext ? listenerContext : backendSnapshot.Listener,
@@ -478,20 +520,16 @@ namespace MSC.Audio
 
             sessionEnded = true;
             UnregisterSceneCallbacks();
-            if (IsBackendAlive(activeBackend))
-            {
-                activeBackend.StopAll(0f);
-                foreach (IAudioEmitter emitter in emitters.Values)
-                {
-                    activeBackend.UnregisterEmitter(emitter);
-                }
-            }
+            ReleaseBackend(activeBackend, 0f);
+            ReleaseBackend(secondaryBackend, 0f);
 
             emitters.Clear();
             parameterValues.Clear();
             switchValues.Clear();
             stateValues.Clear();
+            reportedEventFailures.Clear();
             activeBackend = null;
+            secondaryBackend = null;
         }
 
         private void ResolveSerializedBackends()
@@ -549,6 +587,7 @@ namespace MSC.Audio
 
             if (!forceRebind && ReferenceEquals(desired, activeBackend))
             {
+                EnsureSecondaryBackend();
                 return;
             }
 
@@ -557,20 +596,11 @@ namespace MSC.Audio
 
         private void RebindBackend(IAudioBackend desired)
         {
-            IAudioBackend previous = activeBackend;
-            if (IsBackendAlive(previous))
-            {
-                previous.StopAll(0.05f);
-                foreach (IAudioEmitter emitter in emitters.Values)
-                {
-                    previous.UnregisterEmitter(emitter);
-                }
-            }
+            ReleaseBackend(activeBackend, 0.05f);
+            ReleaseBackend(secondaryBackend, 0.05f);
+            secondaryBackend = null;
 
             activeBackend = desired;
-            parameterValues.Clear();
-            switchValues.Clear();
-            stateValues.Clear();
             if (activeBackend == null)
             {
                 lastFailure = "No usable audio backend is configured.";
@@ -602,6 +632,66 @@ namespace MSC.Audio
             {
                 lastFailure = string.Empty;
             }
+            // These are session controls, not backend-owned state. A late bank
+            // initialization must not lose a once-set RTPC, switch or state.
+            ReplayCachedControls(activeBackend, skipExplicitParameters:
+                !ReferenceEquals(activeBackend, fallbackBackend));
+            EnsureSecondaryBackend();
+        }
+
+        /// <summary>The explicit route is chosen before posting: never start the
+        /// same event in both engines or replace an unknown event with a generic clip.</summary>
+        public IAudioBackend ResolveEventBackend(AudioEventId eventId)
+        {
+            EnsureActiveBackend();
+            return IsBackendAlive(fallbackBackend) && fallbackBackend is IAudioExplicitContentBackend content &&
+                content.OwnsEvent(eventId) ? fallbackBackend : activeBackend;
+        }
+
+        private void ReleaseBackend(IAudioBackend backend, float fadeSeconds)
+        {
+            if (!IsBackendAlive(backend)) return;
+            backend.StopAll(fadeSeconds);
+            foreach (IAudioEmitter emitter in emitters.Values) backend.UnregisterEmitter(emitter);
+        }
+
+        private void EnsureSecondaryBackend()
+        {
+            IAudioBackend desired = !ReferenceEquals(activeBackend, fallbackBackend) &&
+                fallbackBackend is IAudioExplicitContentBackend && IsBackendAliveAndReady(fallbackBackend)
+                ? fallbackBackend : null;
+            if (ReferenceEquals(desired, secondaryBackend)) return;
+            ReleaseBackend(secondaryBackend, 0f);
+            secondaryBackend = desired;
+            if (desired == null) return;
+            foreach (IAudioEmitter emitter in emitters.Values)
+                if (!desired.RegisterEmitter(emitter, out string failure)) lastFailure = failure;
+            desired.ApplySettings(in settings);
+            if (hasListenerContext) desired.SetListenerContext(in listenerContext);
+            // Secondary playback can become available after a preferred-only
+            // session has already cached controls. Replay before its first event.
+            ReplayCachedControls(desired, skipExplicitParameters: false);
+        }
+
+        private void ReplayCachedControls(IAudioBackend backend, bool skipExplicitParameters)
+        {
+            foreach (var pair in parameterValues)
+            {
+                if (skipExplicitParameters && IsBackendAlive(fallbackBackend) &&
+                    fallbackBackend is IAudioExplicitContentBackend content &&
+                    content.OwnsParameter(pair.Key.ParameterId)) continue;
+                emitters.TryGetValue(pair.Key.EmitterId, out IAudioEmitter emitter);
+                if (!backend.SetParameter(pair.Key.ParameterId, pair.Value, emitter))
+                    lastFailure = backend.CaptureSnapshot().LastFailure;
+            }
+            foreach (var pair in switchValues)
+            {
+                emitters.TryGetValue(pair.Key.EmitterId, out IAudioEmitter emitter);
+                if (!backend.SetSwitch(pair.Key.SwitchGroupId, pair.Value, emitter))
+                    lastFailure = backend.CaptureSnapshot().LastFailure;
+            }
+            foreach (var pair in stateValues)
+                if (!backend.SetState(pair.Key, pair.Value)) lastFailure = backend.CaptureSnapshot().LastFailure;
         }
 
         private static bool IsBackendAlive(IAudioBackend backend)
@@ -654,7 +744,7 @@ namespace MSC.Audio
             RemoveInvalidEmitterRegistrations(scene.handle);
         }
 
-        private void RemoveInvalidEmitterRegistrations(int? unloadedSceneHandle = null)
+        private void RemoveInvalidEmitterRegistrations(SceneHandle? unloadedSceneHandle = null)
         {
             if (emitters.Count == 0)
             {
@@ -684,6 +774,7 @@ namespace MSC.Audio
                 {
                     activeBackend.UnregisterEmitter(emitter);
                 }
+                if (IsBackendAlive(secondaryBackend)) secondaryBackend.UnregisterEmitter(emitter);
 
                 emitters.Remove(key);
                 RemoveCachedEmitterValues(key);

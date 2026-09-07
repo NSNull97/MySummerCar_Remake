@@ -180,6 +180,31 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                         TurnToStage(assembly, strutMount, fastener, 0);
                     }
                     Assert.That(strutMount.FastenerGroup.IsBolted, Is.False);
+                    // Reviewed Removal FSMs108086/108453 require the same-side
+                    // steering rod to be absent, even after its bolt is loose.
+                    AssemblyOperationResult blockedByRod = assembly.TryRemove(strut);
+                    Assert.That(blockedByRod.Succeeded, Is.False);
+                    Assert.That(blockedByRod.FailureReason, Is.EqualTo(AssemblyFailureReason.RemovalBlocked));
+                    Assert.That(strut.IsInstalled, Is.True);
+                    Assert.That(tieFastener.Stage, Is.EqualTo(3));
+                    TurnToStage(assembly, tieMount, tieFastener, 0);
+                    Assert.That(assembly.EvaluateRemoval(strut).FailureReason,
+                        Is.EqualTo(AssemblyFailureReason.RemovalBlocked), "Rod presence, not its bolt latch, blocks strut removal.");
+                    PartInstance rod = FindPart(assembly, "steering-rod-" + corner.CornerId);
+                    AssemblyOperationResult rodRemoval = assembly.TryRemove(rod);
+                    Assert.That(rodRemoval.Succeeded, Is.True, rodRemoval.Message);
+                    rod.Body.isKinematic = true;
+                    rod.Body.detectCollisions = false;
+                    yield return null;
+                    AssertAvailable(tie, expected: false);
+
+                    // Preserve the independent-state regression using the
+                    // opposite rod; the removed rod must reset its own bolt.
+                    SatsumaFrontSuspensionCornerBinding otherCorner = rig.Corners.Single(value => value.CornerId != corner.CornerId);
+                    MountPointRuntime otherTieMount = assembly.ResolveMount(otherCorner.SteeringRodMount);
+                    FastenerInstance otherTieFastener = otherTieMount.Fasteners.Single();
+                    TurnToStage(assembly, otherTieMount, otherTieFastener, 3);
+                    AssemblyFastenerInteractionTarget otherTie = GetTargets(instance, otherTieMount.MountId).Single();
                     AssemblyOperationResult removal = assembly.TryRemove(strut);
                     Assert.That(removal.Succeeded, Is.True, removal.Message);
                     strut.Body.isKinematic = true;
@@ -191,9 +216,13 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                     }
                     Assert.That(strutMount.Fasteners.All(value =>
                         !value.IsInserted && value.Stage == 0), Is.True);
-                    Assert.That(tieFastener.Stage, Is.EqualTo(3),
+                    Assert.That(otherTieFastener.Stage, Is.EqualTo(3),
                         "Removing a strut must not overwrite another mount's fastener state.");
-                    AssertAvailable(tie, expected: true);
+                    Assert.That(otherTieFastener.IsInserted, Is.True);
+                    AssertAvailable(otherTie, expected: true);
+                    Assert.That(tieFastener.IsInserted, Is.False);
+                    Assert.That(tieFastener.Stage, Is.Zero);
+                    AssertAvailable(tie, expected: false);
 
                     InstallAtMount(assembly, strut, corner.StrutMount, tighten: false);
                     yield return null;
@@ -210,13 +239,6 @@ namespace MSC.Tests.PlayMode.VehiclePhysics
                         value.IsInserted && value.Stage == 0), Is.True,
                         "Reinstall uses the same IDs with fresh inserted stages, not stale tightness.");
 
-                    TurnToStage(assembly, tieMount, tieFastener, 0);
-                    PartInstance rod = FindPart(assembly, "steering-rod-" + corner.CornerId);
-                    AssemblyOperationResult rodRemoval = assembly.TryRemove(rod);
-                    Assert.That(rodRemoval.Succeeded, Is.True, rodRemoval.Message);
-                    rod.Body.isKinematic = true;
-                    rod.Body.detectCollisions = false;
-                    yield return null;
                     AssertAvailable(tie, expected: false);
                     InstallAtMount(assembly, rod, corner.SteeringRodMount, tighten: false);
                     yield return null;

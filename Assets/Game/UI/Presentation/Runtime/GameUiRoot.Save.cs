@@ -36,6 +36,7 @@ namespace MSC.UI.Presentation
         private string selectedSaveSlotId = string.Empty;
         private string saveOperationStatus = string.Empty;
         private bool saveServiceBound;
+        private bool saveOperationRefreshPending;
         private string initialSaveNoticeKey = string.Empty;
 
         private SaveSlotSummary LatestValidSaveSlot => saveSlotSummaries
@@ -135,6 +136,7 @@ namespace MSC.UI.Presentation
 
         private void UnbindSaveService()
         {
+            saveOperationRefreshPending = false;
             ISaveService service = dependencies?.SaveService;
             if (service == null || !saveServiceBound)
             {
@@ -160,6 +162,8 @@ namespace MSC.UI.Presentation
 
         private void OnSaveOperationCompleted(object sender, SaveOperationEventArgs args)
         {
+            // SaveCoordinator raises this before releasing its busy guard.
+            saveOperationRefreshPending = true;
             saveOperationStatus = args.Operation == SaveOperationKind.Save
                 ? textCatalog.Get("ui.save_status.saved")
                 : args.Operation == SaveOperationKind.Load
@@ -170,6 +174,7 @@ namespace MSC.UI.Presentation
 
         private void OnSaveOperationFailed(object sender, SaveOperationEventArgs args)
         {
+            saveOperationRefreshPending = true;
             saveOperationStatus = textCatalog.Get("ui.save_status.failed") + " " + args.Message;
             RefreshSaveUiPresentation();
             ShowNotice("ui.notice.save_failed");
@@ -180,6 +185,22 @@ namespace MSC.UI.Presentation
             saveOperationStatus = textCatalog.Get("ui.save_status.recovered");
             RefreshSaveUiPresentation();
             ShowNotice("ui.notice.save_recovered");
+        }
+
+        private void RefreshSaveUiAfterOperation()
+        {
+            if (!saveOperationRefreshPending)
+            {
+                return;
+            }
+
+            if (dependencies?.SaveService?.IsOperationInProgress == true)
+            {
+                return;
+            }
+
+            saveOperationRefreshPending = false;
+            RefreshSaveUiPresentation();
         }
 
         private void RefreshSaveSlotsFromStorage()
@@ -266,10 +287,7 @@ namespace MSC.UI.Presentation
                 return textCatalog.Get("ui.main.no_valid_save");
             }
 
-            string displayName = string.IsNullOrWhiteSpace(latest.Metadata?.DisplayName)
-                ? latest.SlotId
-                : latest.Metadata.DisplayName;
-            return textCatalog.Get("ui.main.latest_save") + " " + displayName;
+            return textCatalog.Get("ui.main.latest_save") + "\n" + latest.SlotId;
         }
 
         private void BeginContinueLoad()
@@ -418,6 +436,7 @@ namespace MSC.UI.Presentation
         {
             UpdateMainSaveButton(mainContinueButton, CanRequestLatestLoad, MainSaveHelperText());
             UpdateMainSaveButton(mainLoadButton, CanOpenLoadGame, MainSaveHelperText());
+            RefreshMainMenuNavigation();
 
             SaveSlotSummary selected = SelectedSaveSlot;
             if (saveStatusStateText != null)
@@ -477,9 +496,18 @@ namespace MSC.UI.Presentation
                     label.text = helper ?? string.Empty;
                 }
 
-                label.color = interactable
-                    ? isHelper ? UiThemeTokens.TextMuted : UiThemeTokens.TextPrimary
-                    : UiThemeTokens.Disabled;
+                if (!(button is MainMenuActionButton))
+                {
+                    label.color = interactable
+                        ? isHelper ? UiThemeTokens.TextMuted : UiThemeTokens.TextPrimary
+                        : UiThemeTokens.Disabled;
+                }
+            }
+
+            if (button is MainMenuActionButton menuAction)
+            {
+                menuAction.RefreshVisualState();
+                return;
             }
 
             Image icon = button.transform.Find(button.name + "Icon")?.GetComponent<Image>();

@@ -71,6 +71,21 @@ namespace MSC.Vehicle
         // Optional backward-compatible extension. Legacy records omit it and
         // therefore retain their authored body colour.
         public VehiclePaintSaveDto paint;
+        // Optional Satsuma-only extensions. Older records load with an
+        // unconnected loom and parked, switched-off wipers.
+        public SatsumaElectricalSaveDto electrical;
+        public SatsumaWiperSaveDto wipers;
+        // Optional extension: old saves retain the donor's released lever pose.
+        // Held mouse input and evaluated wheel torque are deliberately transient.
+        public SatsumaHandbrakeSaveDto handbrake;
+        // JsonUtility may materialize an absent inline DTO. The explicit flag
+        // keeps legacy saves on quiet dashboard defaults regardless of nullness.
+        public bool hasDashboardControls;
+        public SatsumaDashboardControlsSaveDto dashboardControls;
+        // Fixed hard-line fitting, independent of the removable tank's seven bolts.
+        // The flag distinguishes a legacy omission from JsonUtility's inline default object.
+        public bool hasFuelLineConnection;
+        public SatsumaFuelLineConnectionSaveDto fuelLineConnection;
 
         public bool TryValidateBasic(out string failure)
         {
@@ -106,6 +121,13 @@ namespace MSC.Vehicle
                 return false;
             }
 
+            if (simulation.hasSatsumaOperatingState &&
+                (simulation.satsumaOperatingState == null || !simulation.satsumaOperatingState.IsValid))
+            {
+                failure = "Satsuma operating payload is invalid.";
+                return false;
+            }
+
             if (physics == null)
             {
                 failure = "Vehicle physics payload is missing.";
@@ -120,6 +142,45 @@ namespace MSC.Vehicle
             if (paint != null && !paint.TryValidate(out failure))
             {
                 return false;
+            }
+
+            if (electrical != null && !electrical.TryValidate(out failure))
+            {
+                return false;
+            }
+
+            if (wipers != null && !wipers.TryValidate(out failure))
+            {
+                return false;
+            }
+
+            if (handbrake != null && !handbrake.TryValidate(out failure))
+            {
+                return false;
+            }
+
+            if (hasDashboardControls)
+            {
+                if (dashboardControls == null)
+                {
+                    failure = "Satsuma dashboard controls save payload is missing.";
+                    return false;
+                }
+
+                if (!dashboardControls.TryValidate(out failure))
+                {
+                    return false;
+                }
+            }
+
+            if (hasFuelLineConnection)
+            {
+                if (fuelLineConnection == null)
+                {
+                    failure = "Satsuma fuel-line connection save payload is missing.";
+                    return false;
+                }
+                if (!fuelLineConnection.TryValidate(out failure)) return false;
             }
 
             failure = string.Empty;
@@ -190,6 +251,12 @@ namespace MSC.Vehicle
         [SerializeField] private VehicleInputRouter inputRouter;
         [SerializeField] private Rigidbody chassis;
         [SerializeField] private VehiclePaintStateController paintController;
+        [SerializeField] private SatsumaElectricalSystem electricalSystem;
+        [SerializeField] private SatsumaWiperController wiperController;
+        [SerializeField] private SatsumaHandbrakeController handbrakeController;
+        [SerializeField] private SatsumaIgnitionController ignitionController;
+        [SerializeField] private SatsumaDashboardControlsController dashboardControlsController;
+        [SerializeField] private SatsumaFuelLineConnection fuelLineConnection;
         [SerializeField] private AssemblyChassisMassController chassisMassController;
         [SerializeField] private MonoBehaviour physicsRestoreSynchronizerComponent;
 
@@ -207,6 +274,33 @@ namespace MSC.Vehicle
 
         public Rigidbody Chassis => chassis;
 
+        public SatsumaIgnitionController IgnitionController => ignitionController;
+
+        public void ConfigureIgnition(SatsumaIgnitionController ignition)
+        {
+            ignitionController = ignition;
+        }
+
+        public void ConfigureDashboardControls(SatsumaDashboardControlsController controls)
+        {
+            dashboardControlsController = controls;
+        }
+
+        public SatsumaFuelLineConnection FuelLineConnection => fuelLineConnection;
+
+        public void ConfigureFuelLineConnection(SatsumaFuelLineConnection connection)
+        {
+            if (connection != null && connection.gameObject != gameObject)
+                throw new ArgumentException("Fuel-line state must belong to the vehicle aggregate.");
+            fuelLineConnection = connection;
+        }
+
+        // The session owns possession independently of streamed vehicle state.
+        public void BindKeyAccess(ISatsumaKeyAccess keyAccess)
+        {
+            ignitionController?.BindKeyAccess(keyAccess);
+        }
+
         public MonoBehaviour PhysicsRestoreSynchronizerComponent =>
             physicsRestoreSynchronizerComponent;
 
@@ -222,7 +316,10 @@ namespace MSC.Vehicle
             Rigidbody targetChassis,
             VehiclePaintStateController paint = null,
             AssemblyChassisMassController massController = null,
-            MonoBehaviour physicsRestoreSynchronizer = null)
+            MonoBehaviour physicsRestoreSynchronizer = null,
+            SatsumaElectricalSystem electrical = null,
+            SatsumaWiperController wipers = null,
+            SatsumaHandbrakeController handbrake = null)
         {
             stableVehicleIdentity = identity;
             assemblyController = assembly;
@@ -230,6 +327,9 @@ namespace MSC.Vehicle
             inputRouter = input;
             chassis = targetChassis;
             paintController = paint;
+            electricalSystem = electrical;
+            wiperController = wipers;
+            handbrakeController = handbrake;
             chassisMassController = massController;
             physicsRestoreSynchronizerComponent =
                 physicsRestoreSynchronizer;
@@ -243,6 +343,9 @@ namespace MSC.Vehicle
                 return false;
             }
 
+            // An inactive Unity 6000.6 Rigidbody has no native actor pose.
+            // Do not replace active PhysX authority with an interpolated Transform.
+            bool hasActiveChassis = chassis.gameObject.activeInHierarchy;
             record = new VehicleSaveRecordDto
             {
                 stableVehicleId = StableVehicleId,
@@ -252,15 +355,38 @@ namespace MSC.Vehicle
                 simulation = simulationHost.State.CaptureDto(),
                 physics = new VehiclePhysicsSaveDto
                 {
-                    worldPosition = chassis.position,
-                    worldRotation = chassis.rotation,
+                    worldPosition = hasActiveChassis
+                        ? chassis.position
+                        : chassis.transform.position,
+                    worldRotation = hasActiveChassis
+                        ? chassis.rotation
+                        : chassis.transform.rotation,
                     linearVelocity = chassis.linearVelocity,
                     angularVelocity = chassis.angularVelocity,
                     sleeping = chassis.IsSleeping(),
                 },
-                ignitionOn = inputRouter != null && inputRouter.IgnitionOn,
+                ignitionOn = ignitionController != null
+                    ? ignitionController.IgnitionOn
+                    : inputRouter != null && inputRouter.IgnitionOn,
                 paint = paintController != null
                     ? paintController.CaptureSaveData()
+                    : null,
+                electrical = electricalSystem != null
+                    ? electricalSystem.CaptureSaveData()
+                    : null,
+                wipers = wiperController != null
+                    ? wiperController.CaptureSaveData()
+                    : null,
+                handbrake = handbrakeController != null
+                    ? handbrakeController.CaptureSaveData()
+                    : null,
+                hasDashboardControls = dashboardControlsController != null,
+                dashboardControls = dashboardControlsController != null
+                    ? dashboardControlsController.CaptureSaveData()
+                    : null,
+                hasFuelLineConnection = fuelLineConnection != null,
+                fuelLineConnection = fuelLineConnection != null
+                    ? fuelLineConnection.CaptureSaveData()
                     : null,
             };
 
@@ -286,6 +412,24 @@ namespace MSC.Vehicle
             }
 
             VehicleSimulationConfig config = simulationHost.Config;
+            if (record.hasDashboardControls && dashboardControlsController == null)
+            {
+                failure = "Saved Satsuma dashboard controls have no runtime binding.";
+                return false;
+            }
+
+            if (record.hasFuelLineConnection && fuelLineConnection == null)
+            {
+                failure = "Saved Satsuma fuel-line connection has no runtime binding.";
+                return false;
+            }
+
+            if (electricalSystem == null && HasSavedElectricalState(record.electrical))
+            {
+                failure = "Saved Satsuma electrical state has no runtime binding.";
+                return false;
+            }
+
             if (!string.Equals(
                     StableVehicleId,
                     record.stableVehicleId,
@@ -313,6 +457,18 @@ namespace MSC.Vehicle
             if (!simulationProbe.TryRestoreDto(record.simulation, config))
             {
                 failure = "Vehicle simulation payload failed domain validation.";
+                return false;
+            }
+
+            if (electricalSystem != null && record.electrical != null &&
+                !record.electrical.TryValidate(out failure))
+            {
+                return false;
+            }
+
+            if (wiperController != null && record.wipers != null &&
+                !record.wipers.TryValidate(out failure))
+            {
                 return false;
             }
 
@@ -372,7 +528,41 @@ namespace MSC.Vehicle
                     return false;
                 }
 
+                if (electricalSystem != null &&
+                    !electricalSystem.TryRestore(
+                        record.electrical,
+                        out failure))
+                {
+                    return false;
+                }
+
+                if (wiperController != null &&
+                    !wiperController.TryRestore(record.wipers, out failure))
+                {
+                    return false;
+                }
+
+                if (handbrakeController != null &&
+                    !handbrakeController.TryRestore(record.handbrake, out failure))
+                {
+                    return false;
+                }
+
+                if (dashboardControlsController != null &&
+                    !dashboardControlsController.TryRestore(
+                        record.hasDashboardControls ? record.dashboardControls : null,
+                        out failure))
+                {
+                    return false;
+                }
+
+                if (fuelLineConnection != null && !fuelLineConnection.TryRestore(
+                    record.hasFuelLineConnection ? record.fuelLineConnection : null, out failure))
+                    return false;
+
                 inputRouter?.RestorePersistentState(record.ignitionOn);
+                // Never restore the spring-loaded START position or a held gesture.
+                ignitionController?.RestorePersistentState(record.ignitionOn);
                 if (paintController != null &&
                     !paintController.TryRestore(record.paint, out failure))
                 {
@@ -424,6 +614,19 @@ namespace MSC.Vehicle
                     }
                 }
             }
+        }
+
+        private static bool HasSavedElectricalState(SatsumaElectricalSaveDto state)
+        {
+            // JsonUtility can materialize an optional null inline DTO as a valid,
+            // entirely empty object. Basic validation has already rejected malformed
+            // payloads; only that empty representation is safe to omit on a non-Satsuma
+            // binding. Count legacy flags too, even when schema 2 does not consume them.
+            return state != null &&
+                ((state.installedConnectionIds != null && state.installedConnectionIds.Length != 0) ||
+                 state.batteryPlusStage != 0 || state.batteryMinusStage != 0 || state.starterCableStage != 0 ||
+                 state.batteryPlusInstalled || state.batteryMinusInstalled || state.batteryHarnessInstalled ||
+                 state.ignitionInstalled || state.switchLightsInstalled);
         }
 
         private bool TryValidateBinding(out string failure)

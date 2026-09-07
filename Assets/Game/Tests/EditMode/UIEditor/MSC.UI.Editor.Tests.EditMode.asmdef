@@ -4,7 +4,8 @@
   "references": [
     "MSC.UI.Editor",
     "MSC.UI.Runtime",
-    "Unity.InputSystem"
+    "Unity.InputSystem",
+    "MSC.UI.Presentation.Runtime"
   ],
   "includePlatforms": [
     "Editor"

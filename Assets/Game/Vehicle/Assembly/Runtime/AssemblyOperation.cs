@@ -30,7 +30,8 @@ namespace MSC.Vehicle.Assembly
         FastenerSecured = 13,
         RemovalBlocked = 14,
         InvalidSaveData = 15,
-        DuplicateState = 16
+        DuplicateState = 16,
+        InstallationSupportDetached = 17
     }
 
     public readonly struct AssemblyOperationResult

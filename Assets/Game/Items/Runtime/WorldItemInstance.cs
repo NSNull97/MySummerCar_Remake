@@ -30,6 +30,7 @@ namespace MSC.Items
         FuelTransferred = 17,
         Extinguished = 18,
         EmbersStarted = 19,
+        MechanicalWearChanged = 20,
     }
 
     public readonly struct ItemActionCompleted
@@ -194,6 +195,7 @@ namespace MSC.Items
         private float continuousHeldFeedbackElapsed;
         private float continuousHeldConsumedAmount;
         private float pendingFoodConsumptionSeconds = -1f;
+        private double pendingMechanicalWear;
 
         private static readonly int BaseColorPropertyId =
             Shader.PropertyToID("_BaseColor");
@@ -211,6 +213,9 @@ namespace MSC.Items
                 ? id
                 : default;
         public ItemInstanceState State => state?.DeepClone();
+        public float ConditionPercent => state?.condition ?? 0f;
+        public bool IsBroken => state == null || state.isBroken;
+        public bool IsConsumed => state == null || state.isConsumed;
         public bool IsOpen => state?.isOpen == true;
         public bool IsEmpty => state == null || state.IsEmpty;
         public float ContentAmount => state?.content ?? 0f;
@@ -757,6 +762,19 @@ namespace MSC.Items
                 ItemActionKind.LiquidSpilled,
                 out spilledLitres);
 
+        /// <summary>Finite physical-stream transfer. The item remains the only source-content authority.</summary>
+        public bool TryPourLiquidTo(ILiquidContainerTarget receiver, float requestedLitres, out float transferredLitres)
+        {
+            transferredLitres = 0f;
+            if (receiver == null || ReferenceEquals(receiver, this) || !CanHandleLiquid() ||
+                !float.IsFinite(requestedLitres) || requestedLitres <= 0f || state.content <= .0001f) return false;
+            float offered = Mathf.Min(requestedLitres, state.content);
+            if (!receiver.TryAcceptLiquid(state.liquidId, offered, out float accepted)) return false;
+            if (!float.IsFinite(accepted) || accepted < 0f || accepted > offered + .000001f)
+                throw new InvalidOperationException("Liquid receiver violated the finite offered-volume contract.");
+            return TryRemoveLiquid(Mathf.Min(accepted, offered), ItemActionKind.LiquidTransferred, out transferredLitres);
+        }
+
         public bool TryBurnInGarbageBarrel()
         {
             if (definition == null || state == null ||
@@ -965,6 +983,7 @@ namespace MSC.Items
 
             StopContinuousHeldActivation(flushEffects: false);
             pendingFoodConsumptionSeconds = -1f;
+            pendingMechanicalWear = 0d;
             state = restored.DeepClone();
             owner?.ReconcileFoodAfterRestore(
                 this,
@@ -1034,6 +1053,24 @@ namespace MSC.Items
                 source.state.foodSimulationInitialized;
             RefreshFoodPresentation();
             StatusChanged?.Invoke(this);
+        }
+
+        /// <summary>Condition mutation for an explicit mechanical capability bridge; no second DTO owner.</summary>
+        public bool TryApplyMechanicalWear(float conditionLoss)
+        {
+            if (state == null || definition == null || state.isConsumed || state.isBroken ||
+                !float.IsFinite(conditionLoss) || conditionLoss <= 0f) return false;
+            pendingMechanicalWear += conditionLoss;
+            if (pendingMechanicalWear < 0.0001d && pendingMechanicalWear < state.condition) return true;
+            float previous = state.condition;
+            state.condition = Mathf.Max(0f, previous - (float)pendingMechanicalWear);
+            pendingMechanicalWear = Math.Max(0d, pendingMechanicalWear - (previous - state.condition));
+            if (state.condition <= 0f) { state.isBroken = true; pendingMechanicalWear = 0d; }
+            // Per-substep mechanical wear must not dispatch an item action for
+            // every cylinder tick. Save capture always reads the current state.
+            if (state.isBroken || Mathf.FloorToInt(previous) != Mathf.FloorToInt(state.condition))
+                PublishStateChanged(ItemActionKind.MechanicalWearChanged);
+            return true;
         }
 
         internal bool AdvanceFreshness(

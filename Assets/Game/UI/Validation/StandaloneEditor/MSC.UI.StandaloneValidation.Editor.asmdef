@@ -1,0 +1,7 @@
+{
+  "name": "MSC.UI.StandaloneValidation.Editor",
+  "rootNamespace": "MSC.UI.StandaloneValidation.EditorTools",
+  "references": ["MSC.UI.StandaloneValidation.Runtime", "MSC.UI.Editor", "MSC.UI.Presentation.Runtime", "MSC.Editor", "Unity.InputSystem", "Unity.RenderPipelines.HighDefinition.Runtime"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": true
+}

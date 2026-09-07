@@ -51,7 +51,7 @@ namespace MSCMapMigration
                 "HasMeshCollider,MeshColliderEnabled,ActiveSelf,ActiveInHierarchy," +
                 "NegativeWorldDeterminant,Layer,Tag,ProvenanceStableId," +
                 "ProvenanceHierarchyPath,SemanticCategory,SharedMeshInstanceCount," +
-                "ClassificationReason");
+                "ClassificationReason,EntityId");
             foreach (MapMeshRecord record in inventory.records)
             {
                 string[] values =
@@ -87,7 +87,8 @@ namespace MSCMapMigration
                     record.provenanceHierarchyPath,
                     record.provenanceSemanticCategory,
                     record.sharedMeshInstanceCount.ToString(CultureInfo.InvariantCulture),
-                    record.classificationReason
+                    record.classificationReason,
+                    record.entityId.ToString(CultureInfo.InvariantCulture)
                 };
                 builder.AppendLine(string.Join(",", values.Select(Escape)));
             }

@@ -14,11 +14,12 @@ namespace MSC.UI.Presentation
 {
     public sealed partial class GameUiRoot
     {
-        private readonly List<Outline> carColourOutlines = new List<Outline>();
-        private readonly List<RectTransform> performanceGraphBars =
-            new List<RectTransform>(48);
-        private Text performanceFpsText;
-        private float nextPerformanceGraphRefreshTime;
+        private const int ColoursPerPage = 10;
+        private Button[] colourSwatchButtons;
+        private Button[] colourPageButtons;
+        private Button[] primaryMenuButtons;
+        private Button[] utilityMenuButtons;
+        private int colourPageIndex;
         private static readonly Color[] CarColours =
         {
             new Color32(50, 58, 38, 255), new Color32(234, 217, 134, 255),
@@ -35,116 +36,139 @@ namespace MSC.UI.Presentation
 
         partial void BuildMainMenuRoute()
         {
-            const float primaryButtonX = 1308f;
-            const float primaryButtonWidth = 254f;
-            const float primaryButtonHeight = 68f;
-            const float primaryButtonGap = 14f;
-            const float primaryButtonStartY = 182f;
-            const float primaryColumnRight = primaryButtonX + primaryButtonWidth;
-            const float greetingWidth = 210f;
-
             GameObject route = CreateRoute(UiRouteId.MainMenu);
-            CreateLogo(route.transform, 88f, 51f, 354f, 260f, large: true);
-            CreateGreeting(
-                route.transform,
-                primaryColumnRight - greetingWidth,
-                40f,
-                greetingWidth,
-                68f);
+            GameObject workspace = factory.CreateObject("MainMenuWorkspace", route.transform);
+            var workspaceRect = workspace.GetComponent<RectTransform>();
+            workspaceRect.anchorMin = workspaceRect.anchorMax = new Vector2(0.5f, 0.5f);
+            workspaceRect.pivot = new Vector2(0.5f, 0.5f);
+            workspaceRect.sizeDelta = new Vector2(UiThemeTokens.ReferenceWidth, UiThemeTokens.ReferenceHeight);
+            workspace.AddComponent<MainMenuWorkspace>().Initialize(
+                settings.Applied.Accessibility.ReducedMotion || reviewDataEnabled);
+            Transform parent = workspace.transform;
+            CreateLogo(parent, 40f, 24f, 414f, 276f, large: true,
+                sourceUv: new Rect(0f, 0f, 1f, 1f));
+            GameObject greeting = factory.MainMenuGreeting("Greeting", parent, textCatalog.Get("ui.greeting"),
+                1350f, 56f, 238f, 62f);
+            AnchorMainMenuBlock(greeting.GetComponent<RectTransform>(),
+                new Vector2(1f, 1f), new Vector2(-84f, -56f));
 
-            mainContinueButton = factory.Button(
+            const float width = 300f;
+            const float height = 72f;
+            const float spacing = 10f;
+            GameObject actions = factory.CreateObject("PrimaryActions", parent);
+            RectTransform actionRect = factory.Place(actions, 1288f, 196f, width, height * 5f + spacing * 4f);
+            AnchorMainMenuBlock(actionRect, new Vector2(1f, 1f), new Vector2(-84f, -196f));
+            var layout = actions.AddComponent<VerticalLayoutGroup>();
+            layout.spacing = spacing;
+            layout.childAlignment = TextAnchor.UpperCenter;
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = false;
+
+            mainContinueButton = factory.MainMenuButton(
                 "Continue",
-                route.transform,
+                actions.transform,
                 textCatalog.Get("ui.main.continue"),
                 UiIconKind.Play,
-                primaryButtonX,
-                primaryButtonStartY,
-                primaryButtonWidth,
-                primaryButtonHeight,
+                0f, 0f, width, height,
                 BeginContinueLoad,
-                selected: false,
                 interactable: CanRequestLatestLoad,
-                helper: MainSaveHelperText(),
-                glass: true);
-            factory.Button(
+                helper: MainSaveHelperText());
+            Button newGame = factory.MainMenuButton(
                 "NewGame",
-                route.transform,
+                actions.transform,
                 textCatalog.Get("ui.main.new_game"),
                 UiIconKind.Plus,
-                primaryButtonX,
-                primaryButtonStartY + primaryButtonHeight + primaryButtonGap,
-                primaryButtonWidth,
-                primaryButtonHeight,
-                BeginBoundedNewGameSession,
-                selected: true,
-                glass: true);
-            mainLoadButton = factory.Button(
+                0f, 0f, width, height,
+                BeginBoundedNewGameSession);
+            mainLoadButton = factory.MainMenuButton(
                 "LoadGame",
-                route.transform,
+                actions.transform,
                 textCatalog.Get("ui.main.load_game"),
                 UiIconKind.Folder,
-                primaryButtonX,
-                primaryButtonStartY + (primaryButtonHeight + primaryButtonGap) * 2f,
-                primaryButtonWidth,
-                primaryButtonHeight,
+                0f, 0f, width, height,
                 OpenLoadGame,
-                interactable: CanRequestLatestLoad,
-                helper: MainSaveHelperText(),
-                glass: true);
-            factory.Button(
+                interactable: CanOpenLoadGame,
+                helper: MainSaveHelperText());
+            Button credits = factory.MainMenuButton(
                 "Credits",
-                route.transform,
+                actions.transform,
                 textCatalog.Get("ui.main.credits"),
                 UiIconKind.Credits,
-                primaryButtonX,
-                primaryButtonStartY + (primaryButtonHeight + primaryButtonGap) * 3f,
-                primaryButtonWidth,
-                primaryButtonHeight,
-                () => ShowCredits(route.transform),
-                glass: true);
-            factory.Button(
+                0f, 0f, width, height,
+                () => ShowCredits(route.transform));
+            Button quit = factory.MainMenuButton(
                 "Quit",
-                route.transform,
+                actions.transform,
                 textCatalog.Get("ui.main.quit"),
                 UiIconKind.Cross,
-                primaryButtonX,
-                primaryButtonStartY + (primaryButtonHeight + primaryButtonGap) * 4f,
-                primaryButtonWidth,
-                primaryButtonHeight,
+                0f, 0f, width, height,
                 () => OpenQuitConfirmation(UiRouteId.MainMenu),
-                destructive: true,
-                glass: true);
+                destructive: true);
+            primaryMenuButtons = new[] { mainContinueButton, newGame, mainLoadButton, credits, quit };
+            for (int index = 0; index < primaryMenuButtons.Length; index++)
+            {
+                var element = primaryMenuButtons[index].gameObject.AddComponent<LayoutElement>();
+                element.preferredWidth = width;
+                element.preferredHeight = height;
+                element.minHeight = height;
+            }
 
-            BuildColourCard(route.transform);
-            BuildPreviewCard(route.transform);
-            BuildPerformanceCard(route.transform);
-            BuildMusicCard(route.transform);
-            BuildMainUtilityStrip(route.transform);
+            BuildColourCard(parent);
+            BuildMainUtilityStrip(parent);
+            BuildMenuOrbitHint(parent);
+            ConfigureMainMenuNavigation(primaryMenuButtons, utilityMenuButtons, colourSwatchButtons, colourPageButtons);
+            bool reducedMotion = settings.Applied.Accessibility.ReducedMotion || reviewDataEnabled;
+            ConfigureMainMenuMotion(primaryMenuButtons, reducedMotion);
+            ConfigureMainMenuMotion(utilityMenuButtons, reducedMotion);
+            ConfigureMainMenuMotion(colourSwatchButtons, reducedMotion);
+            ConfigureMainMenuMotion(colourPageButtons, reducedMotion);
             factory.Text(
                 "Version",
-                route.transform,
+                parent,
                 "MSC REMAKE " + Application.version,
-                20f,
-                898f,
-                260f,
-                24f,
-                11,
+                82f,
+                910f,
+                350f,
+                18f,
+                12,
                 UiThemeTokens.Disabled,
                 TextAnchor.MiddleLeft);
+        }
+
+        private static void AnchorMainMenuBlock(RectTransform rect, Vector2 anchor, Vector2 offset)
+        {
+            rect.anchorMin = rect.anchorMax = anchor;
+            rect.pivot = anchor;
+            rect.anchoredPosition = offset;
+        }
+
+        private static void ConfigureMainMenuMotion(Button[] buttons, bool reducedMotion)
+        {
+            for (int index = 0; index < buttons.Length; index++)
+            {
+                if (buttons[index] is MainMenuActionButton action)
+                {
+                    action.ReducedMotion = reducedMotion;
+                }
+            }
         }
 
         partial void BuildPauseRoute()
         {
             GameObject route = CreateRoute(UiRouteId.Pause);
-            GameObject panel = factory.Panel("PausePanel", route.transform, 636f, 150f, 400f, 640f);
-            factory.Heading(
+            GameObject panel = factory.MainMenuPanel("PausePanel", route.transform, 636f, 150f, 400f, 640f);
+            Text heading = factory.Heading(
                 panel.transform,
                 textCatalog.Get("ui.pause.title"),
                 34f,
                 30f,
                 332f,
                 31);
-            factory.Button(
+            heading.color = MainMenuStyle.PrimaryText;
+            heading.fontStyle = FontStyle.Normal;
+            Button resume = factory.MainMenuButton(
                 "Resume",
                 panel.transform,
                 textCatalog.Get("ui.pause.resume"),
@@ -153,9 +177,8 @@ namespace MSC.UI.Presentation
                 104f,
                 332f,
                 66f,
-                EnterGameplay,
-                selected: true);
-            factory.Button(
+                EnterGameplay);
+            Button pauseSettings = factory.MainMenuButton(
                 "PauseSettings",
                 panel.transform,
                 textCatalog.Get("ui.main.settings"),
@@ -165,7 +188,7 @@ namespace MSC.UI.Presentation
                 332f,
                 66f,
                 () => OpenSettings(UiRouteId.SettingsGraphics, UiRouteId.Pause));
-            factory.Button(
+            Button saveStatus = factory.MainMenuButton(
                 "PauseSaveStatus",
                 panel.transform,
                 textCatalog.Get("ui.pause.save_status"),
@@ -175,7 +198,7 @@ namespace MSC.UI.Presentation
                 332f,
                 66f,
                 () => OpenSaveStatus(UiRouteId.Pause));
-            factory.Button(
+            Button returnMenu = factory.MainMenuButton(
                 "ReturnMenu",
                 panel.transform,
                 textCatalog.Get("ui.pause.main_menu"),
@@ -185,7 +208,7 @@ namespace MSC.UI.Presentation
                 332f,
                 66f,
                 ReturnToFreshMainMenu);
-            factory.Button(
+            Button quit = factory.MainMenuButton(
                 "PauseQuit",
                 panel.transform,
                 textCatalog.Get("ui.main.quit"),
@@ -196,17 +219,8 @@ namespace MSC.UI.Presentation
                 66f,
                 () => OpenQuitConfirmation(UiRouteId.Pause),
                 destructive: true);
-            factory.Text(
-                "PauseReferenceState",
-                panel.transform,
-                textCatalog.Get("ui.common.reference_pending"),
-                34f,
-                576f,
-                332f,
-                22f,
-                10,
-                UiThemeTokens.Disabled,
-                TextAnchor.MiddleCenter);
+            ConfigureMainMenuMotion(new[] { resume, pauseSettings, saveStatus, returnMenu, quit },
+                settings.Applied.Accessibility.ReducedMotion || reviewDataEnabled);
         }
 
         partial void BuildHudRoute()
@@ -437,7 +451,8 @@ namespace MSC.UI.Presentation
             float y,
             float width,
             float height,
-            bool large)
+            bool large,
+            Rect? sourceUv = null)
         {
             GameObject logo = factory.CreateObject("ProjectOwnedLogo", parent);
             factory.Place(logo, x, y, width, height);
@@ -447,7 +462,9 @@ namespace MSC.UI.Presentation
                 // The supplied project logo deliberately keeps transparent
                 // source padding. Present only its padded alpha bounds so the
                 // artwork, rather than the empty canvas, owns the layout box.
-                var artworkUv = new Rect(
+                // Historical settings keep their accepted crop; the current
+                // main-menu logo presents the full newer artwork explicitly.
+                var artworkUv = sourceUv ?? new Rect(
                     52f / 600f,
                     76f / 337f,
                     524f / 600f,
@@ -572,231 +589,124 @@ namespace MSC.UI.Presentation
 
         private void BuildColourCard(Transform parent)
         {
-            GameObject card = factory.GlassPanel(
-                "CarColourCard",
-                parent,
-                93f,
-                613f,
-                327f,
-                178f,
-                UiGlassKind.MenuTinted,
-                CurrentMenuGlassTint);
-            factory.Text("Title", card.transform, textCatalog.Get("ui.main.car_color"), 24f, 8f, 286f, 30f, 14, UiThemeTokens.TextPrimary, TextAnchor.MiddleLeft, FontStyle.Bold);
-            carColourOutlines.Clear();
+            GameObject card = factory.MainMenuPanel(
+                "CarColourCard", parent, 80f, 690f, 350f, 210f);
+            AnchorMainMenuBlock(card.GetComponent<RectTransform>(),
+                new Vector2(0f, 0f), new Vector2(80f, 41f));
+            factory.Text("Title", card.transform, textCatalog.Get("ui.main.car_color"),
+                22f, 14f, 306f, 24f, 14, MainMenuStyle.TextPrimary,
+                TextAnchor.MiddleLeft, FontStyle.Normal);
+            colourSwatchButtons = new Button[CarColours.Length];
+            int pageCount = (CarColours.Length + ColoursPerPage - 1) / ColoursPerPage;
+            colourPageButtons = new Button[pageCount > 1 ? pageCount : 0];
+            colourPageIndex = selectedCarColourIndex / ColoursPerPage;
             for (int index = 0; index < CarColours.Length; index++)
             {
-                int column = index % 5;
-                int row = index / 5;
-                GameObject swatch = factory.CreateObject("Colour" + index, card.transform);
-                factory.Place(swatch, 25f + column * 57f, 50f + row * 57f, 48f, 48f);
-                Image surface = factory.AddSurface(swatch, CarColours[index]);
-                var outline = swatch.AddComponent<Outline>();
-                outline.effectColor = UiThemeTokens.Accent;
-                outline.effectDistance = new Vector2(3f, -3f);
-                outline.useGraphicAlpha = false;
-                outline.enabled = index == selectedCarColourIndex;
-                carColourOutlines.Add(outline);
-
+                int slot = index % ColoursPerPage;
                 int colourIndex = index;
-                Button button = swatch.AddComponent<Button>();
-                button.targetGraphic = surface;
-                button.transition = Selectable.Transition.ColorTint;
-                button.onClick.AddListener(() => SelectCarColour(colourIndex));
+                MainMenuActionButton button = factory.MainMenuSwatch(
+                    "Colour" + index, card.transform, CarColours[index],
+                    22f + slot % 5 * 64f, 50f + slot / 5 * 62f, 50f,
+                    selectedCarColourIndex == index, () => SelectCarColour(colourIndex));
+                colourSwatchButtons[index] = button;
+                button.gameObject.SetActive(index / ColoursPerPage == colourPageIndex);
+            }
+
+            for (int index = 0; index < colourPageButtons.Length; index++)
+            {
+                int page = index;
+                colourPageButtons[index] = factory.MainMenuPageDot(
+                    "ColourPage" + index, card.transform,
+                    (350f - pageCount * 28f) * 0.5f + index * 28f, 174f,
+                    index == colourPageIndex, () => ShowColourPage(page));
             }
         }
 
         private void SelectCarColour(int index)
         {
-            selectedCarColourIndex = Mathf.Clamp(index, 0, carColourOutlines.Count - 1);
-            for (int outlineIndex = 0; outlineIndex < carColourOutlines.Count; outlineIndex++)
+            selectedCarColourIndex = Mathf.Clamp(index, 0, CarColours.Length - 1);
+            for (int swatchIndex = 0; swatchIndex < colourSwatchButtons.Length; swatchIndex++)
             {
-                Outline outline = carColourOutlines[outlineIndex];
-                if (outline != null)
+                if (colourSwatchButtons[swatchIndex] is MainMenuActionButton swatch)
                 {
-                    outline.enabled = outlineIndex == selectedCarColourIndex;
+                    swatch.SetPersistentSelection(swatchIndex == selectedCarColourIndex);
                 }
             }
 
+            PersistMainMenuColourSelection(selectedCarColourIndex);
+            menuVehiclePreview?.SetPaint(CarColours[selectedCarColourIndex]);
+            RefreshMainMenuNavigation();
             RefreshGlassSurfaces();
         }
 
-        private void BuildPreviewCard(Transform parent)
+        private void ShowColourPage(int page)
         {
-            GameObject card = factory.GlassPanel("InteriorCard", parent, 430f, 613f, 325f, 178f, UiGlassKind.MenuTinted, CurrentMenuGlassTint);
-            factory.Text("Title", card.transform, textCatalog.Get("ui.main.interior"), 24f, 8f, 286f, 30f, 14, UiThemeTokens.TextPrimary, TextAnchor.MiddleLeft, FontStyle.Bold);
-            GameObject preview = factory.Panel("Preview", card.transform, 22f, 46f, 288f, 112f, new Color(0.08f, 0.045f, 0.032f, 0.92f));
-            factory.Text("Status", preview.transform, textCatalog.Get("ui.main.preview_unavailable"), 16f, 12f, 256f, 88f, 12, UiThemeTokens.TextMuted, TextAnchor.MiddleCenter);
-        }
-
-        private void BuildPerformanceCard(Transform parent)
-        {
-            GameObject card = factory.GlassPanel("PerformanceCard", parent, 765f, 613f, 371f, 178f, UiGlassKind.MenuTinted, CurrentMenuGlassTint);
-            factory.Text("Title", card.transform, textCatalog.Get("ui.main.performance"), 24f, 8f, 329f, 30f, 14, UiThemeTokens.TextPrimary, TextAnchor.MiddleLeft, FontStyle.Bold);
-            GameObject graph = factory.Panel("Graph", card.transform, 24f, 46f, 329f, 112f, new Color(0.045f, 0.05f, 0.052f, 0.9f));
-            for (int line = 1; line < 5; line++)
+            int pageCount = (CarColours.Length + ColoursPerPage - 1) / ColoursPerPage;
+            colourPageIndex = Mathf.Clamp(page, 0, pageCount - 1);
+            for (int index = 0; index < colourSwatchButtons.Length; index++)
             {
-                factory.Divider(graph.transform, 0f, line * 22f, 329f, new Color(1f, 1f, 1f, 0.08f));
+                colourSwatchButtons[index].gameObject.SetActive(index / ColoursPerPage == colourPageIndex);
             }
 
-            performanceGraphBars.Clear();
-            const int barCount = 48;
-            const float graphLeft = 11f;
-            const float graphBottom = 91f;
-            const float barStride = 6.4f;
-            for (int index = 0; index < barCount; index++)
+            for (int index = 0; index < colourPageButtons.Length; index++)
             {
-                GameObject bar = factory.CreateObject(
-                    "FrameHistory" + index,
-                    graph.transform);
-                RectTransform rect = factory.Place(
-                    bar,
-                    graphLeft + index * barStride,
-                    graphBottom - 1f,
-                    4.8f,
-                    1f);
-                factory.AddSurface(
-                    bar,
-                    new Color(
-                        UiThemeTokens.Positive.r,
-                        UiThemeTokens.Positive.g,
-                        UiThemeTokens.Positive.b,
-                        0.58f),
-                    rounded: false);
-                performanceGraphBars.Add(rect);
+                ((MainMenuActionButton)colourPageButtons[index]).SetPersistentSelection(index == colourPageIndex);
             }
 
-            performanceFpsText = factory.Text(
-                "Fps",
-                graph.transform,
-                AverageFpsText(),
-                12f,
-                20f,
-                305f,
-                38f,
-                22,
-                UiThemeTokens.Positive,
-                TextAnchor.MiddleCenter,
-                FontStyle.Bold);
-            factory.Text("Measured", graph.transform, textCatalog.Get("ui.main.live_frame_sample"), 12f, 77f, 305f, 22f, 10, UiThemeTokens.TextMuted, TextAnchor.MiddleCenter);
-            nextPerformanceGraphRefreshTime = 0f;
-            RefreshPerformanceGraph(force: true);
-        }
-
-        private void RefreshPerformanceGraph(bool force = false)
-        {
-            if (performanceGraphBars.Count == 0 ||
-                performanceFpsText == null ||
-                !force &&
-                Time.unscaledTime < nextPerformanceGraphRefreshTime)
-            {
-                return;
-            }
-
-            nextPerformanceGraphRefreshTime = Time.unscaledTime + 0.25f;
-            performanceFpsText.text = AverageFpsText();
-            int sampleCount = frameSamples.Count;
-            if (sampleCount == 0)
-            {
-                return;
-            }
-
-            frameSamples.CopyTo(frameSampleBuffer, 0);
-            float maximumFps = 60f;
-            for (int index = 0; index < sampleCount; index++)
-            {
-                maximumFps = Mathf.Max(
-                    maximumFps,
-                    Mathf.Min(
-                        600f,
-                        1f / Mathf.Max(
-                            0.0001f,
-                            frameSampleBuffer[index])));
-            }
-
-            float scaleFps = Mathf.Ceil(maximumFps / 30f) * 30f;
-            const float graphBottom = 91f;
-            const float graphHeight = 63f;
-            int barCount = performanceGraphBars.Count;
-            for (int barIndex = 0; barIndex < barCount; barIndex++)
-            {
-                int start = Mathf.FloorToInt(
-                    barIndex * sampleCount / (float)barCount);
-                int end = Mathf.Max(
-                    start + 1,
-                    Mathf.FloorToInt(
-                        (barIndex + 1) * sampleCount /
-                        (float)barCount));
-                end = Mathf.Min(end, sampleCount);
-                double seconds = 0d;
-                for (int sampleIndex = start;
-                     sampleIndex < end;
-                     sampleIndex++)
-                {
-                    seconds += frameSampleBuffer[sampleIndex];
-                }
-
-                float fps = seconds > 0d
-                    ? (float)((end - start) / seconds)
-                    : 0f;
-                float height = Mathf.Max(
-                    1f,
-                    graphHeight * Mathf.Clamp01(fps / scaleFps));
-                RectTransform bar = performanceGraphBars[barIndex];
-                bar.anchoredPosition = new Vector2(
-                    bar.anchoredPosition.x,
-                    -(graphBottom - height));
-                bar.sizeDelta = new Vector2(bar.sizeDelta.x, height);
-            }
-        }
-
-        private void BuildMusicCard(Transform parent)
-        {
-            GameObject card = factory.GlassPanel("MusicCard", parent, 93f, 805f, 1043f, 78f, UiGlassKind.MenuTinted, CurrentMenuGlassTint);
-            factory.Icon("Music", card.transform, UiIconKind.Music, 18f, 18f, 46f, UiThemeTokens.Disabled);
-            factory.Text("Title", card.transform, textCatalog.Get("ui.main.music_import"), 78f, 9f, 310f, 30f, 15, UiThemeTokens.Accent, TextAnchor.MiddleLeft, FontStyle.Bold);
-            factory.Text("State", card.transform, textCatalog.Get("ui.main.import_unavailable"), 78f, 41f, 520f, 25f, 12, UiThemeTokens.TextMuted, TextAnchor.MiddleLeft);
-            factory.CompactButton("ImportUnavailable", card.transform, textCatalog.Get("ui.common.unavailable"), 807f, 20f, 210f, 42f, null, interactable: false);
+            ConfigureMainMenuNavigation(primaryMenuButtons, utilityMenuButtons, colourSwatchButtons, colourPageButtons);
         }
 
         private void BuildMainUtilityStrip(Transform parent)
         {
             GameObject strip = factory.CreateObject("UtilityStrip", parent);
-            float firstX = 0f;
-            float secondX = UiThemeTokens.UtilityActionFirstWidth + UiThemeTokens.SpacingCompact;
-            float thirdX = secondX + UiThemeTokens.UtilityActionSecondWidth + UiThemeTokens.SpacingCompact;
-            factory.Place(strip, 1151f, 849f, 455f, UiThemeTokens.UtilityActionButtonHeight);
-            factory.CompactButton("Settings", strip.transform, textCatalog.Get("ui.main.settings"), firstX, 0f, UiThemeTokens.UtilityActionFirstWidth, UiThemeTokens.UtilityActionButtonHeight, () => OpenSettings(UiRouteId.SettingsGraphics, UiRouteId.MainMenu), glass: true);
-            factory.CompactButton("Mods", strip.transform, textCatalog.Get("ui.main.mods"), secondX, 0f, UiThemeTokens.UtilityActionSecondWidth, UiThemeTokens.UtilityActionButtonHeight, () => OpenSettings(UiRouteId.SettingsMods, UiRouteId.MainMenu), glass: true);
-            bool dev = capabilities.Get(MSC.UI.Runtime.Capabilities.UiCapabilityId.DeveloperTools).IsInteractive;
+            const float height = 54f;
+            bool dev = capabilities.Get(MSC.UI.Runtime.Capabilities.UiCapabilityId.DeveloperTools).IsInteractive &&
+                dependencies.OpenDeveloperTools != null;
+#if !UNITY_EDITOR && !DEVELOPMENT_BUILD
+            dev = false;
+#endif
+            float width = dev ? 568f : 352f;
+            RectTransform rect = factory.Place(strip, 1588f - width, 838f, width, height);
+            AnchorMainMenuBlock(rect, new Vector2(1f, 0f), new Vector2(-84f, 41f));
+            var layout = strip.AddComponent<HorizontalLayoutGroup>();
+            layout.spacing = 12f;
+            layout.childAlignment = TextAnchor.MiddleRight;
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = false;
+            utilityMenuButtons = new Button[dev ? 3 : 2];
+            utilityMenuButtons[0] = factory.MainMenuButton(
+                "Settings", strip.transform, textCatalog.Get("ui.main.settings"), UiIconKind.Gear,
+                0f, 0f, 180f, height,
+                () => OpenSettings(UiRouteId.SettingsGraphics, UiRouteId.MainMenu), compact: true);
+            utilityMenuButtons[1] = factory.MainMenuButton(
+                "Mods", strip.transform, textCatalog.Get("ui.main.mods"), UiIconKind.Puzzle,
+                0f, 0f, 160f, height,
+                () => OpenSettings(UiRouteId.SettingsMods, UiRouteId.MainMenu), compact: true);
             if (dev)
             {
-                Action openDeveloperTools = dependencies.OpenDeveloperTools;
-                factory.CompactButton(
-                    "DevTools",
-                    strip.transform,
-                    textCatalog.Get("ui.main.dev_tools"),
-                    thirdX,
-                    0f,
-                    UiThemeTokens.UtilityActionThirdWidth,
-                    UiThemeTokens.UtilityActionButtonHeight,
-                    () =>
-                    {
-                        if (openDeveloperTools != null)
-                        {
-                            openDeveloperTools();
-                        }
-                        else
-                        {
-                            ShowNotice("ui.common.adapter_pending");
-                        }
-                    },
-                    glass: true);
+                utilityMenuButtons[2] = factory.MainMenuButton(
+                    "DevTools", strip.transform, textCatalog.Get("ui.main.dev_tools"), UiIconKind.Braces,
+                    0f, 0f, 204f, height, () => dependencies.OpenDeveloperTools(), compact: true);
+            }
+
+            for (int index = 0; index < utilityMenuButtons.Length; index++)
+            {
+                var element = utilityMenuButtons[index].gameObject.AddComponent<LayoutElement>();
+                element.preferredWidth = index == 0 ? 180f : index == 1 ? 160f : 204f;
+                element.preferredHeight = height;
             }
         }
-
         private void ShowCredits(Transform parent)
         {
+            if (mainMenuModal != null)
+            {
+                return;
+            }
+
             GameObject returnSelection = EventSystem.current?.currentSelectedGameObject;
+            RememberMainMenuSelection(returnSelection);
             GameObject overlay = factory.CreateObject("CreditsOverlay", parent);
             factory.Stretch(overlay);
             factory.AddSurface(overlay, new Color(0f, 0f, 0f, 0.62f), rounded: false);
@@ -813,7 +723,7 @@ namespace MSC.UI.Presentation
                 16,
                 UiThemeTokens.TextPrimary,
                 TextAnchor.UpperCenter);
-            factory.CompactButton(
+            Button back = factory.CompactButton(
                 "CreditsBack",
                 panel.transform,
                 textCatalog.Get("ui.common.back"),
@@ -823,11 +733,19 @@ namespace MSC.UI.Presentation
                 48f,
                 () => CloseCredits(overlay, returnSelection),
                 primary: true);
+            mainMenuModal = overlay;
+            RefreshMenuOrbitInteraction();
+            mainMenuModalBack = back;
+            SetMenuNavigation(back, back, back, back, back);
             UiFactory.SelectFirst(overlay);
         }
 
         private void CloseCredits(GameObject overlay, GameObject returnSelection)
         {
+            mainMenuModal = null;
+            RefreshMenuOrbitInteraction();
+            mainMenuModalBack = null;
+            overlay.SetActive(false);
             Destroy(overlay);
             if (EventSystem.current == null)
             {

@@ -1,5 +1,6 @@
 using MSC.Core.Identity;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MSC.Audio
 {
@@ -46,7 +47,7 @@ namespace MSC.Audio
 
         public Transform AudioTransform => audioTransform != null ? audioTransform : transform;
 
-        public int OwningSceneHandle => gameObject.scene.handle;
+        public SceneHandle OwningSceneHandle => gameObject.scene.handle;
 
         public bool IsAudioEmitterActive => isActiveAndEnabled && gameObject.activeInHierarchy;
 

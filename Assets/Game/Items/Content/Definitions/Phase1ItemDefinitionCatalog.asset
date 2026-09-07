@@ -4406,8 +4406,9 @@ MonoBehaviour:
     initialChildCount: 0
     childDefinitionId: 
     producedDefinitionId: 
-    toolType: Generic
-    toolVariants: []
+    toolType: Wiring
+    toolVariants:
+    - mess
     hungerEffect: 0
     thirstEffect: 0
     stressEffect: 0
@@ -9466,10 +9467,10 @@ MonoBehaviour:
     maximumContent: 0
     initialContent: 0
     useAmount: 0
-    massKilograms: 0.05
+    massKilograms: 0.2
     emptyContainerMassKilograms: 0
     maximumCarryMassKilograms: 35
-    proxySize: {x: 0.08, y: 0.08, z: 0.08}
+    proxySize: {x: 0.025, y: 0.025, z: 0.08639}
     canOpen: 0
     startsOpen: 0
     retainWhenEmpty: 1
@@ -9574,10 +9575,10 @@ MonoBehaviour:
     maximumContent: 0
     initialContent: 0
     useAmount: 0
-    massKilograms: 0.04
+    massKilograms: 0.2
     emptyContainerMassKilograms: 0
     maximumCarryMassKilograms: 35
-    proxySize: {x: 0.08, y: 0.08, z: 0.08}
+    proxySize: {x: 0.04, y: 0.08, z: 0.04}
     canOpen: 0
     startsOpen: 0
     retainWhenEmpty: 1

@@ -140,6 +140,8 @@ namespace MSC.Player
         [SerializeField] private Quaternion worldRotation = Quaternion.identity;
         [SerializeField] private FirstPersonMotorSaveDto motor;
         [SerializeField] private FirstPersonLookSaveDto look;
+        [SerializeField] private bool hasDrivingState;
+        [SerializeField] private PlayerDrivingSaveDto drivingState;
 
         public int SchemaVersion => schemaVersion;
         public string ConfigurationId => configurationId;
@@ -147,12 +149,15 @@ namespace MSC.Player
         public Quaternion WorldRotation => worldRotation;
         public FirstPersonMotorSaveDto Motor => motor;
         public FirstPersonLookSaveDto Look => look;
+        public bool HasDrivingState => hasDrivingState;
+        public PlayerDrivingSaveDto DrivingState => hasDrivingState ? drivingState : null;
 
         public static PlayerSaveDto Create(
             Vector3 position,
             Quaternion rotation,
             FirstPersonMotorSaveDto motorState,
-            FirstPersonLookSaveDto lookState)
+            FirstPersonLookSaveDto lookState,
+            PlayerDrivingSaveDto driving = null)
         {
             var dto = new PlayerSaveDto
             {
@@ -160,6 +165,8 @@ namespace MSC.Player
                 worldRotation = Normalize(rotation),
                 motor = motorState,
                 look = lookState,
+                hasDrivingState = driving != null,
+                drivingState = driving,
             };
 
             if (!dto.TryValidate(out string failure))
@@ -172,6 +179,11 @@ namespace MSC.Player
 
         public bool TryValidate(out string failure)
         {
+            if (hasDrivingState && (drivingState == null || !drivingState.TryValidate(out _)))
+            {
+                failure = "Player driving state is missing or invalid.";
+                return false;
+            }
             if (schemaVersion != CurrentSchemaVersion)
             {
                 failure = $"Unsupported player schema {schemaVersion}.";
@@ -278,7 +290,19 @@ namespace MSC.Player
                 motor.transform.position,
                 motor.transform.rotation,
                 motor.CaptureSaveState(),
-                look.CaptureSaveState());
+                look.CaptureSaveState(),
+                motor.GetComponent<IPlayerDrivingPersistence>()?.CaptureDrivingState());
+        }
+
+        public static bool CanRestoreDrivingState(PlayerSaveDto state, FirstPersonMotor motor, out string failure)
+        {
+            IPlayerDrivingPersistence driving = motor != null
+                ? motor.GetComponent<IPlayerDrivingPersistence>() : null;
+            if (state != null && state.HasDrivingState && driving == null)
+            { failure = "This player has no binding for the saved driver station."; return false; }
+            if (driving != null) return driving.CanRestoreDrivingState(state?.DrivingState, out failure);
+            failure = string.Empty;
+            return true;
         }
 
         public static bool TryRestore(
@@ -305,29 +329,35 @@ namespace MSC.Player
             }
 
             if (!motor.CanRestoreSaveState(state.Motor, out failure) ||
-                !look.CanRestoreSaveState(state.Look, out failure))
+                !look.CanRestoreSaveState(state.Look, out failure) ||
+                !CanRestoreDrivingState(state, motor, out failure))
             {
                 return false;
             }
 
             PlayerSaveDto checkpoint = Capture(motor, look);
+            IPlayerDrivingPersistence driving = motor.GetComponent<IPlayerDrivingPersistence>();
+            driving?.ReleaseForPlayerPoseRestore();
             if (!motor.TryRestoreWorldPose(
                     state.WorldPosition,
                     state.WorldRotation,
                     out failure) ||
                 !motor.TryRestoreSaveState(state.Motor, out failure) ||
-                !look.TryRestoreSaveState(state.Look, out failure))
+                !look.TryRestoreSaveState(state.Look, out failure) ||
+                driving != null && !driving.TryRestoreDrivingState(state.DrivingState, out failure))
             {
                 // Every input was preflighted, so rollback is expected to be
                 // infallible. Preserve the original failure if authoring was
                 // externally invalidated between preflight and apply.
                 string originalFailure = failure;
+                driving?.ReleaseForPlayerPoseRestore();
                 motor.TryRestoreWorldPose(
                     checkpoint.WorldPosition,
                     checkpoint.WorldRotation,
                     out _);
                 motor.TryRestoreSaveState(checkpoint.Motor, out _);
                 look.TryRestoreSaveState(checkpoint.Look, out _);
+                driving?.TryRestoreDrivingState(checkpoint.DrivingState, out _);
                 failure = originalFailure;
                 return false;
             }
